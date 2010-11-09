@@ -21,8 +21,7 @@ namespace Hatfield.Web.Portal
 				throw new Exception("You MUST set the \"hatWebPortalConnectionString\" value in the web.config file!");
 			}
 
-            doConnection(WebConfigurationManager.AppSettings["hatWebPortalConnectionString"]);
-			// "server=localhost;uid=hatportal;pwd=hatportal;database=hatportal;"					
+            doConnection(WebConfigurationManager.AppSettings["hatWebPortalConnectionString"]);			
 		}
 
         private string getStandardUserSQL(string whereClause, WebPortalUser.SortUsersBy sortBy, PortalApplication portalApp)
