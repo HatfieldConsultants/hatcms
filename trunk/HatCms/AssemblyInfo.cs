@@ -6,12 +6,12 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Hatfield Web Content Management System (hatCMS)")]
+[assembly: AssemblyTitle("Hat Web Content Management System (HatCMS)")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Hatfield Consultants Ltd.")]
-[assembly: AssemblyProduct("Hatfield Web Content Management System (hatCMS)")]
-[assembly: AssemblyCopyright("(c) Hatfield Consultants Ltd.")]
+[assembly: AssemblyProduct("Hat Web Content Management System (HatCMS)")]
+[assembly: AssemblyCopyright("Development sponsored by Hatfield Consultants - www.hatfieldgroup.com")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 
@@ -26,9 +26,9 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-// Version 3: multi-lingual capabilities
+// Version 1: first open source release
 
-[assembly: AssemblyVersion("3.0.*")]
+[assembly: AssemblyVersion("1.0.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
