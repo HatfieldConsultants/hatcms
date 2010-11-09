@@ -1,5 +1,5 @@
-#summary One-sentence summary of this page.
-
+#summary pages are rendered using templates, placeholders and controls.
+=Overview=
 Pages are the central object used in the CMS. Every request handled by the CMS must be handled by a page.
 Page rendering (output) is controlled by a template system. Each page is assigned a template file when that page is created. 
 TemplateLayout files are HTML files that specify the HTML markup of a page, and regions where placeholders are included. TemplateLayout files mimic MasterPages in ASP.Net.
