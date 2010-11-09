@@ -1,0 +1,6 @@
+#summary HatCMS provides an API that allows for website pages to be created, viewed and managed.
+The main objects in the HatCMS API are:
+ # *CmsContext* – provides access to the entire page handling process including page retrieval, user authentication, system configuration, and edit mode switching
+ # *CmsPage* - Represents a page in the system. Pages can be rendered and queried. Pages are organized in a tree structure: each page can have one parent, and multiple children.
+These two object are the work-horse of the system, and provide for most of the “easy-to-use” functions in the system.
+Note: HatCMS does not have the concept of _Folders_ (or _Channels_ in Microsoft CMS). It is our opinion that Folders add unnecessary complexity to web development by adding requirements for special `index` or `default.htm` files. To remove this complexity, CmsPage objects are hierarchical – allowing pages to have as many sub-pages as required (thus removes the need for files with special names – such as `index.html` or `default.htm`).
