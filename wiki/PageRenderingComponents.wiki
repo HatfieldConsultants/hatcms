@@ -1,0 +1,58 @@
+#summary One-sentence summary of this page.
+
+Pages are the central object used in the CMS. Every request handled by the CMS must be handled by a page.
+Page rendering (output) is controlled by a template system. Each page is assigned a template file when that page is created. 
+TemplateLayout files are HTML files that specify the HTML markup of a page, and regions where placeholders are included. TemplateLayout files mimic MasterPages in ASP.Net.
+Template files are simple text files that tell the system where Controls or Placeholders are to be rendered inside of the specified TemplateLayout file. 
+Controls are server-executed items that usually output some information on the current state of the system. Controls are not modifiable by authors. Examples of controls include a breadcrumb, and a side navigation menu. 
+Placeholders are controls that are modifiable by authors. Examples of placeholders include a WYSIWYG  HTML Content area, and an image gallery.
+This template system allows for multiple pages to have the same layout as other pages, while allowing author customized areas to be specified as needed. 
+Pages, Templates and Controls are also combined to create the administration side of HatCMS (ie where the administration functions such as page creation is handled). This means that every administration page has an associated CmsPage, Template, and Control. 
+=Template Files=
+Template files are all found in the _templates_ sub-directory.
+The content of templates are cached in the ASP.Net cache to avoid as many disk-reads as possible (a dependency to this file is created so that the cache is purged when the file is updated). 
+All lines of a template that do not contain a command will be output verbatim.
+To render a control, the command in the template file looks like this:
+{{{
+##RenderControl(SideNavigation)##
+}}}
+The format of this command is `##RenderControl(NameOfControl)##` where NameOfControl is the name of the control found in the Controls subdirectory. Do not include the `.ASCX` extension of the control’s filename.
+To render a placeholder, the command in the template file looks like this: 
+{{{
+##PlaceHolder(HtmlContent ID="1" width="100%" height="500px")##
+}}}
+The Placeholder command must have at least two parameters: `NameOfPlaceholder` and `ID`. `NameOfPlaceholder` is the name of the placeholder class to load (Placeholder classes are currently hard-coded, and cannot be dynamically loaded). The ID parameter is an integer that identifies the instance of the placeholder on the page. This identifier allows for multiple placeholders of the same type to be on the same page.
+For example, to have to HtmlContent placeholders on the same page, use the following commands:
+{{{
+##PlaceHolder(HtmlContent ID=”1” width=”100%” height=”500px”)##
+##PlaceHolder(HtmlContent ID=”2” width=”100%” height=”500px”)##
+}}}
+The remaining parameters for the Placeholder command are dynamically passed to the individual placeholder class, and allows the placeholder to be customized on a per-template basis. In the prior example, the 3rd  and 4th parameter (“100%” and “500px”) sets the width and height of the HtmlContent placeholder when in Edit mode.
+The number of parameters required for a placeholder is defined by the placeholder itself. (which is not currently part of this documentation).
+==Template Example==
+Each page links to a single .template file. The .template file must contain a ##TemplateLayout(__name__)## statement that points to a TemplateLayout file. The .template file also defines placeholder regions which are found in the TemplateLayout file.
+*StandardPage.template*:
+{{{
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")##			
+##PlaceHolder(PageTitle id="1")## 
+<hr />			
+##PlaceHolder(HtmlContent id="1")##
+<hr />
+##PlaceHolder(NewsDatabase id="1")##					
+##EndPlaceholderRegion("MainContent")##
+}}}
+*PageLayout.html (the TemplateLayout file)*
+{{{
+<html>
+<head> ##RenderControl(_system/headsection)## </head>
+<body>
+##RenderControl(_system/StartEditForm)##
+##RenderControl(_system/header)##
+##PlaceholderRegion("MainContent")##
+##RenderControl(_system/footer)##
+##RenderControl(_system/FloatingEditMenu)##	
+##RenderControl(_system/EndEditForm)##	
+</body>
+</html>
+}}}
