@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+	##RenderControl(_system/headsection)##
+<link rel="stylesheet" type="text/css" href="/hatCms/css/_system/TopMultiLevelDropDownMenu.css" />
+
+	</head>
+	<body>
+    ##StartPageBody##		 
+		 ##RenderControl(_system/header)##
+		##RenderControl(_system/Navigation/TopMultiLevelDropDownMenu UseMenuTitles="true")##
+		<table width="100%" border="0">			
+			<tr>
+				<td valign="top" id="SideNav_td">
+					<p>
+						##RenderControl(_system/LanguageSwitcherLarge)##
+					</p>
+					<p>
+					    <div class="MostRecentNews">
+					        ##RenderControl(_system/MostRecentNewsItem id="1" newsIndex="0" summaryLength="115" template="<div class='MostRecentNewsText'><a href='{0}'>{1}</a></div>")##
+					    </div>
+					</p>
+				    <p>
+				        ##RenderControl(_system/SimpleCalendar calendarPage="28")##
+				    </p>
+				    
+				    <p>
+				        ##RenderControl(_system/UpcomingEvents count="3")##
+				    </p>
+				</td>
+				<td valign="top" width="100%">
+					##RenderControl(_system/breadcrumb)##
+					##RenderControl(_system/LanguageSwitcher)##
+					<div style="WIDTH: 100%" id="content">
+						<h1>##RenderControl(_system/PageTitle)##</h1>
+						
+						##PlaceholderRegion("MainContent")##
+						 																													
+														
+								
+					</div>
+				</td>
+			</tr>
+		</table>
+    	##RenderControl(_system/CopyrightStatement)##
+		##RenderControl(_system/footer)##
+		<div id="LoginStatus">
+			##RenderControl(_system/LoginStatus)##
+		</div>		
+			
+		##EndPageBody##
+		##RenderControl(_system/FloatingEditMenu)##	
+	</body>
+</html>

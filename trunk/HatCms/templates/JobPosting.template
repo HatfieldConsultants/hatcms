@@ -1,0 +1,9 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")## 						
+						##PlaceHolder(PageTitle id="1")## 
+						
+						##PlaceHolder(JobPostingDetails id="1")## 
+						
+						##PlaceHolder(HtmlContent id="1")## 
+						##PlaceHolder(SingleImage id="1" width="120" height="-1")## 
+##EndPlaceholderRegion("MainContent")##

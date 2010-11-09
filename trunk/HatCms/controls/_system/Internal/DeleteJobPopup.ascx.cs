@@ -1,0 +1,4 @@
+namespace HatCMS.controls
+{
+
+}

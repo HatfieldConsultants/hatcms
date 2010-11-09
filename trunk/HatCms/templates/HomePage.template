@@ -1,0 +1,10 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")##
+
+		##PlaceHolder(PageTitle id="1")## 
+		<hr />		 
+		##PlaceHolder(HtmlContent id="1" width="690px" height="400px" OutputOnlyIfHasContent="true")##
+		<hr />
+		##PlaceHolder(SingleImage id="1" width="500" height="-1")##						
+
+##EndPlaceholderRegion("MainContent")##

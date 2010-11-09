@@ -1,0 +1,4 @@
+##TemplateLayout(internal/InternalPopup)##
+##StartPlaceholderRegion("MainContent")##
+	##RenderControl(_system/Internal\RenamePagePopup)##
+##EndPlaceholderRegion("MainContent")##	

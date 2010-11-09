@@ -1,0 +1,1 @@
+<%@ Control Language="c#" AutoEventWireup="True" Codebehind="GotoViewModeAction.ascx.cs" Inherits="HatCMS.controls.gotoViewMode" TargetSchema="http://schemas.microsoft.com/intellisense/ie3-2nav3-0" %>

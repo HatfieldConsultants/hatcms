@@ -1,0 +1,5 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")##
+						##PlaceHolder(PageTitle id="1")## 
+						##PlaceHolder(EventCalendarAggregator id="1" width="500px" height="400px")##				
+##EndPlaceholderRegion("MainContent")##
