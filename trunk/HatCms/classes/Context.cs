@@ -129,7 +129,7 @@ namespace HatCMS
         private static CmsPageCache _pageCacheObject = null;
         
         /// <summary>
-        /// Gets the current <see cref="PageCache"/>instance. Note: for internal use only. 
+        /// Gets the current <see cref="CmsPageCache"/>instance. Note: for internal use only. 
         /// </summary>
         /// <returns></returns>
         public static CmsPageCache getPageCache()
