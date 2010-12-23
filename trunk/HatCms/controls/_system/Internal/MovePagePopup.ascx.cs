@@ -142,10 +142,9 @@ namespace HatCMS.controls
                     {
                         CmsPage pageToAdd = allPages[pageId];
                         // -- don't allow moving a page to a child of the page, or to the same location as it is now.
-                        if (!pageToAdd.isChildOf(pageToMove) && pageToAdd.ID != pageToMove.ParentID)
-                        {
+                        bool zoneAuthorized = pageToAdd.Zone.canWrite(CmsContext.currentWebPortalUser);
+                        if (zoneAuthorized && !pageToAdd.isChildOf(pageToMove) && pageToAdd.ID != pageToMove.ParentID)
                             targetDropDownVals.Add(pageId.ToString(), pageToAdd.Path);
-                        }
                     }
                     html.Append("	move page so that it is under : </td><td>" + PageUtils.getDropDownHtml("parent", "fp", targetDropDownVals, parent.ToString()));
                     html.Append("	</td>");

@@ -496,6 +496,27 @@ namespace HatCMS
         }
 
         /// <summary>
+        /// Derive the Zone by the page ID
+        /// </summary>
+        public CmsZone Zone
+        {
+            get { return new CmsZoneDb().fetchByPage(this); }
+        }
+
+        /// <summary>
+        /// Check if this page is located at the CmsZone boundary
+        /// (i.e. an exact record in `zone` table)
+        /// </summary>
+        public bool isZoneBoundary
+        {
+            get
+            {
+                CmsZone z = new CmsZoneDb().fetchByPage(this, false);
+                return (z != null) ? true : false;
+            }
+        }
+
+        /// <summary>
         /// cache the URL parameter because redirect pages go to the database all the time!
         /// </summary>
         private bool urlCached = false;
@@ -765,7 +786,15 @@ namespace HatCMS
 		{
             if (this.ID < 0)
                 throw new Exception("this page could not be rendered because it has not been initialized from the database.");
-            
+
+            bool canRead = this.Zone.canRead(CmsContext.currentWebPortalUser);
+            if ( canRead == false && this.Path != CmsConfig.getConfigValue("LoginPath","/_admin/login"))
+            {
+                NameValueCollection loginParams = new NameValueCollection();
+                loginParams.Add("target", this.ID.ToString());
+                CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath", "/_admin/login")), loginParams);
+            }
+
             //-- check if this page requires the user to be logged on
 			//   if so, throw a NeedsAuthenticationException (which should redirect them to the login page in the catch method)
             bool requireAnonLogin = CmsConfig.getConfigValue("RequireAnonLogin", false);
@@ -778,7 +807,7 @@ namespace HatCMS
                 //    it's not possible to trap this exception
                 // throw new NeedsAuthenticationException();
 			}			
-			
+
 			
 			TemplateEngine.CreateChildControls();
 

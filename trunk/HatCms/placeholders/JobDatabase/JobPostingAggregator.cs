@@ -36,6 +36,7 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsDatabaseTableDependency("jobsummary",requiredCols, removedCols));
 
             ret.Add(new CmsConfigItemDependency("JobPosting.DetailsTemplateName", CmsDependency.ExistsMode.MustExist));
+            ret.Add(new CmsConfigItemDependency("JobPosting.FullJobDescriptionText", CmsDependency.ExistsMode.MustExist));
             ret.Add(new CmsTemplateDependency(CmsConfig.getConfigValue("JobPosting.DetailsTemplateName", "JobPosting")));
 
             return ret.ToArray();
@@ -47,6 +48,10 @@ namespace HatCMS.Placeholders
             return true; // no revisions are implemented in this placeholder.
         }
 
+        protected string getFullJobDescriptionText(CmsLanguage lang)
+        {
+            return CmsConfig.getConfigValue("JobPosting.FullJobDescriptionText", "Full job description", lang);
+        }
 
         private static string AddJobPostingEditMenuRender(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
         {                        
@@ -175,7 +180,7 @@ namespace HatCMS.Placeholders
                         html.Append("<strong>");
                         html.Append(jobPage.Title);
                         html.Append("</strong>");
-                        html.Append(" <a href=\"" + jobPage.Url + "\">full job description &raquo;</a>" + Environment.NewLine);
+                        html.Append(" <a class=\"rightArrowLink\" href=\"" + jobPage.Url + "\">" + getFullJobDescriptionText(langToDisplay) + "</a>" + Environment.NewLine);
                         html.Append("<br><br>");
                         numJobsToDisplay++;
                     }

@@ -13,6 +13,7 @@ using System.Web.UI.HtmlControls;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Reflection;
+using Hatfield.Web.Portal;
 
 namespace HatCMS.setup
 {
@@ -192,6 +193,23 @@ namespace HatCMS.setup
 
         }
 
+        /// <summary>
+        /// Create the default zone and zone user role during setup.
+        /// </summary>
+        /// <returns></returns>
+        private void InsertZone(int HomePageId)
+        {
+            CmsZone z = new CmsZone();
+            z.ZoneName = "Default zone";
+            z.StartingPageId = HomePageId;
+            if (new CmsZoneDb().insert(z) == false)
+                throw new Exception("Cannot insert Zone");
+
+            CmsZoneUserRole r = new CmsZoneUserRole(z.ZoneId, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, true, false);
+            if (new CmsZoneUserRoleDb().insert(r) == false)
+                throw new Exception("Cannot insert ZoneUserRole");
+        }
+
         public class ConfigValidationMessage
         {
             public ConfigValidationMessage(bool IsValid, string Message)
@@ -331,6 +349,9 @@ namespace HatCMS.setup
                 //# Sort Sub Pages Admin Action Page
                 InsertPage("sortSubPages", "Sort Sub Pages", "Sort Sub Pages", "", "internal/_SortSubPagesPopup", AdminActionsPageId, -1, false);
 
+                //# Change Menu Visibiity (Show In Menu indicator) Admin Action Page
+                InsertPage("MenuVisibilityPopup", "Change Menu Visibility", "Change Menu Visibility", "", "internal/_MenuVisibilityPopup", AdminActionsPageId, -1, false);
+
                 // /_admin/actions/movePage
                 InsertPage("movePage", "Move Page", "Move Page", "", "internal/_MovePagePopup", AdminActionsPageId, -1, false);
 
@@ -367,6 +388,21 @@ namespace HatCMS.setup
 
                 //# EditUsers page (/_admin/EditUsers)
                 InsertPage("EditUsers", "Edit Users", "Edit Users", "", "internal/_EditUsersPopup", AdminPageId, -1, false);
+
+                // edit job location page
+                InsertPage("JobLocation", "Job Location", "Job Location", "", "internal/_JobLocationPopup", AdminPageId, -1, false);
+
+                // edit event calendar category page
+                InsertPage("EventCalendarCategory", "Event Calendar Category", "Event Calendar Category", "", "internal/_EventCalendarCategoryPopup", AdminPageId, -1, false);
+
+                // edit File Library category page
+                InsertPage("FileLibraryCategory", "File Library Category", "File Library Category", "", "internal/_FileLibraryCategoryPopup.template", AdminPageId, -1, false);
+
+                // delete File Library page
+                InsertPage("deleteFileLibrary", "Delete File Library", "Delete File Library", "", "internal/_DeleteFileLibraryPopup.template", AdminPageId, -1, false);
+
+				// create the default zone and zone user role
+                InsertZone(HomePageId);
 
                 l_msg.Text = "All standard pages have been added successfully.";
             }

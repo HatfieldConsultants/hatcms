@@ -12,18 +12,21 @@ using System.Text;
 using System.Collections.Generic;
 using Hatfield.Web.Portal;
 using System.Collections.Specialized;
+using Hatfield.Web.Portal.Imaging;
 
 namespace HatCMS.placeholders.Calendar
 {
     public class EventCalendarDetails : BaseCmsPlaceholder
     {
+        protected CmsPageDb pageDb = new CmsPageDb();
+
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
 
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/calendarIcon_16x16.png"));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/DatePicker.js"));
-            ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("EditCalendarCategoryPagePath", "/_admin/editCalendarCategories"), CmsConfig.Languages));
+            ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("EditCalendarCategoryPagePath", "/_admin/EventCalendarCategory"), CmsConfig.Languages));
             ret.Add(CmsControlDependency.UnderControlDir("_system/Internal/EventCalendarCategoryPopup.ascx", new DateTime(2010, 2, 17)));
 
             // -- Hatfield modified version of jquery.fullcalendar -- SimpleCalendar
@@ -63,6 +66,10 @@ namespace HatCMS.placeholders.Calendar
             throw new Exception("The method or operation is not implemented.");
         }
 
+        /// <summary>
+        /// Load the jQuery date/time picker
+        /// </summary>
+        /// <param name="page"></param>
         protected void addCssAndScriptForDateTimePicker(CmsPage page)
         {
             page.HeadSection.AddCSSFile("css/_system/jquery-ui-lightness/jquery-ui-1.8.custom.css");
@@ -71,6 +78,11 @@ namespace HatCMS.placeholders.Calendar
             page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-ui-timepicker-addon.min.js");
         }
 
+        /// <summary>
+        /// Init the date/time picker
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="controlId"></param>
         protected void addScriptForDateTimePickerRender(CmsPage page, string controlId)
         {
             string EOL = Environment.NewLine;
@@ -78,6 +90,12 @@ namespace HatCMS.placeholders.Calendar
             js.Append("$('#" + controlId + "_startDateTime').datetimepicker( { dateFormat: 'yy-mm-dd,', timeFormat: 'h:mm TT', ampm: true, hourGrid: 12, minuteGrid: 15 } );" + EOL);
             js.Append("$('#" + controlId + "_endDateTime').datetimepicker( { dateFormat: 'yy-mm-dd,', timeFormat: 'h:mm TT', ampm: true, hourGrid: 12, minuteGrid: 15 } );" + EOL);
             page.HeadSection.AddJSOnReady(js.ToString());
+        }
+
+#region multi-lang text
+        private string getAttachedFilesText(CmsLanguage lang)
+        {
+            return CmsConfig.getConfigValue("EventCalendar.AttachedFilesText", "Attached files", lang);
         }
 
         private string getBackToText(CmsLanguage lang)
@@ -95,6 +113,11 @@ namespace HatCMS.placeholders.Calendar
             return CmsConfig.getConfigValue("EventCalendar.CategoryText", "Category", lang);
         }
 
+        private string getSeeFileDetailsText(CmsLanguage lang)
+        {
+            return CmsConfig.getConfigValue("EventCalendar.SeeFileDetailsText", "See file details", lang);
+        }
+
         private string getStartDateTimeText(CmsLanguage lang)
         {
             return CmsConfig.getConfigValue("EventCalendar.StartDateTimeText", "Start Date/Time", lang);
@@ -103,6 +126,71 @@ namespace HatCMS.placeholders.Calendar
         private string getEndDateTimeText(CmsLanguage lang)
         {
             return CmsConfig.getConfigValue("EventCalendar.EndDateTimeText", "End Date/Time", lang);
+        }
+#endregion
+
+        /// <summary>
+        /// Render the html to display an attached file
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <param name="f"></param>
+        /// <param name="u"></param>
+        /// <returns></returns>
+        protected string renderAttachedFile(CmsLanguage lang, FileLibraryDetailsData f, WebPortalUser u)
+        {
+            CmsPage detailsFilePage = pageDb.getPage(f.PageId);
+            if (detailsFilePage.Zone.canRead(u) || detailsFilePage.Zone.canWrite(u))
+            {
+                CmsPage aggregatorFilePage = detailsFilePage.ParentPage;
+                string iconTag = IconUtils.getIconTag(CmsContext.ApplicationPath, false, f.fileExtension);
+                string urlDownload = FileLibraryDetailsData.getDownloadAnchor(aggregatorFilePage, f.Identifier, f.FileName, f.FileName, "_blank", "");
+
+                string urlPage = detailsFilePage.getUrl(lang);
+                urlPage = "&#160;&#160;<a href=\"" + urlPage + "\" class=\"rightArrowLink\">" + getSeeFileDetailsText(lang) + "</a>";
+
+                return iconTag + " " + urlDownload + urlPage;
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// Get all the files attached to this event and render the html.
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="lang"></param>
+        /// <returns></returns>
+        protected string renderAttachedFileList(CmsPage page, CmsLanguage lang)
+        {
+            List<FileLibraryDetailsData> fileList = new FileLibraryDb().fetchDetailsData(lang, page);
+            if (fileList.Count == 0)
+                return "";
+
+            WebPortalUser u = CmsContext.currentWebPortalUser;
+            List<string> renderedLinks = new List<string>();
+            foreach (FileLibraryDetailsData f in fileList)
+            {
+                string link = renderAttachedFile(lang, f, u);
+                if (link != "")
+                    renderedLinks.Add(link);
+            }
+            if (renderedLinks.Count == 0)
+                return "";
+
+            StringBuilder html = new StringBuilder();
+            html.Append("<tr valign=\"top\">");
+            html.Append("<td>" + getAttachedFilesText(lang) + ":</td>");
+            html.Append("<td>" + renderedLinks[0] + "</td>");
+            html.Append("</tr>");
+
+            for (int x = 1; x < renderedLinks.Count; x++)
+            {
+                html.Append("<tr valign=\"top\">");
+                html.Append("<td> </td>");
+                html.Append("<td>" + renderedLinks[x] + "</td>");
+                html.Append("</tr>");
+            }
+
+            return html.ToString();
         }
 
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
@@ -132,6 +220,8 @@ namespace HatCMS.placeholders.Calendar
             html.Append("<td>" + getEndDateTimeText(langToRenderFor) + ":</td>");
             html.Append("<td>" + entity.EndDateTime.ToString("yyyy-MM-dd, h:mm tt") + "</td>");
             html.Append("</tr>");
+
+            html.Append(renderAttachedFileList(page, langToRenderFor));
             html.Append("</table>");
 
             html.Append("<a class=\"backToPrev\" href=\"");
@@ -185,7 +275,7 @@ namespace HatCMS.placeholders.Calendar
 
             try
             {
-                CmsPage editCategoryPage = new CmsPageDb().getPage("_admin/EventCalendarCategory");
+                CmsPage editCategoryPage = pageDb.getPage("_admin/EventCalendarCategory");
                 html.Append(" <a href=\"" + editCategoryPage.getUrl(langToRenderFor) + "\" onclick=\"window.open(this.href,'" + categoryDropDown + "','resizable=1,scrollbars=1,width=800,height=400'); return false;\">(edit)</a>");
             }
             catch (Exception ex)

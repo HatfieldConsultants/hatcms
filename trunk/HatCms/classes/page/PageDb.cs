@@ -337,6 +337,30 @@ namespace HatCMS
 
 		} // getPage
 
+        /// <summary>
+        /// Get cms pages by template name (case not sensitive)
+        /// </summary>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        public CmsPage[] getPageByTemplate(string template)
+        {
+            StringBuilder sql = new StringBuilder("select p.pageId, l.langCode, l.name, l.title, l.menuTitle, l.searchEngineDescription, p.showInMenu, p.template, p.parentPageId, p.SortOrdinal, p.CreatedDateTime, p.LastUpdatedDateTime, p.LastModifiedBy, p.RevisionNumber");
+            sql.Append(" from pages p left join pagelanginfo l on (p.pageid = l.pageid)");
+            sql.Append(" where p.Deleted Is Null");
+            sql.Append(" and lcase(p.template)=lcase('" + dbEncode(template) + "')");
+            sql.Append(" order by p.pageId;");
+            DataSet ds = this.RunSelectQuery(sql.ToString());
+
+            if (hasRows(ds) == false)
+                return new CmsPage[0];
+
+            CmsPage[] pages = pagesFromRows(ds.Tables[0].Rows);
+            if (pages.Length == 0)
+                return new CmsPage[0];
+
+            return pages;
+        }
+
 		/// <summary>
 		/// inserts a new page in the database
 		/// </summary>
@@ -577,6 +601,21 @@ namespace HatCMS
 			return false;			
 		}
 
+        public bool updateShowInMenuIndicator(CmsPage page, bool newIndicator)
+        {
+            if (page.ID == -1)
+                return false; // nothing to update
+
+            string sql = "UPDATE pages SET showInMenu=" + newIndicator.ToString() + " WHERE pageid=" + page.ID.ToString() + ";";
+
+            int numAffected = this.RunUpdateQuery(sql);
+            if (numAffected > 0 && page.setLastUpdatedDateTimeToNow())
+            {
+                pageCache.Update(page);
+                return true;
+            }
+            return false;
+        }
 
 		/// <summary>
 		/// sets the menuTitle for an existing page

@@ -189,6 +189,21 @@ namespace HatCMS.placeholders.Calendar
                 set { createdBy = value; }
             }
 
+            /// <summary>
+            /// Search the category title by using the instance's category id
+            /// </summary>
+            /// <param name="categoryList"></param>
+            /// <returns></returns>
+            public string getCategoryTitle(List<EventCalendarCategoryData> categoryList)
+            {
+                foreach (EventCalendarCategoryData c in categoryList)
+                {
+                    if (c.CategoryId == CategoryId)
+                        return c.Title;
+                }
+                return CategoryId.ToString();
+            }
+
             public EventCalendarDetailsData()
             {
                 try
@@ -219,6 +234,14 @@ namespace HatCMS.placeholders.Calendar
             }
         }
 
+        /// <summary>
+        /// Insert a event details
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="identifier"></param>
+        /// <param name="lang"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public bool insertDetailsData(CmsPage page, int identifier, CmsLanguage lang, EventCalendarDetailsData entity)
         {
             StringBuilder sql = new StringBuilder("INSERT INTO ");
@@ -240,6 +263,60 @@ namespace HatCMS.placeholders.Calendar
                 return false;
         }
 
+        /// <summary>
+        /// Select the event details by language limit by a count.  If an valid attached event id is provided,
+        /// the method selects the event details as well (number of records is "count + 1" in this case).
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <param name="attachedEventId"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public List<EventCalendarDetailsData> fetchAllDetailsData(CmsLanguage lang, int attachedEventId, int count)
+        {
+            StringBuilder sql = new StringBuilder("(SELECT E.PageId,E.Identifier,E.LangCode,E.Description,E.CategoryId,E.StartDateTime,E.EndDateTime,E.CreatedBy FROM ");
+            sql.Append(TableNameDetails + " E, Pages P");
+            sql.Append(" WHERE E.Deleted IS NULL");
+            sql.Append(" AND E.LangCode='" + dbEncode(lang.shortCode) + "'");
+            sql.Append(" AND P.Deleted IS NULL");
+            sql.Append(" AND E.PageId=P.PageId");
+            sql.Append(" ORDER BY E.StartDateTime DESC, E.EndDateTime DESC");
+
+            if (count > -1)
+            {
+                sql.Append(" LIMIT 0, " + count.ToString() + ")");
+                sql.Append(" UNION (SELECT E.PageId,E.Identifier,E.LangCode,E.Description,E.CategoryId,E.StartDateTime,E.EndDateTime,E.CreatedBy FROM ");
+                sql.Append(TableNameDetails + " E, Pages P");
+                sql.Append(" WHERE E.Deleted IS NULL");
+                sql.Append(" AND E.LangCode='" + dbEncode(lang.shortCode) + "'");
+                sql.Append(" AND P.Deleted IS NULL");
+                sql.Append(" AND E.PageId=P.PageId");
+                sql.Append(" AND E.PageId=" + attachedEventId + ");");
+            }
+            else
+                sql.Append(");");
+
+            List<EventCalendarDetailsData> list = new List<EventCalendarDetailsData>();
+            DataSet ds = this.RunSelectQuery(sql.ToString());
+            if (this.hasRows(ds) == false)
+                return list;
+
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                EventCalendarDetailsData entity = new EventCalendarDetailsData();
+                rowToData(dr, entity);
+                list.Add(entity);
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// Select a single event details data
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="identifier"></param>
+        /// <param name="lang"></param>
+        /// <param name="createIfNotExist"></param>
+        /// <returns></returns>
         public EventCalendarDetailsData fetchDetailsData(CmsPage page, int identifier, CmsLanguage lang, bool createIfNotExist)
         {
             EventCalendarDetailsData entity = new EventCalendarDetailsData(page, identifier, lang);
@@ -355,6 +432,14 @@ namespace HatCMS.placeholders.Calendar
             return list;
         }
 
+        /// <summary>
+        /// Update an event details data
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="identifier"></param>
+        /// <param name="lang"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public bool updateDetailsData(CmsPage page, int identifier, CmsLanguage lang, EventCalendarDetailsData entity)
         {
             StringBuilder sql = new StringBuilder("UPDATE ");
@@ -425,6 +510,10 @@ namespace HatCMS.placeholders.Calendar
                 set { description = value; }
             }
 
+            /// <summary>
+            /// Check if the current values in the instance is valid
+            /// </summary>
+            /// <returns></returns>
             public string validate()
             {
                 StringBuilder sb = new StringBuilder();
@@ -447,6 +536,11 @@ namespace HatCMS.placeholders.Calendar
             }
         }
 
+        /// <summary>
+        /// Insert event category
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public bool insertCategoryData(EventCalendarCategoryData entity)
         {
             StringBuilder sql = new StringBuilder("INSERT INTO ");
@@ -465,6 +559,11 @@ namespace HatCMS.placeholders.Calendar
                 return false;
         }
 
+        /// <summary>
+        /// Update event category
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public bool updateCategoryData(EventCalendarCategoryData entity)
         {
             StringBuilder sql = new StringBuilder("UPDATE ");
@@ -506,6 +605,10 @@ namespace HatCMS.placeholders.Calendar
             }
         }
 
+        /// <summary>
+        /// Select all the event categories
+        /// </summary>
+        /// <returns></returns>
         public List<EventCalendarCategoryData> fetchCategoryList()
         {
             StringBuilder sql = new StringBuilder("SELECT CategoryId,LangCode,ColorHex,Title,Description FROM ");
@@ -527,6 +630,11 @@ namespace HatCMS.placeholders.Calendar
             return list;
         }
 
+        /// <summary>
+        /// Select all event categories by language
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <returns></returns>
         public List<EventCalendarCategoryData> fetchCategoryList(CmsLanguage lang)
         {
             StringBuilder sql = new StringBuilder("SELECT CategoryId,LangCode,ColorHex,Title,Description FROM ");
@@ -549,6 +657,12 @@ namespace HatCMS.placeholders.Calendar
             return list;
         }
 
+        /// <summary>
+        /// Select an event category by language and category id
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <param name="categoryId"></param>
+        /// <returns></returns>
         public EventCalendarCategoryData fetchCategoryByIdAndLang(CmsLanguage lang, int categoryId)
         {
             StringBuilder sql = new StringBuilder("SELECT CategoryId,LangCode,ColorHex,Title,Description FROM ");

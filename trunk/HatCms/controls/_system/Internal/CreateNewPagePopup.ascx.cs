@@ -75,17 +75,17 @@ namespace HatCMS.controls
             string menuTitle = PageUtils.getFromForm("_menuTitle", ""); menuTitle = menuTitle.Trim();
 			bool showInMenu = PageUtils.getFromForm("_showInMenu",true);
 			string template = PageUtils.getFromForm("_template","");
-			string parent = PageUtils.getFromForm("_parent","");
+			string parent = PageUtils.getFromForm("target","");
 			
             // -- process the action			
 			if (String.Compare(action,"createnew", true) == 0)
 			{
 				
-				if (isNotEmpty(name, "Please enter in the page's filename") &&
-					isNotEmpty(template, "Please enter in the page's template") &&
-					isNotEmpty(parent, "Please enter in the page's parent") &&
-                    isNotEmpty(title, "Please enter in the page's title") &&
-                    isNotEmpty(menuTitle, "Please enter in the page's navigation menu text") &&
+				if ((!options.PromptUserForFilename || isNotEmpty(name, "Please enter in the page's filename")) &&
+					(!options.PromptUserForTemplate || isNotEmpty(template, "Please enter in the page's template")) &&
+					(!options.PromptUserForParentPage || isNotEmpty(parent, "Please enter in the page's parent")) &&
+                    (!options.PromptUserForTitle || isNotEmpty(title, "Please enter in the page's title")) &&
+                    (!options.PromptUserForMenuTitle || isNotEmpty(menuTitle, "Please enter in the page's navigation menu text")) &&
                     doesNotContain(name, @"\", "the filename can not contain a \"\\\" character.") &&
                     doesNotContain(name,"/", "the filename can not contain a \"/\" character.") &&
                     doesNotContain(name, "#", "the filename can not contain a \"#\" character.") &&
@@ -288,7 +288,7 @@ namespace HatCMS.controls
             {
                 html.Append("<tr>" + newLine);
                 html.Append("	<td>");
-                html.Append("	Parent Page: </td><td>" + PageUtils.getDropDownHtml("_parent", "fp", getParentPageOptions(CmsContext.HomePage), parent));
+                html.Append("	Parent Page: </td><td>" + PageUtils.getDropDownHtml("target", "fp", getParentPageOptions(CmsContext.HomePage), parent));
                 html.Append("	</td>");
                 html.Append("</tr>" + newLine);
             }
@@ -297,7 +297,7 @@ namespace HatCMS.controls
                 html.Append("<tr>" + newLine);
                 html.Append("	<td>");
                 html.Append("	Parent Page: </td><td>" +CmsContext.getPageById(Convert.ToInt32(parent)).Path);
-                html.Append(PageUtils.getHiddenInputHtml("_parent", "fp", parent ));
+                html.Append(PageUtils.getHiddenInputHtml("target", "fp", parent ));
                 html.Append("	</td>");
                 html.Append("</tr>" + newLine);
             }

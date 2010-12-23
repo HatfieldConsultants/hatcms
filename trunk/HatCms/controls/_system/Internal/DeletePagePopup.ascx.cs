@@ -44,7 +44,16 @@ namespace HatCMS.controls
 				{
 					CmsPageDb db = new CmsPageDb();
                     CmsPage page = CmsContext.getPageById(targetPageId);
-					bool success = db.deletePage(page);
+                    if (page.isZoneBoundary == true) // if the cms page is a zone boundary, do not allow delete
+                    {
+                        html += "<span style=\"color: red\">Cannot delete the page because it is located at the zone boundary.</span>";
+                        html += "<p><input type=\"button\" onclick=\"window.close();\" value=\"close this window\">";
+                        html += "</center>";
+                        writer.WriteLine(html);
+                        return;
+                    }
+                    
+                    bool success = db.deletePage(page);
 					if (!success)
 					{
 						html = html + "<span style=\"color: red\">Database error: could not delete page.</span>";

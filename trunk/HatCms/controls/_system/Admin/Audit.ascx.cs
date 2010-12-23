@@ -19,6 +19,7 @@ using HatCMS.Placeholders;
 using HatCMS.WebEditor.Helpers;
 using HatCMS.setup;
 using HatCMS.placeholders.RegisterProject;
+using HatCMS.controls.Admin;
 
 namespace HatCMS.Controls.Admin
 {
@@ -49,7 +50,9 @@ namespace HatCMS.Controls.Admin
             PagesByTemplate, 
             EmptyThumbnailCache, 
             PageUrlsById,
-            ListRegisteredProjects
+            ListRegisteredProjects,
+            ZoneManagement,
+            ZoneAuthority
         }
 
         private string getMenuDisplay(AdminTool tool)
@@ -72,6 +75,8 @@ namespace HatCMS.Controls.Admin
                 case AdminTool.EmptyThumbnailCache: ret = "Empty Image Cache"; break;
                 case AdminTool.PageUrlsById: ret = "Page Urls by Id"; break;
                 case AdminTool.ListRegisteredProjects: ret = "List Registered Projects"; break;
+                case AdminTool.ZoneManagement: ret = "Zone Management"; break;
+                case AdminTool.ZoneAuthority: ret = "Zone Authority"; break;
                 default:
                     throw new ArgumentException("An unknown AdminTool was passed to getMenuDisplay()");
             }
@@ -98,7 +103,8 @@ namespace HatCMS.Controls.Admin
             {
                 Dictionary<string, List<AdminTool>> ret = new Dictionary<string, List<AdminTool>>();
                 ret.Add("Search Tools", new List<AdminTool>(new AdminTool[] { AdminTool.SearchAndReplace, AdminTool.SearchHtmlContent, AdminTool.SearchSingleImagesByCaption }));
-                ret.Add("Utilities", new List<AdminTool>(new AdminTool[] { AdminTool.EmptyThumbnailCache, AdminTool.ValidateConfig }));                
+                ret.Add("Utilities", new List<AdminTool>(new AdminTool[] { AdminTool.EmptyThumbnailCache, AdminTool.ValidateConfig }));
+                ret.Add("Zones", new List<AdminTool>(new AdminTool[] { AdminTool.ZoneManagement, AdminTool.ZoneAuthority }));
                 return ret;
             }
         }
@@ -225,6 +231,11 @@ namespace HatCMS.Controls.Admin
                     break;
                 case AdminTool.ListRegisteredProjects:
                     html.Append(RenderListRegisteredProjects());
+                    break;
+                case AdminTool.ZoneManagement:
+                case AdminTool.ZoneAuthority:
+                    AdminController c = AdminController.getController(selectedAdminTool);
+                    html.Append(c.Render());
                     break;
                 default:
                     break;

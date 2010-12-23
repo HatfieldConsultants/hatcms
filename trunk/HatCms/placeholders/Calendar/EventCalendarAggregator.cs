@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Text;
 using Hatfield.Web.Portal;
 using System.Collections.Specialized;
+using Hatfield.Web.Portal.Collections;
+using Hatfield.Web.Portal.Imaging;
 
 namespace HatCMS.placeholders.Calendar
 {
@@ -25,7 +27,7 @@ namespace HatCMS.placeholders.Calendar
 
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/calendarIcon_16x16.png"));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/DatePicker.js"));
-            ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("EditCalendarCategoryPagePath", "/_admin/editCalendarCategories"), CmsConfig.Languages));
+            ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("EditCalendarCategoryPagePath", "/_admin/EventCalendarCategory"), CmsConfig.Languages));
             ret.Add(CmsControlDependency.UnderControlDir("_system/Internal/EventCalendarCategoryPopup.ascx", new DateTime(2010, 2, 17)));
 
             // -- Hatfield modified version of jquery.fullcalendar -- SimpleCalendar
@@ -163,7 +165,7 @@ namespace HatCMS.placeholders.Calendar
             js.Append("    center: 'title'," + EOL);
             js.Append("    right: 'month,agendaWeek,agendaDay'" + EOL);
             js.Append("  }," + EOL);
-            js.Append("  events: '" + CmsContext.ApplicationPath + "_system/Calendar/SimpleCalendarJsonData.ashx?lang=" + lang.shortCode + "'," + EOL);
+            js.Append("  events: '" + CmsContext.ApplicationPath + "_system/Calendar/SimpleCalendarJsonData.ashx?showFile=true&lang=" + lang.shortCode + "'," + EOL);
             js.Append("  eventClick: function(calEvent, jsEvent) { window.location = " + onClickUrl + "; }, " + EOL);
             js.Append("  timeFormat: { month: '', '':'h(:mm)tt'}" + EOL);
             js.Append("});" + EOL);
@@ -192,6 +194,11 @@ namespace HatCMS.placeholders.Calendar
             List<EventCalendarDb.EventCalendarCategoryData> categoryList = db.fetchCategoryList(lang);
             foreach (EventCalendarDb.EventCalendarCategoryData c in categoryList)
                 page.HeadSection.AddCSSStyleStatements(".EventCategory_" + c.CategoryId + " a { background-color: " + c.ColorHex + ";  }");
+
+            string appPath = CmsContext.ApplicationPath;
+            Set iconSet = IconUtils.getIconSet(CmsContext.ApplicationPath, false);
+            foreach (string i in iconSet)
+                page.HeadSection.AddCSSStyleStatements(IconUtils.getIconCss(appPath, false, i, "EventCategory_file"));
         }
 
         protected string getAllDayText()

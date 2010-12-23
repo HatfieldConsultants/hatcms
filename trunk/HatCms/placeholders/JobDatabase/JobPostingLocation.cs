@@ -19,6 +19,20 @@ namespace HatCMS.Placeholders
         public bool IsAllLocations;
         public int SortOrdinal;
 
+        /// <summary>
+        /// Create a set method to change the value of LocationText.  If the count
+        /// of CMS languages is different from the count of languages of the newText,
+        /// there will be an exception.
+        /// </summary>
+        /// <param name="newText"></param>
+        public void setLocationText(string newText)
+        {
+            int newTextCount = newText.Split('|').Length;
+            if (CmsConfig.Languages.Length != newTextCount)
+                throw new ArgumentException("Error: the joblocations table needs to be updated to make all LocationTexts multi-lingual");
+            LocationText = newText;
+        }
+
         public string getLocationText(CmsLanguage forLanguage)
         {
             if (CmsConfig.Languages.Length < 2)

@@ -157,6 +157,11 @@
     <Compile Include="classes\template\v1\TemplateEngineV1.cs" />
     <Compile Include="classes\template\v2\TemplateEngineV2.cs" />
     <Compile Include="classes\UrlFormat.cs" />
+    <Compile Include="classes\zone\CmsZoneDb.cs" />
+    <Compile Include="classes\zone\CmsZone.cs" />
+    <Compile Include="classes\zone\CmsZoneUserRole.cs" />
+    <Compile Include="classes\zone\CmsZoneUserRoleDb.cs" />
+    <Compile Include="controls\_system\Admin\AdminController.cs" />
     <Compile Include="controls\_system\Admin\Audit.ascx.cs">
       <DependentUpon>Audit.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -164,6 +169,8 @@
     <Compile Include="controls\_system\Admin\Audit.ascx.designer.cs">
       <DependentUpon>Audit.ascx</DependentUpon>
     </Compile>
+    <Compile Include="controls\_system\Admin\ZoneAuthority.cs" />
+    <Compile Include="controls\_system\Admin\ZoneManagement.cs" />
     <Compile Include="controls\_system\Breadcrumb.ascx.cs">
       <DependentUpon>Breadcrumb.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -255,6 +262,27 @@
     <Compile Include="controls\_system\Internal\ChangePageTemplatePopup.ascx.designer.cs">
       <DependentUpon>ChangePageTemplatePopup.ascx</DependentUpon>
     </Compile>
+    <Compile Include="controls\_system\Internal\DeleteFileLibraryPopup.ascx.cs">
+      <DependentUpon>DeleteFileLibraryPopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="controls\_system\Internal\DeleteFileLibraryPopup.ascx.designer.cs">
+      <DependentUpon>DeleteFileLibraryPopup.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="controls\_system\Internal\JobLocationPopup.ascx.cs">
+      <DependentUpon>JobLocationPopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="controls\_system\Internal\JobLocationPopup.ascx.designer.cs">
+      <DependentUpon>JobLocationPopup.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="controls\_system\Internal\MenuVisibilityPopup.ascx.cs">
+      <DependentUpon>MenuVisibilityPopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="controls\_system\Internal\MenuVisibilityPopup.ascx.designer.cs">
+      <DependentUpon>MenuVisibilityPopup.ascx</DependentUpon>
+    </Compile>
     <Compile Include="controls\_system\Internal\CreateNewPagePopup.ascx.cs">
       <DependentUpon>CreateNewPagePopup.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -323,6 +351,13 @@
     </Compile>
     <Compile Include="controls\_system\Internal\RenamePagePopup.ascx.designer.cs">
       <DependentUpon>RenamePagePopup.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="controls\_system\Internal\FileLibraryCategoryPopup.ascx.cs">
+      <DependentUpon>FileLibraryCategoryPopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="controls\_system\Internal\FileLibraryCategoryPopup.ascx.designer.cs">
+      <DependentUpon>FileLibraryCategoryPopup.ascx</DependentUpon>
     </Compile>
     <Compile Include="controls\_system\Internal\SortSubPagesPopup.ascx.cs">
       <DependentUpon>SortSubPagesPopup.ascx</DependentUpon>
@@ -513,6 +548,13 @@
     <Compile Include="controls\_system\UpcomingEvents.ascx.designer.cs">
       <DependentUpon>UpcomingEvents.ascx</DependentUpon>
     </Compile>
+    <Compile Include="controls\_system\UserImageGalleryAggregator.ascx.cs">
+      <DependentUpon>UserImageGalleryAggregator.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="controls\_system\UserImageGalleryAggregator.ascx.designer.cs">
+      <DependentUpon>UserImageGalleryAggregator.ascx</DependentUpon>
+    </Compile>
     <Compile Include="placeholders\BaseCmsMasterDetailsPlaceholder.cs" />
     <Compile Include="placeholders\Calendar\EventCalendarAggregator.cs" />
     <Compile Include="placeholders\Calendar\EventCalendarDb.cs" />
@@ -543,6 +585,9 @@
     <Compile Include="placeholders\PlaceholderUtils.cs" />
     <Compile Include="placeholders\PlainTextContent\PlainTextContent.cs" />
     <Compile Include="placeholders\PlainTextContent\PlainTextContentDb.cs" />
+    <Compile Include="placeholders\Procurement\ProcurementAggregator.cs" />
+    <Compile Include="placeholders\Procurement\ProcurementDb.cs" />
+    <Compile Include="placeholders\Procurement\ProcurementDetails.cs" />
     <Compile Include="placeholders\Redirect\PageRedirectDb.cs" />
     <Compile Include="placeholders\Redirect\Redirect.cs" />
     <Compile Include="placeholders\RegisterProject\RegisterProject.cs" />
@@ -550,6 +595,12 @@
     <Compile Include="placeholders\SingleImageGallery\SingleImageGalleryDb.cs" />
     <Compile Include="placeholders\SingleImage\SingleImageDb.cs" />
     <Compile Include="placeholders\SingleImage\SingleImageDisplayInfo.cs" />
+    <Compile Include="placeholders\FileLibrary\FileLibraryAggregator.cs" />
+    <Compile Include="placeholders\FileLibrary\FileLibraryAggregatorData.cs" />
+    <Compile Include="placeholders\FileLibrary\FileLibraryCategoryData.cs" />
+    <Compile Include="placeholders\FileLibrary\FileLibraryDb.cs" />
+    <Compile Include="placeholders\FileLibrary\FileLibraryDetails.cs" />
+    <Compile Include="placeholders\FileLibrary\FileLibraryDetailsData.cs" />
     <Compile Include="placeholders\UserFeedback\UserFeedback.cs" />
     <Compile Include="placeholders\UserFeedback\UserFeedbackDb.cs" />
     <Compile Include="placeholders\UserImageGallery\UserImageGallery.cs" />
@@ -679,6 +730,7 @@
     </Compile>
     <Compile Include="_system\showThumb.aspx.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="_system\showThumb.aspx.designer.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
@@ -711,6 +763,9 @@
     <Content Include="controls\_system\Image\SingleImageDisplay.ascx" />
     <Content Include="controls\_system\IncludeFileByParentPagePath.ascx" />
     <Content Include="controls\_system\Internal\ChangePageTemplatePopup.ascx" />
+    <Content Include="controls\_system\Internal\DeleteFileLibraryPopup.ascx" />
+    <Content Include="controls\_system\Internal\JobLocationPopup.ascx" />
+    <Content Include="controls\_system\Internal\MenuVisibilityPopup.ascx" />
     <Content Include="controls\_system\Internal\CreateNewPagePopup.ascx" />
     <Content Include="controls\_system\Internal\DeleteJobPopup.ascx" />
     <Content Include="controls\_system\Internal\DeletePagePopup.ascx" />
@@ -721,6 +776,7 @@
     <Content Include="controls\_system\Internal\MovePagePopup.ascx" />
     <Content Include="controls\_system\Internal\RemovePageLockPopup.ascx" />
     <Content Include="controls\_system\Internal\RenamePagePopup.ascx" />
+    <Content Include="controls\_system\Internal\FileLibraryCategoryPopup.ascx" />
     <Content Include="controls\_system\Internal\SortSubPagesPopup.ascx" />
     <Content Include="controls\_system\Internal\ViewRevisionHistoryPopup.ascx" />
     <Content Include="controls\_system\LanguageSwitcherLarge.ascx" />
@@ -748,6 +804,8 @@
     <Content Include="controls\_system\SubPageTextAggregator.ascx" />
     <Content Include="controls\_system\LanguageSwitcher.ascx" />
     <Content Include="controls\_system\UpcomingEvents.ascx" />
+    <Content Include="controls\_system\UserImageGalleryAggregator.ascx" />
+    <Content Include="css\hatCMSPrint.css" />
     <Content Include="css\hatCMS.css" />
     <Content Include="css\_system\AdminTools.css" />
     <Content Include="css\_system\jquery-ui-lightness\images\ui-bg_flat_0_aaaaaa_40x100.png" />
@@ -833,6 +891,8 @@
     <Content Include="images\_system\fileIcons\32x32\xls.gif" />
     <Content Include="images\_system\fileIcons\32x32\xml.gif" />
     <Content Include="images\_system\fileIcons\32x32\zip.gif" />
+    <Content Include="images\_system\pdf.png" />
+    <Content Include="images\_system\printer.png" />
     <Content Include="images\_system\TopMultiLevelDropDownMenu\down.gif" />
     <Content Include="images\_system\TopMultiLevelDropDownMenu\right.gif" />
     <Content Include="js\_system\beforeUnload.js" />
@@ -1000,6 +1060,7 @@
     <Content Include="js\_system\ckeditor\skins\v2\templates.css" />
     <Content Include="js\_system\ckeditor\styles.js" />
     <Content Include="js\_system\ckeditor\themes\default\theme.js" />
+    <Content Include="js\_system\printerAndPdfVersion.js" />
     <Content Include="js\_system\DatePicker.js" />
     <Content Include="js\_system\dhtmlx\dhtmlxTree\codebase\dhtmlxcommon.js" />
     <Content Include="js\_system\dhtmlx\dhtmlxTree\codebase\dhtmlxtree.css" />
@@ -1055,8 +1116,16 @@
     <Content Include="js\_system\dhtmlx\dhtmlxTree\codebase\imgs\radio_on.gif" />
     <Content Include="js\_system\dhtmlx\dhtmlxTree\codebase\imgs\sky_blue_sel_tree.png" />
     <Content Include="js\_system\EventCalendar\EventCalendarCategory.js" />
+    <Content Include="js\_system\FCKPlugins\CleanTags\cleantags.gif" />
+    <Content Include="js\_system\FCKPlugins\CleanTags\fckplugin.js" />
+    <Content Include="js\_system\FCKPlugins\CleanTags\lang\en.js" />
+    <Content Include="js\_system\FCKPlugins\fckdialog.html" />
+    <Content Include="js\_system\FCKPlugins\hatImageBrowser\fckplugin.js" />
+    <Content Include="js\_system\FCKPlugins\hatImageBrowser\fck_image.html" />
+    <Content Include="js\_system\FCKPlugins\hatImageBrowser\Image.gif" />
     <Content Include="js\_system\FloatingEditMenu.js" />
     <Content Include="js\_system\GlossaryEditor.js" />
+    <Content Include="js\_system\JobDatabase\JobLocation.js" />
     <Content Include="js\_system\jquery.fullcalendar\changelog.txt" />
     <Content Include="js\_system\jquery.fullcalendar\fullcalendar.css" />
     <Content Include="js\_system\jquery.fullcalendar\fullcalendar.js" />
@@ -1071,6 +1140,8 @@
     <Content Include="js\_system\json2.js" />
     <Content Include="js\_system\ProjectInfo.js" />
     <Content Include="js\_system\RegisterProject\RegisterProject.js" />
+    <Content Include="js\_system\FileLibrary\FileLibrary.js" />
+    <Content Include="js\_system\FileLibrary\FileLibraryCategory.js" />
     <Content Include="js\_system\sortSelectList.js" />
     <Content Include="js\_system\swfUpload\fileprogress.js" />
     <Content Include="js\_system\swfUpload\handlers.js" />
@@ -1081,6 +1152,7 @@
     <Content Include="js\_system\swfUpload\XPButtonUploadText_61x22.png" />
     <Content Include="js\_system\TopMultiLevelDropDownMenu.js" />
     <Content Include="js\_system\TopNav.js" />
+    <Content Include="js\_system\Zone\ZoneManagement.js" />
     <Content Include="setup\default.aspx" />
     <Content Include="setup\HatCMS_TableCreation.sql" />
     <Content Include="templates\internal\InternalPopup.htm" />
@@ -1242,14 +1314,23 @@
     </None>
     <Content Include="templates\JobPosting.template" />
     <None Include="templates\ContactUs.template" />
+    <None Include="templates\internal\_DeleteFileLibraryPopup.template" />
+    <None Include="templates\internal\_FileLibraryCategoryPopup.template" />
     <None Include="templates\EventCalendarAggregator.template" />
     <None Include="templates\EventCalendarDetails.template" />
+    <None Include="templates\ProcurementAggregator.template" />
+    <None Include="templates\ProcurementDetails.template" />
+    <None Include="templates\internal\_JobLocationPopup.template" />
+    <None Include="templates\internal\_MenuVisibilityPopup.template" />
     <None Include="templates\internal\_EventCalendarCategoryPopup.template" />
     <None Include="templates\NewsArticleDetails.template" />
     <None Include="templates\NewsArticleAggregator.template" />
     <None Include="templates\Publications.template" />
     <None Include="templates\RegisterProject.template" />
+    <None Include="templates\FileLibraryAggregator.template" />
+    <None Include="templates\FileLibraryDetails.template" />
     <None Include="templates\UserImageGallery.template" />
+    <None Include="templates\UserImageGalleryAggregator.template" />
     <None Include="templates\_SingleImageDisplay.template" />
     <Content Include="_system\download.ashx" />
     <Content Include="_system\Calendar\SimpleCalendarJsonData.ashx" />

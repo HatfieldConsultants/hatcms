@@ -463,3 +463,84 @@ CREATE TABLE  `userimagegallery` (
   `CaptionDisplayLocation` varchar(255) NOT NULL,
   PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `ProcurementAggregator` (
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `DefaultYearToDisplay` int(11) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `ProcurementDetails` (
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `DateOfProcurement` datetime DEFAULT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `zone` (
+  `ZoneId` int(11) NOT NULL AUTO_INCREMENT,
+  `StartingPageId` int(11) NOT NULL,
+  `ZoneName` varchar(255) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`ZoneId`),
+  KEY `StartingPageId` (`StartingPageId`),
+  FOREIGN KEY (`StartingPageId`) REFERENCES `pages` (`pageId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `ZoneUserRole` (
+  `ZoneId` int(11) NOT NULL,
+  `UserRoleId` int(11) NOT NULL,
+  `ReadAccess` int(1) DEFAULT '0',
+  `WriteAccess` int(1) DEFAULT '0',
+  PRIMARY KEY (`ZoneId`,`UserRoleId`),
+  FOREIGN KEY (`ZoneId`) REFERENCES `zone` (`ZoneId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `FileLibraryCategory` (
+  `CategoryId` int(11) NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `DateRequired` int(1) NOT NULL DEFAULT '0',
+  `CategoryName` varchar(255) NOT NULL,
+  `SortOrdinal` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`CategoryId`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `FileLibraryAggregator` (
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `NumFilesOverview` int(11) NOT NULL,
+  `NumFilesPerPage` int(11) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `FileLibraryDetails` (
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `Filename` varchar(255) NOT NULL,
+  `CategoryId` int(11) NOT NULL,
+  `FileDate` datetime NOT NULL,
+  `Author` varchar(255) NOT NULL DEFAULT '',
+  `Description` text NOT NULL,
+  `LastModified` datetime NOT NULL,
+  `CreatedBy` varchar(255) NOT NULL,
+  `EventPageId` int(11) NOT NULL DEFAULT '-1',
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`),
+  KEY `CategoryId` (`CategoryId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

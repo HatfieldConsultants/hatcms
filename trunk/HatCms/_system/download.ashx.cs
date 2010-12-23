@@ -56,7 +56,7 @@ namespace HatCMS._system
                 default:
                     break;
             }
-            Hatfield.Web.Portal.Data.OutputDataSetToExcelFile.OutputToResponse(gridview1, fileName, "", "", context.Response);
+            OutputDataSetToExcelFile.OutputToResponse(gridview1, fileName, "", "", context.Response);
         }
 
         public bool IsReusable

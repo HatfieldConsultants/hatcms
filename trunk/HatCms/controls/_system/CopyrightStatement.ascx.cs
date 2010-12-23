@@ -46,7 +46,7 @@ namespace HatCMS.controls._system
             CmsLanguage lang = CmsContext.currentLanguage;
             string text = String.Format(getCopyrightText(lang), new string[] { yyyy.ToString() });
 
-            StringBuilder html = new StringBuilder("<div style=\"" + getCopyrightCssStyle() + "\">");
+            StringBuilder html = new StringBuilder("<div class=\"copyrightStatement\" style=\"" + getCopyrightCssStyle() + "\">");
             html.Append(text);
             html.Append("</div>");
 

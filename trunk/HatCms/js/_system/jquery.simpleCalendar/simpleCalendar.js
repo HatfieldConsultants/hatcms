@@ -1749,7 +1749,11 @@ function _renderDaySegs(segs, rowCnt, view, minLeft, maxLeft, getRow, dayContent
 	for (i=0; i<segCnt; i++) {
 		seg = segs[i];
 		if (eventElement = seg.element) {
-			eventElement[0].style.width = seg.outerWidth - seg.hsides + 'px';
+/* HatCms */try {
+			    eventElement[0].style.width = seg.outerWidth - seg.hsides + 'px';
+/* HatCms */}
+/* HatCms */catch(err) {
+/* HatCms */}
 		}
 	}
 	

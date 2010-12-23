@@ -36,7 +36,10 @@ namespace HatCMS.controls
             // -- don't render anything unless the user is logged in.
             if (!CmsContext.currentUserCanAuthor)
                 return;
-            
+
+            if (!CmsContext.currentZoneWritable) // if zone not writable, skip rendering the Edit Menu
+                return;
+
             StringBuilder html = new StringBuilder();
             CmsPage page = CmsContext.currentPage;
 

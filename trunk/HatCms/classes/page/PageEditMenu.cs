@@ -11,6 +11,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using Hatfield.Web.Portal;
+using HatCMS.Placeholders;
 
 namespace HatCMS
 {
@@ -23,6 +24,7 @@ namespace HatCMS
         RemoveEditLock, RefreshEditLockStatus,
         ViewCurrentPageRevisionInformation,
         CreateNewPage, SortSubPages, 
+        ChangeMenuVisibility,
         AdminReportsAndTools, UserManagement, Logoff, 
         CustomAction
     };
@@ -97,6 +99,7 @@ namespace HatCMS
                 ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("ChangePageTemplatePath", "/_admin/actions/changeTemplate"), CmsConfig.Languages));
                 ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("DeletePagePath", "/_admin/actions/deletePage"), CmsConfig.Languages));
                 ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("SortSubPagesPath", "/_admin/actions/sortSubPages"), CmsConfig.Languages));
+                ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("ChangeMenuVisibilityPath", "/_admin/actions/MenuVisibilityPopup"), CmsConfig.Languages));
                 ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("ViewRevisionsPagePath", "/_admin/ViewRevisions"), CmsConfig.Languages));
                 ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("AuditPagePath", "/_admin/Audit"), CmsConfig.Languages));
                 ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("EditUsersPagePath", "/_admin/EditUsers"), CmsConfig.Languages));
@@ -166,16 +169,24 @@ namespace HatCMS
 
             public static string DeleteThisPage(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
             {
-                NameValueCollection paramList = new NameValueCollection();
-                paramList.Add("target", pageToRenderFor.ID.ToString());
+                try // try to see if there is a specific "deletePage" defined in the placeholder
+                {
+                    string template = pageToRenderFor.TemplateName;
+                    return BaseCmsPlaceholder.invokeEditMenuMethod(template, "getEditMenuDeleteLink", new object[] { pageToRenderFor, langToRenderFor });
+                }
+                catch // if no, follow the default way
+                {
+                    NameValueCollection paramList = new NameValueCollection();
+                    paramList.Add("target", pageToRenderFor.ID.ToString());
 
-                string confirmText = "Do you really want to delete this page?";
-                int numPagesToDelete = pageToRenderFor.getLinearizedPages().Keys.Count;
-                if (numPagesToDelete > 1)
-                    confirmText = "Do you really want to delete this page and all " + (numPagesToDelete-1) + " sub-pages?";
+                    string confirmText = "Do you really want to delete this page?";
+                    int numPagesToDelete = pageToRenderFor.getLinearizedPages().Keys.Count;
+                    if (numPagesToDelete > 1)
+                        confirmText = "Do you really want to delete this page and all " + (numPagesToDelete-1) + " sub-pages?";
 
-                string deletePageUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("DeletePagePath", "/_admin/actions/deletePage"), paramList, langToRenderFor);
-                return "<a href=\"#\" onclick=\"EditMenuConfirmModal('" + confirmText + "','" + deletePageUrl + "',300, 300);\"><strong>Delete</strong> this page</a>";
+                    string deletePageUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("DeletePagePath", "/_admin/actions/deletePage"), paramList, langToRenderFor);
+                    return "<a href=\"#\" onclick=\"EditMenuConfirmModal('" + confirmText + "','" + deletePageUrl + "',300, 300);\"><strong>Delete</strong> this page</a>";
+                }
             }
 
             public static string CreateNewPage(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
@@ -195,6 +206,11 @@ namespace HatCMS
             public static string SortSubPages(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
             {
                 return RenderPopupLink("SortSubPagesPath", "/_admin/actions/sortSubPages", pageToRenderFor, langToRenderFor, "<strong>Sort</strong> sub-pages", 500, 400);
+            }
+
+            public static string ChangeMenuVisibility(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
+            {
+                return RenderPopupLink("ChangeMenuVisibilityPath", "/_admin/actions/MenuVisibilityPopup", pageToRenderFor, langToRenderFor, "<strong>Change</strong> menu visibility", 650, 400);
             }
 
             public static string SaveAndViewThisPage(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
@@ -301,7 +317,7 @@ namespace HatCMS
 
             public static string AdminReportsAndTools(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
             {
-                return RenderPopupLink("AuditPagePath", "/_admin/Audit", pageToRenderFor, langToRenderFor, "<strong>Admin</strong> reports &amp; tools", 500, 400);
+                return RenderPopupLink("AuditPagePath", "/_admin/Audit", pageToRenderFor, langToRenderFor, "<strong>Admin</strong> reports &amp; tools", 700, 400);
             }
 
             public static string UserManagement(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
@@ -352,6 +368,7 @@ namespace HatCMS
                     new CmsPageEditMenuAction( CmsEditMenuActionCategory.SubPageAction, CmsEditMenuActionItem.CreateNewPage, CmsEditMode.View, 10, DefaultStandardActionRenderers.CreateNewPage),
                     new CmsPageEditMenuAction( CmsEditMenuActionCategory.SubPageAction, CmsEditMenuActionItem.SortSubPages, CmsEditMode.View, 20, DefaultStandardActionRenderers.SortSubPages),
                     
+                    new CmsPageEditMenuAction( CmsEditMenuActionCategory.ThisPageAction, CmsEditMenuActionItem.ChangeMenuVisibility, CmsEditMode.View, 25, DefaultStandardActionRenderers.ChangeMenuVisibility),
                     new CmsPageEditMenuAction( CmsEditMenuActionCategory.ThisPageAction, CmsEditMenuActionItem.RenameThisPage, CmsEditMode.View, 30, DefaultStandardActionRenderers.RenameThisPage),
                     new CmsPageEditMenuAction( CmsEditMenuActionCategory.ThisPageAction, CmsEditMenuActionItem.MoveThisPage, CmsEditMode.View, 40, DefaultStandardActionRenderers.MoveThisPage),
                     new CmsPageEditMenuAction( CmsEditMenuActionCategory.ThisPageAction, CmsEditMenuActionItem.ChangeTemplate, CmsEditMode.View, 50, DefaultStandardActionRenderers.ChangeTemplate),
@@ -449,6 +466,7 @@ namespace HatCMS
                 removeActionItem(ret, CmsEditMenuActionItem.ChangeTemplate);
                 removeActionItem(ret, CmsEditMenuActionItem.AdminReportsAndTools);
                 removeActionItem(ret, CmsEditMenuActionItem.RemoveEditLock);
+                removeActionItem(ret, CmsEditMenuActionItem.UserManagement);
             }
 
             return ret.ToArray();

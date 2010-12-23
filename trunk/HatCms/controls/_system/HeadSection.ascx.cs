@@ -7,17 +7,33 @@ namespace HatCMS.controls
 	using System.Web.UI.WebControls;
 	using System.Web.UI.HtmlControls;
     using HatCMS.Placeholders;
+    using Hatfield.Web.Portal;
+    using System.Text;
+    using System.Collections.Generic;
 
 	/// <summary>
 	///		Summary description for HeadSection.
 	/// </summary>
 	public partial class HeadSection : System.Web.UI.UserControl
 	{
+        protected static string EOL = Environment.NewLine;
 
 		protected void Page_Load(object sender, System.EventArgs e)
 		{
 			// Put user code to initialize the page here
 		}
+
+        public CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.pdfVer"));
+            ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.printerVer"));
+            ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.printerCss"));
+            ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.placeAfterDom"));
+            ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.pdfIcon"));
+            ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.printerIcon"));
+            return ret.ToArray();
+        }
 
         private string getDisplayTitle()
         {
@@ -52,6 +68,44 @@ namespace HatCMS.controls
                 html.Append(Environment.NewLine);
             }                       
 
+            html.Append(getScriptForPrinterAndPdfVersion());
+
+            return html.ToString();
+        }
+
+        /// <summary>
+        /// Load the javascript during window.onload
+        /// - if print flag is 0 (or not set), render PDF and Printer icons
+        /// - if print flag is 1, render the page as a printer-friendly version
+        /// </summary>
+        /// <returns></returns>
+        protected string getScriptForPrinterAndPdfVersion()
+        {
+            bool printerVer = CmsConfig.getConfigValue("PrinterAndPdfVer.printerVer", false);
+            bool pdfVer = CmsConfig.getConfigValue("PrinterAndPdfVer.pdfVer", false);
+            if (printerVer == false && pdfVer == false)
+                return "";
+
+            StringBuilder html = new StringBuilder();
+            html.Append("<script type=\"text/javascript\" src=\"" + CmsContext.ApplicationPath + "js/_system/printerAndPdfVersion.js\"></script>" + EOL);
+            html.Append("<script type=\"text/javascript\">" + EOL);
+            html.Append("_printerVer = " + printerVer.ToString().ToLower() + ";" + EOL);
+
+            if (PageUtils.getFromForm("print", 0) == 1)
+            {
+                html.Append("_printerCss = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.printerCss", "").Replace("~", CmsContext.ApplicationPath) + "';" + EOL);
+                html.Append("window.onload = function() { renderAsPrintVersion( _printerVer, _printerCss ); }" + EOL);
+            }
+            else
+            {
+                html.Append("_pdfVer = " + pdfVer.ToString().ToLower() + ";" + EOL);
+                html.Append("_placeAfterDom = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.placeAfterDom", "") + "';" + EOL);
+                html.Append("_printerIcon = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.printerIcon", "").Replace("~", CmsContext.ApplicationPath) + "';" + EOL);
+                html.Append("_pdfIcon = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.pdfIcon", "").Replace("~", CmsContext.ApplicationPath) + "';" + EOL);
+                html.Append("window.onload = function() { addPrinterAndPdfIcon( _printerVer, _printerIcon, _pdfVer, _pdfIcon, _placeAfterDom ); }" + EOL);
+            }
+
+            html.Append("</script>" + EOL);
             return html.ToString();
         }
 

@@ -11,7 +11,6 @@ using HatCMS.Placeholders;
 using System.Text;
 using System.Collections.Generic;
 using Hatfield.Web.Portal;
-using hatCommon;
 
 namespace HatCMS.placeholders.RegisterProject
 {

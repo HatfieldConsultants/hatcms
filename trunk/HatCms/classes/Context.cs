@@ -81,6 +81,38 @@ namespace HatCMS
 		}
 
         /// <summary>
+        /// Get the current zone of the page
+        /// </summary>
+        public static CmsZone currentZone
+        {
+            get { return CmsContext.currentPage.Zone; }
+        }
+
+        /// <summary>
+        /// Check if the current is readable by the web portal user
+        /// </summary>
+        public static bool currentZoneReadable
+        {
+            get
+            {
+                WebPortalUser u = currentWebPortalUser;
+                return currentZone.canRead(u);
+            }
+        }
+
+        /// <summary>
+        /// Check if the current zone is writable by the web portal user
+        /// </summary>
+        public static bool currentZoneWritable
+        {
+            get
+            {
+                WebPortalUser u = currentWebPortalUser;
+                return currentZone.canWrite(u);
+            }
+        }
+
+        /// <summary>
         /// Gets the requested page path from either the query string or the posted form.
         /// The path returned NEVER includes the currentLanguage's shortCode.
         /// No verification of the page path's existance is done.
@@ -129,7 +161,7 @@ namespace HatCMS
         private static CmsPageCache _pageCacheObject = null;
         
         /// <summary>
-        /// Gets the current <see cref="CmsPageCache"/>instance. Note: for internal use only. 
+        /// Gets the current <see cref="PageCache"/>instance. Note: for internal use only. 
         /// </summary>
         /// <returns></returns>
         public static CmsPageCache getPageCache()

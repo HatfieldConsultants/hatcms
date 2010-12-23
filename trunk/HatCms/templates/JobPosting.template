@@ -6,4 +6,5 @@
 						
 						##PlaceHolder(HtmlContent id="1")## 
 						##PlaceHolder(SingleImage id="1" width="120" height="-1")## 
+						##PlaceHolder(PageFiles id="1" width="500px" height="400px" emptyMessage="false" compact="true")##
 ##EndPlaceholderRegion("MainContent")##

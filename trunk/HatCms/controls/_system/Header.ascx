@@ -5,7 +5,7 @@
 <tr>
 	<td><table cellspacing="0" cellpadding="0" border="0" align="center">
 		<tr>
-			<td><a href="default.aspx?p=/"><img src="<% Response.Write(getRandomImageUrl()); %>" border="0"></a></td>
+			<td><a href="default.aspx?p=/"><img id="headerImg" src="<% Response.Write(getRandomImageUrl()); %>" border="0"></a></td>
 		</tr>
 		</table>
 	</td>

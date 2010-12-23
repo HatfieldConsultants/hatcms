@@ -70,6 +70,8 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsConfigItemDependency("JobPostingDetails.AllowPostingToAllLocations", CmsDependency.ExistsMode.MustExist));
             ret.Add(new CmsConfigItemDependency("JobPostingDetails.IncludeLocationInDisplay", CmsDependency.ExistsMode.MustExist));
             ret.Add(new CmsConfigItemDependency("JobPostingDetails.IncludeBackLinkInDisplay", CmsDependency.ExistsMode.MustExist));
+            ret.Add(new CmsConfigItemDependency("JobPostingDetails.BackToJobListingText", CmsDependency.ExistsMode.MustExist));
+            ret.Add(new CmsConfigItemDependency("JobPostingDetails.LocationText", CmsDependency.ExistsMode.MustExist));
             
             // -- obsolete config entries:
             ret.Add(new CmsConfigItemDependency("JobPostingLocations", CmsDependency.ExistsMode.MustNotExist));            
@@ -109,9 +111,20 @@ namespace HatCMS.Placeholders
             }
         }
 
+        protected string getBackToJobListingText(CmsLanguage lang)
+        {
+            return CmsConfig.getConfigValue("JobPostingDetails.BackToJobListingText", "Back to job listing page", lang);
+        }
+
+        protected string getLocationText(CmsLanguage lang)
+        {
+            return CmsConfig.getConfigValue("JobPostingDetails.LocationText", "Location", lang);
+        }
+
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
             string placeholderId = "JobPostingDetails_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
+            string placeholderIdWithoutLang = "location_JobPostingDetails_" + page.ID.ToString() + "_" + identifier.ToString();
             JobPostingDb db = new JobPostingDb();
             JobPostingDetailsData postingDetails = db.getJobPostingDetailsData(page, identifier, langToRenderFor, true);
 
@@ -156,7 +169,19 @@ namespace HatCMS.Placeholders
             html.Append("</tr>");
             html.Append("<tr>");
             
-            html.Append("<td>" + PageUtils.getDropDownHtml("location_" + placeholderId, "location_" + placeholderId, JobPostingLocation.ToNameValueCollection(locations, CmsContext.currentLanguage, AllowPostingToAllLocations), postingDetails.LocationId.ToString()) + "</td>");
+            html.Append("<td>" + PageUtils.getDropDownHtml("location_" + placeholderId, "location_" + placeholderId, JobPostingLocation.ToNameValueCollection(locations, langToRenderFor, AllowPostingToAllLocations), postingDetails.LocationId.ToString()));
+
+            try
+            {
+                CmsPage editLocationPage = new CmsPageDb().getPage("_admin/JobLocation");
+                html.Append(" <a href=\"" + editLocationPage.getUrl(langToRenderFor) + "\" onclick=\"window.open(this.href,'" + placeholderIdWithoutLang + "','resizable=1,scrollbars=1,width=800,height=400'); return false;\">(edit)</a>");
+            }
+            catch (Exception ex)
+            {
+                html.Append(" <span>Cannot setup Edit Category Link: " + ex.Message + "</span>");
+            }
+
+            html.Append("</td>");
             html.Append("</tr>");
 
             html.Append("</table>"+Environment.NewLine);
@@ -184,7 +209,7 @@ namespace HatCMS.Placeholders
             if (IncludeBackLinkInDisplay)
             {
                 string aggregatorUrl = aggregatorPage.Url;
-                html.Append("<p class=\"jobBackToAggregator\"><strong><a href=\"" + aggregatorUrl + "\">&laquo; back to " + aggregatorPage.MenuTitle + "</a></strong><p>");
+                html.Append("<p class=\"jobBackToAggregator\"><strong><a class=\"backToPrev\" href=\"" + aggregatorUrl + "\">" + getBackToJobListingText(langToRenderFor) + "</a></strong><p>");
             }
 
             // -- if the posting is expired, don't let non-authors view it.            
@@ -204,7 +229,7 @@ namespace HatCMS.Placeholders
 
             if (IncludeLocationInDisplay)
             {
-                html.Append("<p class=\"jobLocation\">Location: " + location.getLocationText(langToRenderFor) + "</p>");
+                html.Append("<p class=\"jobLocation\">" + getLocationText(langToRenderFor) + ": " + location.getLocationText(langToRenderFor) + "</p>");
             }
 
             html.Append("</div>" + Environment.NewLine);

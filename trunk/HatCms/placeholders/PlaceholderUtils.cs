@@ -9,7 +9,6 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
-using System.Reflection;
 
 using Hatfield.Web.Portal;
 
@@ -17,86 +16,15 @@ namespace HatCMS.Placeholders
 {
     public class PlaceholderUtils
     {
-        /// <summary>
-        /// the assemblies are staticly cached so that they are held as long as the assemblies are
-        /// </summary>
-        private static Dictionary<string, Assembly> assemblyCache = new Dictionary<string, Assembly>();
-        
-        /// <summary>
-        /// Invokes a method on a placeholder. The placeholder's assembly must be in the bin directory to be found, and must
-        /// inherit from the <see cref="BaseCmsPlaceholder"/> type.
-        /// </summary>
-        /// <param name="PlaceholderType"></param>
-        /// <param name="MethodName"></param>
-        /// <param name="MethodParams"></param>
-        /// <returns></returns>
         public static object InvokePlaceholderFunction(string PlaceholderType, string MethodName, object[] MethodParams)
         {
-            // -- get a list of assemblies to search through
-            List<Assembly> assembliesToSearch = new List<Assembly>();
-            
-            // -- if the placeholderType was previously found in a particular assembly, get that assembly from the cache
-            string cacheKey = PlaceholderType.ToLower();
-            if (assemblyCache.ContainsKey(cacheKey))
-            {
-                assembliesToSearch.Add(assemblyCache[cacheKey]);
-            }
-            else
-            {
-                Assembly exAssembly = Assembly.GetExecutingAssembly();
-                Assembly callAssembly = Assembly.GetCallingAssembly();
-                Assembly entryAssemly = Assembly.GetEntryAssembly();
-                
-                assembliesToSearch.Add(exAssembly);
-                if (callAssembly != null && callAssembly.FullName != exAssembly.FullName)
-                    assembliesToSearch.Add(callAssembly);
+            System.Reflection.Assembly exAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+            string AssemblyFileNameOnDisk = exAssembly.Location;
+            // invoke the "getPlaceholderValue" method
+            object ret = Hatfield.Web.Portal.ExecuteDynamicCode.InvokeMethod(AssemblyFileNameOnDisk, PlaceholderType, MethodName, MethodParams);
 
-                if (entryAssemly != null && entryAssemly.FullName != exAssembly.FullName && exAssembly.FullName != callAssembly.FullName)
-                    assembliesToSearch.Add(entryAssemly);
-
-                assembliesToSearch.AddRange(AppDomain.CurrentDomain.GetAssemblies());
-            }
-            
-            // -- go through each assembly looking for the specified type
-            foreach(Assembly assembly in assembliesToSearch)
-            {
-                // Walk through each type in the assembly looking for our class
-                foreach (Type type in assembly.GetTypes())
-                {
-                    if (type.IsClass == true && 
-                        type.BaseType != null && type.BaseType.FullName == typeof(BaseCmsPlaceholder).FullName && 
-                        type.FullName.ToLower().EndsWith("." + PlaceholderType.ToLower()))
-                    {
-                        // -- cache the found assembly for next time around
-                        assemblyCache[cacheKey] = assembly;
-
-                        foreach (MethodInfo method in type.GetMethods())
-                        {
-                            if (String.Compare(method.Name, MethodName) == 0)
-                            {
-                                // create an instance of the object
-                                object ClassObj = Activator.CreateInstance(type);
-
-                                // Dynamically Invoke the method
-                                object Result = type.InvokeMember(MethodName,
-                                    BindingFlags.Default | BindingFlags.InvokeMethod,
-                                    null,
-                                    ClassObj,
-                                    MethodParams);
-                                return (Result);
-                            }
-                        }
-
-                        throw new Exception("Could not invoke method " + MethodName + " in placeholder " + PlaceholderType + " - the method could not be found");
-
-                    } // if
-                } // foreach type
-            } // foreach
-
-
-            throw new Exception("Could not invoke method " + MethodName + " in placeholder " + PlaceholderType + " - the placeholder could not be found");
+            return ret;
         }
-        
 
         /// <summary>
         /// returns string.empty on error, or when there's nothing to display

@@ -809,73 +809,26 @@ namespace HatCMS.Placeholders
                 html.Append("<p><font color=\"green\">" + _userMessage + "</font></p>");
             }
 
-            if (fileItems.Length < 1)
+            bool displayEmptyMsg = PlaceholderUtils.getParameterValue("emptymessage", true, paramList);
+            bool compactMode = PlaceholderUtils.getParameterValue("compact", false, paramList);
+            if (fileItems.Length < 1 && displayEmptyMsg == true)
             {
                 html.Append("<em>" + getNoFilesText(langToRenderFor) + "</em>");
                 html.Append("<!-- pageId:" + page.ID + " Identifier:" + identifier + "; lang: " + langToRenderFor.shortCode + " -->");
             }
+            else if (fileItems.Length < 1)
+            {
+                // nothing to output if displayEmptyMsg == false
+                html.Append("<!-- pageId:" + page.ID + " Identifier:" + identifier + "; lang: " + langToRenderFor.shortCode + " -->");
+            }
             else
             {
-                html.Append("<!-- "+fileItems.Length.ToString()+" to output -->");
+                html.Append("<!-- " + fileItems.Length.ToString() + " to output -->");
 
-                html.Append(getPagerOutput(data, fileItems, page, langToRenderFor));
-                html.Append("<table width=\"100%\" class=\"PageFilesSummaryTable\">");
-                html.Append("<tr align=\"left\">");
-                html.Append("<th class=\"PageFile_Icon\"></th>"); // icon
-                html.Append("<th class=\"PageFile_Name\"><a href=\"" + getSummaryViewSortedTableUrl(page, data, PageFilesPlaceholderData.SortColumn.Filename, 1) + "\">" + getNameText(langToRenderFor) + "</a></th>");
-                html.Append("<th class=\"PageFile_Size\"><a href=\"" + getSummaryViewSortedTableUrl(page, data, PageFilesPlaceholderData.SortColumn.FileSize, 1) + "\">" + getSizeText(langToRenderFor) + "</a></th>");
-                html.Append("<th class=\"PageFile_Type\">" + getTypeText(langToRenderFor) + "</th>");
-                html.Append("<th class=\"PageFile_PostedDate\"><a href=\"" + getSummaryViewSortedTableUrl(page, data, PageFilesPlaceholderData.SortColumn.DateLastModified, 1) + "\">" + getPostedText(langToRenderFor) + "</a></th>");
-                html.Append("</tr>");
-
-                int startAt = PageUtils.getFromForm("fileStart", 0);
-                int endAt = Math.Min(startAt + data.numFilesToShowPerPage, fileItems.Length);
-                if (data.numFilesToShowPerPage < 1)
-                    endAt = fileItems.Length;
-
-                html.Append("<!-- file output: " + startAt.ToString() + " - " + endAt.ToString() + " -->"+Environment.NewLine);
-
-                for (int i = startAt; i < endAt; i++)
-                {
-                    if (endAt <= 0)
-                        break;
-
-
-                    PageFilesItemData item = fileItems[i];
-                    string iconUrl = getSmallIconUrl(item);
-                    string fileDetailsUrl = getFileDetailsUrl(data, item, page, identifier, langToRenderFor);
-                    string fileTypeDescription = getFileTypeName(System.IO.Path.GetExtension(item.Filename));
-
-                    string name = item.Title;
-                    if (name.Trim() == "")
-                        name = item.Filename;
-
-                    if (CmsContext.currentUserIsSuperAdmin)
-                    {
-                        string fnOnDisk = item.getFilenameOnDisk(page, identifier, langToRenderFor);
-                        if (!System.IO.File.Exists(fnOnDisk))
-                        {
-                            name += " <br><span style=\"color: red\">file can not be downloaded (it doesn't exist on the server)!</span>";
-                        }
-                    }
-
-                    html.Append("<td class=\"PageFile_Icon\"><img src=\"" + iconUrl + "\" width=\"16\" height=\"16\"></td>");
-                    html.Append("<td class=\"PageFile_Name\"><a href=\"" + fileDetailsUrl + "\">" + name + "</a></td>");
-                    html.Append("<td class=\"PageFile_Size\">" + StringUtils.formatFileSize(item.FileSize) + "</td>");
-                    html.Append("<td class=\"PageFile_Type\">" + fileTypeDescription + "</td>");
-                    html.Append("<td class=\"PageFile_PostedDate\">" + item.lastModified.ToString("MMM d yyyy") + "</td>");
-                    html.Append("</tr>");
-                    if (item.Abstract.Trim() != "")
-                    {
-                        html.Append("<tr>");
-                        html.Append("<td class=\"PageFile_Icon\"></td>"); // icon
-                        html.Append("<td class=\"PageFile_Abstract\" colspan=\"4\"><font size=\"-1\"><strong>Abstract:</strong> <em>" + item.Abstract + "</em></font></td>");
-                        html.Append("</tr>");
-                    }
-                } // foreach
-
-                html.Append("</table>");
-                html.Append(getPagerOutput(data, fileItems, page, langToRenderFor));
+                if (compactMode == false)
+                    html.Append(displayFullMode(data, fileItems, page, identifier, langToRenderFor));
+                else
+                    html.Append(displayCompactMode(data, fileItems, page, identifier, langToRenderFor));
             }
 
             if (currentUserCanUpload(data))
@@ -937,6 +890,107 @@ namespace HatCMS.Placeholders
             writer.Write(html.ToString());
         } // RenderViewSummary
 
+        protected string displayFullMode(PageFilesPlaceholderData data, PageFilesItemData[] fileItems, CmsPage page, int identifier, CmsLanguage langToRenderFor)
+        {
+            StringBuilder html = new StringBuilder();
+            html.Append(getPagerOutput(data, fileItems, page, langToRenderFor));
+            html.Append("<table width=\"100%\" class=\"PageFilesSummaryTable\">");
+            html.Append("<tr align=\"left\">");
+            html.Append("<th class=\"PageFile_Icon\"></th>"); // icon
+            html.Append("<th class=\"PageFile_Name\"><a href=\"" + getSummaryViewSortedTableUrl(page, data, PageFilesPlaceholderData.SortColumn.Filename, 1) + "\">" + getNameText(langToRenderFor) + "</a></th>");
+            html.Append("<th class=\"PageFile_Size\"><a href=\"" + getSummaryViewSortedTableUrl(page, data, PageFilesPlaceholderData.SortColumn.FileSize, 1) + "\">" + getSizeText(langToRenderFor) + "</a></th>");
+            html.Append("<th class=\"PageFile_Type\">" + getTypeText(langToRenderFor) + "</th>");
+            html.Append("<th class=\"PageFile_PostedDate\"><a href=\"" + getSummaryViewSortedTableUrl(page, data, PageFilesPlaceholderData.SortColumn.DateLastModified, 1) + "\">" + getPostedText(langToRenderFor) + "</a></th>");
+            html.Append("</tr>");
+
+            int startAt = PageUtils.getFromForm("fileStart", 0);
+            int endAt = Math.Min(startAt + data.numFilesToShowPerPage, fileItems.Length);
+            if (data.numFilesToShowPerPage < 1)
+                endAt = fileItems.Length;
+
+            html.Append("<!-- file output: " + startAt.ToString() + " - " + endAt.ToString() + " -->" + Environment.NewLine);
+
+            for (int i = startAt; i < endAt; i++)
+            {
+                if (endAt <= 0)
+                    break;
+
+
+                PageFilesItemData item = fileItems[i];
+                string iconUrl = getSmallIconUrl(item);
+                string fileDetailsUrl = getFileDetailsUrl(data, item, page, identifier, langToRenderFor);
+                string fileTypeDescription = getFileTypeName(System.IO.Path.GetExtension(item.Filename));
+
+                string name = item.Title;
+                if (name.Trim() == "")
+                    name = item.Filename;
+
+                if (CmsContext.currentUserIsSuperAdmin)
+                {
+                    string fnOnDisk = item.getFilenameOnDisk(page, identifier, langToRenderFor);
+                    if (!System.IO.File.Exists(fnOnDisk))
+                    {
+                        name += " <br><span style=\"color: red\">file can not be downloaded (it doesn't exist on the server)!</span>";
+                    }
+                }
+
+                html.Append("<td class=\"PageFile_Icon\"><img src=\"" + iconUrl + "\" width=\"16\" height=\"16\"></td>");
+                html.Append("<td class=\"PageFile_Name\"><a href=\"" + fileDetailsUrl + "\">" + name + "</a></td>");
+                html.Append("<td class=\"PageFile_Size\">" + StringUtils.formatFileSize(item.FileSize) + "</td>");
+                html.Append("<td class=\"PageFile_Type\">" + fileTypeDescription + "</td>");
+                html.Append("<td class=\"PageFile_PostedDate\">" + item.lastModified.ToString("MMM d yyyy") + "</td>");
+                html.Append("</tr>");
+                if (item.Abstract.Trim() != "")
+                {
+                    html.Append("<tr>");
+                    html.Append("<td class=\"PageFile_Icon\"></td>"); // icon
+                    html.Append("<td class=\"PageFile_Abstract\" colspan=\"4\"><font size=\"-1\"><strong>Abstract:</strong> <em>" + item.Abstract + "</em></font></td>");
+                    html.Append("</tr>");
+                }
+            } // foreach
+
+            html.Append("</table>");
+            html.Append(getPagerOutput(data, fileItems, page, langToRenderFor));
+            return html.ToString();
+        }
+
+        protected string displayCompactMode(PageFilesPlaceholderData data, PageFilesItemData[] fileItems, CmsPage page, int identifier, CmsLanguage langToRenderFor)
+        {
+            StringBuilder html = new StringBuilder();
+            html.Append("<table class=\"PageFilesSummaryTable\" cellspacing=\"5\">");
+
+            int startAt = PageUtils.getFromForm("fileStart", 0);
+            html.Append("<!-- file output: " + startAt.ToString() + " - " + fileItems.Length.ToString() + " -->" + Environment.NewLine);
+
+            for (int i = startAt; i < fileItems.Length; i++)
+            {
+                PageFilesItemData item = fileItems[i];
+                string iconUrl = getSmallIconUrl(item);
+                string fileDetailsUrl = getFileDetailsUrl(data, item, page, identifier, langToRenderFor);
+                string fileTypeDescription = getFileTypeName(System.IO.Path.GetExtension(item.Filename));
+
+                string name = item.Title;
+                if (name.Trim() == "")
+                    name = item.Filename;
+
+                if (CmsContext.currentUserIsSuperAdmin)
+                {
+                    string fnOnDisk = item.getFilenameOnDisk(page, identifier, langToRenderFor);
+                    if (!System.IO.File.Exists(fnOnDisk))
+                    {
+                        name += " <br/ ><span style=\"font-size: smaller; color: red\">file can not be downloaded (it doesn't exist on the server)!</span>";
+                    }
+                }
+
+                html.Append("<td class=\"PageFile_Icon\"><img src=\"" + iconUrl + "\" width=\"16\" height=\"16\"></td>");
+                html.Append("<td class=\"PageFile_Name\"><a href=\"" + fileDetailsUrl + "\">" + name + "</a></td>");
+                html.Append("<td class=\"PageFile_Size\">" + StringUtils.formatFileSize(item.FileSize) + "</td>");
+                html.Append("</tr>");
+            }
+
+            html.Append("</table>");
+            return html.ToString();
+        }
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {

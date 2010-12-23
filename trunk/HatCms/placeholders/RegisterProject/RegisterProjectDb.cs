@@ -10,7 +10,6 @@ using System.Web.UI.HtmlControls;
 using HatCMS.Placeholders;
 using System.Text;
 using System.Collections.Generic;
-using hatCommon;
 
 namespace HatCMS.placeholders.RegisterProject
 {
