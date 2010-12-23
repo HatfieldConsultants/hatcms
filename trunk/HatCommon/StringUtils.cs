@@ -38,17 +38,19 @@ namespace Hatfield.Web.Portal
             return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(s.ToLower());
         }
 
+        /// <summary>
+        /// Converts a string array full of integers into an integer array.
+        /// </summary>
+        /// <param name="stringArray"></param>
+        /// <returns></returns>
         public static int[] ToIntArray(string[] stringArray)
-        {
+        {            
             List<int> ret = new List<int>();
             foreach (string s in stringArray)
             {
-                try
-                {
-                    ret.Add(Convert.ToInt32(s));
-                }
-                catch
-                { }
+                int i = Int32.MinValue;
+                if (Int32.TryParse(s, out i))
+                    ret.Add(i);
             } // foreach
             return ret.ToArray();
         }
@@ -161,6 +163,8 @@ namespace Hatfield.Web.Portal
             return String.Join(seperator, r);
         } // JoinNonBlanks
 
+       
+
         /// <summary>
         /// the same as String.Join(), but the last seperator can be different.
         /// Useful for getting outputs like "1, 2 and 3".
@@ -181,6 +185,23 @@ namespace Hatfield.Web.Portal
                     ret.Append(mainSeperator);
             }
             return ret.ToString();
+        }
+
+        /// <summary>
+        /// the same as String.Join(), but the last seperator can be different.
+        /// Useful for getting outputs like "1, 2 and 3".
+        /// </summary>
+        /// <param name="mainSeperator"></param>
+        /// <param name="lastSeperator"></param>
+        /// <param name="items"></param>
+        /// <returns></returns>
+        public static string Join(string mainSeperator, string lastSeperator, int[] items)
+        {
+            List<string> arr = new List<string>();
+            foreach (int i in items)
+                arr.Add(i.ToString());
+
+            return Join(mainSeperator, lastSeperator, arr.ToArray());
         }
 
         /// <summary>

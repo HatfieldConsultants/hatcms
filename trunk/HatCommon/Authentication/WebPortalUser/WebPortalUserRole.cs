@@ -9,6 +9,8 @@ namespace Hatfield.Web.Portal
     /// </summary>
     public class WebPortalUserRole
     {
+        public static int DUMMY_PUBLIC_ROLE_ID = -1;
+
         public int RoleID;
         public string Name;
         public string Description;
@@ -24,6 +26,11 @@ namespace Hatfield.Web.Portal
             RoleID = roleID;
             Name = name;
             Description = description;
+        }
+
+        public static WebPortalUserRole dummyPublicUserRole
+        {
+            get { return new WebPortalUserRole(DUMMY_PUBLIC_ROLE_ID, "Public", "Public"); }
         }
 
         public bool SaveToDatabase()

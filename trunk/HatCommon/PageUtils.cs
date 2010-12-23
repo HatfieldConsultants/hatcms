@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Collections.Specialized;
 using System.Collections;
 using System.Text.RegularExpressions;
-using hatCommon;
 
 namespace Hatfield.Web.Portal
 {
@@ -784,7 +783,7 @@ namespace Hatfield.Web.Portal
 			return mime;
 		}
 
-		public static string getHiddenInputHtml(string FormName, string id, string val)
+        public static string getHiddenInputHtml(string FormName, string id, string val)
 		{
 			string html = "<input type=\"hidden\" name=\""+FormName+"\" value=\""+val+"\" id=\""+id+"\" />";
 			return html;
@@ -870,29 +869,38 @@ namespace Hatfield.Web.Portal
 
             return sb.ToString();
         }
-        
+
         public static string getCheckboxHtml(string displayText, string FormName, string id, string val, bool check)
 		{
-			string html = "";
-			html = html + "<input type=\"checkbox\" id=\""+id+"\" name=\""+FormName+"\" value=\""+val+"\" ";
-			if (check)
-				html = html + "checked ";
-			html = html +" />";
-			html = html + "<label for=\""+id+"\">"+displayText+"</label>";
-			return html;
-		}
+            return getCheckboxHtml(displayText, FormName, id, val, check, "");
+        }
 
-		public static string getCheckboxHtml(string displayText, string FormName, string id, string val, bool check, string onClick)
+        public static string getCheckboxHtml(string displayText, string FormName, string id, string val, bool check, string onClick)
+        {
+            return getCheckboxHtml(displayText, FormName, id, val, check, "", false);
+        }
+
+        public static string getCheckboxHtml(string displayText, string FormName, string id, string val, bool check, string onClick, bool disabled)
+        {
+            return getCheckboxHtml(displayText, FormName, id, val, check, onClick, disabled, "");
+        }
+
+        public static string getCheckboxHtml(string displayText, string FormName, string id, string val, bool check, string onClick, bool disabled, string onkeydown)
 		{
-			string html = "";
-			html = html + "<input type=\"checkbox\" id=\""+id+"\" name=\""+FormName+"\" value=\""+val+"\" onClick=\""+onClick+"\" ";
+            StringBuilder html = new StringBuilder("<input type=\"checkbox\" id=\"" + id + "\" name=\"" + FormName + "\" value=\"" + val + "\" ");
 			if (check)
-				html = html + "checked ";
-			html = html +" />";
-			html = html + "<label for=\""+id+"\">"+displayText+"</label>";
-			return html;
+				html.Append(" checked=\"checked\"");
+            if (disabled)
+                html.Append(" disabled=\"disabled\"");
+            if (onClick != "")
+                html.Append(" onClick=\""+onClick+"\"");
+            if (onkeydown != "")
+                html.Append(" onkeydown=\"" + onkeydown + "\"");
+            html.Append(" />");
+            if (displayText != "")
+                html.Append("<label for=\"" + id + "\">" + displayText + "</label>");
+			return html.ToString();
 		}
-
 
         public static string getRadioButtonHtml(string displayText, string FormName, string id, string val, bool check)
         {

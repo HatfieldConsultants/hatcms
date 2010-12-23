@@ -45,8 +45,10 @@
       <HintPath>..\hatWebPortal\Data\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -64,10 +66,13 @@
     <Compile Include="Data\MySqlDbObject.cs" />
     <Compile Include="Data\OutputDataSetToExcel.cs" />
     <Compile Include="FileUtils.cs" />
+    <Compile Include="Html\PageNumberAnchor.cs" />
+    <Compile Include="Html\PageNumberAnchorUtils.cs" />
     <Compile Include="Imaging\BaseShowThumbnailPage2.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Imaging\BaseShowThumbnailPageParameters.cs" />
+    <Compile Include="Imaging\IconUtils.cs" />
     <Compile Include="Imaging\ImageDiskCache.cs" />
     <Compile Include="Imaging\Thumbnail2.cs" />
     <Compile Include="JavascriptEvent.cs" />
@@ -83,6 +88,8 @@
     <Compile Include="metadata\EXIF\ExifHash.cs" />
     <Compile Include="metadata\MetaData.cs" />
     <Compile Include="Net\Mail.cs" />
+    <Compile Include="Net\NetworkDrive.cs" />
+    <Compile Include="Net\UserImpersonation.cs" />
     <Compile Include="PageHelpers\PerRequestCache.cs" />
     <Compile Include="PageUtils.cs" />
     <Compile Include="PathUtils.cs" />

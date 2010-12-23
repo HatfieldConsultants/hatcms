@@ -299,7 +299,7 @@ namespace Hatfield.Web.Portal.Data
             DataSet dataSet = new DataSet();
 
 #if DEBUG
-            
+            /*
             System.Diagnostics.StackTrace st = new System.Diagnostics.StackTrace();
 
             string callingFunctionName = "";
@@ -316,7 +316,7 @@ namespace Hatfield.Web.Portal.Data
             line += "---" + Environment.NewLine;
             
             System.IO.File.AppendAllText("c:\\temp\\querylog.txt", line);
-            
+            */
 #endif
 
             try
