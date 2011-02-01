@@ -43,7 +43,7 @@ namespace HatCMS.controls
 
 			
 			// -- logoff action
-			if (action.ToLower().Trim() == "logoff")
+			if (CmsContext.currentUserIsLoggedIn && action.ToLower().Trim() == "logoff")
 			{
 				WebPortalAuthentication.SignOut();
                 CmsContext.setEditModeAndRedirect(CmsEditMode.View, targetPage);

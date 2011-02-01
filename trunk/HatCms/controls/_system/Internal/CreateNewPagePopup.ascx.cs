@@ -73,9 +73,9 @@ namespace HatCMS.controls
             string name = PageUtils.getFromForm("_name", ""); name = name.Trim();
             string title = PageUtils.getFromForm("_title", ""); title = title.Trim();
             string menuTitle = PageUtils.getFromForm("_menuTitle", ""); menuTitle = menuTitle.Trim();
-			bool showInMenu = PageUtils.getFromForm("_showInMenu",true);
-			string template = PageUtils.getFromForm("_template","");
-			string parent = PageUtils.getFromForm("target","");
+            bool showInMenu = PageUtils.getFromForm("_showInMenu", options.ShowInMenu);
+            string template = PageUtils.getFromForm("_template", options.Template);
+            string parent = PageUtils.getFromForm("target", options.ParentPageId.ToString());
 			
             // -- process the action			
 			if (String.Compare(action,"createnew", true) == 0)

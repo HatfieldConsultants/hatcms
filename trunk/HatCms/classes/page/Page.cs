@@ -532,11 +532,11 @@ namespace HatCMS
                     return cachedUrl;
 
                 string url = "";
-                // -- for redirect pages, if the current user can not author, give the page's absolute page url
-                if (! CmsContext.currentUserCanAuthor && PageRedirect.isPageRedirectPage(this))
+                // -- for redirect pages, if the current user can NOT author, give the page's absolute page url
+                if (! CmsContext.currentUserCanAuthor && this.hasPlaceholder("PageRedirect"))
                 {
                     PageRedirectDb db = new PageRedirectDb();
-                    url = db.getPageRedirectUrl(this, 1, true);
+                    url = db.getPageRedirectUrl(this, 1, CmsContext.currentLanguage.shortCode, true);
 
                     url = PageRedirect.resolveRedirectUrl(url);
                     cachedUrl = url;

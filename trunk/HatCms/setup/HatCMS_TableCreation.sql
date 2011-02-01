@@ -230,17 +230,17 @@ CREATE TABLE  `pagenotfoundredirect` (
   KEY `pagenotfoundredirect_secondary` (`requestedUrl`(255),`Deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 CREATE TABLE  `pageredirect` (
   `PageRedirectId` int(11) NOT NULL AUTO_INCREMENT,
   `PageId` int(11) NOT NULL DEFAULT '0',
   `Identifier` int(11) NOT NULL DEFAULT '0',
+  `langShortCode` varchar(6) NOT NULL,
   `url` varchar(1024) NOT NULL,
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`PageRedirectId`),
   KEY `PageId` (`PageId`,`Identifier`),
   KEY `pageredirect_secondary` (`PageId`,`Identifier`,`Deleted`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE  `pagerevisiondata` (

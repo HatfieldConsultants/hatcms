@@ -1,6 +1,6 @@
 .TopMultiLevelDropDownMenu{
-font: bold 10px Verdana;
-background: #013357;
+font: bold 11px Verdana;
+background: #4e92bd;
 width: 100%;
 }
 
@@ -20,11 +20,10 @@ float: left;
 /*Top level menu link items style*/
 .TopMultiLevelDropDownMenu ul li a{
 display: block;
-background: #013357; /*background of tabs (default state)*/
+background: #4e92bd; /*background of tabs (default state)*/
 color: white;
 padding: 8px 10px;
 border-right: 1px solid #778;
-color: #2d2b2b;
 text-decoration: none;
 }
 
@@ -37,7 +36,7 @@ color: white;
 }
 
 .TopMultiLevelDropDownMenu ul li a:hover{
-background: black; /*tab link background during hover state*/
+background: #5d8741; /*tab link background during hover state*/
 color: white;
 }
 	
@@ -70,7 +69,7 @@ border-top-width: 0;
 border-bottom: 1px solid gray;
 }
 
-.TopMultiLevelDropDownMenuz ul li ul li a:hover{ /*sub menus hover style*/
+.TopMultiLevelDropDownMenu ul li ul li a:hover{ /*sub menus hover style*/
 background: #1a4a56;
 color: black;
 }

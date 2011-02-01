@@ -2,9 +2,9 @@
 ##StartPlaceholderRegion("MainContent")##
 						
 			##PlaceHolder(PageTitle id="1")## 
-			<hr />			
-			##PlaceHolder(HtmlContent id="1")##			
-			<hr />
+						
+			##PlaceHolder(HtmlContent id="1" width="690px" height="400px")##			
+			
 			##PlaceHolder(SingleImage id="1" width="500" height="-1")##														
 
 ##EndPlaceholderRegion("MainContent")##

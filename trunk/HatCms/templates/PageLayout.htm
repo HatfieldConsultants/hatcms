@@ -2,37 +2,23 @@
 <html>
 	<head>
 	##RenderControl(_system/headsection)##
-<link rel="stylesheet" type="text/css" href="/hatCms/css/_system/TopMultiLevelDropDownMenu.css" />
+
 
 	</head>
 	<body>
-    ##StartPageBody##		 
-		 ##RenderControl(_system/header)##
-		##RenderControl(_system/Navigation/TopMultiLevelDropDownMenu UseMenuTitles="true")##
+    ##StartPageBody##		        
+		##RenderControl(_system/header)##
+		##RenderControl(_system/Navigation/TopMultiLevelDropDownMenu UseMenuTitles="true" IncludeHomepage="true")##
 		<table width="100%" border="0">			
 			<tr>
 				<td valign="top" id="SideNav_td">
-					<p>
-						##RenderControl(_system/LanguageSwitcherLarge)##
-					</p>
-					<p>
-					    <div class="MostRecentNews">
-					        ##RenderControl(_system/MostRecentNewsItem id="1" newsIndex="0" summaryLength="115" template="<div class='MostRecentNewsText'><a href='{0}'>{1}</a></div>")##
-					    </div>
-					</p>
-				    <p>
-				        ##RenderControl(_system/SimpleCalendar calendarPage="28")##
-				    </p>
-				    
-				    <p>
-				        ##RenderControl(_system/UpcomingEvents count="3")##
-				    </p>
+					##RenderControl(_system/Navigation/CurrentThirdLevelListNavigation)##
 				</td>
-				<td valign="top" width="100%">
+				<td valign="top">
 					##RenderControl(_system/breadcrumb)##
-					##RenderControl(_system/LanguageSwitcher)##
-					<div style="WIDTH: 100%" id="content">
-						<h1>##RenderControl(_system/PageTitle)##</h1>
+					
+					<div id="content">
+						<h1 class="pageTitle">##RenderControl(_system/PageTitle)##</h1>
 						
 						##PlaceholderRegion("MainContent")##
 						 																													

@@ -20,19 +20,10 @@ namespace HatCMS.Placeholders
 		}
 
 
-
-        public static bool isPageRedirectPage(CmsPage page)
-        {
-            if (page.TemplateName.ToLower().EndsWith("Redirect".ToLower()))
-                return true;
-            else
-                return false;
-        }
-
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency("pageredirect"));
+            ret.Add(new CmsDatabaseTableDependency("pageredirect", new string[] { "PageRedirectId", "PageId", "Identifier", "langShortCode", "url", "Deleted" }));
             ret.Add(new CmsConfigItemDependency("RedirectPlaceholder_autoRedirectAfterSeconds"));
             return ret.ToArray();
         }        
@@ -78,7 +69,7 @@ namespace HatCMS.Placeholders
                 throw new NotImplementedException("Error: invalid TemplateEngine version");
 
 			
-			string pageRedirectUrl = db.getPageRedirectUrl(page,identifier, true);
+			string pageRedirectUrl = db.getPageRedirectUrl(page,identifier, langToRenderFor.shortCode, true);
 			// string Message = "";
 
 			// ------- CHECK THE FORM FOR ACTIONS
@@ -86,7 +77,7 @@ namespace HatCMS.Placeholders
 			if (action.Trim().ToLower() == "saveUrl".ToLower())
 			{
 				pageRedirectUrl = Hatfield.Web.Portal.PageUtils.getFromForm(formName+"_value","");				
-				if (! db.saveUpdatedPageRedirect(page,identifier, pageRedirectUrl))
+				if (! db.saveUpdatedPageRedirect(page,identifier, langToRenderFor.shortCode, pageRedirectUrl))
 				{
 					throw new Exception("Problem with database: could not set redirect url");
 				}
@@ -114,7 +105,7 @@ namespace HatCMS.Placeholders
 		private void RenderView(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
 		{
 			PageRedirectDb db = new PageRedirectDb();
-			string url = db.getPageRedirectUrl(page,identifier, true);
+			string url = db.getPageRedirectUrl(page,identifier, langToRenderFor.shortCode, true);
 
             url = resolveRedirectUrl(url);
 
@@ -138,7 +129,7 @@ namespace HatCMS.Placeholders
         private void RenderViewStatus(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
             PageRedirectDb db = new PageRedirectDb();
-            string url = db.getPageRedirectUrl(page, identifier, true);
+            string url = db.getPageRedirectUrl(page, identifier, langToRenderFor.shortCode, true);
             string resolvedUrl = resolveRedirectUrl(url);
 
             string width = "100%";

@@ -308,7 +308,7 @@ namespace HatCMS.setup
         {
             try
             {
-                HatCMS.Placeholders.PageRedirectDb redirectDB = new HatCMS.Placeholders.PageRedirectDb();
+                
 
                 // home page 
                 int HomePageId = InsertPage("", "Home Page", "Home Page", "", "HomePage", 0, 0, true);
@@ -317,8 +317,7 @@ namespace HatCMS.setup
                 int AdminPageId = InsertPage("_admin", "HatCMS Administration", "Admin", "", RedirectTemplateName, HomePageId, 0, false);
 
                 // -- redirect the admin page to the home page.
-                
-                redirectDB.createNewPageRedirect(CmsContext.getPageById(AdminPageId), 1, "~/");
+                InsertRedirectPlaceholder(CmsContext.getPageById(AdminPageId), 1, "~/");
 
                 //# /_admin/Login Page
                 InsertPage("Login", "Login", "Login", "", "_login", AdminPageId, 0, false);
@@ -329,7 +328,7 @@ namespace HatCMS.setup
                 int AdminActionsPageId = InsertPage("actions", "Admin Actions", "Admin Actions", "", RedirectTemplateName, AdminPageId, -1, false);
 
                 // -- redirect the admin actions page to the home page.
-                redirectDB.createNewPageRedirect(CmsContext.getPageById(AdminActionsPageId), 1, "~/");
+                InsertRedirectPlaceholder(CmsContext.getPageById(AdminActionsPageId), 1, "~/");
 
 
                 //# Toggle Edit Admin Action Page
@@ -374,7 +373,7 @@ namespace HatCMS.setup
                 int InternalPageId = InsertPage("_internal", "Internal CMS Functions", "Internal CMS Functions", "", RedirectTemplateName, HomePageId, -1, false);
 
                 // -- redirect the /_internal page to the home page.
-                redirectDB.createNewPageRedirect(CmsContext.getPageById(InternalPageId), 1, "~/");
+                InsertRedirectPlaceholder(CmsContext.getPageById(InternalPageId), 1, "~/");
 
                 //# Show Single Image page (/_internal/showImage)
                 InsertPage("showImage", "Show Image", "Show Image", "", "_SingleImageDisplay", InternalPageId, -1, false);
@@ -411,6 +410,16 @@ namespace HatCMS.setup
                 l_msg.Text = "Error: Standard Pages could not all be added. The state of the database is currently unknown. Please manually delete the database and start again.";
             }
         } // b_db_Click
+
+        private void InsertRedirectPlaceholder(CmsPage targetPage, int identifier, string targetUrl)
+        {
+            HatCMS.Placeholders.PageRedirectDb redirectDB = new HatCMS.Placeholders.PageRedirectDb();
+            foreach (CmsLanguage lang in CmsConfig.Languages)
+            {
+                redirectDB.createNewPageRedirect(targetPage, identifier, lang.shortCode, targetUrl);
+            }
+
+        }
 
 
 	}

@@ -115,9 +115,10 @@ namespace HatCMS.controls._system
             html.Append("<div class=\"" + OuterDivCSSClassName + "\" id=\"" + divId + "\">" + Environment.NewLine);
 
             listItemOutputCount = 0;
+            
             string s = recursiveRender(startRenderAtPage);
             html.Append(s);
-
+            
             html.Append("<br style=\"clear: left\" />");
             html.Append("</div>"+Environment.NewLine);
 
@@ -145,8 +146,12 @@ namespace HatCMS.controls._system
                 return "";
 
             bool pageOutput = false;
+            string ulCssClass = String.Format(ListGroupClassName, currentLevel.ToString(), listItemOutputCount.ToString());
+            if (ulCssClass != "")
+                ulCssClass = "class=\"" + ulCssClass + "\" ";
+            bool ulStartedAtPage = false;
 
-            if (!IncludeHomepage && page.Path == CmsContext.HomePage.Path)
+            if (!IncludeHomepage && page.ID == CmsContext.HomePage.ID)
             {
                 Console.Write("not including home page");
             }
@@ -163,6 +168,12 @@ namespace HatCMS.controls._system
                 if (title == "" || UsePageTitles)
                     title = page.Title;
 
+                if (page.ID == CmsContext.HomePage.ID)
+                {
+                    html.Append("<ul " + ulCssClass + ">" + Environment.NewLine);
+                    ulStartedAtPage = true;
+                }
+
                 html.Append("<li" + CSSClass + " id=\"" + listItemID + "\">");
                 html.Append("<a" + CSSClass + " href=\"" + page.Url + "\">");
                 html.Append(title);
@@ -176,21 +187,23 @@ namespace HatCMS.controls._system
             bool atLeastOne = atLeastOneToShow(page.ChildPages);
             if (page.ChildPages.Length > 0 && atLeastOne == true)
             {
-                string ulCssClass = String.Format(ListGroupClassName, currentLevel.ToString(), listItemOutputCount.ToString());
-                if (ulCssClass != "")
-                    ulCssClass = "class=\"" + ulCssClass + "\" ";
-                html.Append("<ul " + ulCssClass + ">" + Environment.NewLine);
+                if (!ulStartedAtPage)
+                    html.Append("<ul " + ulCssClass + ">" + Environment.NewLine);
                 foreach (CmsPage subPage in page.ChildPages)
                 {
                     html.Append(recursiveRender(subPage));
                 }
-                html.Append("</ul>" + Environment.NewLine);
+                if (!ulStartedAtPage)
+                    html.Append("</ul>" + Environment.NewLine);
             }
 
             if (pageOutput)
             {
                 html.Append("</li>" + Environment.NewLine);
             }
+
+            if (ulStartedAtPage)
+                html.Append("</ul>" + Environment.NewLine);
 
             return html.ToString();
         } // recursiveRender

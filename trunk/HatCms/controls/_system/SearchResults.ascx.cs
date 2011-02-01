@@ -91,7 +91,7 @@ namespace HatCMS.controls
                 CmsPage page = AllPages[pageId];
                 if (page.isVisibleForCurrentUser)
 				{
-                    if (!PageRedirect.isPageRedirectPage(page) && page.ShowInMenu) // do not index redirect pages.
+                    if (! page.hasPlaceholder("PageRedirect") && page.ShowInMenu) // do not index redirect pages.
                     {
                         // index the content of placeholders
                         fileInfos.AddRange(indexStandardPage(page));
