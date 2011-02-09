@@ -28,7 +28,7 @@ namespace HatCMS.controls._system
 			CmsPage currentPage = CmsContext.currentPage;
 			CmsPage homePage = CmsContext.HomePage;			
 
-			if (currentPage.Path == homePage.Path)
+			if (currentPage.ID == homePage.ID)
 			{				
 				writer.Write("<div id=\"SideNav\"></div>");
 				return;

@@ -50,9 +50,9 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("DeleteFileLibraryPath", "/_admin/actions/deleteFileLibrary"), CmsConfig.Languages));
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryAggregator"));
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryDetails"));
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryCategory"));
+            ret.Add(new CmsDatabaseTableDependency("FileLibraryAggregator", new string[] {"PageId","Identifier","LangCode","NumFilesOverview","NumFilesPerPage"}));
+            ret.Add(new CmsDatabaseTableDependency("FileLibraryDetails", new string[] {"PageId","Identifier","LangCode","FileName","CategoryId","Author","Description","LastModified","CreatedBy","EventPageId"}));
+            ret.Add(new CmsDatabaseTableDependency("FileLibraryCategory", new string[] { "CategoryId", "LangCode", "EventRequired", "CategoryName", "SortOrdinal" }));
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("FileLibrary.DetailsTemplateName"));
@@ -592,7 +592,7 @@ namespace HatCMS.Placeholders
             categoryList = db.fetchCategoryList(langToRenderFor);
             CmsPage aggregatorPage = page.ParentPage;
 
-            FileLibraryDetailsData fileData = db.fetchDetailsData(page, identifier, langToRenderFor, false);
+            FileLibraryDetailsData fileData = db.fetchDetailsData(page, identifier, langToRenderFor, true);
 
             html.Append(renderBackLinks(aggregatorPage, langToRenderFor, fileData));
             html.Append(checkEventAttached(page, identifier, langToRenderFor, fileData));

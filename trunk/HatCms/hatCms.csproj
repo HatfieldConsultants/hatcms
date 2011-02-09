@@ -73,13 +73,9 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ABCpdf, Version=6.1.1.5, Culture=neutral, PublicKeyToken=a7a0b3f5184f2169">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>_system\Dependencies\ABCpdf.DLL</HintPath>
-    </Reference>
     <Reference Include="MySql.Data, Version=5.0.8.1, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Jason\projects\hatWebPortal\Data\MySql.Data.dll</HintPath>
+      <HintPath>..\..\hatWebPortal\Data\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -623,9 +619,6 @@
     <Compile Include="xmlSiteMap.ashx.cs">
       <DependentUpon>xmlSiteMap.ashx</DependentUpon>
     </Compile>
-    <Compile Include="pdf.ashx.cs">
-      <DependentUpon>pdf.ashx</DependentUpon>
-    </Compile>
     <Compile Include="default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -807,6 +800,7 @@
     <Content Include="controls\_system\UserImageGalleryAggregator.ascx" />
     <Content Include="css\hatCMSPrint.css" />
     <Content Include="css\hatCMS.css" />
+    <Content Include="css\WaterEconomics.css" />
     <Content Include="css\_system\AdminTools.css" />
     <Content Include="css\_system\jquery-ui-lightness\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="css\_system\jquery-ui-lightness\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -1155,6 +1149,8 @@
     <Content Include="js\_system\Zone\ZoneManagement.js" />
     <Content Include="setup\default.aspx" />
     <Content Include="setup\HatCMS_TableCreation.sql" />
+    <Content Include="setup\HatPortal_TableCreation.txt" />
+    <Content Include="templates\HomePageLayout.htm" />
     <Content Include="templates\internal\InternalPopup.htm" />
     <Content Include="templates\PageLayout.htm" />
     <Content Include="templates\SingleImageDisplay.htm" />
@@ -1306,7 +1302,6 @@
       <DependentUpon>showThumb.aspx.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Content Include="pdf.ashx" />
     <Content Include="xmlSiteMap.ashx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -1314,15 +1309,15 @@
     </None>
     <Content Include="templates\JobPosting.template" />
     <None Include="templates\ContactUs.template" />
-    <None Include="templates\internal\_DeleteFileLibraryPopup.template" />
-    <None Include="templates\internal\_FileLibraryCategoryPopup.template" />
+    <Content Include="templates\internal\_DeleteFileLibraryPopup.template" />
+    <Content Include="templates\internal\_FileLibraryCategoryPopup.template" />
     <None Include="templates\EventCalendarAggregator.template" />
     <None Include="templates\EventCalendarDetails.template" />
     <None Include="templates\ProcurementAggregator.template" />
     <None Include="templates\ProcurementDetails.template" />
     <None Include="templates\internal\_JobLocationPopup.template" />
-    <None Include="templates\internal\_MenuVisibilityPopup.template" />
-    <None Include="templates\internal\_EventCalendarCategoryPopup.template" />
+    <Content Include="templates\internal\_MenuVisibilityPopup.template" />
+    <Content Include="templates\internal\_EventCalendarCategoryPopup.template" />
     <None Include="templates\NewsArticleDetails.template" />
     <None Include="templates\NewsArticleAggregator.template" />
     <None Include="templates\Publications.template" />
@@ -1406,9 +1401,9 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>1346</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost/hatcms</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

@@ -395,10 +395,10 @@ namespace HatCMS.setup
                 InsertPage("EventCalendarCategory", "Event Calendar Category", "Event Calendar Category", "", "internal/_EventCalendarCategoryPopup", AdminPageId, -1, false);
 
                 // edit File Library category page
-                InsertPage("FileLibraryCategory", "File Library Category", "File Library Category", "", "internal/_FileLibraryCategoryPopup.template", AdminPageId, -1, false);
+                InsertPage("FileLibraryCategory", "File Library Category", "File Library Category", "", "internal/_FileLibraryCategoryPopup", AdminPageId, -1, false);
 
                 // delete File Library page
-                InsertPage("deleteFileLibrary", "Delete File Library", "Delete File Library", "", "internal/_DeleteFileLibraryPopup.template", AdminPageId, -1, false);
+                InsertPage("deleteFileLibrary", "Delete File Library", "Delete File Library", "", "internal/_DeleteFileLibraryPopup", AdminPageId, -1, false);
 
 				// create the default zone and zone user role
                 InsertZone(HomePageId);

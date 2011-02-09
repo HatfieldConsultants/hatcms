@@ -506,10 +506,10 @@ CREATE TABLE `ZoneUserRole` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `FileLibraryCategory` (
+CREATE TABLE  `filelibrarycategory` (
   `CategoryId` int(11) NOT NULL,
   `LangCode` varchar(5) NOT NULL,
-  `DateRequired` int(1) NOT NULL DEFAULT '0',
+  `EventRequired` int(1) NOT NULL DEFAULT '0',
   `CategoryName` varchar(255) NOT NULL,
   `SortOrdinal` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`CategoryId`,`LangCode`)
@@ -527,20 +527,18 @@ CREATE TABLE `FileLibraryAggregator` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `FileLibraryDetails` (
+CREATE TABLE  `filelibrarydetails` (
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
   `LangCode` varchar(5) NOT NULL,
   `Filename` varchar(255) NOT NULL,
   `CategoryId` int(11) NOT NULL,
-  `FileDate` datetime NOT NULL,
   `Author` varchar(255) NOT NULL DEFAULT '',
   `Description` text NOT NULL,
   `LastModified` datetime NOT NULL,
   `CreatedBy` varchar(255) NOT NULL,
   `EventPageId` int(11) NOT NULL DEFAULT '-1',
   `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`),
-  KEY `CategoryId` (`CategoryId`)
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

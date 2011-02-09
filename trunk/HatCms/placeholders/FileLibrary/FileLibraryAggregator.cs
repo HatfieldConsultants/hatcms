@@ -58,9 +58,9 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("DeleteFileLibraryPath", "/_admin/actions/deleteFileLibrary"), CmsConfig.Languages));
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryAggregator"));
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryDetails"));
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryCategory"));
+            ret.Add(new CmsDatabaseTableDependency("FileLibraryAggregator", new string[] {"PageId","Identifier","LangCode","NumFilesOverview","NumFilesPerPage"}));
+            ret.Add(new CmsDatabaseTableDependency("FileLibraryDetails", new string[] { "PageId", "Identifier", "LangCode", "FileName", "CategoryId", "Author", "Description", "LastModified", "CreatedBy", "EventPageId" }));
+            ret.Add(new CmsDatabaseTableDependency("FileLibraryCategory", new string[] { "CategoryId", "LangCode", "EventRequired", "CategoryName", "SortOrdinal"}));
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("FileLibrary.DetailsTemplateName"));
@@ -267,7 +267,7 @@ namespace HatCMS.Placeholders
         /// <returns></returns>
         protected int getFileCategoryId()
         {
-            int fileCategoryId = PageUtils.getFromForm("catId", -1);
+            int fileCategoryId = PageUtils.getFromForm("fcatId", -1);
             bool valid = false;
             foreach (FileLibraryCategoryData c in categoryList)
             {
@@ -289,7 +289,7 @@ namespace HatCMS.Placeholders
             StringBuilder html = new StringBuilder();
             string htmlName = controlId + "categoryId_" + lang.shortCode;
             html.Append("<select name=\"" + htmlName + "\" id=\"" + htmlName + "\" class=\"" + htmlName + "\">" + EOL);
-            html.Append(FileLibraryCategoryData.getCategoryOptionTag(lang, categoryList, PageUtils.getFromForm("catId", -1)));
+            html.Append(FileLibraryCategoryData.getCategoryOptionTag(lang, categoryList, PageUtils.getFromForm("fcatId", -1)));
             html.Append("</select>" + EOL);
             html.Append(FileLibraryCategoryData.getEditPopupAnchor(lang, controlId + "categoryId", "(" + getEditText(lang) + ")") + EOL);
             return html.ToString();
@@ -303,18 +303,7 @@ namespace HatCMS.Placeholders
         /// <returns></returns>
         protected string getFileNameWithoutPath( string postedFileName )
         {
-            string targetFileName = postedFileName;
-            if (targetFileName.Contains("\\"))
-            {
-                string[] splitName = targetFileName.Split('\\');
-                targetFileName = splitName[splitName.Length - 1];
-            }
-            else if (targetFileName.Contains("/"))
-            {
-                string[] splitName = targetFileName.Split('/');
-                targetFileName = splitName[splitName.Length - 1];
-            }
-            return targetFileName;
+            return Path.GetFileName(postedFileName);
         }
 
         /// <summary>
@@ -529,9 +518,9 @@ namespace HatCMS.Placeholders
             {
                 html.Append("<li>" + EOL);
                 if (fileCategoryId == c.CategoryId)
-                    html.Append("<a href=\"?catId=" + c.CategoryId + "\" class=\"tabSelected\">" + c.CategoryName + "</a>" + EOL);
+                    html.Append("<a href=\"?fcatId=" + c.CategoryId + "\" class=\"tabSelected\">" + c.CategoryName + "</a>" + EOL);
                 else
-                    html.Append("<a href=\"?catId=" + c.CategoryId + "\">" + c.CategoryName + "</a>" + EOL);
+                    html.Append("<a href=\"?fcatId=" + c.CategoryId + "\">" + c.CategoryName + "</a>" + EOL);
                 html.Append("</li>" + EOL);
             }
 
@@ -642,7 +631,7 @@ namespace HatCMS.Placeholders
             int fileCategory = getFileCategoryId();
             string parmFileCategory = "";
             if (fileCategory != -1)
-                parmFileCategory = "catId=" + fileCategory.ToString() + "&";
+                parmFileCategory = "fcatId=" + fileCategory.ToString() + "&";
 
             string url = page.getUrl(lang) + "?" + parmFileCategory + "offset=";
             List<PageNumberAnchor> anchorList = new List<PageNumberAnchor>();
