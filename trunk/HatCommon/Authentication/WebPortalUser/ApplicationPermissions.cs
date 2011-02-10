@@ -126,7 +126,7 @@ namespace Hatfield.Web.Portal
         private class permissionsDB : Hatfield.Web.Portal.Data.MySqlDbObject
         {
             public permissionsDB()
-                : base(ConfigUtils.getConfigValue("ConnectionString", ""))
+                : base(ConfigUtils.getConfigValue("hatWebPortalConnectionString", ""))
             { }
 
             public bool Insert(PortalApplicationPermission item)

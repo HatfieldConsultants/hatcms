@@ -373,7 +373,7 @@ namespace HatCMS
             get
             {
                 string formVal = PageUtils.getFromForm(EditModeFormName, "");
-                if (currentUserCanAuthor && formVal == "1")
+                if (formVal == "1" && currentUserCanAuthor) // note: the currentUserCanAuthor potentially goes to the database
                 {                    
                     return CmsEditMode.Edit;
                 }

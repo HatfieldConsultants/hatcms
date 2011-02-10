@@ -787,28 +787,16 @@ namespace HatCMS
             if (this.ID < 0)
                 throw new Exception("this page could not be rendered because it has not been initialized from the database.");
 
+            // -- checks if the current user can read the current page. If not authorized, redirect to the Login page.
             bool canRead = this.Zone.canRead(CmsContext.currentWebPortalUser);
             if ( canRead == false && this.Path != CmsConfig.getConfigValue("LoginPath","/_admin/login"))
             {
                 NameValueCollection loginParams = new NameValueCollection();
                 loginParams.Add("target", this.ID.ToString());
                 CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath", "/_admin/login")), loginParams);
-            }
-
-            //-- check if this page requires the user to be logged on
-			//   if so, throw a NeedsAuthenticationException (which should redirect them to the login page in the catch method)
-            bool requireAnonLogin = CmsConfig.getConfigValue("RequireAnonLogin", false);
-			if (requireAnonLogin && !CmsContext.currentUserIsLoggedIn && this.Path != CmsConfig.getConfigValue("LoginPath","/_admin/login"))
-			{
-                NameValueCollection loginParams = new NameValueCollection();
-                loginParams.Add("target", this.ID.ToString());
-                CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath", "/_admin/login")), loginParams);
-                // -- note: do not throw a NeedsAuthenticationException; because CreateChildControls is called by the .Net framework,
-                //    it's not possible to trap this exception
-                // throw new NeedsAuthenticationException();
-			}			
-
+            }	
 			
+            // -- create all placeholders and controls based on the page's template.
 			TemplateEngine.CreateChildControls();
 
             // -- Run the page output filters

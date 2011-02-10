@@ -368,6 +368,10 @@ namespace HatCMS.setup
                 // /_admin/actions/changeTemplate
                 InsertPage("changeTemplate", "Change Page's Template", "Change Page's Template", "", "internal/_ChangePageTemplatePopup", AdminActionsPageId, -1, false);
 
+
+                // /_admin/actions/deleteFileLibrary
+                InsertPage("deleteFileLibrary", "Delete a file library", "Delete a file library", "", "internal/_DeleteFileLibraryPopup", AdminActionsPageId, -1, false);
+
                 // --------------------------------
                 // /_Internal Page 
                 int InternalPageId = InsertPage("_internal", "Internal CMS Functions", "Internal CMS Functions", "", RedirectTemplateName, HomePageId, -1, false);
@@ -380,7 +384,7 @@ namespace HatCMS.setup
 
 
                 //# Admin Tools page (/_admin/Audit)
-                InsertPage("Audit", "Show Image", "Admin Tools", "", "internal/_AuditPopup", AdminPageId, -1, false);
+                InsertPage("Audit", "Administration Tools", "Admin Tools", "", "internal/_AuditPopup", AdminPageId, -1, false);
 
                 //# view revisions page (/_admin/ViewRevisions)
                 InsertPage("ViewRevisions", "View Page Revisions", "View Page Revisions", "", "internal/_PageRevisionsPopup", AdminPageId, -1, false);

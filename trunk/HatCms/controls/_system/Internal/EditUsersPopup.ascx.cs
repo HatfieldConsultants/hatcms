@@ -39,8 +39,12 @@ namespace HatCMS.controls
             {
                 ret.Add(WebPortalUserRole.Fetch(authorUserRoleName));
             }
-            bool requireAnonLogin = CmsConfig.getConfigValue("RequireAnonLogin", false);
+            
             string nothing = Guid.NewGuid().ToString();
+            CmsZone homePageZone = (new CmsZoneDb()).fetchByPage(CmsContext.HomePage);
+            WebPortalUser dummyPublicUser = new WebPortalUser(-1, nothing, nothing, new WebPortalUserRole[] { WebPortalUserRole.dummyPublicUserRole });
+            bool requireAnonLogin = homePageZone.canRead(dummyPublicUser);            
+            
             string loginRole = CmsConfig.getConfigValue("LoginUserRole", nothing);
             if (requireAnonLogin && loginRole != nothing && String.Compare(loginRole, authorUserRoleName, true) != 0 && String.Compare(loginRole, adminUserRoleName, true) != 0)
             {

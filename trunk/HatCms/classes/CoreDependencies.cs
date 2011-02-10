@@ -55,7 +55,7 @@ namespace HatCMS
             ret.Add(new CmsConfigItemDependency("AdminUserRole"));
             ret.Add(new CmsConfigItemDependency("LoginUserRole"));
             ret.Add(new CmsConfigItemDependency("AuthorAccessUserRole"));
-            ret.Add(new CmsConfigItemDependency("RequireAnonLogin"));
+            ret.Add(new CmsConfigItemDependency("RequireAnonLogin", CmsDependency.ExistsMode.MustNotExist)); // deprecated 10 Feb 2011. Use the Zones system to manage anon logins
             ret.Add(new CmsConfigItemDependency("PathSpaceReplacementChar", CmsDependency.ExistsMode.MustNotExist)); // always set to "+".
             ret.Add(new CmsConfigItemDependency("RewriteEngineOn", CmsDependency.ExistsMode.MustNotExist)); // RewriteEngine is always on.
             ret.Add(new CmsConfigItemDependency("Languages"));

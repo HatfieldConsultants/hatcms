@@ -13,7 +13,8 @@ using Hatfield.Web.Portal;
 namespace HatCMS
 {
     /// <summary>
-    /// Entity object for `Zone`
+    /// A Zone defines a security region in the web site. A page can only be in one zone - there is no zone inheritance. 
+    /// If a page is not a zone-boundary, it inherits the zone of its parent page.
     /// </summary>
     public class CmsZone
     {
@@ -41,7 +42,7 @@ namespace HatCMS
         }
 
         /// <summary>
-        /// Check whether the current portal web can read this zone.
+        /// Checks whether a user has read access in this zone.
         /// </summary>
         /// <param name="u"></param>
         /// <returns></returns>
@@ -52,14 +53,17 @@ namespace HatCMS
 
             WebPortalUserRole[] roleArray = new WebPortalUserRole[] { WebPortalUserRole.dummyPublicUserRole };
             if (u != null)
+            {
+                u.AddUserRole(WebPortalUserRole.dummyPublicUserRole); // users are always part of the "public" user role.
                 roleArray = u.userRoles;
+            }
 
             CmsZoneUserRoleDb db = new CmsZoneUserRoleDb();
             return (db.fetchRoleMatchingCountForRead(this, roleArray) > 0);
         }
 
         /// <summary>
-        /// Check whether the current portal web can update this zone.
+        /// Checks whether a user has write access in this zone.
         /// </summary>
         /// <param name="u"></param>
         /// <returns></returns>
@@ -70,7 +74,10 @@ namespace HatCMS
 
             WebPortalUserRole[] roleArray = new WebPortalUserRole[] { WebPortalUserRole.dummyPublicUserRole };
             if (u != null)
+            {
+                u.AddUserRole(WebPortalUserRole.dummyPublicUserRole); // users are always part of the "public" user role.
                 roleArray = u.userRoles;
+            }
 
             CmsZoneUserRoleDb db = new CmsZoneUserRoleDb();
             return (db.fetchRoleMatchingCountForWrite(this, roleArray) > 0);
