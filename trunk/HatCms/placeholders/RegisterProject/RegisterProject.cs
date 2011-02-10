@@ -39,9 +39,9 @@ namespace HatCMS.placeholders.RegisterProject
             return ret.ToArray();
         }
 
-        public override bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return RevertToRevisionResult.NotImplemented;
         }
 
         protected void addHeaderEntry(CmsPage page)

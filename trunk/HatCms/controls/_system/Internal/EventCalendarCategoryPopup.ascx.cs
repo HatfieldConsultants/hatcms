@@ -25,7 +25,7 @@ namespace HatCMS.controls._system.Internal
         {
             CmsPage page = CmsContext.currentPage;
             addJavascript(CmsConfig.Languages, page);
-            page.HeadSection.AddJSOnReady("window.onload = updateOpener( window.name );");
+            page.HeadSection.AddJSOnReady("updateOpener( window.name );");
         }
 
         /// <summary>

@@ -95,7 +95,7 @@ namespace HatCMS.Placeholders
             return ret.ToArray();
         }
 
-        public override bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             SingleImageDb imageDb = new SingleImageDb();
             foreach (int identifier in identifiers)
@@ -103,9 +103,9 @@ namespace HatCMS.Placeholders
                 SingleImageData oldData = imageDb.getSingleImage(oldPage, identifier, language, false);
                 bool b = imageDb.saveUpdatedSingleImage(currentPage, identifier, language, oldData);
                 if (!b)
-                    return false;
+                    return RevertToRevisionResult.Failure;
             } // foreach
-            return true;
+            return RevertToRevisionResult.Success;
         }
                 
         

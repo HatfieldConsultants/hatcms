@@ -225,9 +225,9 @@ namespace HatCMS.Placeholders
             return ret.ToArray();
         }
 
-        public override bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
-            return true; // this placeholder doesn't implement revisions
+            return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }                
 
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)

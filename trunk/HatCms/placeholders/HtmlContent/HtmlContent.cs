@@ -101,7 +101,7 @@ namespace HatCMS.Placeholders
             return ret.ToArray();
         }        
 
-        public override bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             HtmlContentDb htmlDb = new HtmlContentDb();
             foreach (int identifier in identifiers)
@@ -109,10 +109,10 @@ namespace HatCMS.Placeholders
                 string oldHtml = htmlDb.getHtmlContent(oldPage, identifier, language, false);
                 bool b = htmlDb.saveUpdatedHtmlContent(currentPage, identifier, language, oldHtml);
                 if (!b)
-                    return false;
+                    return RevertToRevisionResult.Failure;
             } // foreach
 
-            return true;
+            return RevertToRevisionResult.Success;
         }
         		
 

@@ -215,12 +215,8 @@ namespace HatCMS.controls._system.Internal
         {
             StringBuilder html = new StringBuilder();
 
-            html.Append("<script type=\"text/javascript\">" + EOL);
-            html.Append("function go(url){" + EOL);
-            html.Append("opener.location.href = url;" + EOL);
-            html.Append("window.close();"+EOL);
-            html.Append("}" + EOL);
-            html.Append("</script>" + EOL);
+            CmsContext.currentPage.HeadSection.AddJSStatements("function go(url){opener.location.href = url; window.close(); }");
+            
 
             html.Append(formatNormalMsg("The Page has successfully been deleted."));
             html.Append("<p>" + EOL);

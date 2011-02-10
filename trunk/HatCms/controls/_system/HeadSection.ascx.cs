@@ -54,6 +54,7 @@ namespace HatCMS.controls
 
                 cssUrl = cssUrl.Replace("~", CmsContext.ApplicationPath);
                 html.Append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + cssUrl + "\" />" + Environment.NewLine);
+                
                 // -- note: do not use @import for CSS; The problem is if you use "@import" IE downloads the CSS later and progressive rendering is delayed. 
                 // --       http://developer.yahoo.net/blog/archives/2007/07/high_performanc_4.html
                 // html += "<style type=\"text/css\">@import url(" + cssUrl + ");</style>";
@@ -66,9 +67,10 @@ namespace HatCMS.controls
                 html.Append(Environment.NewLine);
                 html.Append("<meta name=\"description\" content=\"" + Server.HtmlEncode(description) + "\">");
                 html.Append(Environment.NewLine);
-            }                       
+            }
 
-            html.Append(getScriptForPrinterAndPdfVersion());
+            addScriptForPrinterAndPdfVersion();
+            
 
             return html.ToString();
         }
@@ -79,34 +81,33 @@ namespace HatCMS.controls
         /// - if print flag is 1, render the page as a printer-friendly version
         /// </summary>
         /// <returns></returns>
-        protected string getScriptForPrinterAndPdfVersion()
+        protected void addScriptForPrinterAndPdfVersion()
         {
             bool printerVer = CmsConfig.getConfigValue("PrinterAndPdfVer.printerVer", false);
             bool pdfVer = CmsConfig.getConfigValue("PrinterAndPdfVer.pdfVer", false);
             if (printerVer == false && pdfVer == false)
-                return "";
+                return;
 
-            StringBuilder html = new StringBuilder();
-            html.Append("<script type=\"text/javascript\" src=\"" + CmsContext.ApplicationPath + "js/_system/printerAndPdfVersion.js\"></script>" + EOL);
-            html.Append("<script type=\"text/javascript\">" + EOL);
-            html.Append("_printerVer = " + printerVer.ToString().ToLower() + ";" + EOL);
+            CmsPage currentPage = CmsContext.currentPage;
+
+            currentPage.HeadSection.AddJavascriptFile("js/_system/printerAndPdfVersion.js");
+            currentPage.HeadSection.AddJSStatements("_printerVer = " + printerVer.ToString().ToLower() + ";" + EOL);                                    
 
             if (PageUtils.getFromForm("print", 0) == 1)
             {
-                html.Append("_printerCss = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.printerCss", "").Replace("~", CmsContext.ApplicationPath) + "';" + EOL);
-                html.Append("window.onload = function() { renderAsPrintVersion( _printerVer, _printerCss ); }" + EOL);
+                currentPage.HeadSection.AddJSStatements("_printerCss = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.printerCss", "").Replace("~", CmsContext.ApplicationPath) + "';" + EOL);
+                currentPage.HeadSection.AddJSOnReady("renderAsPrintVersion( _printerVer, _printerCss );");
+                
             }
             else
             {
-                html.Append("_pdfVer = " + pdfVer.ToString().ToLower() + ";" + EOL);
-                html.Append("_placeAfterDom = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.placeAfterDom", "") + "';" + EOL);
-                html.Append("_printerIcon = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.printerIcon", "").Replace("~", CmsContext.ApplicationPath) + "';" + EOL);
-                html.Append("_pdfIcon = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.pdfIcon", "").Replace("~", CmsContext.ApplicationPath) + "';" + EOL);
-                html.Append("window.onload = function() { addPrinterAndPdfIcon( _printerVer, _printerIcon, _pdfVer, _pdfIcon, _placeAfterDom ); }" + EOL);
-            }
-
-            html.Append("</script>" + EOL);
-            return html.ToString();
+                currentPage.HeadSection.AddJSStatements("_pdfVer = " + pdfVer.ToString().ToLower() + ";" + EOL);
+                currentPage.HeadSection.AddJSStatements("_placeAfterDom = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.placeAfterDom", "") + "';" + EOL);
+                currentPage.HeadSection.AddJSStatements("_printerIcon = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.printerIcon", "").Replace("~", CmsContext.ApplicationPath) + "';" + EOL);
+                currentPage.HeadSection.AddJSStatements("_pdfIcon = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.pdfIcon", "").Replace("~", CmsContext.ApplicationPath) + "';" + EOL);
+                currentPage.HeadSection.AddJSOnReady("addPrinterAndPdfIcon( _printerVer, _printerIcon, _pdfVer, _pdfIcon, _placeAfterDom ); " + EOL);
+            }            
+            
         }
 
         protected override void Render(System.Web.UI.HtmlTextWriter writer)

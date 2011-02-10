@@ -421,14 +421,14 @@ CREATE TABLE `eventcalendardetails` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `EventCalendarCategory` (
-	`CategoryId` INT NOT NULL ,
-	`LangCode` VARCHAR( 2 ) NOT NULL ,
-	`ColorHex` VARCHAR( 7 ) NOT NULL ,
-	`Title` VARCHAR( 255 ) NOT NULL ,
-	`Descption` VARCHAR( 255 ) NOT NULL ,
-	`Deleted` INT NOT NULL ,
-PRIMARY KEY ( `CategoryId` , `LangCode` )
+CREATE TABLE  `eventcalendarcategory` (
+  `CategoryId` int(11) NOT NULL,
+  `LangCode` varchar(2) NOT NULL,
+  `ColorHex` varchar(7) NOT NULL,
+  `Title` varchar(255) NOT NULL,
+  `Description` text NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`CategoryId`,`LangCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -446,7 +446,7 @@ CREATE TABLE `RegisterProject` (
   `CreatedDateTime` datetime DEFAULT NULL,
   `ClientIP` varchar(255) NOT NULL,
   PRIMARY KEY (`ProjectId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE  `userimagegallery` (

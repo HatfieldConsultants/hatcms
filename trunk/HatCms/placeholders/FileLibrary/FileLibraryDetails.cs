@@ -15,27 +15,7 @@ namespace HatCMS.Placeholders
         protected string EOL = Environment.NewLine;
         protected FileLibraryDb db = new FileLibraryDb();
         protected CmsPageDb pageDb = new CmsPageDb();
-        protected List<FileLibraryCategoryData> categoryList;
-
-        /// <summary>
-        /// Customized a delete link on the Edit Menu (Called by BaseCmsPlaceholder)
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="lang"></param>
-        /// <returns></returns>
-        public static string getEditMenuDeleteLink(CmsPage page, CmsLanguage lang)
-        {
-            NameValueCollection paramList = new NameValueCollection();
-            paramList.Add("target", page.ID.ToString());
-
-            string confirmText = "Do you really want to delete this file?";
-            int numPagesToDelete = page.getLinearizedPages().Keys.Count;
-            if (numPagesToDelete > 1)
-                confirmText = "Do you really want to delete this file and all " + (numPagesToDelete - 1) + " sub-pages?";
-
-            string deleteFilesUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("DeleteFileLibraryPath", "/_admin/actions/deleteFileLibrary"), paramList, lang);
-            return "<a href=\"#\" onclick=\"EditMenuConfirmModal('" + confirmText + "','" + deleteFilesUrl + "',300, 300);\"><strong>Delete</strong> this file</a>";
-        }
+        protected List<FileLibraryCategoryData> categoryList;        
 
         /// <summary>
         /// Get the dependencies for FileLibrary
@@ -86,10 +66,47 @@ namespace HatCMS.Placeholders
             return ret.ToArray();
         }
 
-        public override bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return RevertToRevisionResult.NotImplemented;
         }
+
+        public static string DeleteThisFileDetailsPageAction(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
+        {
+            NameValueCollection paramList = new NameValueCollection();
+            paramList.Add("target", pageToRenderFor.ID.ToString());
+
+            string confirmText = "Do you really want to delete this file?";
+            int numPagesToDelete = pageToRenderFor.getLinearizedPages().Keys.Count;
+            if (numPagesToDelete > 1)
+                confirmText = "Do you really want to delete this file and all " + (numPagesToDelete - 1) + " sub-pages?";
+
+            string deleteFilesUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("DeleteFileLibraryPath", "/_admin/actions/deleteFileLibrary"), paramList, langToRenderFor);
+            return "<a href=\"#\" onclick=\"EditMenuConfirmModal('" + confirmText + "','" + deleteFilesUrl + "',300, 300);\"><strong>Delete</strong> this file</a>";
+
+        }
+
+        /// <summary>
+        /// Replaces the "Delete page" command with a custom one.
+        /// </summary>
+        /// <param name="pageToAddCommandTo"></param>
+        /// <param name="jobAggregatorPage"></param>
+        public static void UpdateFileLibraryCommandsInEditMenu(CmsPage pageToAddCommandTo, CmsPage fileLibraryAggregatorPage)
+        {
+            // -- only add the command if the user can author
+            if (!CmsContext.currentUserCanAuthor)
+                return;
+
+            // get the existing command
+            CmsPageEditMenuAction deletePageAction = pageToAddCommandTo.EditMenu.getActionItem(CmsEditMenuActionItem.DeleteThisPage);
+
+            if (deletePageAction == null)
+                return; // do not throw an exception (note: the home page does not have a deletepageaction)
+
+            deletePageAction.doRenderToString = DeleteThisFileDetailsPageAction;
+            deletePageAction.ActionPayload = fileLibraryAggregatorPage;
+        }
+
 
         /// <summary>
         /// Include the JS and CSS files.
@@ -587,6 +604,7 @@ namespace HatCMS.Placeholders
         /// <param name="paramList"></param>
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
+            UpdateFileLibraryCommandsInEditMenu(page, page);
             addCssAndScript(page);
             StringBuilder html = new StringBuilder();
             categoryList = db.fetchCategoryList(langToRenderFor);

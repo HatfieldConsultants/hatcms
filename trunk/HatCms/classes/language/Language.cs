@@ -95,7 +95,7 @@ namespace HatCMS
             {
                 return String.Compare(this.shortCode, (obj as CmsLanguage).shortCode, true);
             }
-            throw new Exception("can not compare AppLanguage object to another type.");
+            throw new Exception("can not compare CmsLanguage object to another type.");
         }
 
         #endregion

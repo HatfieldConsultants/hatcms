@@ -39,9 +39,9 @@ namespace HatCMS.placeholders.Calendar
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery/jquery-ui-timepicker-addon.min.js"));
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("EventCalendarAggregator"));
-            ret.Add(new CmsDatabaseTableDependency("EventCalendarDetails"));
-            ret.Add(new CmsDatabaseTableDependency("EventCalendarCategory"));
+            ret.Add(new CmsDatabaseTableDependency("EventCalendarAggregator", new string[] { "PageId", "Identifier", "LangCode", "ViewMode", "Deleted" }));
+            ret.Add(new CmsDatabaseTableDependency("EventCalendarDetails", new string[] { "PageId", "Identifier", "LangCode", "Description", "CategoryId", "StartDateTime", "EndDateTime", "CreatedBy", "Deleted" }));
+            ret.Add(new CmsDatabaseTableDependency("EventCalendarCategory", new string[] { "CategoryId", "LangCode", "ColorHex", "Title", "Description", "Deleted" }));
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("EventCalendar.DefaultEventStartHour"));
@@ -61,9 +61,9 @@ namespace HatCMS.placeholders.Calendar
             return ret.ToArray();
         }
 
-        public override bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
-            throw new Exception("The method or operation is not implemented.");
+            return RevertToRevisionResult.NotImplemented;
         }
 
         /// <summary>

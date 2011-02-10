@@ -81,9 +81,9 @@ namespace HatCMS.Placeholders
 
 
 
-        public override bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
-            return true;
+            return RevertToRevisionResult.NotImplemented;
         }        
 
         private bool AllowPostingToAllLocations

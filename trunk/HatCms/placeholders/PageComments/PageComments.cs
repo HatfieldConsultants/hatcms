@@ -47,9 +47,9 @@ namespace HatCMS.Placeholders
         }
 
 
-        public override bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
-            return true; // this placeholder doesn't implement revisions
+            return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
 		
 

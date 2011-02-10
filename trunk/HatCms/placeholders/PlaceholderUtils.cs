@@ -67,15 +67,15 @@ namespace HatCMS.Placeholders
 
         }
 
-        public static bool revertToRevision(string PlaceholderType, CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage phLanguage)
+        public static BaseCmsPlaceholder.RevertToRevisionResult revertToRevision(string PlaceholderType, CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage phLanguage)
         {
-            // public abstract bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, AppLanguage language);
+            // public abstract RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, AppLanguage language);
             object ret = InvokePlaceholderFunction(PlaceholderType, "revertToRevision", new object[] { oldPage, currentPage, identifiers, phLanguage });
 
-            if (ret is bool)
-                return (bool)ret;
+            if (ret is BaseCmsPlaceholder.RevertToRevisionResult)
+                return (BaseCmsPlaceholder.RevertToRevisionResult)ret;
 
-            return false;
+            return BaseCmsPlaceholder.RevertToRevisionResult.Failure;
 
         }
 

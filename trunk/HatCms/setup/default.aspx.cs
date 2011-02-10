@@ -358,9 +358,6 @@ namespace HatCMS.setup
                 // /_admin/actions/renamePage
                 InsertPage("renamePage", "Rename Page", "Rename Page", "", "internal/_RenamePagePopup", AdminActionsPageId, -1, false);
 
-                // /_admin/actions/deleteJob
-                InsertPage("deleteJob", "Delete a Job Posting", "Delete a Job Posting", "", "internal/_DeleteJobPopup", AdminActionsPageId, -1, false);
-
                 // /_admin/actions/killLock
                 InsertPage("killLock", "Kill Edit Page Lock", "Kill Edit Page Lock", "", "internal/_KillLockPopup", AdminActionsPageId, -1, false);
 

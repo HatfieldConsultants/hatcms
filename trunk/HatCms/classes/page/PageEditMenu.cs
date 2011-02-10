@@ -37,6 +37,7 @@ namespace HatCMS
         public int SortOrdinal;
         public delegate string RenderToString(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor);
         public RenderToString doRenderToString;
+        public object ActionPayload = null; // a place in memory to pass custom items to the doRenderToString function
 
         /// <summary>
         /// If this action is CreateNewPage, these options are used to help create that page.
@@ -169,24 +170,17 @@ namespace HatCMS
 
             public static string DeleteThisPage(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
             {
-                try // try to see if there is a specific "deletePage" defined in the placeholder
-                {
-                    string template = pageToRenderFor.TemplateName;
-                    return BaseCmsPlaceholder.invokeEditMenuMethod(template, "getEditMenuDeleteLink", new object[] { pageToRenderFor, langToRenderFor });
-                }
-                catch // if no, follow the default way
-                {
-                    NameValueCollection paramList = new NameValueCollection();
-                    paramList.Add("target", pageToRenderFor.ID.ToString());
+                NameValueCollection paramList = new NameValueCollection();
+                paramList.Add("target", pageToRenderFor.ID.ToString());
 
-                    string confirmText = "Do you really want to delete this page?";
-                    int numPagesToDelete = pageToRenderFor.getLinearizedPages().Keys.Count;
-                    if (numPagesToDelete > 1)
-                        confirmText = "Do you really want to delete this page and all " + (numPagesToDelete-1) + " sub-pages?";
+                string confirmText = "Do you really want to delete this page?";
+                int numPagesToDelete = pageToRenderFor.getLinearizedPages().Keys.Count;
+                if (numPagesToDelete > 1)
+                    confirmText = "Do you really want to delete this page and all " + (numPagesToDelete - 1) + " sub-pages?";
 
-                    string deletePageUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("DeletePagePath", "/_admin/actions/deletePage"), paramList, langToRenderFor);
-                    return "<a href=\"#\" onclick=\"EditMenuConfirmModal('" + confirmText + "','" + deletePageUrl + "',300, 300);\"><strong>Delete</strong> this page</a>";
-                }
+                string deletePageUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("DeletePagePath", "/_admin/actions/deletePage"), paramList, langToRenderFor);
+                return "<a href=\"#\" onclick=\"EditMenuConfirmModal('" + confirmText + "','" + deletePageUrl + "',300, 300);\"><strong>Delete</strong> this page</a>";
+
             }
 
             public static string CreateNewPage(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)

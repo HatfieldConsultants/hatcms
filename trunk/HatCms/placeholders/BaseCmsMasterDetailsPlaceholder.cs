@@ -6,6 +6,7 @@ namespace HatCMS.Placeholders
 	/// <summary>
 	/// Summary description for BaseCmsPlaceholder.
 	/// </summary>
+    [Obsolete("BaseCmsMasterDetailsPlaceholder class has been replaced with the idea of 'Aggregator' and 'Details' placeholders")]
 	public abstract class BaseCmsMasterDetailsPlaceholder: BaseCmsPlaceholder
 	{
         public enum PlaceholderDisplay { MultipleItems, SelectedItem }

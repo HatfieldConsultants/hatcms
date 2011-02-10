@@ -1090,9 +1090,9 @@ namespace HatCMS
                 {
                     foreach (CmsLanguage lang in CmsConfig.Languages)
                     {
-                        bool b = PlaceholderUtils.revertToRevision(phType, oldPage, this, phInfo[phType].ToArray(), lang);
-                        if (!b)
-                            ret = false;
+                        BaseCmsPlaceholder.RevertToRevisionResult b = PlaceholderUtils.revertToRevision(phType, oldPage, this, phInfo[phType].ToArray(), lang);
+                        if (b == BaseCmsPlaceholder.RevertToRevisionResult.Failure)
+                            ret = false; // keep going, even if one placeholder failed.
                     } // foreach language
                 } // foreach
 

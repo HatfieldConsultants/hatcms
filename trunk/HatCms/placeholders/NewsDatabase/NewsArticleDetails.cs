@@ -26,8 +26,8 @@ namespace HatCMS.placeholders.NewsDatabase
             ret.AddRange(CKEditorHelpers.CKEditorDependencies);
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("NewsArticleAggregator"));
-            ret.Add(new CmsDatabaseTableDependency("NewsArticleDetails"));
+            ret.Add(new CmsDatabaseTableDependency("NewsArticleAggregator", new string[] { "PageId", "Identifier", "LangCode", "DefaultYearToDisplay", "Deleted" }));
+            ret.Add(new CmsDatabaseTableDependency("NewsArticleDetails", new string[] { "PageId", "Identifier", "LangCode", "DateOfNews", "Deleted"  }));
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("NewsArticle.ReadArticleText"));
@@ -37,9 +37,9 @@ namespace HatCMS.placeholders.NewsDatabase
             return ret.ToArray();
         }
 
-        public override bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
-            return true; // this placeholder doesn't implement revisions
+            return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] param)

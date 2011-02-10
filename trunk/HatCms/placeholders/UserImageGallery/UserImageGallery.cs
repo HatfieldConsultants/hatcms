@@ -94,9 +94,9 @@ namespace HatCMS.Placeholders
             return CmsConfig.getConfigValue("UserImageGallery.UploadImageButtonText", "Upload Images to Gallery", lang);
         }
 
-        public override bool revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
-            return true; // this placeholder doesn't implement revisions
+            return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
 
 
