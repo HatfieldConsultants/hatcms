@@ -48,7 +48,9 @@ namespace HatCMS
 
             // -- files
             ret.Add(CmsFileDependency.UnderAppPath("default.aspx"));
-            ret.Add(CmsFileDependency.UnderAppPath("_system/showThumb.aspx"));
+            
+            foreach(string filePath in CmsConfig.URLsToNotRemap)
+                ret.Add(CmsFileDependency.UnderAppPath(filePath));
 
             // -- config entries
             ret.Add(new CmsConfigItemDependency("TemplateEngineVersion"));

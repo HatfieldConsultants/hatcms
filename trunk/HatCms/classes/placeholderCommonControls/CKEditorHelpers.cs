@@ -28,20 +28,20 @@ namespace HatCMS
                     CmsFileDependency.UnderAppPath("js/_system/ckeditor/contents.css"),                    
 
                     // -- ckeditor plugin enhancements
-                    CmsFileDependency.UnderAppPath("js/_system/ckeditor/plugins/hatCms/plugin.js", new DateTime(2010,05,06)),
+                    CmsFileDependency.UnderAppPath("js/_system/ckeditor/plugins/hatCms/plugin.js", new DateTime(2011,02,25)),
                     CmsFileDependency.UnderAppPath("js/_system/ckeditor/plugins/hatCms_styles/plugin.js", new DateTime(2010,04,30)),
-                    CmsFileDependency.UnderAppPath("_system/FCKHelpers/DeleteResourcePopup.aspx"),
-                    CmsFileDependency.UnderAppPath("_system/FCKHelpers/InlineImageBrowser2.aspx"),
-                    CmsFileDependency.UnderAppPath("_system/ckhelpers/dhtmlxFiles_xml.ashx"),
-                    CmsFileDependency.UnderAppPath("_system/ckhelpers/dhtmlxPages_xml.ashx"),
-                    CmsFileDependency.UnderAppPath("_system/ckhelpers/InlineFileBrowser.aspx", new DateTime(2010,2,16)),
-                    CmsFileDependency.UnderAppPath("_system/ckhelpers/InlinePageBrowser.aspx"),
+                    CmsFileDependency.UnderAppPath("_system/tools/FCKHelpers/DeleteResourcePopup.aspx"),
+                    CmsFileDependency.UnderAppPath("_system/tools/FCKHelpers/InlineImageBrowser2.aspx"),
+                    CmsFileDependency.UnderAppPath("_system/tools/ckhelpers/dhtmlxFiles_xml.ashx"),
+                    CmsFileDependency.UnderAppPath("_system/tools/ckhelpers/dhtmlxPages_xml.ashx"),
+                    CmsFileDependency.UnderAppPath("_system/tools/ckhelpers/InlineFileBrowser.aspx", new DateTime(2011,2,25)),
+                    CmsFileDependency.UnderAppPath("_system/tools/ckhelpers/InlinePageBrowser.aspx"),
 
                     //-- dhtmlxTree dependencies
-                    CmsFileDependency.UnderAppPath("js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.css"),
-                    CmsFileDependency.UnderAppPath("js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxcommon.js"),
-                    CmsFileDependency.UnderAppPath("js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.js"),
-                    CmsFileDependency.UnderAppPath("js/_system/dhtmlx/dhtmlxTree/codebase/imgs/folderClosed.gif"),
+                    CmsFileDependency.UnderAppPath("js/_system/tools/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.css"),
+                    CmsFileDependency.UnderAppPath("js/_system/tools/dhtmlx/dhtmlxTree/codebase/dhtmlxcommon.js"),
+                    CmsFileDependency.UnderAppPath("js/_system/tools/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.js"),
+                    CmsFileDependency.UnderAppPath("js/_system/tools/dhtmlx/dhtmlxTree/codebase/imgs/folderClosed.gif"),
 
                     // -- FCKEditor has been removed. Make sure it is gone.
                     CmsDirectoryDoesNotExistDependency.UnderAppPath("js/_system/FCKeditor")                    

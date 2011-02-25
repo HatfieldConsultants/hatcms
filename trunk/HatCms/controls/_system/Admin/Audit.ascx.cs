@@ -1283,7 +1283,7 @@ namespace HatCMS.Controls.Admin
             StringBuilder html = new StringBuilder();
             html.Append("<p>");
             html.Append("<table border=\"1\">");
-            html.Append("<caption><h2>User feedback <a style=\"font-size: small;\" href=\"/_system/download.ashx?adminTool=" + selectedAdminTool.ToString() + "\">(download)</a></h2></caption>");
+            html.Append("<caption><h2>User feedback <a style=\"font-size: small;\" href=\"/_system/tools/download.ashx?adminTool=" + selectedAdminTool.ToString() + "\">(download)</a></h2></caption>");
             html.Append("<tr>");
             html.Append("<th>Submitted</th>");
             html.Append("<th>Name</th><th>Email Address</th><th>Location</th><th>Question</th><th>Answer</th><th>ReferringUrl</th>");
@@ -1316,7 +1316,7 @@ namespace HatCMS.Controls.Admin
             StringBuilder html = new StringBuilder();
             html.Append("<p>");
             html.Append("<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\" style=\"border-collapse: collapse;\">");
-            html.Append("<caption><h2>Registered Projects <a style=\"font-size: small;\" href=\"/_system/download.ashx?adminTool=" + selectedAdminTool.ToString() + "\">(download)</a></h2></caption>");
+            html.Append("<caption><h2>Registered Projects <a style=\"font-size: small;\" href=\"/_system/tools/download.ashx?adminTool=" + selectedAdminTool.ToString() + "\">(download)</a></h2></caption>");
             html.Append("<tr>");
             html.Append("<th>Name</th><th>Location</th><th>Description</th><th>Contact Person</th><th>Email</th><th>Telephone</th><th>Cellphone</th><th>Website</th><th>Funding Source</th><th>Date/Time Created</th><th>IP Address</th>");
             html.Append("</tr>");

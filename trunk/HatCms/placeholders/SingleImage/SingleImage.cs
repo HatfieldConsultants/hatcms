@@ -27,8 +27,8 @@ namespace HatCMS.Placeholders
             ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/ThumbnailCache"));
             
             // -- helpers
-            ret.Add(CmsFileDependency.UnderAppPath("_system/SingleImage/SingleImageEditor.aspx", new DateTime(2010,4,30)));
-            ret.Add(CmsFileDependency.UnderAppPath("_system/FCKHelpers/InlineImageBrowser2.aspx"));
+            ret.Add(CmsFileDependency.UnderAppPath("_system/tools/SingleImage/SingleImageEditor.aspx", new DateTime(2010,4,30)));
+            ret.Add(CmsFileDependency.UnderAppPath("_system/tools/FCKHelpers/InlineImageBrowser2.aspx"));
 
             // -- pages
             ret.Add(new CmsPageDependency(showLargerPagePath, CmsConfig.Languages));
@@ -507,7 +507,7 @@ namespace HatCMS.Placeholders
             editParams.Add("tw=" + thumbWidth.ToString());
             editParams.Add("th=" + thumbHeight.ToString());                        
 
-            string editUrl = CmsContext.ApplicationPath + "_system/SingleImage/SingleImageEditor.aspx?" + string.Join("&", editParams.ToArray()); ;
+            string editUrl = CmsContext.ApplicationPath + "_system/tools/SingleImage/SingleImageEditor.aspx?" + string.Join("&", editParams.ToArray()); ;
             string jsResetFunctionName = formName + "Reset";
             string jsUpdateRenderFunctionName = formName + "UpdateDisplay";
 

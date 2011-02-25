@@ -72,7 +72,7 @@ namespace HatCMS.FCKHelpers
 
             if (CmsContext.currentUserIsSuperAdmin)
             {
-                string onclick = "var url = '" + CmsContext.ApplicationPath + "_system/FCKHelpers/DeleteResourcePopup.aspx?FileUrl='+document.getElementById('selectedImageUrl').value; window.open(url,'delResourcePopup','width=400,height=400,resizable=1,scrollbars=1'); return false;";
+                string onclick = "var url = '" + CmsContext.ApplicationPath + "_system/tools/FCKHelpers/DeleteResourcePopup.aspx?FileUrl='+document.getElementById('selectedImageUrl').value; window.open(url,'delResourcePopup','width=400,height=400,resizable=1,scrollbars=1'); return false;";
                 html.Append(" <input type=\"button\" onclick=\"" + onclick + "\" value=\"delete selected file\" />");
             }
 

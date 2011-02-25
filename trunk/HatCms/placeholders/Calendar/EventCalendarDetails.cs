@@ -30,7 +30,7 @@ namespace HatCMS.placeholders.Calendar
             ret.Add(CmsControlDependency.UnderControlDir("_system/Internal/EventCalendarCategoryPopup.ascx", new DateTime(2010, 2, 17)));
 
             // -- Hatfield modified version of jquery.fullcalendar -- SimpleCalendar
-            ret.Add(CmsFileDependency.UnderAppPath("_system/Calendar/SimpleCalendarJsonData.ashx"));
+            ret.Add(CmsFileDependency.UnderAppPath("_system/tools/Calendar/SimpleCalendarJsonData.ashx"));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/EventCalendar/EventCalendarCategory.js"));
 
             // -- Date/Time picker and jQuery UI

@@ -36,7 +36,7 @@ Create sub-folder <input type="text" size="20" maxlength="200" runat="server" id
         
         <% OutputCurrUrl(); %>
         
-        tree.loadXML("<%= CmsContext.ApplicationPath %>_system/ckhelpers/dhtmlxFiles_xml.ashx?currurl="+encodeURI(currUrl), function(){                
+        tree.loadXML("<%= CmsContext.ApplicationPath %>_system/tools/ckhelpers/dhtmlxFiles_xml.ashx?currurl="+encodeURI(currUrl), function(){                
                 
                 tree.focusItem(tree.getSelectedItemId());
                 tree.selectItem(tree.getSelectedItemId(), false, false);  

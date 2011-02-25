@@ -148,7 +148,7 @@ CKEDITOR.on( 'dialogDefinition', function( ev )
 			[
 				{
 					type : 'html',
-					html: '<iframe onload="var iframe = CKEDITOR.document.getById( this.id ), parentContainer = iframe.getParent(); parentContainer.setStyles( { width : \'700px\', height : \'400px\'} );"  style="border: 1px solid black; width: 700px; height: 400px;" src="'+CKEDITOR.basePath+'../../../_system/FCKHelpers/InlineImageBrowser2.aspx?ck=1">'
+					html: '<iframe onload="var iframe = CKEDITOR.document.getById( this.id ), parentContainer = iframe.getParent(); parentContainer.setStyles( { width : \'700px\', height : \'400px\'} );"  style="border: 1px solid black; width: 700px; height: 400px;" src="'+CKEDITOR.basePath+'../../../_system/tools/FCKHelpers/InlineImageBrowser2.aspx?ck=1">'
 				}
 			]
 		},insertBeforeId);
@@ -181,7 +181,7 @@ CKEDITOR.on( 'dialogDefinition', function( ev )
 				[
 					{
 						type : 'html',
-						html: '<iframe onload="var iframe = CKEDITOR.document.getById( this.id ), parentContainer = iframe.getParent(); parentContainer.setStyles( { width : \'700px\', height : \'400px\'} );" width="700" height="400" style="border: 1px solid black; width: 700px; height: 400px; zIndex: 1000;" src="'+CKEDITOR.basePath+'../../../_system/ckhelpers/InlinePageBrowser.aspx?ck=1">',					
+						html: '<iframe onload="var iframe = CKEDITOR.document.getById( this.id ), parentContainer = iframe.getParent(); parentContainer.setStyles( { width : \'700px\', height : \'400px\'} );" width="700" height="400" style="border: 1px solid black; width: 700px; height: 400px; zIndex: 1000;" src="'+CKEDITOR.basePath+'../../../_system/tools/ckhelpers/InlinePageBrowser.aspx?ck=1">',					
 						onShow: function()
 							{
 								setTimeout(function() { // ie shows an error because the element isn't ready when changing focus
@@ -201,7 +201,7 @@ CKEDITOR.on( 'dialogDefinition', function( ev )
 				[
 					{
 						type : 'html',
-						html: '<iframe onload="var iframe = CKEDITOR.document.getById( this.id ), parentContainer = iframe.getParent(); parentContainer.setStyles( { width : \'700px\', height : \'400px\'} );"  style="border: 1px solid black; width: 700px; height: 400px;" src="'+CKEDITOR.basePath+'../../../_system/ckhelpers/InlineFileBrowser.aspx?ck=1">'					
+						html: '<iframe onload="var iframe = CKEDITOR.document.getById( this.id ), parentContainer = iframe.getParent(); parentContainer.setStyles( { width : \'700px\', height : \'400px\'} );"  style="border: 1px solid black; width: 700px; height: 400px;" src="'+CKEDITOR.basePath+'../../../_system/tools/ckhelpers/InlineFileBrowser.aspx?ck=1">'					
 					}
 				]
 			},insertBeforeId); // addContents

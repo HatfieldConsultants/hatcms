@@ -129,7 +129,7 @@ namespace HatCMS.WebEditor.Helpers
 
         public static string getUrl(string JSCallbackFunctionName)
         {
-            return CmsContext.ApplicationPath + "_system/FlashObject/PopupFlashObjectBrowser.aspx?callback=" + System.Web.HttpContext.Current.Server.UrlPathEncode(JSCallbackFunctionName);
+            return CmsContext.ApplicationPath + "_system/tools/FlashObject/PopupFlashObjectBrowser.aspx?callback=" + System.Web.HttpContext.Current.Server.UrlPathEncode(JSCallbackFunctionName);
         }
 
         public static int PopupWidth = 500;

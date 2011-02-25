@@ -34,7 +34,7 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(CmsFileDependency.UnderAppPath("_system/FlashObject/PopupFlashObjectBrowser.aspx"));
+            ret.Add(CmsFileDependency.UnderAppPath("_system/tools/FlashObject/PopupFlashObjectBrowser.aspx"));
             ret.Add(CmsWritableDirectoryDependency.UnderAppPath("UserFiles/Flash"));
             ret.Add(new CmsDatabaseTableDependency("flashobject"));
             return ret.ToArray();

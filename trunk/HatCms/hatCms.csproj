@@ -643,92 +643,89 @@
     <Compile Include="setup\default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\Calendar\SimpleCalendarJsonData.ashx.cs">
+    <Compile Include="_system\tools\Calendar\SimpleCalendarJsonData.ashx.cs">
       <DependentUpon>SimpleCalendarJsonData.ashx</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_system\ckhelpers\dhtmlxFiles_xml.ashx.cs">
+    <Compile Include="_system\tools\ckhelpers\dhtmlxFiles_xml.ashx.cs">
       <DependentUpon>dhtmlxFiles_xml.ashx</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_system\ckhelpers\dhtmlxPages_xml.ashx.cs">
+    <Compile Include="_system\tools\ckhelpers\dhtmlxPages_xml.ashx.cs">
       <DependentUpon>dhtmlxPages_xml.ashx</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_system\ckhelpers\InlineFileBrowser.aspx.cs">
+    <Compile Include="_system\tools\ckhelpers\InlineFileBrowser.aspx.cs">
       <DependentUpon>InlineFileBrowser.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_system\ckhelpers\InlineFileBrowser.aspx.designer.cs">
+    <Compile Include="_system\tools\ckhelpers\InlineFileBrowser.aspx.designer.cs">
       <DependentUpon>InlineFileBrowser.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\ckhelpers\InlinePageBrowser.aspx.cs">
+    <Compile Include="_system\tools\ckhelpers\InlinePageBrowser.aspx.cs">
       <DependentUpon>InlinePageBrowser.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_system\ckhelpers\InlinePageBrowser.aspx.designer.cs">
+    <Compile Include="_system\tools\ckhelpers\InlinePageBrowser.aspx.designer.cs">
       <DependentUpon>InlinePageBrowser.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\download.ashx.cs">
+    <Compile Include="_system\tools\download.ashx.cs">
       <DependentUpon>download.ashx</DependentUpon>
     </Compile>
-    <Compile Include="_system\FCKHelpers\DeleteResourcePopup.aspx.cs">
+    <Compile Include="_system\tools\FCKHelpers\DeleteResourcePopup.aspx.cs">
       <DependentUpon>DeleteResourcePopup.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_system\FCKHelpers\DeleteResourcePopup.aspx.designer.cs">
+    <Compile Include="_system\tools\FCKHelpers\DeleteResourcePopup.aspx.designer.cs">
       <DependentUpon>DeleteResourcePopup.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\FCKHelpers\InlineImageBrowser2.aspx.cs">
+    <Compile Include="_system\tools\FCKHelpers\InlineImageBrowser2.aspx.cs">
       <DependentUpon>InlineImageBrowser2.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_system\FCKHelpers\InlineImageBrowser2.aspx.designer.cs">
+    <Compile Include="_system\tools\FCKHelpers\InlineImageBrowser2.aspx.designer.cs">
       <DependentUpon>InlineImageBrowser2.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\FCKHelpers\InlineLinkBrowser.aspx.cs">
+    <Compile Include="_system\tools\FCKHelpers\InlineLinkBrowser.aspx.cs">
       <DependentUpon>InlineLinkBrowser.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_system\FCKHelpers\InlineLinkBrowser.aspx.designer.cs">
+    <Compile Include="_system\tools\FCKHelpers\InlineLinkBrowser.aspx.designer.cs">
       <DependentUpon>InlineLinkBrowser.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\FCKHelpers\InlineUserFileBrowser.aspx.cs">
+    <Compile Include="_system\tools\FCKHelpers\InlineUserFileBrowser.aspx.cs">
       <DependentUpon>InlineUserFileBrowser.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_system\FCKHelpers\InlineUserFileBrowser.aspx.designer.cs">
+    <Compile Include="_system\tools\FCKHelpers\InlineUserFileBrowser.aspx.designer.cs">
       <DependentUpon>InlineUserFileBrowser.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\FlashObject\PopupFlashObjectBrowser.aspx.cs">
+    <Compile Include="_system\tools\FlashObject\PopupFlashObjectBrowser.aspx.cs">
       <DependentUpon>PopupFlashObjectBrowser.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_system\FlashObject\PopupFlashObjectBrowser.aspx.designer.cs">
+    <Compile Include="_system\tools\FlashObject\PopupFlashObjectBrowser.aspx.designer.cs">
       <DependentUpon>PopupFlashObjectBrowser.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\renderControl.ashx.cs">
+    <Compile Include="_system\tools\renderControl.ashx.cs">
       <DependentUpon>renderControl.ashx</DependentUpon>
     </Compile>
-    <Compile Include="_system\showThumb.aspx.cs">
+    <Compile Include="_system\tools\showThumb.aspx.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_system\showThumb.aspx.designer.cs">
+    <Compile Include="_system\tools\showThumb.aspx.designer.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\SingleImage\SingleImageEditor.aspx.cs">
+    <Compile Include="_system\tools\SingleImage\SingleImageEditor.aspx.cs">
       <DependentUpon>SingleImageEditor.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_system\SingleImage\SingleImageEditor.aspx.designer.cs">
+    <Compile Include="_system\tools\SingleImage\SingleImageEditor.aspx.designer.cs">
       <DependentUpon>SingleImageEditor.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\swfUpload\SwfUploadTarget.aspx.cs">
+    <Compile Include="_system\tools\swfUpload\SwfUploadTarget.aspx.cs">
       <DependentUpon>SwfUploadTarget.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="_system\swfUpload\SwfUploadTarget.aspx.designer.cs">
+    <Compile Include="_system\tools\swfUpload\SwfUploadTarget.aspx.designer.cs">
       <DependentUpon>SwfUploadTarget.aspx</DependentUpon>
     </Compile>
     <Content Include="controls\_system\Admin\Audit.ascx" />
@@ -1142,17 +1139,6 @@
     <Content Include="templates\PageLayout.htm" />
     <Content Include="templates\SingleImageDisplay.htm" />
     <Content Include="Web.config" />
-    <Content Include="_system\Calendar\SimpleCalendarJsonData.ashx" />
-    <Content Include="_system\ckhelpers\dhtmlxFiles_xml.ashx" />
-    <Content Include="_system\ckhelpers\dhtmlxPages_xml.ashx" />
-    <Content Include="_system\ckhelpers\InlineFileBrowser.aspx" />
-    <Content Include="_system\ckhelpers\InlinePageBrowser.aspx" />
-    <Content Include="_system\FCKHelpers\DeleteResourcePopup.aspx" />
-    <Content Include="_system\FCKHelpers\InlineImageBrowser2.aspx" />
-    <Content Include="_system\FCKHelpers\InlineLinkBrowser.aspx" />
-    <Content Include="_system\FCKHelpers\InlineUserFileBrowser.aspx" />
-    <Content Include="_system\FlashObject\PopupFlashObjectBrowser.aspx" />
-    <Content Include="_system\showThumb.aspx" />
     <EmbeddedResource Include="controls\_system\Breadcrumb.ascx.resx">
       <DependentUpon>Breadcrumb.ascx.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1272,15 +1258,15 @@
     <EmbeddedResource Include="setup\default.aspx.resx">
       <DependentUpon>default.aspx.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="_system\FCKHelpers\InlineLinkBrowser.aspx.resx">
+    <EmbeddedResource Include="_system\tools\FCKHelpers\InlineLinkBrowser.aspx.resx">
       <DependentUpon>InlineLinkBrowser.aspx.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="_system\FCKHelpers\InlineUserFileBrowser.aspx.resx">
+    <EmbeddedResource Include="_system\tools\FCKHelpers\InlineUserFileBrowser.aspx.resx">
       <DependentUpon>InlineUserFileBrowser.aspx.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="_system\showThumb.aspx.resx">
+    <EmbeddedResource Include="_system\tools\showThumb.aspx.resx">
       <DependentUpon>showThumb.aspx.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -1309,7 +1295,11 @@
     <None Include="templates\UserImageGallery.template" />
     <None Include="templates\UserImageGalleryAggregator.template" />
     <None Include="templates\_SingleImageDisplay.template" />
-    <Content Include="_system\download.ashx" />
+    <Content Include="_system\tools\Calendar\SimpleCalendarJsonData.ashx" />
+    <Content Include="_system\tools\ckhelpers\dhtmlxFiles_xml.ashx" />
+    <Content Include="_system\tools\ckhelpers\dhtmlxPages_xml.ashx" />
+    <Content Include="_system\tools\download.ashx" />
+    <Content Include="_system\tools\renderControl.ashx" />
     <Content Include="templates\HomePage.template">
     </Content>
     <Content Include="templates\ImageGallery.template">
@@ -1343,9 +1333,16 @@
     <Content Include="templates\_Redirect.template">
     </Content>
     <Content Include="rss.ashx" />
-    <Content Include="_system\renderControl.ashx" />
-    <Content Include="_system\SingleImage\SingleImageEditor.aspx" />
-    <Content Include="_system\swfUpload\SwfUploadTarget.aspx" />
+    <Content Include="_system\tools\ckhelpers\InlineFileBrowser.aspx" />
+    <Content Include="_system\tools\ckhelpers\InlinePageBrowser.aspx" />
+    <Content Include="_system\tools\FCKHelpers\DeleteResourcePopup.aspx" />
+    <Content Include="_system\tools\FCKHelpers\InlineImageBrowser2.aspx" />
+    <Content Include="_system\tools\FCKHelpers\InlineLinkBrowser.aspx" />
+    <Content Include="_system\tools\FCKHelpers\InlineUserFileBrowser.aspx" />
+    <Content Include="_system\tools\FlashObject\PopupFlashObjectBrowser.aspx" />
+    <Content Include="_system\tools\showThumb.aspx" />
+    <Content Include="_system\tools\SingleImage\SingleImageEditor.aspx" />
+    <Content Include="_system\tools\swfUpload\SwfUploadTarget.aspx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\hatCommon\hatCommon.csproj">
@@ -1360,8 +1357,6 @@
     <Folder Include="UserFiles\Flash\" />
     <Folder Include="UserFiles\ImageGalleries\" />
     <Folder Include="UserFiles\Image\" />
-    <Folder Include="_system\SingleImageGallery\" />
-    <Folder Include="_system\tools\" />
     <Folder Include="_system\writable\DMSStorage\" />
     <Folder Include="_system\writable\Glossary\" />
     <Folder Include="_system\writable\KeywordIndex\" />

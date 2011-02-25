@@ -29,7 +29,7 @@ namespace HatCMS
                 ret.Add(CmsFileDependency.UnderAppPath("js/_system/swfUpload/fileprogress.js"));
                 ret.Add(CmsFileDependency.UnderAppPath("js/_system/swfUpload/handlers.js"));
                 ret.Add(CmsFileDependency.UnderAppPath("js/_system/swfUpload/swfupload.swf"));
-                ret.Add(CmsFileDependency.UnderAppPath("_system/swfUpload/SwfUploadTarget.aspx"));
+                ret.Add(CmsFileDependency.UnderAppPath("_system/tools/swfUpload/SwfUploadTarget.aspx"));
                 return ret.ToArray();
             }
         }

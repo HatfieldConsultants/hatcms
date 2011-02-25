@@ -311,7 +311,7 @@ namespace HatCMS.Placeholders
         {
             StringBuilder html = new StringBuilder();
 
-            string uploadUrl = CmsContext.ApplicationPath + "_system/swfUpload/SwfUploadTarget.aspx?dir=ImageGalleries/" + page.ID.ToString();
+            string uploadUrl = CmsContext.ApplicationPath + "_system/tools/swfUpload/SwfUploadTarget.aspx?dir=ImageGalleries/" + page.ID.ToString();
 
             string ControlId = "swfUpload" + page.ID.ToString() + page.ID.ToString();
 

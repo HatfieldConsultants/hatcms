@@ -24,7 +24,7 @@
 
         var currUrl = window.parent.CKEDITOR.dialog.getCurrent().getValueOf('info', 'url');
         
-        tree.loadXML("<%= CmsContext.ApplicationPath %>_system/ckhelpers/dhtmlxPages_xml.ashx?currurl="+encodeURI(currUrl), function(){                
+        tree.loadXML("<%= CmsContext.ApplicationPath %>_system/tools/ckhelpers/dhtmlxPages_xml.ashx?currurl="+encodeURI(currUrl), function(){                
                 tree.focusItem(tree.getSelectedItemId());
                 tree.selectItem(tree.getSelectedItemId(), false, false);        
             });

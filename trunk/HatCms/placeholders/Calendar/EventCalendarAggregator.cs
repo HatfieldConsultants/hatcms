@@ -31,7 +31,7 @@ namespace HatCMS.placeholders.Calendar
             ret.Add(CmsControlDependency.UnderControlDir("_system/Internal/EventCalendarCategoryPopup.ascx", new DateTime(2010, 2, 17)));
 
             // -- Hatfield modified version of jquery.fullcalendar -- SimpleCalendar
-            ret.Add(CmsFileDependency.UnderAppPath("_system/Calendar/SimpleCalendarJsonData.ashx"));
+            ret.Add(CmsFileDependency.UnderAppPath("_system/tools/Calendar/SimpleCalendarJsonData.ashx"));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/EventCalendar/EventCalendarCategory.js"));
 
             // -- Date/Time picker and jQuery UI
@@ -165,7 +165,7 @@ namespace HatCMS.placeholders.Calendar
             js.Append("    center: 'title'," + EOL);
             js.Append("    right: 'month,agendaWeek,agendaDay'" + EOL);
             js.Append("  }," + EOL);
-            js.Append("  events: '" + CmsContext.ApplicationPath + "_system/Calendar/SimpleCalendarJsonData.ashx?showFile=true&lang=" + lang.shortCode + "'," + EOL);
+            js.Append("  events: '" + CmsContext.ApplicationPath + "_system/tools/Calendar/SimpleCalendarJsonData.ashx?showFile=true&lang=" + lang.shortCode + "'," + EOL);
             js.Append("  eventClick: function(calEvent, jsEvent) { window.location = " + onClickUrl + "; }, " + EOL);
             js.Append("  timeFormat: { month: '', '':'h(:mm)tt'}" + EOL);
             js.Append("});" + EOL);

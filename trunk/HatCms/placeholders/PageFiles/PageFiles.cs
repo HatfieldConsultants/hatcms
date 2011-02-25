@@ -863,7 +863,7 @@ namespace HatCMS.Placeholders
                     if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V1")
                         throw new Exception("Error: you can not use SWFUpload for the PageFiles placeholder with DMSFileStorageLocationVersion set to V1");
 
-                    string uploadUrl = CmsContext.ApplicationPath + "_system/swfUpload/SwfUploadTarget.aspx?DMS=1&dir=" + storageUrl;
+                    string uploadUrl = CmsContext.ApplicationPath + "_system/tools/swfUpload/SwfUploadTarget.aspx?DMS=1&dir=" + storageUrl;
                     string fileFilters = "*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.txt;*.zip";
                     SWFUploadHelpers.AddPageJavascriptStatements(page, ControlId, uploadUrl, fileFilters, "Document Files (" + fileFilters + ")");
 
@@ -1042,20 +1042,10 @@ namespace HatCMS.Placeholders
             html.Append("</td>");
             html.Append("</tr>");
 
-            html.Append("<tr>");
-            html.Append("<td>Access needed to upload files: </td>");
-            html.Append("<td>");
-            html.Append(PageUtils.getDropDownHtml(ControlId + "accessLevelToAddFiles", ControlId + "accessLevelToAddFiles", Enum.GetNames(typeof(BaseCmsPlaceholder.AccessLevel)), Enum.GetName(typeof(BaseCmsPlaceholder.AccessLevel), data.accessLevelToAddFiles)));            
-            html.Append("</td>");
-            html.Append("</tr>");
+            // -- store obsolte values (note: access levels are now controlled by Zones)
+            html.Append(PageUtils.getHiddenInputHtml(ControlId + "accessLevelToAddFiles", Enum.GetName(typeof(AccessLevel), AccessLevel.CmsAuthor)));
+            html.Append(PageUtils.getHiddenInputHtml(ControlId + "accessLevelToEditFiles", Enum.GetName(typeof(AccessLevel), AccessLevel.CmsAuthor)));
 
-
-            html.Append("<tr>");
-            html.Append("<td>Access needed to edit files: </td>");
-            html.Append("<td>");
-            html.Append(PageUtils.getDropDownHtml(ControlId + "accessLevelToEditFiles", ControlId + "accessLevelToEditFiles", Enum.GetNames(typeof(BaseCmsPlaceholder.AccessLevel)), Enum.GetName(typeof(BaseCmsPlaceholder.AccessLevel), data.accessLevelToEditFiles)));
-            html.Append("</td>");
-            html.Append("</tr>");
 
             html.Append("</table>");
 

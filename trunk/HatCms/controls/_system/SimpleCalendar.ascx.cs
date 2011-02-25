@@ -80,7 +80,7 @@ namespace HatCMS.controls._system
             js.Append("    center: 'title'," + EOL);
             js.Append("    right: 'next'" + EOL);
             js.Append("  }," + EOL);
-            js.Append("  events: '" + getAppPathName() + "_system/Calendar/SimpleCalendarJsonData.ashx?lang=" + getCurrentLangText() + "'," + EOL);
+            js.Append("  events: '" + getAppPathName() + "_system/tools/Calendar/SimpleCalendarJsonData.ashx?lang=" + getCurrentLangText() + "'," + EOL);
             js.Append("  eventAfterRender: function(event,element,view) {" + EOL);
             js.Append("    simpleCalenderHighlightCell();" + EOL);
             js.Append("  }" + EOL);
