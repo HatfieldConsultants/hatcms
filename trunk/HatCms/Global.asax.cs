@@ -54,35 +54,7 @@ namespace HatCMS
             CmsContext.Application_Start_Session();
 		}
 
-        /// <summary>
-        /// a list of URLs (no leading slash or app path) that the remapping engine should not process.
-        /// filenames not handled by the ASP.Net runtime (such as .js or .htm files) do not need to be listed here.
-        /// However, any file that you want to execute on its own which normally runs through the .Net runtime needs to be listed
-        /// here. These include *.aspx, *.ashx files.
-        /// </summary>
-        public static readonly string[] urlsToNotRemap = new string[] 
-            {                
-                "rss.ashx",
-                "pdf.ashx",
-                "xmlSiteMap.ashx",
-                "_system/renderControl.ashx",
-                "_system/showThumb.aspx",
-                "setup/default.aspx",                                
-                "_system/FCKHelpers/InlineImageBrowser2.aspx",
-                "_system/FCKHelpers/InlineLinkBrowser.aspx",
-                "_system/FCKHelpers/InlineUserFileBrowser.aspx",
-                "_system/FlashObject/PopupFlashObjectBrowser.aspx",
-                "js/_system/FCKEditor/editor/filemanager/browser/default/connectors/aspx/connector.aspx",
-                "_system/MasterPage/EmbeddedPage.aspx",                
-                "_system/SingleImage/SingleImageEditor.aspx",
-                "_system/FCKHelpers/DeleteResourcePopup.aspx",
-                "_system/swfUpload/SwfUploadTarget.aspx",
-                "_system/ckhelpers/InlinePageBrowser.aspx",
-                "_system/ckhelpers/InlineFileBrowser.aspx",
-                "_system/Calendar/SimpleCalendarJsonData.ashx",
-                "_system/Browser/browser_json.ashx",
-                "_system/Browser/InlineBrowser.aspx",
-            };
+        
         /// <summary>
         /// The Application_BeginRequest function is where all the URL re-writing magic happens.
         /// </summary>
@@ -101,8 +73,8 @@ namespace HatCMS
             string baseProcessingPage = CmsContext.ApplicationPath + "default.aspx";
             string pagePath = Request.Url.AbsolutePath.Substring(CmsContext.ApplicationPath.Length);
 
-            // do not process the urls in "urlsToNotProcess" array.
-            if (StringUtils.IndexOf(urlsToNotRemap, pagePath, StringComparison.CurrentCultureIgnoreCase) != -1)
+            // do not process the urls in "URLsToNotRemap" configuration entry.
+            if (StringUtils.IndexOf(CmsConfig.URLsToNotRemap, pagePath, StringComparison.CurrentCultureIgnoreCase) != -1)
             {
                 return;
             }

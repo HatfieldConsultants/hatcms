@@ -29,7 +29,7 @@ namespace HatCMS.controls
             if (CmsContext.currentEditMode == CmsEditMode.Edit)
             {
                 if (PageUtils.getFromForm("EndEditForm", "") == "submit")
-                {                    
+                {
 
                     NameValueCollection paramList = new NameValueCollection();
                     string appendToTargetUrl = PageUtils.getFromForm("appendToTargetUrl", "");
@@ -52,49 +52,11 @@ namespace HatCMS.controls
                 StringBuilder html = new StringBuilder();
                 html.Append(PageUtils.getHiddenInputHtml("EndEditForm", "submit"));
                 html.Append(PageUtils.getHiddenInputHtml(CmsContext.EditModeFormName, "1")); // track the edit mode
-                
+
 
                 html.Append(CmsContext.currentPage.getFormCloseHtml(StartEditForm.FormId));
                 writer.WriteLine(html.ToString());
-            } // if in edit mode
-            else if (CmsContext.currentEditMode == CmsEditMode.View && CmsContext.currentUserCanAuthor)
-            {
-                // -- we are in view mode, so let's kill all edit mode cookies and release all page locks
-                List<HttpCookie> respCookiesToSet = new List<HttpCookie>();
-                for (int i = 0; i < Request.Cookies.Count; i++)
-                {
-                    HttpCookie c = Request.Cookies[i];
-                    if (c.Name.StartsWith("currentEditMode_", StringComparison.CurrentCultureIgnoreCase) && c.Value == "1")
-                    {
-                        // value=="1" for EditMode
-                                                
-                        string pagePath = c.Name.Substring("currentEditMode_".Length);
-                        try
-                        {
-                            if (CmsContext.pageExists(pagePath))
-                            {
-                                // -- expire the cookie
-                                c.Expires = DateTime.Now.AddDays(-10);
-                                c.Value = "2";
-                                respCookiesToSet.Add(c);
-                                // -- kill the page lock (if it exists)
-                                CmsPage p = CmsContext.getPageByPath(pagePath);
-                                if (p.ID >= 0)
-                                {
-                                    p.clearCurrentPageLock();
-                                } // if
-                            }
-                        }
-                        catch
-                        { }
-                    }
-                        
-                } // foreach Request.Cookie
-                
-                // -- set cookies outside of the loop so that it doens't go on infinitely
-                foreach (HttpCookie c in respCookiesToSet)
-                    Response.Cookies.Add(c);
-            } // else
+            } // if in edit mode            
 		}
 
 		#region Web Form Designer generated code

@@ -34,14 +34,14 @@ namespace HatCMS.controls
         protected override void Render(System.Web.UI.HtmlTextWriter writer)
         {
             // -- don't render anything unless the user is logged in.
-            if (!CmsContext.currentUserCanAuthor)
-                return;
-
-            if (!CmsContext.currentZoneWritable) // if zone not writable, skip rendering the Edit Menu
-                return;
+            if (!CmsContext.currentUserIsLoggedIn)
+                return;            
 
             StringBuilder html = new StringBuilder();
             CmsPage page = CmsContext.currentPage;
+
+            if (!page.currentUserCanWrite) // if the page is not writable, skip rendering the edit menu
+                return;
 
             // -- use the PerRequest cache to ensure that this control is only displayed once (not multiple times per language)
             string cacheName = "FloatingEditMenu";

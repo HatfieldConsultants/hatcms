@@ -21,7 +21,7 @@ namespace HatCMS.Placeholders
             return new CmsDependency[]{
                 CmsFileDependency.UnderAppPath("js/_system/GlossaryEditor.js", new DateTime(2010,4,22)),
                 CmsFileDependency.UnderAppPath("js/_system/json2.js"),
-                CmsWritableDirectoryDependency.UnderAppPath("_system/Glossary"),
+                CmsWritableDirectoryDependency.UnderAppPath("_system/writable/Glossary"),
                 new CmsDatabaseTableDependency("glossary"),
                 new CmsDatabaseTableDependency("glossarydata")
             };
@@ -61,7 +61,7 @@ namespace HatCMS.Placeholders
                     string jsonToSave = getJSVariableStatement(jsonDataVarName, dataToSave);
                     try
                     {
-                        string jsonFilename = System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath + "_system/Glossary/" + jsonDataVarName + ".js");
+                        string jsonFilename = System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath + "_system/writable/Glossary/" + jsonDataVarName + ".js");
                         System.IO.File.Delete(jsonFilename);
                         System.IO.File.WriteAllText(jsonFilename, jsonToSave);
                     }

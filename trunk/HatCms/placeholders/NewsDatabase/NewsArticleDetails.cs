@@ -71,7 +71,7 @@ namespace HatCMS.placeholders.NewsDatabase
             // ------- START RENDERING
             StringBuilder arg0 = new StringBuilder();
             arg0.Append("<div style=\"width: 100%\">");
-            arg0.Append("<p>Date of News (" + CmsContext.currentShortDateFormat() + "): ");
+            arg0.Append("<p>Date of News (" + CmsLanguage.CurrentShortDateFormat + "): ");
             arg0.Append(PageUtils.getInputTextHtml("dateOfNews_" + editId,"dateOfNews_" + editId, dateString, 10, 10));
             arg0.Append("</p>");
 
@@ -82,8 +82,7 @@ namespace HatCMS.placeholders.NewsDatabase
         }
 
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] param)
-        {
-            // CmsContext.setCurrentCultureInfo(langToRenderFor);
+        {            
             StringBuilder html = new StringBuilder();
 
             NewsArticleDb db = new NewsArticleDb();

@@ -178,7 +178,7 @@ namespace HatCMS.Controls.Admin
 
         protected override void Render(HtmlTextWriter writer)
         {
-            if (!CmsContext.currentUserCanAuthor)
+            if (!CmsContext.currentPage.currentUserCanRead)
             {
                 writer.Write("Access Denied");
                 return;

@@ -59,6 +59,18 @@ namespace HatCMS
             List<CmsDependencyMessage> ret = new List<CmsDependencyMessage>();
             try
             {
+                // -- .aspx files must exist in the CmsConfig.URLsToNotRemap array
+                if (String.Compare(Path.GetExtension(FullFilePath), ".aspx", true) == 0)
+                {
+                    string appPathFullDir = System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath);
+                    string relPath = Hatfield.Web.Portal.PathUtils.RelativePathTo(appPathFullDir, FullFilePath);
+                    if (relPath.StartsWith(@"\"))
+                        relPath = relPath.Substring(1); // remove first slash
+                    string url = relPath.Replace(@"\", @"/"); // switch slashes
+                    if (String.Compare(url, "default.aspx", true) != 0 && Hatfield.Web.Portal.StringUtils.IndexOf(CmsConfig.URLsToNotRemap, url, StringComparison.CurrentCultureIgnoreCase) < 0)
+                        ret.Add(CmsDependencyMessage.Error("\"" + url + "\" is a required ASPX page, and should be listed in the \"URLsToNotRemap\" configuration entry."));
+                }
+
                 if (File.Exists(FullFilePath))
                 {
                     if (FileShouldBeLastModifiedAfter.Ticks != DateTime.MinValue.Ticks)

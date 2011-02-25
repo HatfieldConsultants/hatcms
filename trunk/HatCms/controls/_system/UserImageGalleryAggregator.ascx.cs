@@ -44,7 +44,7 @@ namespace HatCMS.controls._system
         public static void AddGalleryCommandToEditMenu(CmsPage pageToAddCommandTo, CmsPage userImageGalleryAggregator)
         {
             // -- only add the command if the user can author
-            if (!CmsContext.currentUserCanAuthor)
+            if (!pageToAddCommandTo.currentUserCanWrite)
                 return;
 
             // -- base the command off the existing "create new sub-page" command

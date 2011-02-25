@@ -21,12 +21,6 @@ namespace HatCMS.controls
 
 		protected override void Render(System.Web.UI.HtmlTextWriter writer)
 		{
-
-            if (! CmsContext.currentUserCanAuthor)
-			{
-				writer.WriteLine("Access Denied");
-				return;
-			}
 			
 			string html = "<p><center>";
             int targetPageId = PageUtils.getFromForm("target", Int32.MinValue);
@@ -44,6 +38,13 @@ namespace HatCMS.controls
 				{
 					CmsPageDb db = new CmsPageDb();
                     CmsPage page = CmsContext.getPageById(targetPageId);
+
+                    if (!page.currentUserCanWrite)
+                    {
+                        writer.WriteLine("Access Denied");
+                        return;
+                    }
+
                     if (page.isZoneBoundary == true) // if the cms page is a zone boundary, do not allow delete
                     {
                         html += "<span style=\"color: red\">Cannot delete the page because it is located at the zone boundary.</span>";

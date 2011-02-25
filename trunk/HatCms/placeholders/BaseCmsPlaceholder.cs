@@ -10,6 +10,7 @@ namespace HatCMS.Placeholders
 	/// </summary>
 	public abstract class BaseCmsPlaceholder
 	{
+        [Obsolete("Access levels should be handled only by Zones, never by particular placeholders")]
         public enum AccessLevel { Anonymous, CmsAuthor, LoggedInUser }
 
         public enum RevertToRevisionResult { Failure = 0, Success = 1, NotImplemented = 2}

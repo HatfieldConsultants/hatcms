@@ -13,5 +13,5 @@ namespace HatCMS
     /// <summary>
     /// This enumeration tracks the current template engine version that is in use.
     /// </summary>
-    public enum CmsTemplateEngineVersion { v1, v2 };
+    public enum CmsTemplateEngineVersion { v1 = 1, v2 = 2 };
 }

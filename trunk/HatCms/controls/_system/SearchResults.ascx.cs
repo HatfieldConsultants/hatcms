@@ -31,8 +31,8 @@ namespace HatCMS.controls
         public CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/KeywordIndex"));
-            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/SpellCheckerIndex"));
+            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/KeywordIndex"));
+            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/SpellCheckerIndex"));
             return ret.ToArray();
         }
 
@@ -101,23 +101,8 @@ namespace HatCMS.controls
 
 			IndexableFileInfo[] fInfos = fileInfos.ToArray();
 
-            string SearchEngineIndexDir = CmsConfig.getConfigValue("SearchEngineIndexDir", @"~\_system\KeywordIndex\");
-            string SearchEngineSpellingIndexDir = CmsConfig.getConfigValue("SearchEngineSpellingIndexDir", @"~\_system\SpellCheckerIndex\");
 
-            if (SearchEngineIndexDir.StartsWith("~\\") || SearchEngineIndexDir.StartsWith("~"+System.IO.Path.DirectorySeparatorChar.ToString()))
-            {
-                SearchEngineIndexDir = SearchEngineIndexDir.Substring(2); // remove ~\
-                SearchEngineIndexDir = Server.MapPath(CmsContext.ApplicationPath + SearchEngineIndexDir);
-            }
-
-            if (SearchEngineSpellingIndexDir.StartsWith("~\\") || SearchEngineSpellingIndexDir.StartsWith("~" + System.IO.Path.DirectorySeparatorChar.ToString()))
-            {
-                SearchEngineSpellingIndexDir = SearchEngineSpellingIndexDir.Substring(2); // remove ~\
-                SearchEngineSpellingIndexDir = Server.MapPath(CmsContext.ApplicationPath + SearchEngineSpellingIndexDir);
-            }
-
-
-            LuceneIndexer.doIndex(SearchEngineIndexDir, SearchEngineSpellingIndexDir, LuceneIndexer.IndexCreationMode.CreateNewIndex, fInfos, new Object());            
+            LuceneIndexer.doIndex(IndexStorageDirectory, SpellCheckIndexStorageDirectory, LuceneIndexer.IndexCreationMode.CreateNewIndex, fInfos, new Object());            
 		} // ReIndexAllPages
 
 
@@ -128,6 +113,35 @@ namespace HatCMS.controls
                 return 10;
             }
         }
+
+        /// <summary>
+        /// the full directory path on-disk that the lucene index is stored in
+        /// </summary>
+        public static string IndexStorageDirectory
+        {
+            get
+            {
+                string dir = CmsConfig.getConfigValue("SearchEngineIndexDir", @"~/_system/writable/KeywordIndex/");
+
+                dir = VirtualPathUtility.ToAbsolute(dir);
+                return HttpContext.Current.Server.MapPath(dir);
+
+            }
+        }
+
+        public static string SpellCheckIndexStorageDirectory
+        {
+            get
+            {                
+                string spellingIndexDir = CmsConfig.getConfigValue("SearchEngineSpellingIndexDir", @"~\_system\SpellCheckerIndex\");
+
+                spellingIndexDir = VirtualPathUtility.ToAbsolute(spellingIndexDir);
+                return HttpContext.Current.Server.MapPath(spellingIndexDir);
+
+            }
+        }
+
+
 
         private IndexableFileInfo[] getFileInfosForCurrentLanguage(IndexableFileInfo[] searchResults)
         {
@@ -147,22 +161,7 @@ namespace HatCMS.controls
         }
         
 		protected override void Render(System.Web.UI.HtmlTextWriter writer)
-		{
-            string SearchEngineSpellingIndexDir = @"~\_system\SpellCheckerIndex\";            
-            string spellingIndexDir = CmsConfig.getConfigValue("SearchEngineSpellingIndexDir", SearchEngineSpellingIndexDir);
-
-            if (spellingIndexDir.StartsWith("~\\"))
-            {
-                spellingIndexDir = spellingIndexDir.Substring(2); // remove ~\
-                spellingIndexDir = Server.MapPath(CmsContext.ApplicationPath + spellingIndexDir);
-            }
-
-            string keywordIndexDir = CmsConfig.getConfigValue("SearchEngineIndexDir", "");
-            if (keywordIndexDir.StartsWith("~\\"))
-            {
-                keywordIndexDir = keywordIndexDir.Substring(2); // remove ~\
-                keywordIndexDir = Server.MapPath(CmsContext.ApplicationPath + keywordIndexDir);
-            }
+		{            
 
             CmsPage currentPage = CmsContext.currentPage;
 
@@ -216,7 +215,7 @@ namespace HatCMS.controls
             html.Append("</div>");
 			html.Append("<p>");
 
-            LuceneKeywordSearch search = new LuceneKeywordSearch(keywordIndexDir, spellingIndexDir);
+            LuceneKeywordSearch search = new LuceneKeywordSearch(IndexStorageDirectory, SpellCheckIndexStorageDirectory);
 
 			if (query != noQuery)
 			{                

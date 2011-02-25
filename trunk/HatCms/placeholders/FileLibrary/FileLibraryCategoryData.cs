@@ -78,6 +78,16 @@ namespace HatCMS.Placeholders
             return false;
         }
 
+        public static bool atLeastOneCategoryRequiresAnEvent(FileLibraryCategoryData[] haystack)
+        {
+            foreach (FileLibraryCategoryData cat in haystack)
+            {
+                if (cat.EventRequired)
+                    return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// Get the popup link in html
         /// </summary>

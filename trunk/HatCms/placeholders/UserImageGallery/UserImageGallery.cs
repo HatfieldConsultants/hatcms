@@ -289,7 +289,7 @@ namespace HatCMS.Placeholders
             
             CmsResource[] allResources = CmsResource.GetResourcesInDirectory(imageStorageDir, UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
 
-            if (allResources.Length == 0 && CmsContext.currentUserCanAuthor)
+            if (allResources.Length == 0 && page.currentUserCanWrite)
             {
                 CmsResource.UpdateFolderInDatabase(new System.IO.DirectoryInfo(imageStorageDir));
                 allResources = CmsResource.GetResourcesInDirectory(imageStorageDir, UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
@@ -299,7 +299,7 @@ namespace HatCMS.Placeholders
             html.Append(getGalleryView(placeholderData, allResources, page, langToRenderFor));
             html.Append("</div>");
 
-            if (CmsContext.currentUserCanAuthor)
+            if (page.currentUserCanWrite)
             {
                 html.Append(getSwfUploadHtml(page, placeholderData, langToRenderFor));
             }
@@ -360,7 +360,7 @@ namespace HatCMS.Placeholders
             string imgTag = imgToShow.getImageHtmlTag(placeholderData.FullSizeDisplayBoxWidth, placeholderData.FullSizeDisplayBoxHeight, "");
             html.Append(imgTag);
 
-            if (CmsContext.currentUserCanAuthor)
+            if (page.currentUserCanWrite)
             {
                 html.Append("<div class=\"caption bottom\">");
                 string formId = "userImageGallery";

@@ -121,6 +121,17 @@ namespace HatCMS.Placeholders
             return false;
         }
 
+        public static FileLibraryDetailsData[] getFilesByCategory(List<FileLibraryDetailsData> haystack, FileLibraryCategoryData categoryToMatch)
+        {
+            List<FileLibraryDetailsData> ret = new List<FileLibraryDetailsData>();
+            foreach (FileLibraryDetailsData f in haystack)
+            {
+                if (f.CategoryId == categoryToMatch.CategoryId)
+                    ret.Add(f);
+            }
+            return ret.ToArray();
+        }
+
         /// <summary>
         /// derive the file name on the web server disk
         /// </summary>
@@ -128,9 +139,9 @@ namespace HatCMS.Placeholders
         /// <param name="identifier"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static string getTargetNameOnDisk(CmsPage aggregatorPage, int identifier, string fileName)
+        public static string getTargetNameOnDisk(CmsPage aggregatorPage, int identifier, CmsLanguage language, string fileName)
         {
-            StringBuilder sb = new StringBuilder(getFileStorageFolderUrl(aggregatorPage, identifier));
+            StringBuilder sb = new StringBuilder(getFileStorageFolderUrl(aggregatorPage, identifier, language));
 
             if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V1")
             {
@@ -148,21 +159,16 @@ namespace HatCMS.Placeholders
         /// <param name="aggregatorPage"></param>
         /// <param name="identifier"></param>
         /// <returns></returns>
-        public static string getFileStorageFolderUrl(CmsPage aggregatorPage, int identifier)
-        {
+        public static string getFileStorageFolderUrl(CmsPage fileDetailsPage, int identifier, CmsLanguage language)
+        {            
             string DMSFileStorageFolderUrl = CmsConfig.getConfigValue("DMSFileStorageFolderUrl", "");
-            if (!DMSFileStorageFolderUrl.EndsWith("/"))
-                DMSFileStorageFolderUrl += "/";
 
-            if (DMSFileStorageFolderUrl.StartsWith("~/"))
-            {
-                DMSFileStorageFolderUrl = DMSFileStorageFolderUrl.Substring(2); // remove "~/"
-                DMSFileStorageFolderUrl = CmsContext.ApplicationPath + DMSFileStorageFolderUrl; // replace ~/ with ApplicationPath
-            }
+            DMSFileStorageFolderUrl = VirtualPathUtility.ToAbsolute(DMSFileStorageFolderUrl);
+            DMSFileStorageFolderUrl = VirtualPathUtility.AppendTrailingSlash(DMSFileStorageFolderUrl);            
 
             string subDir = "";
             if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V2")
-                subDir = aggregatorPage.ID.ToString() + "_" + identifier.ToString() + "/";
+                subDir = fileDetailsPage.ID.ToString() + identifier.ToString() + language.shortCode.ToLower() + "/";
 
             return DMSFileStorageFolderUrl + subDir;
         }
@@ -174,9 +180,9 @@ namespace HatCMS.Placeholders
         /// <param name="identifier"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static string getDownloadUrl(CmsPage aggregatorPage, int identifier, string fileName)
+        public static string getDownloadUrl(CmsPage aggregatorPage, int identifier, CmsLanguage language, string fileName)
         {
-            string baseUrl = getFileStorageFolderUrl(aggregatorPage, identifier);
+            string baseUrl = getFileStorageFolderUrl(aggregatorPage, identifier, language);
             string url = baseUrl + fileName;
             return url;
         }
@@ -188,9 +194,9 @@ namespace HatCMS.Placeholders
         /// <param name="identifier"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static string getDownloadAnchor(CmsPage aggregatorPage, int identifier, string fileName)
+        public static string getDownloadAnchorHtml(CmsPage aggregatorPage, int identifier, CmsLanguage lang, string fileName)
         {
-            return getDownloadAnchor(aggregatorPage, identifier, fileName, fileName, "_blank", "");
+            return getDownloadAnchorHtml(aggregatorPage, identifier, lang, fileName, fileName, "_blank", "");
         }
 
         /// <summary>
@@ -203,10 +209,10 @@ namespace HatCMS.Placeholders
         /// <param name="target"></param>
         /// <param name="cssClass"></param>
         /// <returns></returns>
-        public static string getDownloadAnchor(CmsPage aggregatorPage, int identifier, string fileName, string displayHtml, string target, string cssClass)
+        public static string getDownloadAnchorHtml(CmsPage aggregatorPage, int identifier, CmsLanguage lang, string fileName, string displayHtml, string target, string cssClass)
         {
             StringBuilder html = new StringBuilder("<a href=\"");
-            html.Append(getDownloadUrl(aggregatorPage, identifier, fileName));
+            html.Append(getDownloadUrl(aggregatorPage, identifier, lang, fileName));
             html.Append("\"");
             if (target != "")
                 html.Append(" target=\"" + target + "\" ");
@@ -225,9 +231,9 @@ namespace HatCMS.Placeholders
         /// <param name="identifier"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static long getFileSize(CmsPage aggregatorPage, int identifier, string fileName)
+        public static long getFileSize(CmsPage aggregatorPage, int identifier, CmsLanguage lang, string fileName)
         {
-            string nameOnDisk = getTargetNameOnDisk(aggregatorPage, identifier, fileName);
+            string nameOnDisk = getTargetNameOnDisk(aggregatorPage, identifier, lang, fileName);
             FileInfo fi = new FileInfo(nameOnDisk);
             return fileName.Length;
         }

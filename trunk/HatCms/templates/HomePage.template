@@ -6,5 +6,7 @@
 		##PlaceHolder(HtmlContent id="1" width="690px" height="400px" OutputOnlyIfHasContent="true")##
 		
 		##PlaceHolder(SingleImage id="1" width="500" height="-1")##						
+		
+		##PlaceHolder(FileLibraryAggregator id="1" displaymode="list")##
 
 ##EndPlaceholderRegion("MainContent")##

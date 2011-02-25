@@ -52,6 +52,7 @@ namespace HatCMS
 
             // -- config entries
             ret.Add(new CmsConfigItemDependency("TemplateEngineVersion"));
+            ret.Add(new CmsConfigItemDependency("URLsToNotRemap"));            
             ret.Add(new CmsConfigItemDependency("AdminUserRole"));
             ret.Add(new CmsConfigItemDependency("LoginUserRole"));
             ret.Add(new CmsConfigItemDependency("AuthorAccessUserRole"));

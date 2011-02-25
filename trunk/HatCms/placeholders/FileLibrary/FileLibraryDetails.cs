@@ -91,10 +91,10 @@ namespace HatCMS.Placeholders
         /// </summary>
         /// <param name="pageToAddCommandTo"></param>
         /// <param name="jobAggregatorPage"></param>
-        public static void UpdateFileLibraryCommandsInEditMenu(CmsPage pageToAddCommandTo, CmsPage fileLibraryAggregatorPage)
+        public static void UpdateFileLibraryCommandsInEditMenu(CmsPage pageToAddCommandTo)
         {
             // -- only add the command if the user can author
-            if (!CmsContext.currentUserCanAuthor)
+            if (!pageToAddCommandTo.currentUserCanWrite)
                 return;
 
             // get the existing command
@@ -103,8 +103,7 @@ namespace HatCMS.Placeholders
             if (deletePageAction == null)
                 return; // do not throw an exception (note: the home page does not have a deletepageaction)
 
-            deletePageAction.doRenderToString = DeleteThisFileDetailsPageAction;
-            deletePageAction.ActionPayload = fileLibraryAggregatorPage;
+            deletePageAction.doRenderToString = DeleteThisFileDetailsPageAction;            
         }
 
 
@@ -482,14 +481,14 @@ namespace HatCMS.Placeholders
             html.Append("<div style=\"float: left; text-align: center;\">" + EOL);
 
             string iconTag = IconUtils.getIconTag(CmsContext.ApplicationPath, true, fileData.fileExtension);
-            html.Append(renderDiv(FileLibraryDetailsData.getDownloadAnchor(aggregatorPage, identifier, fName, iconTag, "_blank", "")));
+            html.Append(renderDiv(FileLibraryDetailsData.getDownloadAnchorHtml(aggregatorPage, identifier, lang, fName, iconTag, "_blank", "")));
 
-            html.Append(renderDiv(FileLibraryDetailsData.getDownloadAnchor(aggregatorPage, identifier, fName, getDownloadText(lang), "_blank", "downloadLink")));
+            html.Append(renderDiv(FileLibraryDetailsData.getDownloadAnchorHtml(aggregatorPage, identifier, lang, fName, getDownloadText(lang), "_blank", "downloadLink")));
 
             html.Append("<p style=\"font-style: italic; font-size: smaller;\">(" + getLinkOpensNewWindowText(lang) + ")</p>" + EOL);
 
             html.Append(renderDiv(getFileTypeName(fileData)));
-            long size = FileLibraryDetailsData.getFileSize(aggregatorPage, identifier, fName);
+            long size = FileLibraryDetailsData.getFileSize(aggregatorPage, identifier, lang, fName);
             html.Append(renderDiv(StringUtils.formatFileSize(size)));
 
             html.Append("</div>" + EOL);
@@ -510,7 +509,7 @@ namespace HatCMS.Placeholders
             StringBuilder html = new StringBuilder();
             html.Append("<div style=\"float: left;\" class=\"listing\">" + EOL);
 
-            html.Append(renderDiv(getFileText(lang), FileLibraryDetailsData.getDownloadAnchor(aggregatorPage, identifier, fName)));
+            html.Append(renderDiv(getFileText(lang), FileLibraryDetailsData.getDownloadAnchorHtml(aggregatorPage, identifier, lang, fName)));
             html.Append(renderDiv(getCategoryText(lang), fileData.getCategoryName(categoryList)));
 
             html.Append(renderDiv(getAuthorText(lang), fileData.Author));
@@ -518,18 +517,22 @@ namespace HatCMS.Placeholders
 
             if (getFileTypeName(fileData).EndsWith("graphic", StringComparison.CurrentCultureIgnoreCase))
             {
-                string imgPreviewUrl = showThumbPage.getThumbDisplayUrl(FileLibraryDetailsData.getDownloadUrl(aggregatorPage, identifier, fName), 200, -1);
+                string imgPreviewUrl = showThumbPage.getThumbDisplayUrl(FileLibraryDetailsData.getDownloadUrl(aggregatorPage, identifier, lang, fName), 200, -1);
                 string imgTag = "<img border=\"0\" src=\"" + imgPreviewUrl + "\"></a>";
-                html.Append(renderDiv(getImagePreviewText(lang), FileLibraryDetailsData.getDownloadAnchor(aggregatorPage, identifier, fName, imgTag, "_blank", "")));
+                html.Append(renderDiv(getImagePreviewText(lang), FileLibraryDetailsData.getDownloadAnchorHtml(aggregatorPage, identifier, lang, fName, imgTag, "_blank", "")));
             }
 
-            string eventHtml = "(n/a)";
-            if (fileData.EventPageId > -1)
+            bool eventRequired = FileLibraryCategoryData.isEventRequired(categoryList, fileData.CategoryId);
+            if (eventRequired)
             {
-                CmsPage eventPage = pageDb.getPage(fileData.EventPageId);
-                eventHtml = "<a href=\"" + eventPage.getUrl(lang) + "\">" + eventPage.getTitle(lang) + "</a>" + EOL;
+                string eventHtml = "(n/a)";
+                if (fileData.EventPageId > -1)
+                {
+                    CmsPage eventPage = pageDb.getPage(fileData.EventPageId);
+                    eventHtml = "<a href=\"" + eventPage.getUrl(lang) + "\">" + eventPage.getTitle(lang) + "</a>" + EOL;
+                }
+                html.Append(renderDiv(getAttachedEventText(lang), eventHtml));
             }
-            html.Append(renderDiv(getAttachedEventText(lang), eventHtml));
 
             WebPortalUser u = WebPortalUser.FetchUser(fileData.CreatedBy, CmsPortalApplication.GetInstance());
             string uploadPersonName = (u == null) ? fileData.CreatedBy : u.FullName;
@@ -556,7 +559,7 @@ namespace HatCMS.Placeholders
             StringBuilder html = new StringBuilder();
             html.Append("<div style=\"float: left;\" class=\"listing\">" + EOL);
 
-            html.Append(renderDiv(getFileText(lang), FileLibraryDetailsData.getDownloadAnchor(aggregatorPage, identifier, fName)));
+            html.Append(renderDiv(getFileText(lang), FileLibraryDetailsData.getDownloadAnchorHtml(aggregatorPage, identifier, lang, fName)));
 
             string cssClass = "fileLibrary_categoryId";
             string popupCategory = FileLibraryCategoryData.getEditPopupAnchor(lang, cssClass, getEditText(lang));
@@ -575,14 +578,17 @@ namespace HatCMS.Placeholders
 
             if (getFileTypeName(fileData).EndsWith("graphic", StringComparison.CurrentCultureIgnoreCase))
             {
-                string imgPreviewUrl = showThumbPage.getThumbDisplayUrl(FileLibraryDetailsData.getDownloadUrl(aggregatorPage, identifier, fName), 200, -1);
+                string imgPreviewUrl = showThumbPage.getThumbDisplayUrl(FileLibraryDetailsData.getDownloadUrl(aggregatorPage, identifier, lang, fName), 200, -1);
                 string imgTag = "<img border=\"0\" src=\"" + imgPreviewUrl + "\"></a>";
-                html.Append(renderDiv(getImagePreviewText(lang), FileLibraryDetailsData.getDownloadAnchor(aggregatorPage, identifier, fName, imgTag, "_blank", "")));
+                html.Append(renderDiv(getImagePreviewText(lang), FileLibraryDetailsData.getDownloadAnchorHtml(aggregatorPage, identifier, lang, fName, imgTag, "_blank", "")));
             }
 
             bool eventRequired = FileLibraryCategoryData.isEventRequired(categoryList, fileData.CategoryId);
-            htmlId = controlId + "eventPageId";
-            html.Append(renderDiv(getAttachedEventText(lang), getEventOption(lang, controlId, fileData.EventPageId, eventRequired)));
+            if (eventRequired || fileData.EventPageId >= 0 )
+            {
+                htmlId = controlId + "eventPageId";
+                html.Append(renderDiv(getAttachedEventText(lang), getEventOption(lang, controlId, fileData.EventPageId, eventRequired)));
+            }
 
             WebPortalUser u = WebPortalUser.FetchUser(fileData.CreatedBy, CmsPortalApplication.GetInstance());
             string uploadPersonName = (u == null) ? fileData.CreatedBy : u.FullName;
@@ -604,7 +610,7 @@ namespace HatCMS.Placeholders
         /// <param name="paramList"></param>
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            UpdateFileLibraryCommandsInEditMenu(page, page);
+            UpdateFileLibraryCommandsInEditMenu(page);
             addCssAndScript(page);
             StringBuilder html = new StringBuilder();
             categoryList = db.fetchCategoryList(langToRenderFor);

@@ -58,19 +58,22 @@ namespace HatCMS
                 string path = getRequestedPagePathFromForm();
                                 
                 // -- get page by revision
-                if (CmsContext.currentUserCanAuthor && CmsContext.currentEditMode == CmsEditMode.View)
+                if (CmsContext.currentUserIsLoggedIn && CmsContext.currentEditMode == CmsEditMode.View)
                 {
                     int revisionNumberToDisplay = PageUtils.getFromForm("revNum", -1);
                     if (revisionNumberToDisplay >= 0)
                     {
                         CmsPage revToRet = getPageByPath(path, revisionNumberToDisplay);
-                        PerRequestCache.AddToCache(cacheKey, revToRet);
-                        
-                        return revToRet;
+                        if (revToRet.currentUserCanWrite)
+                        {
+                            PerRequestCache.AddToCache(cacheKey, revToRet);
+
+                            return revToRet;
+                        }
                     }
                 }
                 
-                // -- default view by path
+                // -- default view by path (ignore the revision param)
                 CmsPage ret = getPageByPath(path);
                 
                 PerRequestCache.AddToCache(cacheKey, ret);
@@ -88,29 +91,7 @@ namespace HatCMS
             get { return CmsContext.currentPage.Zone; }
         }
 
-        /// <summary>
-        /// Check if the current is readable by the web portal user
-        /// </summary>
-        public static bool currentZoneReadable
-        {
-            get
-            {
-                WebPortalUser u = currentWebPortalUser;
-                return currentZone.canRead(u);
-            }
-        }
-
-        /// <summary>
-        /// Check if the current zone is writable by the web portal user
-        /// </summary>
-        public static bool currentZoneWritable
-        {
-            get
-            {
-                WebPortalUser u = currentWebPortalUser;
-                return currentZone.canWrite(u);
-            }
-        }
+        
 
         /// <summary>
         /// Gets the requested page path from either the query string or the posted form.
@@ -214,17 +195,7 @@ namespace HatCMS
                 }
             } // get
         }        
-
-        /// <summary>
-        /// Obtain the current short date formation (e.g. DateTime.ToString("d"))
-        /// </summary>
-        /// <returns></returns>
-        public static string currentShortDateFormat()
-        {
-            return Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToUpper();
-        }
-
-
+        
 		/// <summary>
 		/// gets the currently logged in user.
 		/// </summary>
@@ -243,32 +214,29 @@ namespace HatCMS
 		}
 
         /// <summary>
-        /// Returns true if the currently logged in user has author level privledges.
-        /// </summary>
-        public static bool currentUserCanAuthor
-        {
-            get
-            {
-                if (currentUserIsSuperAdmin)
-                    return true;
-                else if (CmsContext.currentWebPortalUser != null && CmsContext.currentWebPortalUser.inRole(CmsConfig.getConfigValue("AuthorAccessUserRole","Author")))
-                    return true;
-                return false;
-            }
-        }
-
-        /// <summary>
         /// returns true if the currently logged in user is logged in.
         /// </summary>
         public static bool currentUserIsLoggedIn
         {
             get
             {
-                if (currentUserCanAuthor || currentUserIsSuperAdmin)
+                if (currentUserIsSuperAdmin)
                     return true;
                 if (CmsContext.currentWebPortalUser != null && CmsContext.currentWebPortalUser.inRole(CmsConfig.getConfigValue("LoginUserRole", Guid.NewGuid().ToString())))
                     return true;
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// returns true if the current user can write files to the ~/UserFiles/ directory on disk.
+        /// Note that all users (including anonymous users) can read files in this directory.
+        /// </summary>
+        public static bool currentUserCanWriteToUserFilesOnDisk
+        {
+            get
+            {
+                return currentUserIsLoggedIn;
             }
         }
 
@@ -296,8 +264,8 @@ namespace HatCMS
                 try
                 {
                     // -- we cache the currentWebPortal user so that we don't go to the database
-                    if (System.Web.HttpContext.Current.Items.Contains("currentWebPortalUser"))
-                        return System.Web.HttpContext.Current.Items["currentWebPortalUser"] as WebPortalUser;
+                    if (PerRequestCache.CacheContains("currentWebPortalUser"))
+                        return PerRequestCache.GetFromCache("currentWebPortalUser", null) as WebPortalUser;
 
                     if (currentUser != null && currentUser.Identity.IsAuthenticated)
                     {
@@ -346,7 +314,7 @@ namespace HatCMS
         {
             get
             {
-                if (CmsContext.currentUserCanAuthor && CmsContext.currentEditMode == CmsEditMode.View)
+                if (CmsContext.currentUserIsLoggedIn && CmsContext.currentEditMode == CmsEditMode.View && currentPage.currentUserCanWrite)
                 {
                     int revisionNumberToDisplay = requestedPageVersionNumberToView;
                     if (revisionNumberToDisplay >= 0)
@@ -373,7 +341,7 @@ namespace HatCMS
             get
             {
                 string formVal = PageUtils.getFromForm(EditModeFormName, "");
-                if (formVal == "1" && currentUserCanAuthor) // note: the currentUserCanAuthor potentially goes to the database
+                if (formVal == "1" && currentPage.currentUserCanWrite) // note: the currentPage.currentUserCanWrite potentially goes to the database
                 {                    
                     return CmsEditMode.Edit;
                 }
@@ -415,8 +383,8 @@ namespace HatCMS
             List<string> paramListKeys = new List<string>();
             foreach (string k in paramList.Keys)
                 paramListKeys.Add(k);
-            // -- only allow authors to go to CmsEditMode.Edit
-            if (newEditMode == CmsEditMode.Edit && CmsContext.currentUserCanAuthor)
+            // -- only allow authorized people to go to CmsEditMode.Edit
+            if (newEditMode == CmsEditMode.Edit && targetPage.currentUserCanWrite)
             {
                 if (targetPage.lockPageForEditing() != null)
                 {
@@ -824,24 +792,42 @@ namespace HatCMS
         public static string[] getTemplateNamesForCurrentUser()
         {
             return currentPage.TemplateEngine.getTemplateNamesForCurrentUser();
-
         }
 
-        public static CmsPage[] getAllPagesWithPlaceholder(string placeholderType)
+
+        public enum PageGatheringMode { ChildPagesOnly, FullRecursion }
+
+        public static CmsPage[] getAllPagesWithPlaceholder(string placeholderType, CmsPage rootPageToGatherFrom, PageGatheringMode gatheringMode)
         {
             List<CmsPage> ret = new List<CmsPage>();
             try
             {
-                Dictionary<int, CmsPage> allPages = HomePage.getLinearizedPages();
-                foreach (CmsPage page in allPages.Values)
+                if (gatheringMode == PageGatheringMode.FullRecursion)
                 {
-                    if (page.hasPlaceholder(placeholderType))
-                        ret.Add(page);
-                } // foreach page
+                    Dictionary<int, CmsPage> allPages = rootPageToGatherFrom.getLinearizedPages();
+                    foreach (CmsPage page in allPages.Values)
+                    {
+                        if (page.hasPlaceholder(placeholderType))
+                            ret.Add(page);
+                    } // foreach page
+                }
+                else if (gatheringMode == PageGatheringMode.ChildPagesOnly)
+                {
+                    foreach (CmsPage page in rootPageToGatherFrom.AllChildPages)
+                    {
+                        if (page.hasPlaceholder(placeholderType))
+                            ret.Add(page);
+                    } // foreach page
+                }
             }
             catch
             { }
             return ret.ToArray();
+        }
+
+        public static CmsPage[] getAllPagesWithPlaceholder(string placeholderType)
+        {
+            return getAllPagesWithPlaceholder(placeholderType, HomePage, PageGatheringMode.FullRecursion);
         }
         
 

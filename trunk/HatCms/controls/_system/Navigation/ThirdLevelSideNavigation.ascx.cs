@@ -68,7 +68,7 @@ namespace HatCMS.controls.Navigation
             if (page.ID == -1 || currentLevel > maxLevel || !page.ShowInMenu)
                 return "";
 
-            if (!page.isVisibleForCurrentUser)
+            if (!page.isVisibleForCurrentUser || ! page.ShowInMenu)
                 return "";
 
             bool outputChildren = false;

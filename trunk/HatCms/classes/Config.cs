@@ -156,6 +156,22 @@ namespace HatCMS
 
         }
 
+        /// <summary>
+        /// a list of URLs (no leading slash or app path) that the remapping engine should not process.
+        /// filenames not handled by the ASP.Net runtime (such as .js or .htm files) do not need to be listed here.
+        /// However, any file that you want to execute on its own which normally runs through the .Net runtime needs to be listed
+        /// here. These include *.aspx, *.ashx files.
+        /// </summary>
+        public static string[] URLsToNotRemap
+        {
+            get
+            {
+                string toSplit = getConfigValue("URLsToNotRemap", "");
+                return toSplit.Split(new char[] { CmsConfig.PerLanguageConfigSplitter }, StringSplitOptions.RemoveEmptyEntries);                                
+            }
+        } // URLsToNotRemap
+
+
         public enum DateInputFormat { DayMonthYear, YearMonthDay, MonthDayYear };
 
         /// <summary>

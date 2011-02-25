@@ -31,11 +31,7 @@ namespace HatCMS.controls
 		protected override void Render(System.Web.UI.HtmlTextWriter writer)
 		{
 
-            if (!CmsContext.currentUserCanAuthor)
-			{
-				writer.WriteLine("Access Denied");
-				return;
-			}
+            
 			
 			// -- get the target page
 			int targetPageId = PageUtils.getFromForm("target",Int32.MinValue);
@@ -45,6 +41,12 @@ namespace HatCMS.controls
 				return;
 			}
             CmsPage page = CmsContext.getPageById(targetPageId);
+
+            if (!page.currentUserCanWrite)
+            {
+                writer.WriteLine("Access Denied");
+                return;
+            }
 
 			string html = "<Strong>Sort Sub-Pages</Strong><br>";
 

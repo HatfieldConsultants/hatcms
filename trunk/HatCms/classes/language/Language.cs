@@ -84,8 +84,18 @@ namespace HatCMS
         {
             return new CmsLanguage(InvalidLanguageShortCode);
         }
-        
 
+        /// <summary>
+        /// Obtain the current short date formation (e.g. DateTime.ToString("d"))
+        /// </summary>
+        /// <returns></returns>
+        public static string CurrentShortDateFormat
+        {
+            get
+            {
+                return System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToUpper();
+            }
+        }
 
         #region IComparable Members
 

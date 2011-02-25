@@ -22,13 +22,7 @@ namespace HatCMS.controls.Internal
 
         protected override void Render(System.Web.UI.HtmlTextWriter writer)
         {
-
-            if (!CmsContext.currentUserCanAuthor)
-            {
-                writer.WriteLine("Access Denied");
-                return;
-            }
-
+            
             string html = "<p><center>";
             int targetPageId = PageUtils.getFromForm("target", Int32.MinValue);
             if (targetPageId < 0)
@@ -44,6 +38,13 @@ namespace HatCMS.controls.Internal
                 else
                 {
                     CmsPage targetPage = CmsContext.getPageById(targetPageId);
+
+                    if (!targetPage.currentUserCanWrite)
+                    {
+                        writer.WriteLine("Access Denied");
+                        return;
+                    }
+
                     targetPage.clearCurrentPageLock();
                     bool success = (targetPage.getCurrentPageLockData() == null);
                                         

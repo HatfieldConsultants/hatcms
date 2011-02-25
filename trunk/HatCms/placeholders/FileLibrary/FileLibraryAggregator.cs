@@ -15,6 +15,68 @@ namespace HatCMS.Placeholders
 {
     public class FileLibraryAggregator : BaseCmsPlaceholder
     {
+
+
+        public class RenderParameters
+        {
+            public static RenderParameters fromParamList(string[] paramList)
+            {
+                return new RenderParameters(paramList);
+            }
+
+            public enum DisplayMode { Tabs, List }
+            public DisplayMode displayMode = DisplayMode.Tabs;
+
+            public enum FileLinkMode { LinkToPage, LinkToFile }
+            public FileLinkMode fileLinkMode = FileLinkMode.LinkToPage;
+
+            /// <summary>
+            /// Set to Int32.MinValue for the current page.
+            /// </summary>
+            public int PageIdToGatherFilesFrom = Int32.MinValue;
+
+            /// <summary>
+            /// if set to false, only gathers files from child pages. If true, gathers from all 
+            /// </summary>
+            public bool RecursiveGatherFiles = false;
+
+
+            public RenderParameters(string[] paramList)
+            {
+                if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1)
+                {
+                    throw new Exception("Error: FileLibraryAggregator does not work with TemplateEngine.v1");
+                }
+                else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+                {
+                    string sDisplayMode = "";
+                    try
+                    {
+                        sDisplayMode = PlaceholderUtils.getParameterValue("displaymode", Enum.GetName(typeof(DisplayMode), displayMode), paramList);
+                        displayMode = (DisplayMode)Enum.Parse(typeof(DisplayMode), sDisplayMode, true);
+                    }
+                    catch
+                    {
+                        throw new Exception("Error: invalid FileLibraryAggregator displaymode parameter. Valid values: "+String.Join(", ", Enum.GetNames(typeof(DisplayMode))));
+                    }
+
+                    string sLinkMode = "";
+                    try
+                    {
+                        sLinkMode = PlaceholderUtils.getParameterValue("filelinks", Enum.GetName(typeof(FileLinkMode), displayMode), paramList);
+                        fileLinkMode = (FileLinkMode) Enum.Parse(typeof(FileLinkMode), sLinkMode, true);
+                    }
+                    catch
+                    {
+                        throw new Exception("Error: invalid FileLibraryAggregator filelinks parameter. Valid values: "+String.Join(", ", Enum.GetNames(typeof(FileLinkMode))));
+                    }
+
+                    PageIdToGatherFilesFrom = PlaceholderUtils.getParameterValue("gatherfrompageid", Int32.MinValue, paramList);
+                    RecursiveGatherFiles = PlaceholderUtils.getParameterValue("gatherrecusive", RecursiveGatherFiles, paramList);
+                }
+            }
+        } // RenderParameters        
+        
         protected string EOL = Environment.NewLine;
         protected FileLibraryDb db = new FileLibraryDb();
         protected CmsPageDb pageDb = new CmsPageDb();
@@ -99,12 +161,11 @@ namespace HatCMS.Placeholders
         /// <summary>
         /// Replaces the "Delete page" command with a custom one.
         /// </summary>
-        /// <param name="pageToAddCommandTo"></param>
-        /// <param name="jobAggregatorPage"></param>
-        public static void UpdateFileLibraryCommandsInEditMenu(CmsPage pageToAddCommandTo, CmsPage fileLibraryAggregatorPage)
+        /// <param name="pageToAddCommandTo"></param>        
+        public static void UpdateFileLibraryCommandsInEditMenu(CmsPage pageToAddCommandTo)
         {
             // -- only add the command if the user can author
-            if (!CmsContext.currentUserCanAuthor)
+            if (!pageToAddCommandTo.currentUserCanWrite)
                 return;
 
             // get the existing command
@@ -114,17 +175,20 @@ namespace HatCMS.Placeholders
                 return; // do not throw an exception (note: the home page does not have a deletepageaction)
             
             deletePageAction.doRenderToString = DeleteThisFileAggregatorPageAction;
-            deletePageAction.ActionPayload = fileLibraryAggregatorPage;
+            
         }
 
         /// <summary>
         /// Include the JS and CSS files.
         /// </summary>
         /// <param name="page"></param>
-        protected void addCssAndScript(CmsPage page)
+        protected void addCssAndScript(CmsPage page, RenderParameters renderParameters)
         {
-            page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
-            page.HeadSection.AddJavascriptFile("js/_system/FileLibrary/FileLibrary.js");
+            if (renderParameters.displayMode == RenderParameters.DisplayMode.Tabs)
+            {
+                page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
+                page.HeadSection.AddJavascriptFile("js/_system/FileLibrary/FileLibrary.js");
+            }
         }
 
         /// <summary>
@@ -430,11 +494,23 @@ namespace HatCMS.Placeholders
         /// <param name="cat"></param>
         /// <param name="aggregatorData"></param>
         /// <returns></returns>
-        protected List<FileLibraryDetailsData> getFileList(CmsPage page, int identifier, CmsLanguage lang, FileLibraryCategoryData cat, FileLibraryAggregatorData aggregatorData)
+        protected List<FileLibraryDetailsData> getFileList(CmsPage page, int identifier, CmsLanguage lang, FileLibraryCategoryData cat, FileLibraryAggregatorData aggregatorData, RenderParameters renderParameters)
         {
             int offset = PageUtils.getFromForm("offset", 0);
             int count = aggregatorData.NumFilesPerPage;
-            return db.fetchDetailsData(page.AllChildPages, identifier, lang, cat, count * offset, count);
+
+            CmsPage rootPageToGatherFrom = page;
+            if (renderParameters.PageIdToGatherFilesFrom >= 0)
+                rootPageToGatherFrom = CmsContext.getPageById(renderParameters.PageIdToGatherFilesFrom);
+
+            CmsContext.PageGatheringMode gatherMode = CmsContext.PageGatheringMode.ChildPagesOnly;
+            if (renderParameters.RecursiveGatherFiles)
+                gatherMode = CmsContext.PageGatheringMode.FullRecursion;
+
+            CmsPage[] pagesToGetDetailsFrom = CmsContext.getAllPagesWithPlaceholder("FileLibraryDetails", rootPageToGatherFrom, gatherMode);
+
+            return db.fetchDetailsData(pagesToGetDetailsFrom, identifier, lang, cat, count * offset, count);
+            
         }
 
         /// <summary>
@@ -445,7 +521,7 @@ namespace HatCMS.Placeholders
         /// <param name="lang"></param>
         /// <param name="controlId"></param>
         /// <returns></returns>
-        protected string handleUploadSubmit(CmsPage page, int identifier, CmsLanguage lang, string controlId)
+        protected string handleUploadSubmit(CmsPage page, int identifier, CmsLanguage lang, string controlId, RenderParameters renderParameters)
         {
             if (PageUtils.getFromForm(controlId + "action", "") != "postFile")
                 return "";
@@ -492,7 +568,9 @@ namespace HatCMS.Placeholders
                         continue;
                     }
 
-                    string detailsView = childPage.getUrl(lang) + "?hatCmsEditMode=1";
+                    Dictionary<string, string> urlParams = new Dictionary<string,string>();
+                    urlParams.Add(CmsContext.EditModeFormName,"1");
+                    string detailsView = childPage.getUrl(urlParams, lang);
                     msg.Append(formatNormalMsg("The file \"" + postedFileName + "\" has been uploaded. <a href=\"" + detailsView + "\">Edit</a> this file's details."));
                 }
                 catch (Exception ex)
@@ -515,7 +593,7 @@ namespace HatCMS.Placeholders
         protected string putUploadFileToFolder(CmsPage page, int identifier, CmsLanguage lang, HttpPostedFile postedFile)
         {
             string targetFileName = getFileNameWithoutPath(postedFile.FileName);
-            targetFileName = FileLibraryDetailsData.getTargetNameOnDisk(page, identifier, targetFileName);
+            targetFileName = FileLibraryDetailsData.getTargetNameOnDisk(page, identifier, lang, targetFileName);
             if (System.IO.File.Exists(targetFileName))
                 return formatErrorMsg("A file named \"" + postedFile.FileName + "\" already exists.");
 
@@ -580,12 +658,12 @@ namespace HatCMS.Placeholders
         /// <param name="fileCategoryId"></param>
         /// <param name="aggregatorData"></param>
         /// <returns></returns>
-        protected string renderTabContent(CmsPage page, int identifier, CmsLanguage lang, int fileCategoryId, FileLibraryAggregatorData aggregatorData)
+        protected string renderTabContent(CmsPage page, int identifier, CmsLanguage lang, int fileCategoryId, FileLibraryAggregatorData aggregatorData, RenderParameters renderParameters)
         {
             if (fileCategoryId == -1)
             {
                 List<FileLibraryDetailsData> latestList = db.fetchLatestUpload(page.ChildPages, identifier, lang, aggregatorData.NumFilesForOverview);
-                return renderTabContentOverview(page, identifier, lang, fileCategoryId, latestList);
+                return renderTabContentOverview(page, identifier, lang, fileCategoryId, latestList, renderParameters);
             }
 
             FileLibraryCategoryData cat = FileLibraryCategoryData.getCategoryFromList(categoryList, fileCategoryId);
@@ -598,9 +676,9 @@ namespace HatCMS.Placeholders
             if (pageNum != "")
                 pageNum = "<div style=\"font-size: smaller; text-align: right;\">" + getPageText(lang) + ": " + pageNum + "</div>";
 
-            List<FileLibraryDetailsData> fileList = getFileList(page, identifier, lang, cat, aggregatorData);
+            List<FileLibraryDetailsData> fileList = getFileList(page, identifier, lang, cat, aggregatorData, renderParameters);
             html.Append(pageNum);
-            html.Append(renderTableForFileList(page, identifier, lang, fileList, false));
+            html.Append(renderTableForFileList(page, identifier, lang, fileList, false, renderParameters));
             html.Append(pageNum);
             html.Append("</div>" + EOL);
             return html.ToString();
@@ -615,7 +693,7 @@ namespace HatCMS.Placeholders
         /// <param name="categoryId"></param>
         /// <param name="latestList"></param>
         /// <returns></returns>
-        protected string renderTabContentOverview(CmsPage page, int identifier, CmsLanguage lang, int categoryId, List<FileLibraryDetailsData> latestList)
+        protected string renderTabContentOverview(CmsPage page, int identifier, CmsLanguage lang, int categoryId, List<FileLibraryDetailsData> latestList, RenderParameters renderParameters)
         {
             StringBuilder html = new StringBuilder();
             if (categoryId == -1)
@@ -626,7 +704,7 @@ namespace HatCMS.Placeholders
             if (latestList.Count > 0)
             {
                 html.Append("<p>" + getNewUploadText(lang) + ":</p>");
-                html.Append(renderTableForFileList(page, identifier, lang, latestList, true));
+                html.Append(renderTableForFileList(page, identifier, lang, latestList, true, renderParameters));
             }
             else
                 html.Append("<p>No files yet.</p>");
@@ -673,10 +751,10 @@ namespace HatCMS.Placeholders
         /// <param name="fileList"></param>
         /// <param name="showCategory"></param>
         /// <returns></returns>
-        protected string renderTableForFileList(CmsPage page, int identifier, CmsLanguage lang, List<FileLibraryDetailsData> fileList, bool showCategory)
+        protected string renderTableForFileList(CmsPage page, int identifier, CmsLanguage lang, List<FileLibraryDetailsData> fileList, bool showCategory, RenderParameters renderParameters)
         {
-            if (fileList.Count == 0)
-                return "<p>This tab is empty.</p>";
+            if (fileList.Count == 0)                
+                return "<p class=\"NoResults\">There are no files in this category.</p>";
 
             StringBuilder html = new StringBuilder();
             html.Append("<table border=\"0\" cellpadding=\"8\" cellspacing=\"0\">" + EOL);
@@ -693,11 +771,20 @@ namespace HatCMS.Placeholders
                     html.Append("<td>" + d.getCategoryName(categoryList) + "</td>" + EOL);
 
                 string iconTag = IconUtils.getIconTag(CmsContext.ApplicationPath, false, d.fileExtension);
-                string urlDetails = pageDb.getPage(d.PageId).getUrl(lang);
+                string urlDetails = "";
+                // -- link direct to the file only if the current user can't edit the file.
+                if (renderParameters.fileLinkMode == RenderParameters.FileLinkMode.LinkToFile && ! page.Zone.canWrite(CmsContext.currentWebPortalUser) )
+                {
+                    urlDetails = FileLibraryDetailsData.getDownloadUrl(page, identifier, lang, d.FileName);
+                }
+                else
+                {
+                    urlDetails = pageDb.getPage(d.PageId).getUrl(lang);
+                }
 
                 html.Append("<td>" + EOL);
                 html.Append(iconTag + EOL);
-                html.Append(FileLibraryDetailsData.getDownloadAnchor(page, identifier, d.FileName) + EOL);
+                html.Append(FileLibraryDetailsData.getDownloadAnchorHtml(page, identifier,lang, d.FileName) + EOL);
                 html.Append("</td>" + EOL);
 
                 string eventHtml = "(n/a)";
@@ -731,13 +818,23 @@ namespace HatCMS.Placeholders
             html.Append(page.getFormStartHtml(formId, "return uploadFormSubmit('" + lang.shortCode + "');") + EOL);
             html.Append("<div>" + getAddFileText(lang) + ":</div>" + EOL);
             html.Append("<p>" + EOL);
-            html.Append("<label>" + getCategoryText(lang) + ":</lable><br />" + EOL);
+            html.Append("<label>" + getCategoryText(lang) + ":</label><br />" + EOL);
             html.Append(getCategoryOption(lang, controlId));
             html.Append("</p>" + EOL);
-            html.Append("<p>" + EOL);
-            html.Append("<label>" + getAttachToEventText(lang) + ":</lable><br />" + EOL);
-            html.Append(getEventOption(lang, controlId, -1) + EOL);
-            html.Append("</p>" + EOL);
+            
+            if (FileLibraryCategoryData.atLeastOneCategoryRequiresAnEvent(categoryList.ToArray()))
+            {
+                html.Append("<p>" + EOL);
+                html.Append("<label>" + getAttachToEventText(lang) + ":</label><br />" + EOL);
+                html.Append(getEventOption(lang, controlId, -1) + EOL);
+                html.Append("</p>" + EOL);
+            }
+            else
+            {
+                string htmlName = controlId + "eventPageId_" + lang.shortCode;
+                html.Append(PageUtils.getHiddenInputHtml(htmlName, -1));
+            }
+
             html.Append("<p>" + EOL);
             html.Append("<label>" + getFileText(lang) + ":</label> (" + getMaxFileSizeText(lang) + ": " + PageUtils.MaxUploadFileSize + ")<br />" + EOL);
             html.Append("<input id=\"" + controlId + "filePath_" + lang.shortCode + "\" type=\"file\" name=\"" + controlId + "filePath_" + lang.shortCode + "\" />" + EOL);
@@ -749,6 +846,64 @@ namespace HatCMS.Placeholders
             return html.ToString();
         }
 
+        private string renderAsList(CmsPage page, int identifier, CmsLanguage lang,FileLibraryAggregatorData aggregatorData, RenderParameters renderParameters)
+        {
+            
+            CmsPage rootPageToGatherFrom = page;
+            if (renderParameters.PageIdToGatherFilesFrom >= 0)
+                rootPageToGatherFrom = CmsContext.getPageById(renderParameters.PageIdToGatherFilesFrom);
+
+            CmsContext.PageGatheringMode gatherMode = CmsContext.PageGatheringMode.ChildPagesOnly;
+            if (renderParameters.RecursiveGatherFiles)
+                gatherMode = CmsContext.PageGatheringMode.FullRecursion;
+
+            CmsPage[] pagesToGetDetailsFrom = CmsContext.getAllPagesWithPlaceholder("FileLibraryDetails", rootPageToGatherFrom, gatherMode);
+
+            List<FileLibraryDetailsData> fileDetails = db.fetchDetailsData(pagesToGetDetailsFrom, identifier, lang);
+
+            StringBuilder html = new StringBuilder();
+            if (fileDetails.Count == 0)
+            {
+                html.Append("<p class=\"NoResults\">No files are available</p>");
+            }
+            else
+            {
+                List<FileLibraryCategoryData> fileCategories = db.fetchCategoryList(lang);
+                foreach (FileLibraryCategoryData cat in fileCategories)
+                {
+                    FileLibraryDetailsData[] categoryFiles = FileLibraryDetailsData.getFilesByCategory(fileDetails, cat);
+                    if (categoryFiles.Length > 0)
+                    {
+                        html.Append("<strong>" + cat.CategoryName + "</strong>" + EOL);
+                        html.Append("<ul>"+EOL);
+                        foreach (FileLibraryDetailsData file in categoryFiles)
+                        {
+                            string urlDetails = "";
+                            // -- link direct to the file only if the current user can't edit the file.
+                            if (renderParameters.fileLinkMode == RenderParameters.FileLinkMode.LinkToFile && !page.Zone.canWrite(CmsContext.currentWebPortalUser))
+                            {
+                                urlDetails = FileLibraryDetailsData.getDownloadUrl(page, identifier, lang, file.FileName);
+                            }
+                            else
+                            {
+                                urlDetails = pageDb.getPage(file.PageId).getUrl(lang);
+                            }
+
+                            html.Append("<li>");
+                            string title = CmsContext.getPageById(file.PageId).getTitle(lang);
+
+                            html.Append("<a href=\"" + urlDetails + "\">" + title + "</a>");
+                            html.Append("</li>" + EOL);
+                        }
+                        html.Append("</ul>");
+                    } // if
+                } // foreach
+            }
+
+            return "<div class=\"FileLibraryAggregator\">" + html.ToString() + "</div>";
+        }
+
+
         /// <summary>
         /// Render the file library aggregator page in view mode
         /// </summary>
@@ -759,24 +914,33 @@ namespace HatCMS.Placeholders
         /// <param name="paramList"></param>
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            string controlId = "fileLibrary_";
-            UpdateFileLibraryCommandsInEditMenu(page, page);
+            string controlId = "fileLibrary_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode + "_";
+            UpdateFileLibraryCommandsInEditMenu(page);
 
-            addCssAndScript(page);
+            RenderParameters renderParameters = RenderParameters.fromParamList(paramList);
+
+            addCssAndScript(page, renderParameters);
 
             StringBuilder html = new StringBuilder();
             bool canWrite = page.Zone.canWrite(CmsContext.currentWebPortalUser);
             if (canWrite)
-                html.Append("<p>" + handleUploadSubmit(page, identifier, langToRenderFor, controlId) + "</p>" + EOL);
+                html.Append("<p>" + handleUploadSubmit(page, identifier, langToRenderFor, controlId, renderParameters) + "</p>" + EOL);
 
             FileLibraryAggregatorData aggregatorData = db.fetchAggregatorData(page, identifier, langToRenderFor, true);
             categoryList = db.fetchCategoryList(langToRenderFor);
 
-            int fileCategoryId = getFileCategoryId();
-            html.Append("<div class=\"tab\">" + EOL);
-            html.Append(renderTabHeader(langToRenderFor, fileCategoryId));
-            html.Append(renderTabContent(page, identifier, langToRenderFor, fileCategoryId, aggregatorData));
-            html.Append("</div>" + EOL);
+            if (renderParameters.displayMode == RenderParameters.DisplayMode.Tabs)
+            {
+                int fileCategoryId = getFileCategoryId();
+                html.Append("<div class=\"tab\">" + EOL);
+                html.Append(renderTabHeader(langToRenderFor, fileCategoryId));
+                html.Append(renderTabContent(page, identifier, langToRenderFor, fileCategoryId, aggregatorData, renderParameters));
+                html.Append("</div>" + EOL);
+            }
+            else if (renderParameters.displayMode == RenderParameters.DisplayMode.List)
+            {
+                html.Append(renderAsList(page, identifier, langToRenderFor, aggregatorData, renderParameters));
+            }
 
             if (canWrite)
                 html.Append(renderUploadForm(page, langToRenderFor, controlId));
@@ -794,6 +958,15 @@ namespace HatCMS.Placeholders
         /// <param name="paramList"></param>
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
+            RenderParameters renderParameters = RenderParameters.fromParamList(paramList);
+            
+            // if we're showing files in a list, we have nothing to configure. So render that list.
+            if (renderParameters.displayMode == RenderParameters.DisplayMode.List)
+            {
+                RenderInViewMode(writer, page, identifier, langToRenderFor, paramList);
+                return;
+            }
+            
             string controlId = "fileLibrary_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode + "_";
 
             FileLibraryAggregatorData aggregatorData = new FileLibraryAggregatorData();

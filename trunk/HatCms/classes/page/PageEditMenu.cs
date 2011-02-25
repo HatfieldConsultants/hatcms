@@ -407,7 +407,7 @@ namespace HatCMS
         private CmsPageEditMenuAction[] getAllPageActionsForCurrentContext()
         {
             // -- if the user can't author, they can't do anything.
-            if (!CmsContext.currentUserCanAuthor)
+            if (!CmsContext.currentPage.currentUserCanWrite)
                 return new CmsPageEditMenuAction[0];
 
             List<CmsPageEditMenuAction> actionsByCategory = new List<CmsPageEditMenuAction>();            

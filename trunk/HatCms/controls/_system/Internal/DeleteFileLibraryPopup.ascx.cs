@@ -54,7 +54,7 @@ namespace HatCMS.controls._system.Internal
         /// <returns></returns>
         protected string validate()
         {
-            if (!CmsContext.currentUserCanAuthor)
+            if (!CmsContext.currentUserIsLoggedIn)
                  return "Access Denied";
 
             int targetPageId = PageUtils.getFromForm("target", Int32.MinValue);
@@ -122,7 +122,7 @@ namespace HatCMS.controls._system.Internal
         /// </summary>
         /// <param name="detailsPage"></param>
         /// <returns></returns>
-        protected string deleteFileFromDisk(CmsPage detailsPage)
+        protected string deleteFileFromDisk(CmsPage detailsPage, CmsLanguage language)
         {
             List<FileLibraryDetailsData> fileList = db.fetchDetailsData(detailsPage);
             if (fileList.Count == 0)
@@ -134,8 +134,8 @@ namespace HatCMS.controls._system.Internal
                 try
                 {
                     string newFileName = "Deleted." + DateTime.Now.ToString("yyyyMMdd.HH.mm.ss.") + f.FileName;
-                    string oldFileNameOnDisk = FileLibraryDetailsData.getTargetNameOnDisk(aggregatorPage, f.Identifier, f.FileName);
-                    string newFileNameOnDisk = FileLibraryDetailsData.getTargetNameOnDisk(aggregatorPage, f.Identifier, newFileName);
+                    string oldFileNameOnDisk = FileLibraryDetailsData.getTargetNameOnDisk(aggregatorPage, f.Identifier, language, f.FileName);
+                    string newFileNameOnDisk = FileLibraryDetailsData.getTargetNameOnDisk(aggregatorPage, f.Identifier, language, newFileName);
                     if (File.Exists(oldFileNameOnDisk))
                         File.Move(oldFileNameOnDisk, newFileNameOnDisk);
                 }
@@ -191,9 +191,13 @@ namespace HatCMS.controls._system.Internal
         /// <returns></returns>
         protected string handleFileLibraryDetailsDelete(CmsPage p)
         {
-            string msg = deleteFileFromDisk(p);
-            if (msg != "")
-                return msg;
+            string msg = "";
+            foreach (CmsLanguage lang in CmsConfig.Languages)
+            {
+                msg = deleteFileFromDisk(p, lang);
+                if (msg != "")
+                    return msg;
+            }
 
             msg = deleteFileLibraryDetails(p);
             if (msg != "")

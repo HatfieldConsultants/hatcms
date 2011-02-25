@@ -496,11 +496,25 @@ namespace HatCMS
         }
 
         /// <summary>
-        /// Derive the Zone by the page ID
+        /// cache the URL parameter because redirect pages go to the database all the time!
+        /// </summary>
+        private bool zoneCached = false;
+        private CmsZone cachedZone = null;
+
+        /// <summary>
+        /// Derive the Zone by the page ID (note: the result is cached in-memory)
         /// </summary>
         public CmsZone Zone
         {
-            get { return new CmsZoneDb().fetchByPage(this); }
+            get 
+            {
+                if (zoneCached)
+                    return cachedZone;
+
+                cachedZone = new CmsZoneDb().fetchByPage(this);
+                zoneCached = true;
+                return cachedZone;
+            }
         }
 
         /// <summary>
@@ -513,6 +527,34 @@ namespace HatCMS
             {
                 CmsZone z = new CmsZoneDb().fetchByPage(this, false);
                 return (z != null) ? true : false;
+            }
+        }
+
+        /// <summary>
+        /// Checks if the current user has write (author) access to this page.
+        /// </summary>
+        public bool currentUserCanWrite
+        {
+            get
+            {                
+                if (CmsContext.currentUserIsSuperAdmin)
+                    return true;
+
+                return Zone.canWrite(CmsContext.currentWebPortalUser);
+            }
+        }
+
+        /// <summary>
+        /// Checks if the current user has read access to this page.
+        /// </summary>
+        public bool currentUserCanRead
+        {
+            get
+            {                
+                if (CmsContext.currentUserIsSuperAdmin)
+                    return true;
+
+                return Zone.canRead(CmsContext.currentWebPortalUser);
             }
         }
 
@@ -533,7 +575,7 @@ namespace HatCMS
 
                 string url = "";
                 // -- for redirect pages, if the current user can NOT author, give the page's absolute page url
-                if (! CmsContext.currentUserCanAuthor && this.hasPlaceholder("PageRedirect"))
+                if (! currentUserCanWrite && this.hasPlaceholder("PageRedirect"))
                 {
                     PageRedirectDb db = new PageRedirectDb();
                     url = db.getPageRedirectUrl(this, 1, CmsContext.currentLanguage.shortCode, true);
@@ -624,8 +666,8 @@ namespace HatCMS
 
         /// <summary>
         /// Checks to see if this page is visible for the current user.
-        /// This only checks for visibility, not access restrictions.
-        /// As such, if isVisibleForCurrentUser is false, the user may still be able to successfully navigate to the page.
+        /// This checks for both visibility AND access restrictions (based on Zone security rules).
+        /// As such, if isVisibleForCurrentUser is false, the user will not be able to successfully navigate to the page.
         /// </summary>
         public bool isVisibleForCurrentUser
         {
@@ -633,6 +675,10 @@ namespace HatCMS
             {
                 if (CmsContext.currentUserIsSuperAdmin)
                     return true;
+
+                if (!currentUserCanRead)
+                    return false;
+
                 foreach (string path in Paths)
                 {
                     if (path.IndexOf("/_") >= 0)

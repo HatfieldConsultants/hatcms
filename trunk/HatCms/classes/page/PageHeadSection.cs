@@ -217,7 +217,7 @@ namespace HatCMS
         {
             // -- if authoring, always force cache to bust. Otherwise base the timestamp from when the assembly was created.
             long ticks = DateTime.Now.Ticks;
-            if (CmsContext.currentUserCanAuthor)
+            if (CmsContext.currentPage.currentUserCanWrite)
                 ticks = DateTime.Now.Ticks;
             else
             {

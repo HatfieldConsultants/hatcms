@@ -194,20 +194,57 @@ namespace HatCMS.setup
         }
 
         /// <summary>
-        /// Create the default zone and zone user role during setup.
+        /// Create the default home page zone and zone user role during setup.
         /// </summary>
         /// <returns></returns>
-        private void InsertZone(int HomePageId)
+        private void InsertHomePageZone(int HomePageId)
         {
             CmsZone z = new CmsZone();
             z.ZoneName = "Default zone";
             z.StartingPageId = HomePageId;
             if (new CmsZoneDb().insert(z) == false)
+                throw new Exception("Cannot insert Home Page Zone");
+
+            // anonymous users can read, but not write pages in this zone
+            CmsZoneUserRole anonZoneRole = new CmsZoneUserRole(z.ZoneId, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, true, false);
+            if (new CmsZoneUserRoleDb().insert(anonZoneRole) == false)
+                throw new Exception("Cannot insert anonymous ZoneUserRole");
+
+            // authors can write and read all pages in this zone            
+            WebPortalUserRole authorRole = WebPortalUserRole.Fetch(CmsConfig.getConfigValue("AuthorAccessUserRole", "Author"));
+            if (authorRole.RoleID >= 0)
+            {
+                CmsZoneUserRole authorZoneRole = new CmsZoneUserRole(z.ZoneId, authorRole.RoleID , true, true);
+                if (new CmsZoneUserRoleDb().insert(authorZoneRole) == false)
+                    throw new Exception("Cannot insert author ZoneUserRole");
+            }
+
+        }
+
+
+        private void InsertAdminAreaZone(int AdminPageId)
+        {
+            CmsZone z = new CmsZone();
+            
+            z.ZoneName = "Internal Author Tools Zone";
+            z.StartingPageId = AdminPageId;
+            if (new CmsZoneDb().insert(z) == false)
                 throw new Exception("Cannot insert Zone");
 
-            CmsZoneUserRole r = new CmsZoneUserRole(z.ZoneId, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, true, false);
-            if (new CmsZoneUserRoleDb().insert(r) == false)
-                throw new Exception("Cannot insert ZoneUserRole");
+            // anonymous users cannot read or write in this zone
+            CmsZoneUserRole anonZoneRole = new CmsZoneUserRole(z.ZoneId, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, false, false);
+            if (new CmsZoneUserRoleDb().insert(anonZoneRole) == false)
+                throw new Exception("Cannot insert anonymous ZoneUserRole");
+
+            // authors can write and read all pages in this zone            
+            WebPortalUserRole authorRole = WebPortalUserRole.Fetch(CmsConfig.getConfigValue("AuthorAccessUserRole", "Author"));
+            if (authorRole.RoleID >= 0)
+            {
+                CmsZoneUserRole authorZoneRole = new CmsZoneUserRole(z.ZoneId, authorRole.RoleID, true, true);
+                if (new CmsZoneUserRoleDb().insert(authorZoneRole) == false)
+                    throw new Exception("Cannot insert author ZoneUserRole");
+            }
+
         }
 
         public class ConfigValidationMessage
@@ -309,19 +346,18 @@ namespace HatCMS.setup
             try
             {
                 
-
                 // home page 
                 int HomePageId = InsertPage("", "Home Page", "Home Page", "", "HomePage", 0, 0, true);
 
+                //# /_Login Page (not visible in menu)
+                InsertPage("_Login", "Login", "Login", "", "_login", HomePageId, 0, false);
+                
                 // _Admin Page (hidden)
                 int AdminPageId = InsertPage("_admin", "HatCMS Administration", "Admin", "", RedirectTemplateName, HomePageId, 0, false);
 
                 // -- redirect the admin page to the home page.
                 InsertRedirectPlaceholder(CmsContext.getPageById(AdminPageId), 1, "~/");
-
-                //# /_admin/Login Page
-                InsertPage("Login", "Login", "Login", "", "_login", AdminPageId, 0, false);
-
+                
 
                 //# Admin Actions Page 
 
@@ -369,16 +405,6 @@ namespace HatCMS.setup
                 // /_admin/actions/deleteFileLibrary
                 InsertPage("deleteFileLibrary", "Delete a file library", "Delete a file library", "", "internal/_DeleteFileLibraryPopup", AdminActionsPageId, -1, false);
 
-                // --------------------------------
-                // /_Internal Page 
-                int InternalPageId = InsertPage("_internal", "Internal CMS Functions", "Internal CMS Functions", "", RedirectTemplateName, HomePageId, -1, false);
-
-                // -- redirect the /_internal page to the home page.
-                InsertRedirectPlaceholder(CmsContext.getPageById(InternalPageId), 1, "~/");
-
-                //# Show Single Image page (/_internal/showImage)
-                InsertPage("showImage", "Show Image", "Show Image", "", "_SingleImageDisplay", InternalPageId, -1, false);
-
 
                 //# Admin Tools page (/_admin/Audit)
                 InsertPage("Audit", "Administration Tools", "Admin Tools", "", "internal/_AuditPopup", AdminPageId, -1, false);
@@ -401,8 +427,21 @@ namespace HatCMS.setup
                 // delete File Library page
                 InsertPage("deleteFileLibrary", "Delete File Library", "Delete File Library", "", "internal/_DeleteFileLibraryPopup", AdminPageId, -1, false);
 
-				// create the default zone and zone user role
-                InsertZone(HomePageId);
+                // --------------------------------
+                // /_Internal Page 
+                int InternalPageId = InsertPage("_internal", "Internal CMS Functions", "Internal CMS Functions", "", RedirectTemplateName, HomePageId, -1, false);
+
+                // -- redirect the /_internal page to the home page.
+                InsertRedirectPlaceholder(CmsContext.getPageById(InternalPageId), 1, "~/");
+
+                //# Show Single Image page (/_internal/showImage)
+                InsertPage("showImage", "Show Image", "Show Image", "", "_SingleImageDisplay", InternalPageId, -1, false);
+
+
+				// create the home page and admin area security zones
+                InsertHomePageZone(HomePageId);
+                InsertAdminAreaZone(AdminPageId);
+                
 
                 l_msg.Text = "All standard pages have been added successfully.";
             }

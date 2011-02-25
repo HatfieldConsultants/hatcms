@@ -14,17 +14,20 @@ namespace HatCMS
 	/// </summary>
     public partial class showThumbPage : Hatfield.Web.Portal.Imaging.BaseShowThumbnailPage2 
 	{
-
+        /// <summary>
+        /// the full path on-disk to the directory to store image thumbnails
+        /// </summary>
         public static string ThumbImageCacheDirectory
         {
             get
-            {
-                string s = HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath + "_system/ThumbnailCache/");
-                s = CmsConfig.getConfigValue("ThumbImageCacheDirectory", s);                    
+            {                
+                string relPath = CmsConfig.getConfigValue("ThumbImageCacheDirectory", "~/_system/writable/ThumbnailCache/");
+                string absPath = VirtualPathUtility.ToAbsolute(relPath);
+                string pathOnDisk = HttpContext.Current.Server.MapPath(absPath);
 
-                if (!s.EndsWith(Path.DirectorySeparatorChar.ToString() ))
-                    s += Path.DirectorySeparatorChar.ToString();
-                return s;
+                if (!pathOnDisk.EndsWith(Path.DirectorySeparatorChar.ToString()))
+                    pathOnDisk += Path.DirectorySeparatorChar.ToString();
+                return pathOnDisk;
             }
         } // ThumbImageCacheDirectory
 

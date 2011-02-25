@@ -86,7 +86,7 @@ namespace HatCMS.placeholders.Calendar
         public static void AddEventCommandToEditMenu(CmsPage pageToAddCommandTo, CmsPage eventCalendarAggregator)
         {
             // -- only add the command if the user can author
-            if (!CmsContext.currentUserCanAuthor)
+            if (!pageToAddCommandTo.currentUserCanWrite)
                 return;
 
             // -- base the command off the existing "create new sub-page" command

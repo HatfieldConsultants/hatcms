@@ -32,7 +32,7 @@ namespace HatCMS.WebEditor.Helpers
         protected void Page_Load(object sender, System.EventArgs e)
 		{
 			// Put user code to initialize the page here
-            if (!CmsContext.currentUserCanAuthor)
+            if (!CmsContext.currentUserIsLoggedIn)
             {
                 Response.Write("Access denied");
                 Response.End();

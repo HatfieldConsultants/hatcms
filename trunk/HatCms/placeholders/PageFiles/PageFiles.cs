@@ -185,7 +185,7 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsDatabaseTableDependency("pagefileitem", new string[] {
                 "PageFileItemId", "PageId", "Identifier", "langShortCode", "Filename", "Title", "Author", "Abstract", "FileSize", "LastModified", "CreatorUsername", "Deleted"
                 }));
-            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/DMSStorage"));
+            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/DMSStorage"));
 
             ret.AddRange(SWFUploadHelpers.SWFUploadDependencies);
 
@@ -260,11 +260,11 @@ namespace HatCMS.Placeholders
             }
 
             PageFilesPlaceholderData phData = db.getPageFilesData(page, identifier, langToRenderFor, true);
-            if (phData.tabularDisplayLinkMode == PageFilesPlaceholderData.TabularDisplayLinkMode.LinkToFile && ! currentUserCanEditFile(phData, fileData))
+            if (phData.tabularDisplayLinkMode == PageFilesPlaceholderData.TabularDisplayLinkMode.LinkToFile && ! page.currentUserCanWrite)
                 throw new CmsPlaceholderNeedsRedirectionException(fileData.getDownloadUrl(page, identifier, langToRenderFor));
 
             string ControlId = "PageFiles_"+page.ID.ToString()+"_"+identifier.ToString();
-            bool userCanEditFile = currentUserCanEditFile(phData, fileData);
+            bool userCanEditFile = page.currentUserCanWrite;
 
             string _userMessage = "";
             string _userErrorMessage = "";
@@ -612,7 +612,7 @@ namespace HatCMS.Placeholders
            return (html);
         } // OutputPager
 
-
+        /*
         private bool currentUserCanEditFile(PageFilesPlaceholderData data, PageFilesItemData fileData)
         {
             if (CmsContext.currentUserIsSuperAdmin) // SuperAdmin can always edit
@@ -668,10 +668,11 @@ namespace HatCMS.Placeholders
 
             return allowUpload;
         }
+        */
 
         public string getFileDetailsUrl(PageFilesPlaceholderData phData, PageFilesItemData item, CmsPage page, int identifier, CmsLanguage language)
         {
-            if (phData.tabularDisplayLinkMode == PageFilesPlaceholderData.TabularDisplayLinkMode.LinkToFile && !currentUserCanEditFile(phData, item) )
+            if (phData.tabularDisplayLinkMode == PageFilesPlaceholderData.TabularDisplayLinkMode.LinkToFile && !page.currentUserCanWrite)
                 return item.getDownloadUrl(page, identifier, language);
             else
             {
@@ -699,11 +700,11 @@ namespace HatCMS.Placeholders
             bool isSwfUploadAction = (String.Compare(swfUploadAction,"processUpload", true) == 0);
 
             string action = PageUtils.getFromForm(ControlId + "_action", "");
-            if ((String.Compare(action, "postFile", true) == 0 || isSwfUploadAction) && currentUserCanUpload(data))
+            if ((String.Compare(action, "postFile", true) == 0 || isSwfUploadAction) && page.currentUserCanWrite)
             {
 
                 HttpRequest req = System.Web.HttpContext.Current.Request;
-                if (req.Files.Count > 0 && currentUserCanUpload(data))
+                if (req.Files.Count > 0 && page.currentUserCanWrite)
                 {
                     foreach (string key in req.Files.Keys)
                     {
@@ -831,7 +832,7 @@ namespace HatCMS.Placeholders
                     html.Append(displayCompactMode(data, fileItems, page, identifier, langToRenderFor));
             }
 
-            if (currentUserCanUpload(data))
+            if (page.currentUserCanWrite)
             {
 
                 bool useSWFUpload = CmsConfig.getConfigValue("useSWFUpload", false);

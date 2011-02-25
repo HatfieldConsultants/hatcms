@@ -20,7 +20,7 @@ namespace HatCMS.FCKHelpers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!CmsContext.currentUserCanAuthor)
+            if (!CmsContext.currentUserCanWriteToUserFilesOnDisk)
             {
                 Response.StatusCode = 500;
                 Response.Write("Authentication required - access denied");

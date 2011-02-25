@@ -24,7 +24,7 @@ namespace HatCMS.Placeholders
             
             // -- writable directories
             ret.Add(CmsWritableDirectoryDependency.UnderAppPath("UserFiles/Image"));
-            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/ThumbnailCache"));
+            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/ThumbnailCache"));
             
             // -- helpers
             ret.Add(CmsFileDependency.UnderAppPath("_system/SingleImage/SingleImageEditor.aspx", new DateTime(2010,4,30)));

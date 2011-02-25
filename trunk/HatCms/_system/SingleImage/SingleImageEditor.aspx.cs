@@ -52,7 +52,7 @@ namespace HatCMS.FCKHelpers
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!CmsContext.currentUserCanAuthor)
+            if (!CmsContext.currentUserIsLoggedIn)
             {
                 Response.Write("Access denied");
                 Response.End();

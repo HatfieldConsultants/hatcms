@@ -143,7 +143,7 @@ namespace HatCMS.placeholders.Calendar
             {
                 CmsPage aggregatorFilePage = detailsFilePage.ParentPage;
                 string iconTag = IconUtils.getIconTag(CmsContext.ApplicationPath, false, f.fileExtension);
-                string urlDownload = FileLibraryDetailsData.getDownloadAnchor(aggregatorFilePage, f.Identifier, f.FileName, f.FileName, "_blank", "");
+                string urlDownload = FileLibraryDetailsData.getDownloadAnchorHtml(aggregatorFilePage, f.Identifier, lang, f.FileName, f.FileName, "_blank", "");
 
                 string urlPage = detailsFilePage.getUrl(lang);
                 urlPage = "&#160;&#160;<a href=\"" + urlPage + "\" class=\"rightArrowLink\">" + getSeeFileDetailsText(lang) + "</a>";

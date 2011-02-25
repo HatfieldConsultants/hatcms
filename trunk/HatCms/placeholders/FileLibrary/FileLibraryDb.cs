@@ -311,27 +311,40 @@ namespace HatCMS.Placeholders
             return list;
         }
 
+        public List<FileLibraryDetailsData> fetchDetailsData(CmsPage[] pageArray, int identifier, CmsLanguage lang)
+        {
+            return fetchDetailsData(pageArray, identifier, lang, null, Int32.MinValue, Int32.MinValue);
+        }
+
         public List<FileLibraryDetailsData> fetchDetailsData(CmsPage[] pageArray, int identifier, CmsLanguage lang, FileLibraryCategoryData category, int offset, int count)
         {
             List<FileLibraryDetailsData> list = new List<FileLibraryDetailsData>();
             if (pageArray.Length == 0)
                 return list;
 
-            StringBuilder pageId = new StringBuilder();
+            List<string> pageIds = new List<string>();
             foreach (CmsPage p in pageArray)
-                pageId.Append(p.ID.ToString() + ",");
-            pageId.Remove(pageId.Length - 1, 1);
+                pageIds.Add(p.ID.ToString());            
 
             StringBuilder sql = new StringBuilder("SELECT PageId,Identifier,LangCode,FileName,CategoryId,Author,Description,LastModified,CreatedBy,EventPageId FROM ");
             sql.Append(DETAILS_TABLE);
-            sql.Append(" WHERE CategoryId=" + category.CategoryId);
-            sql.Append(" AND PageId IN(" + pageId.ToString() + ")");
+            sql.Append(" WHERE ");
+            sql.Append(" PageId IN(" + string.Join(",", pageIds.ToArray()) + ")");
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND LangCode='" + dbEncode(lang.shortCode) + "'");
+            if (category != null)
+            {
+                sql.Append(" AND CategoryId=" + category.CategoryId);
+            }
             sql.Append(" AND Deleted IS NULL");
-            sql.Append(" ORDER BY PageId DESC");
+            
+            if (category != null)
+                sql.Append(" ORDER BY PageId DESC");
+            else
+                sql.Append(" ORDER BY CategoryId DESC");
+
             if (count > -1)
-                sql.Append(" LIMIT " + offset + "," + count + ";");
+                sql.Append(" LIMIT " + offset + "," + count + "");
             else
                 sql.Append(";");
 

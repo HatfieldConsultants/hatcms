@@ -20,7 +20,7 @@ namespace HatCMS.ckhelpers
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!CmsContext.currentUserCanAuthor)
+            if (!CmsContext.currentUserIsLoggedIn)
             {
                 Response.Write("Access Denied");
                 Response.End();

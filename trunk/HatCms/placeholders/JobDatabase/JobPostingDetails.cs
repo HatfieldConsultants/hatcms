@@ -213,16 +213,16 @@ namespace HatCMS.Placeholders
             }
 
             // -- if the posting is expired, don't let non-authors view it.            
-            if (postingDetails.IsExpired && ! CmsContext.currentUserCanAuthor)
+            if (postingDetails.IsExpired && ! page.currentUserCanWrite)
             {
                 throw new CmsPageNotFoundException();
             }
-            
-            if (CmsContext.currentUserCanAuthor && postingDetails.IsExpired)
+
+            if (page.currentUserCanWrite && postingDetails.IsExpired)
             {
                 html.Append("<div class=\"jobExpiredNotice\" style=\"background-color: yellow; font-weight: bold\">This job posting expired on " + postingDetails.RemoveAnonAccessAt.ToString("d MMM yyyy") + "</div> ");
             }
-            else if (CmsContext.currentUserCanAuthor && postingDetails.RemoveAnonAccessAt.Date != JobPostingDetailsData.NoExpiryDateTime.Date)
+            else if (page.currentUserCanWrite && postingDetails.RemoveAnonAccessAt.Date != JobPostingDetailsData.NoExpiryDateTime.Date)
             {
                 html.Append("<p class=\"jobExpiredNotice\" style=\"background-color: yellow; font-weight: bold\">This job will be removed from public access on " + postingDetails.RemoveAnonAccessAt.ToString("d MMM yyyy") + "</p>");
             }

@@ -26,14 +26,7 @@ namespace HatCMS.controls
 		}
 
 		protected override void Render(System.Web.UI.HtmlTextWriter writer)
-		{
-			
-			if (! CmsContext.currentUserCanAuthor)
-			{
-				writer.WriteLine("Access Denied");
-				return;
-			}
-
+		{			
             StringBuilder html = new StringBuilder();            
 			int PageIdToMove = PageUtils.getFromForm("target",Int32.MinValue);
             if (PageIdToMove < 0)
@@ -53,6 +46,13 @@ namespace HatCMS.controls
                 else
                 {
                     CmsPage pageToMove = CmsContext.getPageById(PageIdToMove);
+
+                    if (!pageToMove.currentUserCanWrite)
+                    {
+                        writer.WriteLine("Access Denied");
+                        return;
+                    }
+
                     // -- form variable
                     int parent = PageUtils.getFromForm("parent", Int32.MinValue);
                     // -- process the action

@@ -146,11 +146,18 @@ namespace HatCMS.WebEditor.Helpers
 
         protected void Page_Load(object sender, EventArgs e)
         {            
-            if (CmsContext.currentWebPortalUser == null || !CmsContext.currentUserCanAuthor)
+            if (!CmsContext.currentUserIsLoggedIn)
             {
                 Response.Write("Access denied");                
                 Response.End();
                 return;
+            }
+
+            // -- if the user can't write, hide controls that allow files to be written
+            if (!CmsContext.currentUserCanWriteToUserFilesOnDisk)
+            {
+                b_CreateSubFolder.Visible = false;
+                tb_subFolder.Visible = false;
             }
 
             RegisterScrollToSelectedScript();
@@ -419,6 +426,13 @@ namespace HatCMS.WebEditor.Helpers
         protected void b_DoFileUpload_Click(object sender, EventArgs e)
         {
             string msg = "";
+            if (!CmsContext.currentUserCanWriteToUserFilesOnDisk)
+            {
+                msg = "You are not authorized to upload images.";
+                Response.Write(msg);
+                return;
+            }
+
             if (FolderTreeView.SelectedNode == null)
             {
                 msg = "no folder selected. please try upload again.";

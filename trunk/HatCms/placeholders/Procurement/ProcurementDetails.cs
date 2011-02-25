@@ -71,7 +71,7 @@ namespace HatCMS.placeholders.Procurement
             // ------- START RENDERING
             StringBuilder arg0 = new StringBuilder();
             arg0.Append("<div style=\"width: 100%\">");
-            arg0.Append("<p>Date of Procurement (" + CmsContext.currentShortDateFormat() + "): ");
+            arg0.Append("<p>Date of Procurement (" + CmsLanguage.CurrentShortDateFormat + "): ");
             arg0.Append(PageUtils.getInputTextHtml("dateOfProcurement_" + editId,"dateOfProcurement_" + editId, dateString, 10, 10));
             arg0.Append("</p>");
 

@@ -74,7 +74,7 @@ namespace HatCMS.Placeholders
         public static void AddJobPostingCommandToEditMenu(CmsPage pageToAddCommandTo, CmsPage jobAggregatorPage)
         {
             // -- only add the command if the user can author
-            if (!CmsContext.currentUserCanAuthor)
+            if (!pageToAddCommandTo.currentUserCanWrite)
                 return;
 
             // -- base the command off the existing "create new sub-page" command

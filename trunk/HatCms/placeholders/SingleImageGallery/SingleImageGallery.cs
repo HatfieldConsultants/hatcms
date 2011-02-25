@@ -407,7 +407,7 @@ namespace HatCMS.Placeholders
                     SingleImageData image = imageDatas[i];
                     html.Append("<td>");
                     html.Append(renderThumbnail(placeholderData, image, langToRenderFor));
-                    if (CmsContext.currentUserCanAuthor)
+                    if (CmsContext.currentPage.currentUserCanWrite)
                     {
                         CmsPage pageContainingImage = image.getPageContainingImage(pagesToGatherImagesFrom);
                         if (pageContainingImage != null)

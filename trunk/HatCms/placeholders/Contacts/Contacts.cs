@@ -160,21 +160,9 @@ namespace HatCMS.Placeholders
             html.Append("</td>");
             html.Append("</tr>");
 
-
-            html.Append("<tr>");
-            html.Append("<td>Access needed to add contacts: </td>");
-            html.Append("<td>");
-            html.Append(PageUtils.getDropDownHtml(ControlId + "accessLevelToAddContacts", ControlId + "accessLevelToAddContacts", Enum.GetNames(typeof(BaseCmsPlaceholder.AccessLevel)), Enum.GetName(typeof(BaseCmsPlaceholder.AccessLevel), data.accessLevelToAddContacts)));
-            html.Append("</td>");
-            html.Append("</tr>");
-
-
-            html.Append("<tr>");
-            html.Append("<td>Access needed to edit contacts: </td>");
-            html.Append("<td>");
-            html.Append(PageUtils.getDropDownHtml(ControlId + "accessLevelToEditContacts", ControlId + "accessLevelToEditContacts", Enum.GetNames(typeof(BaseCmsPlaceholder.AccessLevel)), Enum.GetName(typeof(BaseCmsPlaceholder.AccessLevel), data.accessLevelToEditContacts)));
-            html.Append("</td>");
-            html.Append("</tr>");
+            // -- deprecated items
+            PageUtils.getHiddenInputHtml(ControlId + "accessLevelToAddContacts", Enum.GetName(typeof(BaseCmsPlaceholder.AccessLevel), BaseCmsPlaceholder.AccessLevel.CmsAuthor));
+            PageUtils.getHiddenInputHtml(ControlId + "accessLevelToEditContacts", Enum.GetName(typeof(BaseCmsPlaceholder.AccessLevel), BaseCmsPlaceholder.AccessLevel.CmsAuthor));            
 
             html.Append("</table>");
 
@@ -206,7 +194,7 @@ namespace HatCMS.Placeholders
 
             // -- before getContacts, process the form
             string addFormHtml = "";
-            if (currentUserCanAddContact(data))
+            if (page.currentUserCanWrite)
             {
                 addFormHtml = getAddEditContactForm(data, new ContactData(), page, identifier, langToRenderFor);
             }
@@ -228,7 +216,7 @@ namespace HatCMS.Placeholders
             html.Append("</td>");
             html.Append("</tr>");
             html.Append("</table>");
-            if (currentUserCanAddContact(data))
+            if (page.currentUserCanWrite)
             {
                 html.Append("<p>" + addFormHtml + "</p>");
             }
@@ -458,63 +446,9 @@ namespace HatCMS.Placeholders
             string ret = String.Join("<br />", lines.ToArray());
             return ret;
         }
+        
 
-        private bool currentUserCanEditContact(ContactPlaceholderData data, ContactData contactData)
-        {
-            if (CmsContext.currentUserIsSuperAdmin) // SuperAdmin can always edit
-                return true;
-            
-            // file creator can always edit
-            /* -- contacts don't have a creator!
-            if (eventData.CreatedBy != "" && CmsContext.currentWebPortalUser != null && String.Compare(CmsContext.currentWebPortalUser.UserName, eventData.CreatedBy, true) == 0)
-                return true;
-            */
-            bool allowEdit = false;
-            switch (data.accessLevelToEditContacts)
-            {
-                case BaseCmsPlaceholder.AccessLevel.Anonymous:
-                    allowEdit = true;
-                    break;
-                case BaseCmsPlaceholder.AccessLevel.CmsAuthor:
-                    if (CmsContext.currentUserCanAuthor)
-                        allowEdit = true;
-                    break;
-                case BaseCmsPlaceholder.AccessLevel.LoggedInUser:
-                    if (CmsContext.currentUserIsLoggedIn)
-                        allowEdit = true;
-                    break;
-                default:
-                    throw new ArgumentException("invalid PageFilesData.AccessLevel");
-            }
-
-            return allowEdit;
-        }
-
-        private bool currentUserCanAddContact(ContactPlaceholderData data)
-        {
-            if (CmsContext.currentUserIsSuperAdmin) // SuperAdmin can always upload
-                return true;
-
-            bool allowUpload = false;
-            switch (data.accessLevelToAddContacts)
-            {
-                case BaseCmsPlaceholder.AccessLevel.Anonymous:
-                    allowUpload = true;
-                    break;
-                case BaseCmsPlaceholder.AccessLevel.CmsAuthor:
-                    if (CmsContext.currentUserCanAuthor)
-                        allowUpload = true;
-                    break;
-                case BaseCmsPlaceholder.AccessLevel.LoggedInUser:
-                    if (CmsContext.currentUserIsLoggedIn)
-                        allowUpload = true;
-                    break;
-                default:
-                    throw new ArgumentException("invalid PageFilesData.AccessLevel");
-            }
-
-            return allowUpload;
-        }
+        
 
         private void RenderViewIndividual(HtmlTextWriter writer, CmsPage page, int identifier,CmsLanguage langToRenderFor, string[] paramList)
         {
@@ -525,7 +459,7 @@ namespace HatCMS.Placeholders
 
             ContactData contactToView = ContactData.getContact(contactId);
 
-            bool canEdit = currentUserCanEditContact(data, contactToView);
+            bool canEdit = page.currentUserCanWrite; 
 
             string backUrl = page.Url;
             writer.Write("<p><a href=\"" + backUrl + "\">&#171; back to contact listing</a></p>");

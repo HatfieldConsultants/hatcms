@@ -47,25 +47,7 @@ namespace HatCMS.Placeholders
 
         public static string GetFileStorageDirectoryUrl(CmsPage page, int identifier, CmsLanguage language)
         {
-            string DMSFileStorageFolderUrl = CmsConfig.getConfigValue("DMSFileStorageFolderUrl", "");
-            if (!DMSFileStorageFolderUrl.EndsWith("/"))
-                DMSFileStorageFolderUrl += "/";
-
-
-            if (DMSFileStorageFolderUrl.StartsWith("~/"))
-            {
-                DMSFileStorageFolderUrl = DMSFileStorageFolderUrl.Substring(2); // remove "~/"
-                DMSFileStorageFolderUrl = CmsContext.ApplicationPath + DMSFileStorageFolderUrl; // replace ~/ with ApplicationPath
-            }
-
-            string subDir = "";
-
-            if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V2")
-            {
-                subDir = page.ID.ToString() + identifier.ToString() + language.shortCode.ToLower() + "/";
-            }
-
-            return DMSFileStorageFolderUrl + subDir;
+            return FileLibraryDetailsData.getFileStorageFolderUrl(page, identifier, language);
         }
 
         public string getFilenameOnDisk(CmsPage page, int identifier, CmsLanguage language)

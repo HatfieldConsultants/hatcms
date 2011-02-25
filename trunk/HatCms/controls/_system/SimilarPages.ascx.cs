@@ -40,22 +40,8 @@ namespace HatCMS.controls
             string title = currentPage.Title;
             string bodyText = getPageBodyText(currentPage, CmsContext.currentLanguage);
 
-            string keywordIndexDir = CmsConfig.getConfigValue("SearchEngineIndexDir","");
-            string spellingIndexDir = CmsConfig.getConfigValue("SearchEngineSpellingIndexDir", "");
-
-            if (keywordIndexDir.StartsWith("~\\"))
-            {
-                keywordIndexDir = keywordIndexDir.Substring(2); // remove ~\
-                keywordIndexDir = Server.MapPath(CmsContext.ApplicationPath) + keywordIndexDir;
-            }
-
-            if (spellingIndexDir.StartsWith("~\\"))
-            {
-                spellingIndexDir = spellingIndexDir.Substring(2); // remove ~\
-                spellingIndexDir = Server.MapPath(CmsContext.ApplicationPath) + spellingIndexDir;
-            }
-
-
+            string keywordIndexDir = SearchResults.IndexStorageDirectory;
+            string spellingIndexDir = SearchResults.SpellCheckIndexStorageDirectory;
 
             LuceneKeywordSearch search = new LuceneKeywordSearch(keywordIndexDir, spellingIndexDir);
 
@@ -68,7 +54,7 @@ namespace HatCMS.controls
                 html.Append("<ul>");
                 foreach (IndexableFileInfo f in related)
                 {
-                    if (String.Compare(currentPage.Path, f.Filename, true) == 0) // skip
+                    if (String.Compare(currentPage.Path, f.Filename, true) == 0) // skip current page.
                         continue;
                     string url = CmsContext.getUrlByPagePath(f.Filename);
                     html.Append("<li>");

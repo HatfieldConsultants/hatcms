@@ -21,14 +21,7 @@ namespace HatCMS.controls
 		}
 
 		protected override void Render(System.Web.UI.HtmlTextWriter writer)
-		{
-
-            if (!CmsContext.currentUserCanAuthor)
-			{
-				writer.WriteLine("Access Denied");
-				return;
-			}
-
+		{            
 			
 			int target = PageUtils.getFromForm("target",Int32.MinValue);
 
@@ -36,6 +29,12 @@ namespace HatCMS.controls
             if (targetPage.ID < 0)
             {
                 writer.WriteLine("Invalid target pageId");
+                return;
+            }
+
+            if (!targetPage.currentUserCanWrite)
+            {
+                writer.WriteLine("Access Denied");
                 return;
             }
 

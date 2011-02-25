@@ -28,7 +28,7 @@ namespace HatCMS.controls
 		protected override void Render(System.Web.UI.HtmlTextWriter writer)
 		{
 			
-			if (! CmsContext.currentUserCanAuthor)
+			if (! CmsContext.currentUserIsLoggedIn)
 			{
 				writer.WriteLine("Access Denied");
 				return;
@@ -53,6 +53,13 @@ namespace HatCMS.controls
                 else
                 {
                     CmsPage pageToRename = CmsContext.getPageById(PageIdToRename);
+                    if (!pageToRename.currentUserCanWrite)
+                    {
+                        html.Append("<span style=\"color: red\">Access denied. You do not have write-access to this page.</span>");
+                        writer.WriteLine(html.ToString());
+                        return;
+                    }
+
                     
                     // -- process the action
                     string action = PageUtils.getFromForm("RenamePageAction", "");

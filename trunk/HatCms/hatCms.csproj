@@ -461,13 +461,6 @@
     <Compile Include="controls\_system\Navigation\TopMultiLevelDropDownMenu.ascx.designer.cs">
       <DependentUpon>TopMultiLevelDropDownMenu.ascx</DependentUpon>
     </Compile>
-    <Compile Include="controls\_system\NoEditFloatingEditMenu.ascx.cs">
-      <DependentUpon>NoEditFloatingEditMenu.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\NoEditFloatingEditMenu.ascx.designer.cs">
-      <DependentUpon>NoEditFloatingEditMenu.ascx</DependentUpon>
-    </Compile>
     <Compile Include="controls\_system\OutputCurrentPagePath.ascx.cs">
       <DependentUpon>OutputCurrentPagePath.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -652,9 +645,15 @@
     </Compile>
     <Compile Include="_system\Calendar\SimpleCalendarJsonData.ashx.cs">
       <DependentUpon>SimpleCalendarJsonData.ashx</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="_system\ckhelpers\dhtmlxFiles_xml.ashx.cs">
       <DependentUpon>dhtmlxFiles_xml.ashx</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="_system\ckhelpers\dhtmlxPages_xml.ashx.cs">
+      <DependentUpon>dhtmlxPages_xml.ashx</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="_system\ckhelpers\InlineFileBrowser.aspx.cs">
       <DependentUpon>InlineFileBrowser.aspx</DependentUpon>
@@ -663,12 +662,9 @@
     <Compile Include="_system\ckhelpers\InlineFileBrowser.aspx.designer.cs">
       <DependentUpon>InlineFileBrowser.aspx</DependentUpon>
     </Compile>
-    <Compile Include="_system\ckhelpers\dhtmlxPages_xml.ashx.cs">
-      <DependentUpon>dhtmlxPages_xml.ashx</DependentUpon>
-    </Compile>
     <Compile Include="_system\ckhelpers\InlinePageBrowser.aspx.cs">
-      <SubType>ASPXCodeBehind</SubType>
       <DependentUpon>InlinePageBrowser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="_system\ckhelpers\InlinePageBrowser.aspx.designer.cs">
       <DependentUpon>InlinePageBrowser.aspx</DependentUpon>
@@ -778,7 +774,6 @@
     <Content Include="controls\_system\Navigation\ThirdLevelSideNavigation.ascx" />
     <Content Include="controls\_system\Navigation\TopDropdownNavigation.ascx" />
     <Content Include="controls\_system\Navigation\TopMultiLevelDropDownMenu.ascx" />
-    <Content Include="controls\_system\NoEditFloatingEditMenu.ascx" />
     <Content Include="controls\_system\OutputCurrentPagePath.ascx" />
     <Content Include="controls\_system\PageTitle.ascx" />
     <Content Include="controls\_system\SearchResults.ascx" />
@@ -1147,6 +1142,9 @@
     <Content Include="templates\PageLayout.htm" />
     <Content Include="templates\SingleImageDisplay.htm" />
     <Content Include="Web.config" />
+    <Content Include="_system\Calendar\SimpleCalendarJsonData.ashx" />
+    <Content Include="_system\ckhelpers\dhtmlxFiles_xml.ashx" />
+    <Content Include="_system\ckhelpers\dhtmlxPages_xml.ashx" />
     <Content Include="_system\ckhelpers\InlineFileBrowser.aspx" />
     <Content Include="_system\ckhelpers\InlinePageBrowser.aspx" />
     <Content Include="_system\FCKHelpers\DeleteResourcePopup.aspx" />
@@ -1243,10 +1241,6 @@
       <DependentUpon>TopDropdownNavigation.ascx.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\NoEditFloatingEditMenu.ascx.resx">
-      <DependentUpon>NoEditFloatingEditMenu.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="controls\_system\OutputCurrentPagePath.ascx.resx">
       <DependentUpon>OutputCurrentPagePath.ascx.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -1316,7 +1310,6 @@
     <None Include="templates\UserImageGalleryAggregator.template" />
     <None Include="templates\_SingleImageDisplay.template" />
     <Content Include="_system\download.ashx" />
-    <Content Include="_system\Calendar\SimpleCalendarJsonData.ashx" />
     <Content Include="templates\HomePage.template">
     </Content>
     <Content Include="templates\ImageGallery.template">
@@ -1349,8 +1342,6 @@
     </Content>
     <Content Include="templates\_Redirect.template">
     </Content>
-    <Content Include="_system\ckhelpers\dhtmlxFiles_xml.ashx" />
-    <Content Include="_system\ckhelpers\dhtmlxPages_xml.ashx" />
     <Content Include="rss.ashx" />
     <Content Include="_system\renderControl.ashx" />
     <Content Include="_system\SingleImage\SingleImageEditor.aspx" />
@@ -1369,12 +1360,13 @@
     <Folder Include="UserFiles\Flash\" />
     <Folder Include="UserFiles\ImageGalleries\" />
     <Folder Include="UserFiles\Image\" />
-    <Folder Include="_system\DMSStorage\" />
-    <Folder Include="_system\Glossary\" />
-    <Folder Include="_system\KeywordIndex\" />
     <Folder Include="_system\SingleImageGallery\" />
-    <Folder Include="_system\SpellCheckerIndex\" />
-    <Folder Include="_system\ThumbnailCache\" />
+    <Folder Include="_system\tools\" />
+    <Folder Include="_system\writable\DMSStorage\" />
+    <Folder Include="_system\writable\Glossary\" />
+    <Folder Include="_system\writable\KeywordIndex\" />
+    <Folder Include="_system\writable\SpellCheckerIndex\" />
+    <Folder Include="_system\writable\ThumbnailCache\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

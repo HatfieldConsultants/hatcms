@@ -243,7 +243,7 @@ namespace HatCMS
                 ret.Template = defaultTemplate;
                 ret.ParentPageId = editMenuPage.ID;
             }
-            else if (CmsContext.currentUserCanAuthor)
+            else if (editMenuPage.currentUserCanWrite)
             {
                 ret.PromptUserForFilename = true;
                 ret.PromptUserForTitle = true;

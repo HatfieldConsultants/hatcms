@@ -81,7 +81,7 @@ namespace HatCMS._system.ckhelpers
 
         public void ProcessRequest(HttpContext context)
         {
-            if (!CmsContext.currentUserCanAuthor)
+            if (!CmsContext.currentUserIsLoggedIn)
             {
                 context.Response.Write("Access denied");
                 return;

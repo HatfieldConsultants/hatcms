@@ -35,7 +35,7 @@ namespace HatCMS.controls
 		protected override void Render(System.Web.UI.HtmlTextWriter writer)
 		{
 
-            if (!CmsContext.currentUserCanAuthor)
+            if (!CmsContext.currentUserIsLoggedIn)
             {
                 writer.WriteLine("Access Denied");
                 return;
@@ -47,7 +47,11 @@ namespace HatCMS.controls
             if (!options.RequiresUserInput() && (String.Compare(action, "createnew", true) != 0))
             {
                 CmsPage pageToCreate = options.ToCmsPageObject();
-                if (CmsContext.childPageWithNameExists(pageToCreate.ParentID, pageToCreate.LanguageInfo))
+                if (!pageToCreate.ParentPage.currentUserCanWrite)
+                {
+                    _errorMessage = "Access denied - you do not have access to create a page in this location.";
+                }
+                else if (CmsContext.childPageWithNameExists(pageToCreate.ParentID, pageToCreate.LanguageInfo))
                 {
                     _errorMessage = "a page with the specified filename already exists!";
                 }

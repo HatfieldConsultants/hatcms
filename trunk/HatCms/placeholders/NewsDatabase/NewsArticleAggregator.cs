@@ -66,8 +66,8 @@ namespace HatCMS.placeholders.NewsDatabase
         /// <param name="newsArticleAggregatorPage"></param>
         public static void AddNewsArticleCommandToEditMenu(CmsPage pageToAddCommandTo, CmsPage newsArticleAggregatorPage)
         {
-            // -- only add the command if the user can author
-            if (!CmsContext.currentUserCanAuthor)
+            // -- only add the command if the user has write-access to the page
+            if (!pageToAddCommandTo.currentUserCanWrite)
                 return;
 
             // -- base the command off the existing "create new sub-page" command

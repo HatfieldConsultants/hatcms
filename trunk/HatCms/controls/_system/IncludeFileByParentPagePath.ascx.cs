@@ -100,7 +100,7 @@ namespace HatCMS.Controls
                         }
                         catch(Exception ex)
                         {
-                            if (CmsContext.currentUserCanAuthor)
+                            if (CmsContext.currentPage.currentUserCanWrite)
                                 fileContents = "<p>Template Error found with IncludeFileByParentPagePath control: " + ex.Message + "</p>";
                             else
                                 fileContents = ""; // handle errors silently if user is not an author

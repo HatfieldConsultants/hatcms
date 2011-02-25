@@ -35,7 +35,7 @@ namespace HatCMS.Placeholders
 
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            if (CmsContext.currentUserCanAuthor)
+            if (page.currentUserCanWrite)
             {
                 RenderViewStatus(writer, page, identifier, langToRenderFor, paramList);
             }

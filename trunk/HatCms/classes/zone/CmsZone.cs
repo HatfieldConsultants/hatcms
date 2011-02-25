@@ -48,7 +48,7 @@ namespace HatCMS
         /// <returns></returns>
         public bool canRead(WebPortalUser u)
         {
-            if (u != null && u.inRole(CmsConfig.getConfigValue("AdminUserRole", "?")))
+            if (u != null && u.inRole(CmsConfig.getConfigValue("AdminUserRole", "Administrator")))
                 return true;
 
             WebPortalUserRole[] roleArray = new WebPortalUserRole[] { WebPortalUserRole.dummyPublicUserRole };
@@ -69,7 +69,7 @@ namespace HatCMS
         /// <returns></returns>
         public bool canWrite(WebPortalUser u)
         {
-            if (u != null && u.inRole(CmsConfig.getConfigValue("AdminUserRole", "?")))
+            if (u != null && u.inRole(CmsConfig.getConfigValue("AdminUserRole", "Administrator")))
                 return true;
 
             WebPortalUserRole[] roleArray = new WebPortalUserRole[] { WebPortalUserRole.dummyPublicUserRole };

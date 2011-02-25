@@ -32,7 +32,7 @@ namespace HatCMS.controls
 
         protected override void Render(System.Web.UI.HtmlTextWriter writer)
         {
-            if (CmsContext.currentUserCanAuthor && CmsContext.currentEditMode == CmsEditMode.Edit)
+            if (CmsContext.currentPage.currentUserCanWrite && CmsContext.currentEditMode == CmsEditMode.Edit)
             {
                 writer.WriteLine(CmsContext.currentPage.getFormStartHtml(FormId, "submitting = true;"));
                 CmsContext.currentPage.HeadSection.AddJavascriptFile("js/_system/beforeUnload.js");
