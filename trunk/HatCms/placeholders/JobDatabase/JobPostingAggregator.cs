@@ -43,7 +43,7 @@ namespace HatCMS.Placeholders
         }
 
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented; // no revisions are implemented in this placeholder.
         }
@@ -127,7 +127,7 @@ namespace HatCMS.Placeholders
         {
             AddJobPostingCommandToEditMenu(page, page);
 
-            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childJobPages = page.getPlaceholderDefinitionsForChildPages("JobPostingDetails");
+            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childJobPages = CmsContext.getAllPlaceholderDefinitions("JobPostingDetails", page, CmsContext.PageGatheringMode.ChildPagesOnly);
             JobPostingLocation[] allLocations = JobPostingLocation.FetchAll();
             JobPostingLocation theAllLocationsLocation = JobPostingLocation.getAllLocations(allLocations);
 
@@ -251,5 +251,37 @@ namespace HatCMS.Placeholders
 
             writer.Write(html.ToString());
         } // RenderEdit
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            
+            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childJobPages = CmsContext.getAllPlaceholderDefinitions("JobPostingDetails", page, CmsContext.PageGatheringMode.ChildPagesOnly);
+            JobPostingLocation[] allLocations = JobPostingLocation.FetchAll();
+            JobPostingLocation theAllLocationsLocation = JobPostingLocation.getAllLocations(allLocations);
+
+            JobPostingDb db = new JobPostingDb();
+            JobPostingAggregatorData aggregatorData = db.getJobPostingAggregatorData(page, placeholderDefinition.Identifier, langToRenderFor, true);
+
+            // -- grab all the details for all child job pages.
+
+            List<Rss.RssItem> ret = new List<Rss.RssItem>();
+            foreach (CmsPage childPage in childJobPages.Keys)
+            {                
+                foreach (CmsPlaceholderDefinition phDef in childJobPages[childPage])
+                {
+                    JobPostingDetailsData dataObj = db.getJobPostingDetailsData(childPage, phDef.Identifier, langToRenderFor, true);
+                    if (!dataObj.IsExpired && (aggregatorData.LocationId < 0 || aggregatorData.LocationId == theAllLocationsLocation.JobLocationId || dataObj.LocationId == aggregatorData.LocationId))
+                    {
+                        Rss.RssItem rssItem = CreateAndInitRssItem(childPage, langToRenderFor);
+                        rssItem.Description = childPage.renderAllPlaceholdersToString(langToRenderFor);
+                        ret.Add(rssItem);
+                    }                    
+                }
+            } // foreach child page
+
+
+
+            return ret.ToArray();
+        }
     }
 }

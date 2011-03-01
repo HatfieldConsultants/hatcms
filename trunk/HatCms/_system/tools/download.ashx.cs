@@ -26,6 +26,12 @@ namespace HatCMS._system
         /// <param name="context"></param>
         public void ProcessRequest(HttpContext context)
         {
+            if (!CmsContext.currentUserIsLoggedIn)
+            {
+                context.Response.Write("Access Denied");
+                return;
+            }
+
             string adminTool = PageUtils.getFromForm("adminTool", "");
             try
             {

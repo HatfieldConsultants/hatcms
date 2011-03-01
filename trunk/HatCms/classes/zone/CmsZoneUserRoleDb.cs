@@ -24,7 +24,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="z"></param>
         /// <returns></returns>
-        public List<CmsZoneUserRole> fetchAllByZone(CmsZone z)
+        public List<CmsZoneUserRole> fetchAllByZone(CmsPageSecurityZone z)
         {
             StringBuilder sql = new StringBuilder("SELECT ZoneId,UserRoleId,ReadAccess,WriteAccess FROM ");
             sql.Append(TABLE_NAME);
@@ -50,7 +50,7 @@ namespace HatCMS
         /// <param name="z"></param>
         /// <param name="roleArray"></param>
         /// <returns></returns>
-        public int fetchRoleMatchingCountForRead(CmsZone z, WebPortalUserRole[] roleArray)
+        public int fetchRoleMatchingCountForRead(CmsPageSecurityZone z, WebPortalUserRole[] roleArray)
         {
             StringBuilder sql = new StringBuilder("SELECT Count(ReadAccess) AS MatchingCount FROM ");
             sql.Append(TABLE_NAME);
@@ -78,7 +78,7 @@ namespace HatCMS
         /// <param name="z"></param>
         /// <param name="roleArray"></param>
         /// <returns></returns>
-        public int fetchRoleMatchingCountForWrite(CmsZone z, WebPortalUserRole[] roleArray)
+        public int fetchRoleMatchingCountForWrite(CmsPageSecurityZone z, WebPortalUserRole[] roleArray)
         {
             StringBuilder sql = new StringBuilder("SELECT Count(WriteAccess) AS MatchingCount FROM ");
             sql.Append(TABLE_NAME);
@@ -156,7 +156,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="z"></param>
         /// <returns></returns>
-        public bool deleteByZone(CmsZone z)
+        public bool deleteByZone(CmsPageSecurityZone z)
         {
             StringBuilder sql = new StringBuilder("DELETE FROM ");
             sql.Append(TABLE_NAME);

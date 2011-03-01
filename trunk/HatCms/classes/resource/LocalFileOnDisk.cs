@@ -10,7 +10,7 @@ using Hatfield.Web.Portal.Data;
 
 namespace HatCMS
 {
-    public class CmsResource
+    public class CmsLocalFileOnDisk
     {
         private int autoincid;        
 
@@ -40,7 +40,7 @@ namespace HatCMS
 
         private string filepath;
         /// <summary>
-        /// the full file path of the resource on disk
+        /// the full file path (including drive name, path, and filename) of the resource on disk. Eg: "C:\Inetpub\wwwroot\hatCms\UserFiles\Image\(Evening Grosbeak)  J Elser.jpg"
         /// </summary>
         public string FilePath
         {
@@ -51,6 +51,7 @@ namespace HatCMS
         private string fileDirectory;
         /// <summary>
         /// the directory part of the file path of the resource on disk
+        /// Eg: "C:\Inetpub\wwwroot\hatCms\UserFiles\Image".
         /// </summary>
         public string FileDirectory
         {
@@ -89,10 +90,10 @@ namespace HatCMS
         /// <summary>
         /// the username that last modified this record
         /// </summary>
-        public string ModifiedBy
+        public int ModifiedByUserId
         {
-            get {return modifiedby;}
-            set {modifiedby=value;}
+            get { return Convert.ToInt32(modifiedby); }
+            set { modifiedby = value.ToString(); }
         }
 
         private DateTime modificationdate;
@@ -105,14 +106,14 @@ namespace HatCMS
             set { modificationdate = value; }
         }
 
-        private List<CmsResourceMetaItem> metaData;
-        public CmsResourceMetaItem[] MetaData
+        private List<CmsLocalFileOnDiskMetaItem> metaData;
+        public CmsLocalFileOnDiskMetaItem[] MetaData
         {
             get { return metaData.ToArray(); }
             set { metaData.Clear(); metaData.AddRange(value); }
         }
 
-        public CmsResource()
+        public CmsLocalFileOnDisk()
         {
             autoincid = -1;
             resourceid = -1;
@@ -123,10 +124,15 @@ namespace HatCMS
             filesize = -1;
             filetimestamp = DateTime.MinValue;
             mimetype = "";
-            modifiedby = "";
+            modifiedby = "-1";
             modificationdate = DateTime.MinValue;
-            metaData = new List<CmsResourceMetaItem>();
+            metaData = new List<CmsLocalFileOnDiskMetaItem>();
         } // constructor
+
+        public string getUrl()
+        {
+            return getUrl(System.Web.HttpContext.Current);
+        }
 
         public string getUrl(System.Web.HttpContext context)
         {
@@ -162,7 +168,7 @@ namespace HatCMS
         {
             string metaName = getThumbnailMetaDataNameRoot(displayBoxWidth, displayBoxHeight);
             metaName = metaName + "_URL";
-            CmsResourceMetaItem[] metaItems = getMetaDataByName(metaName);
+            CmsLocalFileOnDiskMetaItem[] metaItems = getMetaDataByName(metaName);
             if (metaItems.Length > 0)
                 return metaItems[0].ItemValue;
             else
@@ -184,7 +190,7 @@ namespace HatCMS
             metaName = metaName + "_URL";
             removeMetaDataByName(metaName);
 
-            metaData.Add(new CmsResourceMetaItem(this, metaName, thumbUrl));
+            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, metaName, thumbUrl));
             
             return true;
         }
@@ -196,7 +202,7 @@ namespace HatCMS
         /// <returns></returns>
         public string getImageCaption()
         {
-            CmsResourceMetaItem[] xmpDescriptions = getMetaDataByName("Xmp:Description");
+            CmsLocalFileOnDiskMetaItem[] xmpDescriptions = getMetaDataByName("Xmp:Description");
             if (xmpDescriptions.Length > 0)
                 return xmpDescriptions[0].ItemValue;
 
@@ -211,7 +217,7 @@ namespace HatCMS
         public bool setImageCaption(string newCaption)
         {            
             removeMetaDataByName("Xmp:Description");
-            metaData.Add(new CmsResourceMetaItem(this, "Xmp:Description", newCaption));
+            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, "Xmp:Description", newCaption));
 
             return true;
         }
@@ -226,8 +232,8 @@ namespace HatCMS
             {
                 //  ret.Add(new MetaDataItem("IMAGE:Width", mbp.Width));
                 // ret.Add(new MetaDataItem("IMAGE:Height", mbp.Height));
-                CmsResourceMetaItem[] widthItems = getMetaDataByName("IMAGE:Width");
-                CmsResourceMetaItem[] heightItems = getMetaDataByName("IMAGE:Height");
+                CmsLocalFileOnDiskMetaItem[] widthItems = getMetaDataByName("IMAGE:Width");
+                CmsLocalFileOnDiskMetaItem[] heightItems = getMetaDataByName("IMAGE:Height");
                 if (widthItems.Length >= 1 && heightItems.Length >= 1)
                 {
                     return new int[] { Convert.ToInt32(widthItems[0].ItemValue), Convert.ToInt32(heightItems[0].ItemValue) };
@@ -246,8 +252,8 @@ namespace HatCMS
             removeMetaDataByName("IMAGE:Width");
             removeMetaDataByName("IMAGE:Height");
 
-            metaData.Add(new CmsResourceMetaItem(this, "IMAGE:Width", dimensions[0].ToString()));
-            metaData.Add(new CmsResourceMetaItem(this, "IMAGE:Height", dimensions[1].ToString()));
+            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, "IMAGE:Width", dimensions[0].ToString()));
+            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, "IMAGE:Height", dimensions[1].ToString()));
 
             return true;
         }
@@ -304,10 +310,10 @@ namespace HatCMS
         
 
 
-        public CmsResourceMetaItem[] getMetaDataByName(string name)
+        public CmsLocalFileOnDiskMetaItem[] getMetaDataByName(string name)
         {
-            List<CmsResourceMetaItem> ret = new List<CmsResourceMetaItem>();
-            foreach (CmsResourceMetaItem mi in MetaData)
+            List<CmsLocalFileOnDiskMetaItem> ret = new List<CmsLocalFileOnDiskMetaItem>();
+            foreach (CmsLocalFileOnDiskMetaItem mi in MetaData)
             {
                 if (String.Compare(name, mi.Name, true) == 0)
                     ret.Add(mi);
@@ -318,19 +324,19 @@ namespace HatCMS
 
         public void removeMetaDataByName(string name)
         {
-            List<CmsResourceMetaItem> itemsToRemove = new List<CmsResourceMetaItem>();
-            foreach (CmsResourceMetaItem mi in MetaData)
+            List<CmsLocalFileOnDiskMetaItem> itemsToRemove = new List<CmsLocalFileOnDiskMetaItem>();
+            foreach (CmsLocalFileOnDiskMetaItem mi in MetaData)
             {
                 if (String.Compare(name, mi.Name, true) == 0)
                     itemsToRemove.Add(mi);
 
             }
-            foreach (CmsResourceMetaItem mi in itemsToRemove)
+            foreach (CmsLocalFileOnDiskMetaItem mi in itemsToRemove)
                 metaData.Remove(mi);
         }
 
         /// <summary>
-        /// get a list of all valid revision numbers for this page, sorted so that the oldest Rev# is first ([0])
+        /// get a list of all valid revision numbers for this resource, sorted so that the oldest Rev# is first ([0])
         /// </summary>
         /// <returns></returns>
         public int[] getAllRevisionNumbers()
@@ -364,12 +370,12 @@ namespace HatCMS
         /// </summary>
         /// <param name="ResourceId"></param>
         /// <returns></returns>
-        public static CmsResource GetLastRevision(int ResourceId)
+        public static CmsLocalFileOnDisk GetLastRevision(int ResourceId)
         {
             return (new CmsResourceDB()).GetLastRevision(ResourceId);
         } // get
 
-        public static CmsResource Get(int ResourceId, int RevisionNumber)
+        public static CmsLocalFileOnDisk Get(int ResourceId, int RevisionNumber)
         {
             return (new CmsResourceDB()).Get(ResourceId, RevisionNumber);
         } // get
@@ -382,7 +388,7 @@ namespace HatCMS
         */
                 
 
-        public static bool Delete(CmsResource resource, bool deletePhysicalFiles)
+        public static bool Delete(CmsLocalFileOnDisk resource, bool deletePhysicalFiles)
         {
             return (new CmsResourceDB()).Delete(resource.resourceid, resource.revisionnumber, deletePhysicalFiles);
         } // Delete
@@ -393,9 +399,9 @@ namespace HatCMS
         /// </summary>
         /// <param name="imageFilename"></param>
         /// <returns></returns>
-        public static CmsResource CreateFomImageFile(string imageFilename)
+        public static CmsLocalFileOnDisk CreateFomImageFile(string imageFilename)
         {
-            CmsResource ret = new CmsResource();
+            CmsLocalFileOnDisk ret = new CmsLocalFileOnDisk();
 
             ret.filename = Path.GetFileName(imageFilename);
             ret.filepath = imageFilename;
@@ -411,7 +417,7 @@ namespace HatCMS
                 ret.FileTimestamp = fi.LastWriteTime;
 
                 MetaDataItem[] metaData = MetaDataUtils.GetFromImageFile(imageFilename);
-                ret.MetaData = CmsResourceMetaItem.FromMetaDataItems(ret, metaData);
+                ret.MetaData = CmsLocalFileOnDiskMetaItem.FromMetaDataItems(ret, metaData);
 
             }
             
@@ -423,9 +429,9 @@ namespace HatCMS
         /// </summary>
         /// <param name="imageFilename"></param>
         /// <returns></returns>
-        public static CmsResource CreateFomOLEDocument(string oleFilename)
+        public static CmsLocalFileOnDisk CreateFomOLEDocument(string oleFilename)
         {
-            CmsResource ret = new CmsResource();
+            CmsLocalFileOnDisk ret = new CmsLocalFileOnDisk();
 
             ret.filename = Path.GetFileName(oleFilename);
             ret.filepath = oleFilename;
@@ -441,16 +447,16 @@ namespace HatCMS
                 ret.FileTimestamp = fi.LastWriteTime;
 
                 MetaDataItem[] metaData = MetaDataUtils.GetFromOLEDocument(oleFilename);
-                ret.MetaData = CmsResourceMetaItem.FromMetaDataItems(ret, metaData);
+                ret.MetaData = CmsLocalFileOnDiskMetaItem.FromMetaDataItems(ret, metaData);
 
             }
 
             return ret;
         }
 
-        public static CmsResource CreateFromFile(string filename)
+        public static CmsLocalFileOnDisk CreateFromFile(string filename)
         {
-            CmsResource ret = new CmsResource();
+            CmsLocalFileOnDisk ret = new CmsLocalFileOnDisk();
 
             ret.filename = Path.GetFileName(filename);
             ret.filepath = filename;
@@ -473,7 +479,7 @@ namespace HatCMS
                 else if (MetaDataUtils.CanExtractXmpData(filename))
                     metaData = MetaDataUtils.GetXmpData(filename);
 
-                ret.MetaData = CmsResourceMetaItem.FromMetaDataItems(ret, metaData);
+                ret.MetaData = CmsLocalFileOnDiskMetaItem.FromMetaDataItems(ret, metaData);
 
             }
 
@@ -485,9 +491,9 @@ namespace HatCMS
         /// </summary>
         /// <param name="imageFilename"></param>
         /// <returns></returns>
-        public static CmsResource CreateFomAdobeDocument(string adobeFilename)
+        public static CmsLocalFileOnDisk CreateFomAdobeDocument(string adobeFilename)
         {
-            CmsResource ret = new CmsResource();
+            CmsLocalFileOnDisk ret = new CmsLocalFileOnDisk();
 
             ret.filename = Path.GetFileName(adobeFilename);
             ret.filepath = adobeFilename;
@@ -503,7 +509,7 @@ namespace HatCMS
                 ret.FileTimestamp = fi.LastWriteTime;
 
                 MetaDataItem[] metaData = MetaDataUtils.GetXmpData(adobeFilename);
-                ret.MetaData = CmsResourceMetaItem.FromMetaDataItems(ret, metaData);
+                ret.MetaData = CmsLocalFileOnDiskMetaItem.FromMetaDataItems(ret, metaData);
 
             }
 
@@ -512,7 +518,7 @@ namespace HatCMS
 
         public static bool ResourceWithFilenameExists(string filename)
         {
-            CmsResource res = GetResourceByFilename(filename);
+            CmsLocalFileOnDisk res = GetResourceByFilename(filename);
             if (res.FilePath == filename)
                 return true;
             return false;
@@ -524,15 +530,15 @@ namespace HatCMS
         /// <param name="filename"></param>
         /// <param name="resourcesToSearchIn"></param>
         /// <returns></returns>
-        public static CmsResource GetResourceByFilename(string filename, CmsResource[] resourcesToSearchIn)
+        public static CmsLocalFileOnDisk GetResourceByFilename(string filename, CmsLocalFileOnDisk[] resourcesToSearchIn)
         {
-            foreach (CmsResource res in resourcesToSearchIn)
+            foreach (CmsLocalFileOnDisk res in resourcesToSearchIn)
             {
                 if (String.Compare(filename, res.FilePath, true) == 0)
                     return res;
             }
 
-            return new CmsResource();
+            return new CmsLocalFileOnDisk();
         }
 
         /// <summary>
@@ -540,17 +546,17 @@ namespace HatCMS
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public static CmsResource GetResourceByFilename(string filename)
+        public static CmsLocalFileOnDisk GetResourceByFilename(string filename)
         {
             return (new CmsResourceDB()).GetResourceByFilename(filename);
         }
 
-        public static CmsResource[] GetResourcesInDirectory(string directoryPath, string[] fileExtensions)
+        public static CmsLocalFileOnDisk[] GetResourcesInDirectory(string directoryPath, string[] fileExtensions)
         {
             return (new CmsResourceDB()).GetResourcesInDirectory(directoryPath, fileExtensions);
         }
 
-        public static CmsResource[] GetResourcesInDirectory(string directoryPath)
+        public static CmsLocalFileOnDisk[] GetResourcesInDirectory(string directoryPath)
         {
             return (new CmsResourceDB()).GetResourcesInDirectory(directoryPath, new string[0]);
         }
@@ -568,25 +574,25 @@ namespace HatCMS
         /// </summary>
         /// <param name="directoryInfo"></param>
         /// <returns></returns>
-        public static CmsResource[] UpdateFolderInDatabase(DirectoryInfo directoryInfo)
+        public static CmsLocalFileOnDisk[] UpdateFolderInDatabase(DirectoryInfo directoryInfo)
         {
-            List<CmsResource> existingResources = new List<CmsResource>(GetResourcesInDirectory(directoryInfo.FullName));
+            List<CmsLocalFileOnDisk> existingResources = new List<CmsLocalFileOnDisk>(GetResourcesInDirectory(directoryInfo.FullName));
 
-            List<CmsResource> ret = new List<CmsResource>();
+            List<CmsLocalFileOnDisk> ret = new List<CmsLocalFileOnDisk>();
 
             foreach (FileInfo fi in directoryInfo.GetFiles())
             {
                 if (fi.Name.StartsWith(DeletedFileFilenamePrefix)) // skip deleted files
                     continue;
 
-                CmsResource res = GetResourceByFilename(fi.FullName, existingResources.ToArray());
+                CmsLocalFileOnDisk res = GetResourceByFilename(fi.FullName, existingResources.ToArray());
                 bool doSave = false;
                 if (res.FilePath == fi.FullName)
                 {
                     if (res.FileSize != fi.Length || res.FileTimestamp.ToString("yyyy-MM-dd HH:mm:ss") != fi.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"))
                     {
                         // update file
-                        CmsResource resBak = res;
+                        CmsLocalFileOnDisk resBak = res;
                         res = CreateFromFile(fi.FullName);
 
                         res.autoincid = resBak.autoincid;
@@ -609,7 +615,7 @@ namespace HatCMS
                 if (doSave)
                 {
                     if (!res.SaveToDatabase())
-                        return new CmsResource[0];
+                        return new CmsLocalFileOnDisk[0];
                 }
                 else
                 {
@@ -629,9 +635,9 @@ namespace HatCMS
             } // foreach
 
             // -- remove other existingResources that no longer exist on disk
-            foreach (CmsResource res in existingResources)
+            foreach (CmsLocalFileOnDisk res in existingResources)
             {
-                CmsResource.Delete(res, false);
+                CmsLocalFileOnDisk.Delete(res, false);
             }
 
             
@@ -648,7 +654,7 @@ namespace HatCMS
 
             
 
-            public bool Insert(CmsResource item)
+            public bool Insert(CmsLocalFileOnDisk item)
             {
                 if (item.ResourceId < 0)
                 {
@@ -688,7 +694,7 @@ namespace HatCMS
                 {
                     item.autoincid = newId;
 
-                    return CmsResourceMetaItem.BulkInsert(item, item.MetaData);
+                    return CmsLocalFileOnDiskMetaItem.BulkInsert(item, item.MetaData);
                                         
                 }
                 return false;
@@ -696,7 +702,7 @@ namespace HatCMS
             } // Insert
            
 
-            public bool InsertNewRevision(CmsResource item)
+            public bool InsertNewRevision(CmsLocalFileOnDisk item)
             {
                 int lastRevNum = getLastExistingRevisionNumber(item.ResourceId);
                 int nextRevNum = 1;
@@ -712,7 +718,7 @@ namespace HatCMS
 
             public bool Delete(int ResourceId, int RevisionNumber, bool deletePhysicalFiles)
             {
-                CmsResource resToDelete = Get(ResourceId, RevisionNumber);
+                CmsLocalFileOnDisk resToDelete = Get(ResourceId, RevisionNumber);
                 if (resToDelete.ResourceId != ResourceId)
                     return false;
 
@@ -722,7 +728,7 @@ namespace HatCMS
                 // remove all derivative thumbnail images
                 if (deletePhysicalFiles)
                 {
-                    foreach (CmsResourceMetaItem meta in resToDelete.MetaData)
+                    foreach (CmsLocalFileOnDiskMetaItem meta in resToDelete.MetaData)
                     {
                         if (meta.Name.StartsWith("IMAGEThumb") && meta.Name.EndsWith("URL") && meta.ItemValue.IndexOf(".aspx") == -1)
                         {
@@ -773,9 +779,9 @@ namespace HatCMS
                 return true;
             }
 
-            private CmsResource ResourceFromDataRow(DataRow dr)
+            private CmsLocalFileOnDisk ResourceFromDataRow(DataRow dr)
             {
-                CmsResource item = new CmsResource();
+                CmsLocalFileOnDisk item = new CmsLocalFileOnDisk();
                 item.autoincid = Convert.ToInt32(dr["AutoIncId"]);
 
                 item.resourceid = Convert.ToInt32(dr["ResourceId"]);
@@ -807,7 +813,7 @@ namespace HatCMS
             /// <param name="ResourceId"></param>
             /// <param name="RevisionNumber"></param>
             /// <returns></returns>
-            public CmsResource Get(int ResourceId, int RevisionNumber)
+            public CmsLocalFileOnDisk Get(int ResourceId, int RevisionNumber)
             {
                 string sql = "SELECT AutoIncId, ResourceId, RevisionNumber, Filename, FilePath, FileDirectory, FileSize, FileTimestamp, MimeType, ModifiedBy, ModificationDate from resourceitems r ";                
                 sql += " WHERE ResourceId = " + ResourceId.ToString() + " AND RevisionNumber = " + RevisionNumber.ToString() + " ";
@@ -815,15 +821,15 @@ namespace HatCMS
                 if (this.hasSingleRow(ds))
                 {
                     DataRow dr = ds.Tables[0].Rows[0];
-                    CmsResource res = ResourceFromDataRow(dr);
-                    CmsResourceMetaItem[] metaItems = CmsResourceMetaItem.GetAll(res);
+                    CmsLocalFileOnDisk res = ResourceFromDataRow(dr);
+                    CmsLocalFileOnDiskMetaItem[] metaItems = CmsLocalFileOnDiskMetaItem.FetchAll(res);
                     res.MetaData = metaItems;
                     return res;
                 }
-                return new CmsResource();
+                return new CmsLocalFileOnDisk();
             } // Get
 
-            public CmsResource GetResourceByFilename(string filename)
+            public CmsLocalFileOnDisk GetResourceByFilename(string filename)
             {
                 string sql = "select AutoIncId, ResourceId, RevisionNumber, Filename, FilePath, FileDirectory, FileSize, FileTimestamp, MimeType, ModifiedBy, ModificationDate from resourceitems ";
                 sql += " where LOWER(FilePath) = '" + dbEncode(filename.ToLower()) + "' AND deleted is null order by ResourceId, RevisionNumber DESC ; ";
@@ -833,33 +839,33 @@ namespace HatCMS
                 {
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        CmsResource res = ResourceFromDataRow(dr);
+                        CmsLocalFileOnDisk res = ResourceFromDataRow(dr);
                         int lastExistingRevNum = getLastExistingRevisionNumber(res.ResourceId);
 
                         if (lastExistingRevNum == res.RevisionNumber)
                         {
-                            res.MetaData = CmsResourceMetaItem.GetAll(res);
+                            res.MetaData = CmsLocalFileOnDiskMetaItem.FetchAll(res);
                             return res;
                         }
 
                     } // foreach
                 }
-                return new CmsResource();
+                return new CmsLocalFileOnDisk();
             }
 
-            private CmsResource[] ResourcesWithMetaItemsFromDataRows(DataRowCollection rows)
+            private CmsLocalFileOnDisk[] ResourcesWithMetaItemsFromDataRows(DataRowCollection rows)
             {
-                Dictionary<int, CmsResource> resources = new Dictionary<int, CmsResource>();
+                Dictionary<int, CmsLocalFileOnDisk> resources = new Dictionary<int, CmsLocalFileOnDisk>();
 
                 foreach (DataRow dr in rows)
                 {
                     int resId = Convert.ToInt32(dr["ResourceId"]);
-                    CmsResource item;
+                    CmsLocalFileOnDisk item;
                     if (resources.ContainsKey(resId))
                         item = resources[resId];
                     else
                     {
-                        item = new CmsResource();
+                        item = new CmsLocalFileOnDisk();
                         item.autoincid = Convert.ToInt32(dr["AutoIncId"]);
 
                         item.resourceid = resId;
@@ -885,7 +891,7 @@ namespace HatCMS
 
                     if (dr["metaId"] != DBNull.Value)
                     {
-                        CmsResourceMetaItem metaItem = new CmsResourceMetaItem();
+                        CmsLocalFileOnDiskMetaItem metaItem = new CmsLocalFileOnDiskMetaItem();
                         metaItem.autoincid = Convert.ToInt32(dr["metaId"]);
                         metaItem.ResourceId = resId;
                         metaItem.ResourceRevisionNumber = item.RevisionNumber;
@@ -900,10 +906,10 @@ namespace HatCMS
 
                 } // foreach
 
-                return (new List<CmsResource>(resources.Values)).ToArray();
+                return (new List<CmsLocalFileOnDisk>(resources.Values)).ToArray();
             }
 
-            public CmsResource[] GetResourcesInDirectory(string directoryPath, string[] fileExtensions)
+            public CmsLocalFileOnDisk[] GetResourcesInDirectory(string directoryPath, string[] fileExtensions)
             {
                 string dir = directoryPath;
                 if (dir.EndsWith(Path.DirectorySeparatorChar.ToString()))
@@ -929,7 +935,7 @@ namespace HatCMS
                 {
                     return ResourcesWithMetaItemsFromDataRows(ds.Tables[0].Rows);
                 }
-                return new CmsResource[0];
+                return new CmsLocalFileOnDisk[0];
             }
 
              
@@ -938,16 +944,16 @@ namespace HatCMS
             /// </summary>
             /// <param name="ResourceId"></param>
             /// <returns></returns>
-            public CmsResource GetLastRevision(int ResourceId)
+            public CmsLocalFileOnDisk GetLastRevision(int ResourceId)
             {
                 int lastExistingRevNum = getLastExistingRevisionNumber(ResourceId);
                 if (lastExistingRevNum > 0)
                     return Get(ResourceId, lastExistingRevNum);
                 else
-                    return new CmsResource();
+                    return new CmsLocalFileOnDisk();
             }
 
-            public int[] getAllRevisionNumbers(CmsResource resource)
+            public int[] getAllRevisionNumbers(CmsLocalFileOnDisk resource)
             {
                 string sql = "select RevisionNumber from resourceitems where ResourceId = " + resource.ResourceId+ " and deleted is null order by RevisionNumber; ";
                 List<int> ret = new List<int>();
@@ -1001,7 +1007,7 @@ namespace HatCMS
             {
                 int width = 200;
                 int height = 400;
-                string name = (new CmsResource()).getThumbnailMetaDataNameRoot(width, height);
+                string name = (new CmsLocalFileOnDisk()).getThumbnailMetaDataNameRoot(width, height);
                 name = name.Replace(width.ToString(), "%");
                 name = name.Replace(height.ToString(), "%");
                 name += "%";

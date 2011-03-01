@@ -82,9 +82,7 @@ namespace HatCMS.controls
                         else if (newPageName.IndexOf(":") > 0)
                             _errorMessage = "The name can not contain the \":\" character!";
                         else
-                        {
-
-                            CmsPageDb db = new CmsPageDb();
+                        {                            
 
                             if (pageToRename.ID == CmsContext.HomePage.ID)
                             {

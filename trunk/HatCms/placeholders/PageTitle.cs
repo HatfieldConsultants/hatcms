@@ -26,7 +26,7 @@ namespace HatCMS.Placeholders
         }
 
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
@@ -161,6 +161,12 @@ namespace HatCMS.Placeholders
 			writer.WriteLine(html.ToString());
 
 		}
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            return new Rss.RssItem[0]; // no RSS items.
+        }
+
 		
 	}
 }

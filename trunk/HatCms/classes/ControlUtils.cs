@@ -27,7 +27,7 @@ namespace HatCMS
 
 
         public static string getControlParameterKeyValue(System.Web.UI.UserControl control, string key, string defaultValue)
-        {
+        {            
             return CmsContext.currentPage.TemplateEngine.getControlParameterKeyValue(control, key, defaultValue);
         }
 

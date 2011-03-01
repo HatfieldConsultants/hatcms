@@ -37,7 +37,7 @@ namespace HatCMS.placeholders.NewsDatabase
             return ret.ToArray();
         }
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
@@ -92,6 +92,14 @@ namespace HatCMS.placeholders.NewsDatabase
             html.Append(news.DateOfNews.ToString("MMM d yyyy"));
             html.Append("</h2>");
             writer.Write(html.ToString());
+        }
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            Rss.RssItem rssItem = base.CreateAndInitRssItem(page, langToRenderFor);
+            rssItem.Description = page.renderPlaceholderToString(placeholderDefinition, langToRenderFor);
+
+            return new Rss.RssItem[] { rssItem };
         }
     }
 }

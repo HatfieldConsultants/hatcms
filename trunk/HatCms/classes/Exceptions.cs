@@ -39,8 +39,5 @@ namespace HatCMS
         }
     }
 
-	public class NeedsAuthenticationException: Exception
-	{
-	}
 
 }

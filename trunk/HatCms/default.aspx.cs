@@ -49,23 +49,7 @@ namespace HatCMS
                 Console.Write(ex404.Message);                
                 CmsContext.HandleNotFoundException();
             }
-            catch (NeedsAuthenticationException ex401)
-            {
-                Console.Write(ex401.Message);
-                CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath","/_admin/login")));
-            }
-                /*
-#if ! DEBUG
-            catch (Exception ex)
-            {
-                int eventId = 1309; // EVENTID_WEBREQUESTERROREVENT
-                short CATEGORY_ASPNET_WEBEVENT = 3;
-                EventLog.WriteEntry("ASP.NET 2.0.50727.0", ex.ToString(), EventLogEntryType.Error, eventId, CATEGORY_ASPNET_WEBEVENT);
 
-                CmsContext.HandleFatalServerException();
-            }
-#endif
-            */
 		} // CreateChildControls
 
 

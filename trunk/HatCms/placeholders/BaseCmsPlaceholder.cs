@@ -28,12 +28,12 @@ namespace HatCMS.Placeholders
         /// <summary>
         /// reverts a placeholder to a prior revision.
         /// </summary>
-        /// <param name="oldPage"></param>
-        /// <param name="currentPage"></param>
-        /// <param name="identifiers"></param>
-        /// <param name="language"></param>
+        /// <param name="oldPage">the page to revert to.</param>
+        /// <param name="currentPage">the version of the page that is currently displayed to users</param>
+        /// <param name="identifiers">the placeholder identifiers to revert in-bulk</param>
+        /// <param name="language">the page language to revert</param>
         /// <returns></returns>
-        public abstract RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language);
+        public abstract RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language);
         
         /// <summary>
         /// Renders the placeholder to the HtmlTextWriter in view mode.
@@ -53,6 +53,28 @@ namespace HatCMS.Placeholders
         /// <param name="paramList"></param>
         public abstract void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList);
 
+
+        /// <summary>
+        /// Renders the placeholder to the RssFeed in view mode.
+        /// </summary>
+        /// <param name="rssFeed"></param>
+        // public static Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition , CmsLanguage langToRenderFor)
+        public abstract Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor);        
+
+        public Rss.RssItem CreateAndInitRssItem(CmsPage page, CmsLanguage langToRenderFor)
+        {
+            return InitRssItem(new Rss.RssItem(), page, langToRenderFor);
+        }
+
+        public Rss.RssItem InitRssItem(Rss.RssItem newRssItem, CmsPage page, CmsLanguage langToRenderFor)
+        {
+            newRssItem.Title = page.getTitle(langToRenderFor);
+            newRssItem.Link = new Uri(page.getUrl(CmsUrlFormat.FullIncludingProtocolAndDomainName, langToRenderFor));
+            newRssItem.Guid = new Rss.RssGuid(newRssItem.Link);
+            newRssItem.Author = page.LastModifiedBy;
+
+            return newRssItem;
+        }
         
 	}
 }

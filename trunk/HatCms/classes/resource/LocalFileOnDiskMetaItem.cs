@@ -9,7 +9,7 @@ using Hatfield.Web.Portal.Data;
 
 namespace HatCMS
 {
-    public class CmsResourceMetaItem
+    public class CmsLocalFileOnDiskMetaItem
     {
         public int autoincid;
 
@@ -43,7 +43,7 @@ namespace HatCMS
 
 
 
-        public CmsResourceMetaItem()
+        public CmsLocalFileOnDiskMetaItem()
         {
             autoincid = -1;
             resourceid = -1;
@@ -52,7 +52,7 @@ namespace HatCMS
             itemvalue = "";            
         } // constructor
 
-        public CmsResourceMetaItem(CmsResource res, MetaDataItem metaItem)
+        public CmsLocalFileOnDiskMetaItem(CmsLocalFileOnDisk res, MetaDataItem metaItem)
         {
             autoincid = -1;
             resourceid = res.ResourceId;
@@ -62,7 +62,7 @@ namespace HatCMS
 
         } // constructor
 
-        public CmsResourceMetaItem(CmsResource res, string itemName, string itemVal)
+        public CmsLocalFileOnDiskMetaItem(CmsLocalFileOnDisk res, string itemName, string itemVal)
         {
             autoincid = -1;
             resourceid = res.ResourceId;
@@ -85,13 +85,13 @@ namespace HatCMS
         } // SaveToDatabase
         
 
-        public static CmsResourceMetaItem[] GetAll(CmsResource parentResource)
+        public static CmsLocalFileOnDiskMetaItem[] FetchAll(CmsLocalFileOnDisk parentResource)
         {
-            return (new CmsResourceMetaItemDB()).GetAll(parentResource);
+            return (new CmsResourceMetaItemDB()).FetchAllForFile(parentResource);
         } // getAll
 
 
-        public static bool BulkInsert(CmsResource item, CmsResourceMetaItem[] subItems)
+        public static bool BulkInsert(CmsLocalFileOnDisk item, CmsLocalFileOnDiskMetaItem[] subItems)
         {
             return (new CmsResourceMetaItemDB()).BulkInsert(item, subItems);
         } // getAll
@@ -101,12 +101,12 @@ namespace HatCMS
             return (new CmsResourceMetaItemDB()).Delete(AutoIncId);
         } // Delete
 
-        public static CmsResourceMetaItem[] FromMetaDataItems(CmsResource parent, MetaDataItem[] metaDataItems)
+        public static CmsLocalFileOnDiskMetaItem[] FromMetaDataItems(CmsLocalFileOnDisk parentFile, MetaDataItem[] metaDataItems)
         {
-            List<CmsResourceMetaItem> ret= new List<CmsResourceMetaItem>();                
+            List<CmsLocalFileOnDiskMetaItem> ret= new List<CmsLocalFileOnDiskMetaItem>();                
             foreach (MetaDataItem mi in metaDataItems)
             {
-                ret.Add(new CmsResourceMetaItem(parent, mi));
+                ret.Add(new CmsLocalFileOnDiskMetaItem(parentFile, mi));
             }
             return ret.ToArray();
         }
@@ -119,7 +119,7 @@ namespace HatCMS
                 : base(ConfigUtils.getConfigValue("ConnectionString", ""))
             { }
             
-            public bool Insert(CmsResourceMetaItem item)
+            public bool Insert(CmsLocalFileOnDiskMetaItem item)
             {
                 string sql = "INSERT INTO resourceitemmetadata ";
                 sql += "(ResourceId, ResourceRevisionNumber, `Name`, `Value`, Deleted)";
@@ -141,7 +141,7 @@ namespace HatCMS
             } // Insert
             
 
-            public bool BulkInsert(CmsResource item, CmsResourceMetaItem[] subItems)
+            public bool BulkInsert(CmsLocalFileOnDisk item, CmsLocalFileOnDiskMetaItem[] subItems)
             {
                 if (subItems.Length < 1)
                     return true;
@@ -150,7 +150,7 @@ namespace HatCMS
                 sql.Append("INSERT INTO resourceitemmetadata ");
                 sql.Append("(ResourceId, ResourceRevisionNumber, `Name`, `Value`)");
                 sql.Append(" VALUES ");
-                foreach (CmsResourceMetaItem sub in subItems)
+                foreach (CmsLocalFileOnDiskMetaItem sub in subItems)
                 {
                     sql.Append(" ( ");
                     sql.Append(item.ResourceId.ToString() + ", ");
@@ -170,7 +170,7 @@ namespace HatCMS
 
             } // Insert
 
-            public bool Update(CmsResourceMetaItem item)
+            public bool Update(CmsLocalFileOnDiskMetaItem item)
             {
                 string sql = "UPDATE resourceitemmetadata SET ";
                 sql += "ResourceId = " + item.resourceid.ToString() + ", ";
@@ -203,43 +203,19 @@ namespace HatCMS
                 }
                 return true;
             }
-            /*
-            public CmsResourceMetaItem Get(CmsResource resource, int AutoIncId)
-            {
-                string sql = "SELECT AutoIncId, ResourceId, ResourceRevisionNumber, Name, Value from resourceitemmetadata ";
-                sql += " WHERE AutoIncId = " + AutoIncId.ToString();
-                DataSet ds = this.RunSelectQuery(sql);
-                if (this.hasSingleRow(ds))
-                {
-                    DataRow dr = ds.Tables[0].Rows[0];
-                    CmsResourceMetaItem item = new CmsResourceMetaItem();
-                    item.autoincid = Convert.ToInt32(dr["AutoIncId"]);
-
-                    item.resourceid = Convert.ToInt32(dr["ResourceId"]);
-
-                    item.resourcerevisionnumber = Convert.ToInt32(dr["ResourceRevisionNumber"]);
-
-                    item.name = (dr["Name"]).ToString();
-
-                    item.itemvalue = (dr["Value"]).ToString();                    
-
-                    return item;
-                }
-                return new CmsResourceMetaItem();
-            } // Get
-             */
-            public CmsResourceMetaItem[] GetAll(CmsResource resource)
+            
+            public CmsLocalFileOnDiskMetaItem[] FetchAllForFile(CmsLocalFileOnDisk resource)
             {
                 string sql = "SELECT AutoIncId, ResourceId, ResourceRevisionNumber, `Name`, `Value` from resourceitemmetadata ";
                 sql += " WHERE " + DBDialect.isNull("Deleted") + " AND ResourceId = " + resource.ResourceId + " AND ResourceRevisionNumber = "+resource.RevisionNumber+"   ; ";
 
-                List<CmsResourceMetaItem> arrayList = new List<CmsResourceMetaItem>();
+                List<CmsLocalFileOnDiskMetaItem> arrayList = new List<CmsLocalFileOnDiskMetaItem>();
                 DataSet ds = this.RunSelectQuery(sql);
                 if (this.hasRows(ds))
                 {
                     foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        CmsResourceMetaItem item = new CmsResourceMetaItem();
+                        CmsLocalFileOnDiskMetaItem item = new CmsLocalFileOnDiskMetaItem();
                         item.autoincid = Convert.ToInt32(dr["AutoIncId"]);
 
                         item.resourceid = Convert.ToInt32(dr["ResourceId"]);

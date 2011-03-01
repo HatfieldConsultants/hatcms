@@ -64,14 +64,7 @@ namespace HatCMS.Placeholders
             get { return description; }
             set { description = value; }
         }
-
-        private DateTime lastModified = DateTime.Now;
-        public DateTime LastModified
-        {
-            get { return lastModified; }
-            set { lastModified = value; }
-        }
-
+        
         private string createdBy = "";
         public string CreatedBy
         {
@@ -97,7 +90,7 @@ namespace HatCMS.Placeholders
         /// <param name="categoryList"></param>
         /// <returns></returns>
         public string getCategoryName(List<FileLibraryCategoryData> categoryList)
-        {
+        {            
             foreach (FileLibraryCategoryData c in categoryList)
             {
                 if (c.CategoryId == CategoryId)

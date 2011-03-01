@@ -49,10 +49,10 @@ namespace HatCMS
                 NewsArticleDb.NewsArticleAggregatorData aggregator = db.fetchNewsAggregator(page, 1, lang, true);
                 NewsArticleDb.NewsArticleDetailsData[] thisYearsNews = db.getNewsDetailsByYear(aggregator.YearToDisplay, lang);
 
-                CmsPageDb pageDb = new CmsPageDb();
+                
                 foreach (NewsArticleDb.NewsArticleDetailsData d in thisYearsNews)
                 {
-                    CmsPage newsDetailPage = pageDb.getPage(d.PageId);
+                    CmsPage newsDetailPage = CmsContext.getPageById(d.PageId);
                     string itemUrl = rootUrl + newsDetailPage.getUrl(lang);
                     writer.WriteStartElement("url");// <url>
                     writer.WriteStartElement("loc"); // <loc>
@@ -69,37 +69,7 @@ namespace HatCMS
                     writer.WriteEndElement(); // </url>
                 } // foreach
             }
-#if IncludeOldJobDatabasePlaceholder
-            else if (JobDatabase.isJobDatabasePage(page))
-            {
-                JobDatabaseDb db = new JobDatabaseDb();
-                JobDetailsData[] jobs = db.getJobDetailsByLocation("", false);
-                foreach (JobDetailsData j in jobs)
-                {                    
-                    string itemUrl = rootUrl + page.Url;
-                    if (itemUrl.IndexOf("?") == -1)
-                        itemUrl += "?";
-                    else
-                        itemUrl += "&";
-                    itemUrl += JobDatabase.CurrentJobIdFormName + "=" + j.JobDetailsId.ToString();
 
-                    writer.WriteStartElement("url");// <url>
-                    writer.WriteStartElement("loc"); // <loc>
-
-                    writer.WriteValue(itemUrl);
-
-                    writer.WriteEndElement(); // </loc>
-
-                    writer.WriteStartElement("lastmod");  // <lastmod>
-
-                    writer.WriteValue(page.LastUpdatedDateTime.ToString(W3CTimeFormatString));
-                    writer.WriteEndElement(); // </lastmod>
-
-                    writer.WriteEndElement(); // </url>
-                
-                } // foreach
-            }   
-#endif
         } // AddPageNodes
 
         public void ProcessRequest(HttpContext context)

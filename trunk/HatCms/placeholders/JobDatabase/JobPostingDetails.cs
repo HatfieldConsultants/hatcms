@@ -81,7 +81,7 @@ namespace HatCMS.Placeholders
 
 
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented;
         }        
@@ -173,7 +173,7 @@ namespace HatCMS.Placeholders
 
             try
             {
-                CmsPage editLocationPage = new CmsPageDb().getPage("_admin/JobLocation");
+                CmsPage editLocationPage = CmsContext.getPageByPath("_admin/JobLocation");
                 html.Append(" <a href=\"" + editLocationPage.getUrl(langToRenderFor) + "\" onclick=\"window.open(this.href,'" + placeholderIdWithoutLang + "','resizable=1,scrollbars=1,width=800,height=400'); return false;\">(edit)</a>");
             }
             catch (Exception ex)
@@ -237,5 +237,13 @@ namespace HatCMS.Placeholders
             writer.Write(html.ToString());
 
         } // RenderView
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            Rss.RssItem rssItem = CreateAndInitRssItem(page, langToRenderFor);
+            rssItem.Description = page.renderPlaceholderToString(placeholderDefinition, langToRenderFor);
+
+            return new Rss.RssItem[] { rssItem };
+        }
     }
 }

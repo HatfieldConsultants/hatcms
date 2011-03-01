@@ -180,9 +180,8 @@ namespace HatCMS.setup
             }
             else
             {
-                // -- page does not already exist, so create it
-                CmsPageDb db = new CmsPageDb();
-                bool success = db.createNewPage(newPage);
+                // -- page does not already exist, so create it                
+                bool success = CmsPage.InsertNewPage(newPage);
                 if (!success)
                 {
                     // _errorMessage = "database could not create new page.";
@@ -199,7 +198,7 @@ namespace HatCMS.setup
         /// <returns></returns>
         private void InsertHomePageZone(int HomePageId)
         {
-            CmsZone z = new CmsZone();
+            CmsPageSecurityZone z = new CmsPageSecurityZone();
             z.ZoneName = "Default zone";
             z.StartingPageId = HomePageId;
             if (new CmsZoneDb().insert(z) == false)
@@ -224,7 +223,7 @@ namespace HatCMS.setup
 
         private void InsertAdminAreaZone(int AdminPageId)
         {
-            CmsZone z = new CmsZone();
+            CmsPageSecurityZone z = new CmsPageSecurityZone();
             
             z.ZoneName = "Internal Author Tools Zone";
             z.StartingPageId = AdminPageId;

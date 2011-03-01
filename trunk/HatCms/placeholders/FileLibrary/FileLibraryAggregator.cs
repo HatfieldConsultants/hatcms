@@ -78,12 +78,11 @@ namespace HatCMS.Placeholders
         } // RenderParameters        
         
         protected string EOL = Environment.NewLine;
-        protected FileLibraryDb db = new FileLibraryDb();
-        protected CmsPageDb pageDb = new CmsPageDb();
+        protected FileLibraryDb db = new FileLibraryDb();        
         protected List<FileLibraryCategoryData> categoryList;
 
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented;
         }
@@ -456,7 +455,7 @@ namespace HatCMS.Placeholders
             for (int x = 0; x < eventList.Count; x++)
             {
                 EventCalendarDb.EventCalendarDetailsData e = eventList[x];
-                CmsPage p = pageDb.getPage(e.PageId);
+                CmsPage p = CmsContext.getPageById(e.PageId);
                 pageList.Add(p);
                 eventPageCollection.Add(e.PageId.ToString(), p.getTitle(lang));
             }
@@ -544,7 +543,7 @@ namespace HatCMS.Placeholders
                 try
                 {
                     CmsPage childPage = createChildPage(page, lang, postedFileName);
-                    if (pageDb.createNewPage(childPage) == false)
+                    if (CmsPage.InsertNewPage(childPage) == false)
                     {
                         msg.Append(formatErrorMsg("There was a database problem while saving '" + postedFileName + "'."));
                         continue;
@@ -779,7 +778,7 @@ namespace HatCMS.Placeholders
                 }
                 else
                 {
-                    urlDetails = pageDb.getPage(d.PageId).getUrl(lang);
+                    urlDetails = CmsContext.getPageById(d.PageId).getUrl(lang);
                 }
 
                 html.Append("<td>" + EOL);
@@ -790,7 +789,7 @@ namespace HatCMS.Placeholders
                 string eventHtml = "(n/a)";
                 if (d.EventPageId > -1)
                 {
-                    CmsPage eventPage = pageDb.getPage(d.EventPageId);
+                    CmsPage eventPage = CmsContext.getPageById(d.EventPageId);
                     eventHtml = "<a href=\"" + eventPage.getUrl(lang) + "\">" + eventPage.getTitle(lang) + "</a>" + EOL;
                 }
                 html.Append("<td>" + eventHtml + "</td>" + EOL);
@@ -834,6 +833,9 @@ namespace HatCMS.Placeholders
                 string htmlName = controlId + "eventPageId_" + lang.shortCode;
                 html.Append(PageUtils.getHiddenInputHtml(htmlName, -1));
             }
+
+            html.Append("<p>");
+            html.Append("</p>");
 
             html.Append("<p>" + EOL);
             html.Append("<label>" + getFileText(lang) + ":</label> (" + getMaxFileSizeText(lang) + ": " + PageUtils.MaxUploadFileSize + ")<br />" + EOL);
@@ -886,7 +888,7 @@ namespace HatCMS.Placeholders
                             }
                             else
                             {
-                                urlDetails = pageDb.getPage(file.PageId).getUrl(lang);
+                                urlDetails = CmsContext.getPageById(file.PageId).getUrl(lang);
                             }
 
                             html.Append("<li>");
@@ -1000,6 +1002,41 @@ namespace HatCMS.Placeholders
             html.Append(PageUtils.getHiddenInputHtml(controlId + "action", "update") + EOL);
 
             writer.Write(html.ToString());
+        }
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            RenderParameters renderParameters = RenderParameters.fromParamList(placeholderDefinition.ParamList);
+            CmsPage rootPageToGatherFrom = page;
+            if (renderParameters.PageIdToGatherFilesFrom >= 0)
+                rootPageToGatherFrom = CmsContext.getPageById(renderParameters.PageIdToGatherFilesFrom);
+
+            CmsContext.PageGatheringMode gatherMode = CmsContext.PageGatheringMode.ChildPagesOnly;
+            if (renderParameters.RecursiveGatherFiles)
+                gatherMode = CmsContext.PageGatheringMode.FullRecursion;
+
+            CmsPage[] pagesToGetDetailsFrom = CmsContext.getAllPagesWithPlaceholder("FileLibraryDetails", rootPageToGatherFrom, gatherMode);
+
+            List<FileLibraryDetailsData> fileDetails = db.fetchDetailsData(pagesToGetDetailsFrom, placeholderDefinition.Identifier, langToRenderFor);
+
+            List<Rss.RssItem> ret = new List<Rss.RssItem>();
+
+            foreach (FileLibraryDetailsData file in fileDetails)
+            {
+                CmsPage childPage = CmsContext.getPageById(file.PageId);
+                if (childPage.isVisibleForCurrentUser)
+                {
+                    Rss.RssItem rssItem = CreateAndInitRssItem(childPage, langToRenderFor);
+                    rssItem.Link = new Uri(FileLibraryDetailsData.getDownloadUrl(page, file.Identifier, langToRenderFor, file.FileName), UriKind.RelativeOrAbsolute);
+
+                    rssItem.Description = childPage.renderPlaceholdersToString("FileLibraryDetails", langToRenderFor);
+
+                    ret.Add(rssItem);
+                }
+            } // foreach
+
+            return ret.ToArray();
+        
         }
     }
 }

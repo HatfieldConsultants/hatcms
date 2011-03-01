@@ -27,6 +27,12 @@ namespace HatCMS.placeholders.Calendar
 
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/calendarIcon_16x16.png"));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/DatePicker.js"));
+
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery.fullcalendar/fullcalendar.css", new DateTime(2011,2,22)));
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery/jquery-1.4.1.min.js"));
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery.fullcalendar/fullcalendar.min.js", new DateTime(2011,2,22)));
+
+
             ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("EditCalendarCategoryPagePath", "/_admin/EventCalendarCategory"), CmsConfig.Languages));
             ret.Add(CmsControlDependency.UnderControlDir("_system/Internal/EventCalendarCategoryPopup.ascx", new DateTime(2010, 2, 17)));
 
@@ -126,7 +132,7 @@ namespace HatCMS.placeholders.Calendar
             pageToAddCommandTo.EditMenu.addCustomActionItem(newAction);
         }
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented;
         }
@@ -340,6 +346,52 @@ namespace HatCMS.placeholders.Calendar
             html.Append(PageUtils.getHiddenInputHtml(ControlId + "_action", "saveNewValues"));
 
             writer.Write(html.ToString());
+        }
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            EventCalendarDb db = new EventCalendarDb();
+            EventCalendarDb.EventCalendarAggregatorData entity = db.fetchAggregatorData(page, placeholderDefinition.Identifier, langToRenderFor, true);
+
+            DateTime start = DateTime.MinValue;
+            DateTime end = DateTime.MinValue;
+            switch (entity.ViewMode)
+            {
+                case CalendarViewMode.Agenda_Day:
+                    start = DateTime.Now.Date;
+                    end = DateTime.Now.AddDays(1);
+                    break;
+                case CalendarViewMode.Agenda_Week:
+                    DayOfWeek firstDay = System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek;
+                    start = DateTime.Now.Date;
+                    while (start.DayOfWeek != firstDay)
+                        start = start.AddDays(-1);
+
+                    end = DateTime.Now.AddDays(7);
+                    break;
+                case CalendarViewMode.Month:
+                    start = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    end = start.AddMonths(1);
+                    break;
+                default:
+                    throw new ArgumentException("Error: invalid CalendarView mode");
+                    break;
+            }
+
+            List<Rss.RssItem> ret = new List<Rss.RssItem>();
+            List<EventCalendarDb.EventCalendarDetailsData> list = new EventCalendarDb().fetchDetailsDataByRange(start, end, langToRenderFor);            
+            foreach (EventCalendarDb.EventCalendarDetailsData e in list)
+            {
+                CmsPage detailPage = CmsContext.getPageById(e.PageId);
+                Rss.RssItem rssItem = CreateAndInitRssItem(detailPage, langToRenderFor);
+                rssItem.PubDate = e.StartDateTime;
+                rssItem.Author = e.CreatedBy;
+                rssItem.Description = detailPage.renderPlaceholdersToString("EventCalendarDetails", langToRenderFor);
+                ret.Add(rssItem);
+            }
+            return ret.ToArray();
+
+            
         }
     }
 }

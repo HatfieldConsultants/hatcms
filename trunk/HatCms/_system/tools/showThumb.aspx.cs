@@ -71,7 +71,7 @@ namespace HatCMS
 
         }
 
-        public static string getThumbDisplayUrl(CmsResource resource, int displayBoxWidth, int displayBoxHeight)
+        public static string getThumbDisplayUrl(CmsLocalFileOnDisk resource, int displayBoxWidth, int displayBoxHeight)
         {
             string url = resource.getThumbDisplayUrl(displayBoxWidth, displayBoxHeight);
             if (url != "")
@@ -129,7 +129,7 @@ namespace HatCMS
         /// <param name="displayBoxWidth"></param>
         /// <param name="displayBoxHeight"></param>
         /// <returns></returns>
-        public static System.Drawing.Size getDisplayWidthAndHeight(CmsResource resource, int displayBoxWidth, int displayBoxHeight)
+        public static System.Drawing.Size getDisplayWidthAndHeight(CmsLocalFileOnDisk resource, int displayBoxWidth, int displayBoxHeight)
         {
             int[] actualSize = resource.getImageDimensions();
             if (actualSize.Length == 2)

@@ -225,7 +225,7 @@ namespace HatCMS.Placeholders
             return ret.ToArray();
         }
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }                
@@ -1053,7 +1053,32 @@ namespace HatCMS.Placeholders
 
             writer.Write(html.ToString());
         } // RenderEditSummary
+        
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
 
+            PageFilesDb db = new PageFilesDb();
+            PageFilesPlaceholderData data = db.getPageFilesData(page, placeholderDefinition.Identifier, langToRenderFor, true);
+            PageFilesItemData[] fileItems = db.getPageFilesItemDatas(page, placeholderDefinition.Identifier, langToRenderFor, data);
+
+            
+            List<Rss.RssItem> ret = new List<Rss.RssItem>();
+
+            foreach (PageFilesItemData file in fileItems)
+            {
+                Rss.RssItem rssItem = CreateAndInitRssItem(page, langToRenderFor);
+
+                rssItem.Title = file.Title;                
+                rssItem.Link = new Uri(file.getDownloadUrl(page, placeholderDefinition.Identifier, langToRenderFor));
+                rssItem.Guid = new Rss.RssGuid(rssItem.Link);
+
+                rssItem.Description = file.AbstractHtml;
+
+                ret.Add(rssItem);
+            } // foreach
+
+            return ret.ToArray();
+        } // GetRssFeedItems
 
     } // class PageFiles
 }

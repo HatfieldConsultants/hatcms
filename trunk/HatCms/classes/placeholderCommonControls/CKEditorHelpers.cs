@@ -38,10 +38,10 @@ namespace HatCMS
                     CmsFileDependency.UnderAppPath("_system/tools/ckhelpers/InlinePageBrowser.aspx"),
 
                     //-- dhtmlxTree dependencies
-                    CmsFileDependency.UnderAppPath("js/_system/tools/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.css"),
-                    CmsFileDependency.UnderAppPath("js/_system/tools/dhtmlx/dhtmlxTree/codebase/dhtmlxcommon.js"),
-                    CmsFileDependency.UnderAppPath("js/_system/tools/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.js"),
-                    CmsFileDependency.UnderAppPath("js/_system/tools/dhtmlx/dhtmlxTree/codebase/imgs/folderClosed.gif"),
+                    CmsFileDependency.UnderAppPath("js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.css"),
+                    CmsFileDependency.UnderAppPath("js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxcommon.js"),
+                    CmsFileDependency.UnderAppPath("js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.js"),
+                    CmsFileDependency.UnderAppPath("js/_system/dhtmlx/dhtmlxTree/codebase/imgs/folderClosed.gif"),
 
                     // -- FCKEditor has been removed. Make sure it is gone.
                     CmsDirectoryDoesNotExistDependency.UnderAppPath("js/_system/FCKeditor")                    

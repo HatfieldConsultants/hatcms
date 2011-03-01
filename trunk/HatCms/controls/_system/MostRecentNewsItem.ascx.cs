@@ -85,10 +85,10 @@ namespace HatCMS.controls._system
                 return html.ToString();
             }
 
-            CmsPageDb pageDb = new CmsPageDb();
+            
             foreach (NewsArticleDb.NewsArticleDetailsData article in articleArray)
             {
-                CmsPage newsArticleDetailsPage = pageDb.getPage(article.PageId);
+                CmsPage newsArticleDetailsPage = CmsContext.getPageById(article.PageId);
                 if (newsArticleDetailsPage.ID < 0)
                     continue;
 

@@ -559,8 +559,6 @@
     <Compile Include="placeholders\NewsDatabase\NewsArticleAggregator.cs" />
     <Compile Include="placeholders\NewsDatabase\NewsArticleDb.cs" />
     <Compile Include="placeholders\NewsDatabase\NewsArticleDetails.cs" />
-    <Compile Include="placeholders\PageComments\PageComments.cs" />
-    <Compile Include="placeholders\PageComments\PageCommentsDb.cs" />
     <Compile Include="placeholders\PageFiles\PageFilesDb.cs" />
     <Compile Include="placeholders\PageNotFoundRedirect\PageNotFoundRedirect.cs" />
     <Compile Include="placeholders\PageNotFoundRedirect\PageNotFoundRedirectDb.cs" />
@@ -633,9 +631,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="rss.ashx.cs">
-      <DependentUpon>rss.ashx</DependentUpon>
-    </Compile>
     <Compile Include="setup\default.aspx.cs">
       <DependentUpon>default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -706,6 +701,9 @@
     </Compile>
     <Compile Include="_system\tools\renderControl.ashx.cs">
       <DependentUpon>renderControl.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="_system\tools\rss.ashx.cs">
+      <DependentUpon>rss.ashx</DependentUpon>
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
@@ -1295,6 +1293,7 @@
     <None Include="templates\UserImageGallery.template" />
     <None Include="templates\UserImageGalleryAggregator.template" />
     <None Include="templates\_SingleImageDisplay.template" />
+    <Content Include="_system\tools\rss.ashx" />
     <Content Include="_system\tools\Calendar\SimpleCalendarJsonData.ashx" />
     <Content Include="_system\tools\ckhelpers\dhtmlxFiles_xml.ashx" />
     <Content Include="_system\tools\ckhelpers\dhtmlxPages_xml.ashx" />
@@ -1332,7 +1331,6 @@
     </Content>
     <Content Include="templates\_Redirect.template">
     </Content>
-    <Content Include="rss.ashx" />
     <Content Include="_system\tools\ckhelpers\InlineFileBrowser.aspx" />
     <Content Include="_system\tools\ckhelpers\InlinePageBrowser.aspx" />
     <Content Include="_system\tools\FCKHelpers\DeleteResourcePopup.aspx" />

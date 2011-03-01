@@ -16,7 +16,7 @@ namespace HatCMS
     /// A Zone defines a security region in the web site. A page can only be in one zone - there is no zone inheritance. 
     /// If a page is not a zone-boundary, it inherits the zone of its parent page.
     /// </summary>
-    public class CmsZone
+    public class CmsPageSecurityZone
     {
         public static int DEFAULT_ID = 1;
 

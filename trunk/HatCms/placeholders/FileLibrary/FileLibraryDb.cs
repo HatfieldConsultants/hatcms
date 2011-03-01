@@ -161,7 +161,7 @@ namespace HatCMS.Placeholders
             sql.Append(entity.CategoryId.ToString() + ",'");
             sql.Append(dbEncode(entity.Author) + "','");
             sql.Append(dbEncode(entity.Description) + "',");
-            sql.Append(dbEncode(entity.LastModified) + ",'");
+            sql.Append(dbEncode(DateTime.Now) + ",'");
             sql.Append(dbEncode(entity.CreatedBy) + "',");
             sql.Append(entity.EventPageId.ToString() + ");");
 
@@ -439,8 +439,7 @@ namespace HatCMS.Placeholders
             entity.FileName = dr["FileName"].ToString();
             entity.CategoryId = Convert.ToInt32(dr["CategoryId"]);
             entity.Author = dr["Author"].ToString();
-            entity.Description = dr["Description"].ToString();
-            entity.LastModified = Convert.ToDateTime(dr["LastModified"]);
+            entity.Description = dr["Description"].ToString();            
             entity.CreatedBy = dr["CreatedBy"].ToString();
             entity.EventPageId = Convert.ToInt32(dr["EventPageId"]);
         }

@@ -17,7 +17,7 @@ namespace HatCMS
     /// </summary>
     public class CmsZoneUserRole
     {
-        private int zoneId = CmsZone.DEFAULT_ID;
+        private int zoneId = CmsPageSecurityZone.DEFAULT_ID;
         public int ZoneId
         {
             get { return zoneId; }

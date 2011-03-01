@@ -299,9 +299,9 @@ namespace HatCMS.WebEditor.Helpers
             
         }
 
-        CmsResource[] FilterOutNonImageFiles(CmsResource[] resources)
+        CmsLocalFileOnDisk[] FilterOutNonImageFiles(CmsLocalFileOnDisk[] resources)
         {
-            List<CmsResource> ret = new List<CmsResource>();
+            List<CmsLocalFileOnDisk> ret = new List<CmsLocalFileOnDisk>();
 
             List<string> allowedExtensions = new List<string>();
             foreach (string filter in ImageFileFilters)
@@ -310,7 +310,7 @@ namespace HatCMS.WebEditor.Helpers
                 allowedExtensions.Add(ext.ToLower());
             }
             
-            foreach (CmsResource res in resources)
+            foreach (CmsLocalFileOnDisk res in resources)
             {
                 if (StringUtils.IndexOf(allowedExtensions.ToArray(), Path.GetExtension(res.Filename), StringComparison.CurrentCultureIgnoreCase) >= 0)
                     ret.Add(res);
@@ -327,10 +327,10 @@ namespace HatCMS.WebEditor.Helpers
 
             DirectoryInfo di = new DirectoryInfo(FolderTreeView.SelectedNode.Value);
 
-            CmsResource[] dirResources = CmsResource.UpdateFolderInDatabase(di);
+            CmsLocalFileOnDisk[] dirResources = CmsLocalFileOnDisk.UpdateFolderInDatabase(di);
              // CmsResource.GetResourcesInDirectory(di.FullName);
 
-            CmsResource[] imgResources = FilterOutNonImageFiles(dirResources);
+            CmsLocalFileOnDisk[] imgResources = FilterOutNonImageFiles(dirResources);
 
             
 
@@ -339,7 +339,7 @@ namespace HatCMS.WebEditor.Helpers
             filenames.Add(di.FullName);
             int fileNum = 0; bool rowStarted = false;
             html.Append("<table cellpadding=\"2\" cellspacing=\"2\" width=\"100%\">");
-            foreach (CmsResource res in imgResources)
+            foreach (CmsLocalFileOnDisk res in imgResources)
             {
                 bool updateResource = false;
                 

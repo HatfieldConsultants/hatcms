@@ -209,7 +209,7 @@ namespace HatCMS.controls._system
             if (calendarPageId == -1)
                 throw new Exception("CMS Control parameter for 'SimpleCalendar' not found: 'calendarpage'");
 
-            CmsPage page = new CmsPageDb().getPage(calendarPageId);
+            CmsPage page = CmsContext.getPageById(calendarPageId);
             if (page == null || page.TemplateName == null || page.TemplateName != "EventCalendarAggregator")
                 throw new Exception("##RenderControl(_system/SimpleCalendar calendarpage=\"...\")## is not a EventCalendarAggregator.");
 

@@ -16,9 +16,9 @@ namespace HatCMS.controls.Admin
         /// </summary>
         /// <param name="controlId"></param>
         /// <returns></returns>
-        protected CmsZone createAddRecord(string controlId)
+        protected CmsPageSecurityZone createAddRecord(string controlId)
         {
-            CmsZone data = new CmsZone();
+            CmsPageSecurityZone data = new CmsPageSecurityZone();
             data.StartingPageId = PageUtils.getFromForm(controlId + "addStartingPageId", -999);
             data.ZoneName = PageUtils.getFromForm(controlId + "addName", "");
             return data;
@@ -30,9 +30,9 @@ namespace HatCMS.controls.Admin
         /// <param name="controlId"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        protected CmsZone createUpdateRecord(string controlId, int id)
+        protected CmsPageSecurityZone createUpdateRecord(string controlId, int id)
         {
-            CmsZone data = new CmsZone();
+            CmsPageSecurityZone data = new CmsPageSecurityZone();
             data.ZoneId = id;
             data.StartingPageId = PageUtils.getFromForm(controlId + "startingPageId", -999);
             data.ZoneName = PageUtils.getFromForm(controlId + "name", "");
@@ -161,13 +161,13 @@ namespace HatCMS.controls.Admin
         /// <returns></returns>
         protected string RenderContent(string controlId)
         {
-            List<CmsZone> list = zoneDb.fetchAll();
+            List<CmsPageSecurityZone> list = zoneDb.fetchAll();
 
             StringBuilder html = new StringBuilder();
             for (int x = 0; x < list.Count; x++)
             {
                 html.Append("<tr>" + EOL);
-                CmsZone data1 = list[x];
+                CmsPageSecurityZone data1 = list[x];
                 html.Append("<td>" + EOL);
                 html.Append("<input class=\"" + controlId + "chgButton\" type=\"button\" value=\"Edit\" title=\"" + data1.ZoneId + "\" />" + EOL);
                 html.Append("<input class=\"" + controlId + "delButton\" type=\"button\" value=\"Delete\" title=\"" + data1.ZoneId + "\" />" + EOL);
@@ -265,7 +265,7 @@ namespace HatCMS.controls.Admin
         /// <returns></returns>
         protected bool validateDeleteDefaultZone(string controlId, int id)
         {
-            CmsZone z = zoneDb.fetch(id);
+            CmsPageSecurityZone z = zoneDb.fetch(id);
             if (z.ZoneId < 0)
                 return true;
 
@@ -284,7 +284,7 @@ namespace HatCMS.controls.Admin
         /// <returns></returns>
         protected bool validateUpdateDefaultZone(string controlId, int id)
         {
-            CmsZone z = zoneDb.fetch(id);
+            CmsPageSecurityZone z = zoneDb.fetch(id);
             if (z.ZoneId < 0)
                 return true;
 

@@ -30,10 +30,9 @@ namespace HatCMS
                 {
                     return (CmsPage)PerRequestCache.GetFromCache(cacheKey, new CmsPage());
                 }
-
-                CmsPageDb db = new CmsPageDb();
-                int id = db.getHomePageId();
-                CmsPage ret = db.getPage(id);
+                
+                int id = CmsPage.FetchHomePageId();
+                CmsPage ret = CmsPage.FetchPageById(id);
 
                 PerRequestCache.AddToCache(cacheKey, ret);
 
@@ -84,9 +83,9 @@ namespace HatCMS
 		}
 
         /// <summary>
-        /// Get the current zone of the page
+        /// Get the current security zone of the page
         /// </summary>
-        public static CmsZone currentZone
+        public static CmsPageSecurityZone currentZone
         {
             get { return CmsContext.currentPage.Zone; }
         }
@@ -465,9 +464,8 @@ namespace HatCMS
         /// <param name="pagePathLanguage">The language to search to find the pagePath</param>
 		/// <returns>the CmsPage with the given path. If not found, an empty CmsPage (with id = -1) is returned</returns>
         public static CmsPage getPageByPath(string pagePath, CmsLanguage pagePathLanguage)
-        {
-            CmsPageDb db = new CmsPageDb();
-            return db.getPage(pagePath, pagePathLanguage);
+        {            
+            return CmsPage.FetchPageByPath(pagePath, pagePathLanguage);
         }
 
 		/// <summary>
@@ -487,8 +485,7 @@ namespace HatCMS
             }
 
             
-            CmsPageDb db = new CmsPageDb();
-            CmsPage ret = db.getPage(pagePath);
+            CmsPage ret = CmsPage.FetchPageByPath(pagePath);
             
             PerRequestCache.AddToCache(cacheKey, ret);
             return ret;
@@ -504,11 +501,11 @@ namespace HatCMS
         /// <returns>the CmsPage with the given path. If not found, an empty CmsPage (with id = -1) is returned</returns>
         public static CmsPage getPageByPath(string pagePath, int pageRevisionNumber)
         {
-            CmsPageDb db = new CmsPageDb();
+            
             if (pageRevisionNumber >= 0)
-                return db.getPage(pagePath, pageRevisionNumber);
+                return CmsPage.FetchPageByPath(pagePath, pageRevisionNumber);
             return
-                db.getPage(pagePath);
+                CmsPage.FetchPageByPath(pagePath);
         }
 
 		/// <summary>
@@ -518,9 +515,8 @@ namespace HatCMS
 		/// <param name="id"></param>
 		/// <returns>the CmsPage with the given PageId. If not found, an empty CmsPage (with id = -1) is returned</returns>
 		public static CmsPage getPageById(int id)
-		{
-			CmsPageDb db = new CmsPageDb();
-			return db.getPage(id);
+		{			
+			return CmsPage.FetchPageById(id);
 		}
 
         /// <summary>
@@ -529,9 +525,8 @@ namespace HatCMS
         /// <param name="pageId"></param>
         /// <returns></returns>
         public static bool pageExists(int pageId)
-        {
-            CmsPageDb db = new CmsPageDb();
-            CmsPage p = db.getPage(pageId);
+        {            
+            CmsPage p = CmsPage.FetchPageById(pageId);
             if (p.ID >= 0)
                 return true;
             return false;
@@ -564,9 +559,8 @@ namespace HatCMS
 		/// <param name="childName"></param>
 		/// <returns></returns>
 		public static bool childPageWithNameExists(int parentPageId, string childName)
-		{
-			CmsPageDb db = new CmsPageDb();
-			CmsPage parentPage = db.getPage(parentPageId);
+		{			
+			CmsPage parentPage = CmsPage.FetchPageById(parentPageId);
 			if (parentPage.ID < 0)
 				return false;
 
@@ -586,8 +580,8 @@ namespace HatCMS
         /// <returns></returns>
         public static bool childPageWithNameExists(int parentPageId, CmsPageLanguageInfo[] pageLangInfos)
         {
-            CmsPageDb db = new CmsPageDb();
-            CmsPage parentPage = db.getPage(parentPageId);
+            
+            CmsPage parentPage = CmsPage.FetchPageById(parentPageId);
             if (parentPage.ID < 0)
                 return false;
             
@@ -797,6 +791,13 @@ namespace HatCMS
 
         public enum PageGatheringMode { ChildPagesOnly, FullRecursion }
 
+        /// <summary>
+        /// get all pages (from rootPageToGatherFrom and below) that implement placeholderType.
+        /// </summary>
+        /// <param name="placeholderType"></param>
+        /// <param name="rootPageToGatherFrom"></param>
+        /// <param name="gatheringMode"></param>
+        /// <returns></returns>
         public static CmsPage[] getAllPagesWithPlaceholder(string placeholderType, CmsPage rootPageToGatherFrom, PageGatheringMode gatheringMode)
         {
             List<CmsPage> ret = new List<CmsPage>();
@@ -813,7 +814,7 @@ namespace HatCMS
                 }
                 else if (gatheringMode == PageGatheringMode.ChildPagesOnly)
                 {
-                    foreach (CmsPage page in rootPageToGatherFrom.AllChildPages)
+                    foreach (CmsPage page in rootPageToGatherFrom.ChildPages)
                     {
                         if (page.hasPlaceholder(placeholderType))
                             ret.Add(page);
@@ -825,11 +826,54 @@ namespace HatCMS
             return ret.ToArray();
         }
 
+        /// <summary>
+        /// gets all pages on the entire site that implement the placeholderType specified.        
+        /// </summary>
+        /// <param name="placeholderType"></param>
+        /// <returns></returns>
         public static CmsPage[] getAllPagesWithPlaceholder(string placeholderType)
         {
             return getAllPagesWithPlaceholder(placeholderType, HomePage, PageGatheringMode.FullRecursion);
         }
-        
+
+        /// <summary>
+        /// NOTE: returns ALL matching pages in the system, regardless of the user's security level.
+        /// </summary>
+        /// <param name="placeholderType"></param>
+        /// <param name="rootPageToGatherFrom"></param>
+        /// <param name="gatheringMode"></param>
+        /// <returns></returns>
+        public static Dictionary<CmsPage, CmsPlaceholderDefinition[]> getAllPlaceholderDefinitions(string placeholderType, CmsPage rootPageToGatherFrom, PageGatheringMode gatheringMode)
+        {
+            Dictionary<CmsPage, CmsPlaceholderDefinition[]> ret = new Dictionary<CmsPage, CmsPlaceholderDefinition[]>();
+            try
+            {
+                if (gatheringMode == PageGatheringMode.FullRecursion)
+                {
+                    Dictionary<int, CmsPage> allPages = rootPageToGatherFrom.getLinearizedPages();
+                    foreach (CmsPage page in allPages.Values)
+                    {
+                        CmsPlaceholderDefinition[] defs = page.getPlaceholderDefinitions(placeholderType);
+                        if (defs.Length > 0)
+                            ret.Add(page, defs);
+
+                    } // foreach page
+                }
+                else if (gatheringMode == PageGatheringMode.ChildPagesOnly)
+                {
+                    foreach (CmsPage page in rootPageToGatherFrom.ChildPages)
+                    {
+                        CmsPlaceholderDefinition[] defs = page.getPlaceholderDefinitions(placeholderType);
+                        if (defs.Length > 0)
+                            ret.Add(page, defs);
+                    } // foreach page
+                }
+            }
+            catch
+            { }
+            return ret;
+        }
+
 
         /// <summary>
         /// Handle PageNotFound (404) errors.

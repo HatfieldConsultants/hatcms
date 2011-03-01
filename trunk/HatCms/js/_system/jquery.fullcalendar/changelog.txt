@@ -1,4 +1,67 @@
 
+version 1.4.11 (1/22/11)
+	- fixed rerenderEvents bug (issue 790)
+	- fixed bug with faulty dragging of events from all-day slot in agenda views
+	- bundled with jquery 1.5 and jquery-ui 1.8.9
+
+version 1.4.10 (1/2/11)
+	- fixed bug with resizing event to different week in 5-day month view (issue 740)
+	- fixed bug with events not sticking after a removeEvents call (issue 757)
+	- fixed bug with underlying parseTime method, and other uses of parseInt (issue 688)
+
+version 1.4.9 (11/16/10)
+	- new algorithm for vertically stacking events (issue 111)
+	- resizing an event to a different week (issue 306)
+	- bug: some events not rendered with consecutive calls to addEventSource (issue 679)
+
+version 1.4.8 (10/16/10)
+	- ignoreTimezone option (set to `false` to process UTC offsets in ISO8601 dates)
+	- bugfixes
+		- event refetching not being called under certain conditions (issues 417, 554)
+		- event refetching being called multiple times under certain conditions (issues 586, 616)
+		- selection cannot be triggered by right mouse button (issue 558)
+		- agenda view left axis sized incorrectly (issue 465)
+		- IE js error when calendar is too narrow (issue 517)
+		- agenda view looks strange when no scrollbars (issue 235)
+		- improved parsing of ISO8601 dates with UTC offsets
+	- $.fullCalendar.version
+	- an internal refactor of the code, for easier future development and modularity
+
+version 1.4.7 (7/5/10)
+	- "dropping" external objects onto the calendar
+		- droppable (boolean, to turn on/off)
+		- dropAccept (to filter which events the calendar will accept)
+		- drop (trigger)
+	- selectable options can now be specified with a View Option Hash
+	- bugfixes
+		- dragged & reverted events having wrong time text (issue 406)
+		- bug rendering events that have an endtime with seconds, but no hours/minutes (issue 477)
+		- gotoDate date overflow bug (issue 429)
+		- wrong date reported when clicking on edge of last column in agenda views (412)
+	- support newlines in event titles
+	- select/unselect callbacks now passes native js event
+
+version 1.4.6 (5/31/10)
+	- "selecting" days or timeslots
+		- options: selectable, selectHelper, unselectAuto, unselectCancel
+		- callbacks: select, unselect
+		- methods: select, unselect
+	- when dragging an event, the highlighting reflects the duration of the event
+	- code compressing by Google Closure Compiler
+	- bundled with jQuery 1.4.2 and jQuery UI 1.8.1
+
+version 1.4.5 (2/21/10)
+	- lazyFetching option, which can force the calendar to fetch events on every view/date change
+	- scroll state of agenda views are preserved when switching back to view
+	- bugfixes
+		- calling methods on an uninitialized fullcalendar throws error
+		- IE6/7 bug where an entire view becomes invisible (issue 320)
+		- error when rendering a hidden calendar (in jquery ui tabs for example) in IE (issue 340)
+		- interconnected bugs related to calendar resizing and scrollbars
+			- when switching views or clicking prev/next, calendar would "blink" (issue 333)
+			- liquid-width calendar's events shifted (depending on initial height of browser) (issue 341)
+			- more robust underlying algorithm for calendar resizing
+
 version 1.4.4 (2/3/10)
 	- optimized event rendering in all views (events render in 1/10 the time)
 	- gotoDate() does not force the calendar to unnecessarily rerender
@@ -192,3 +255,4 @@ version 1.1 (5/10/09)
 		- for THEAD and TBODY (in 1.0, just used TBODY, restructured in 1.1)
 		- IF UPGRADING FROM FULLCALENDAR 1.0, YOU MUST UPGRADE FULLCALENDAR.CSS
 		  !!!!!!!!!!!
+		  

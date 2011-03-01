@@ -276,7 +276,7 @@ namespace HatCMS.controls._system.Internal
             if (cmsPage.ShowInMenu != show) // if the value is changing from T>F or F>T, run SQL
             {
                 cmsPage.ShowInMenu = show;
-                bool result = new CmsPageDb().updateShowInMenuIndicator(cmsPage, cmsPage.ShowInMenu);
+                bool result = cmsPage.UpdateShowInMenuFlag(cmsPage.ShowInMenu);
                 return result ? "" : "<p class=\"err\">Error updating '" + cmsPage.Title + "' page, please contact administrator.</p>";
             }
             return "";

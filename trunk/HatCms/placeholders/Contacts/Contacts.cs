@@ -37,7 +37,7 @@ namespace HatCMS.Placeholders
         }
 
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
@@ -812,6 +812,11 @@ namespace HatCMS.Placeholders
             return html.ToString();
 
         } // getAddEditContactForm
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
     }
 }
 

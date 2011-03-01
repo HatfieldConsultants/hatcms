@@ -34,9 +34,9 @@ namespace HatCMS
                 new string[] { "pageid", "LockedByUsername", "LockExpiresAt" }));
             ret.Add(new CmsDatabaseTableDependency("pagelanginfo",
                 new string[] { "pageId", "langCode", "name", "title", "menuTitle", "searchEngineDescription" }));
-            
-            ret.Add(new CmsDatabaseTableDependency("resourceitemmetadata"));
-            ret.Add(new CmsDatabaseTableDependency("resourceitems"));
+
+            ret.Add(new CmsDatabaseTableDependency("resourceitemmetadata", new string[] { "AutoIncId", "ResourceId", "ResourceRevisionNumber", "Name", "Value", "Deleted" }));
+            ret.Add(new CmsDatabaseTableDependency("resourceitems", new string[] { "AutoIncId", "ResourceId", "RevisionNumber", "Filename", "FilePath", "FileDirectory", "FileSize", "FileTimestamp", "MimeType", "ModifiedBy", "ModificationDate", "Deleted" }));
 
             // -- some project directories should be removed from production sites
             #if  ! DEBUG

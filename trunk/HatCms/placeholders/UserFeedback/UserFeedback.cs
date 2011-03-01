@@ -67,6 +67,11 @@ namespace HatCMS.Placeholders
             return ret.ToArray();
         }
 
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            return new Rss.RssItem[0]; // nothing to render in RSS.
+        }
+
 #region Multi-lang get method
 
         protected string getValuesPreloadedText(CmsLanguage lang)
@@ -126,7 +131,7 @@ namespace HatCMS.Placeholders
 
 #endregion
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }               

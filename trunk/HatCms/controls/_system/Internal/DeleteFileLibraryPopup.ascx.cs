@@ -11,8 +11,7 @@ namespace HatCMS.controls._system.Internal
     public partial class DeleteFileLibraryPopup : System.Web.UI.UserControl
     {
         protected static string EOL = Environment.NewLine;
-        protected FileLibraryDb db = new FileLibraryDb();
-        protected CmsPageDb pageDb = new CmsPageDb();
+        protected FileLibraryDb db = new FileLibraryDb();        
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -45,7 +44,7 @@ namespace HatCMS.controls._system.Internal
         protected CmsPage getCmsPage()
         {
             int targetPageId = PageUtils.getFromForm("target", Int32.MinValue);
-            return pageDb.getPage(targetPageId);
+            return CmsContext.getPageById(targetPageId);
         }
 
         /// <summary>
@@ -85,7 +84,7 @@ namespace HatCMS.controls._system.Internal
         /// <returns></returns>
         protected string deleteCmsPage(CmsPage p)
         {
-            if (pageDb.deletePage(p) == false)
+            if (p.DeleteThisPage() == false)
                 return "Error deleting file page (Id " + p.ID.ToString() + ").";
 
             return "";

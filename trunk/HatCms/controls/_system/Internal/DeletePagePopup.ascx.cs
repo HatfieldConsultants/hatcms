@@ -36,7 +36,7 @@ namespace HatCMS.controls
 				}
 				else
 				{
-					CmsPageDb db = new CmsPageDb();
+					
                     CmsPage page = CmsContext.getPageById(targetPageId);
 
                     if (!page.currentUserCanWrite)
@@ -53,8 +53,9 @@ namespace HatCMS.controls
                         writer.WriteLine(html);
                         return;
                     }
+
+                    bool success = page.DeleteThisPage();                    
                     
-                    bool success = db.deletePage(page);
 					if (!success)
 					{
 						html = html + "<span style=\"color: red\">Database error: could not delete page.</span>";

@@ -87,7 +87,7 @@ namespace HatCMS.controls._system
 
             for (int x = 0; x < list.Count; x++)
             {
-                CmsPage p = new CmsPageDb().getPage(list[x].PageId);
+                CmsPage p = CmsContext.getPageById(list[x].PageId);
                 string url = p.getUrl(lang);
                 html.Append("<div class=\"UpcomingEventsDate\">");
                 html.Append("<a href=\"" + url + "\">");

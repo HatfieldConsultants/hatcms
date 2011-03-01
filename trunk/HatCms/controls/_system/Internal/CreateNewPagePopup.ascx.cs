@@ -57,9 +57,8 @@ namespace HatCMS.controls
                 }
                 else
                 {
-                    // -- page does not already exist, so create it
-                    CmsPageDb db = new CmsPageDb();
-                    bool success = db.createNewPage(pageToCreate);
+                    // -- page does not already exist, so create it                    
+                    bool success = CmsPage.InsertNewPage(pageToCreate);
                     if (!success)
                     {
                         _errorMessage = "database error: could not create new page.";
@@ -145,8 +144,8 @@ namespace HatCMS.controls
 					else
 					{
 						// -- page does not already exist, so create it
-						CmsPageDb db = new CmsPageDb();
-						bool success = db.createNewPage(newPage);
+						
+						bool success = CmsPage.InsertNewPage(newPage);
 						if (!success)
 						{
 							_errorMessage = "database could not create new page.";

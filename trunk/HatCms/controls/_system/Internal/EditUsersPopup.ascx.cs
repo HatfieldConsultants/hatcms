@@ -41,7 +41,7 @@ namespace HatCMS.controls
             }
             
             string nothing = Guid.NewGuid().ToString();
-            CmsZone homePageZone = (new CmsZoneDb()).fetchByPage(CmsContext.HomePage);
+            CmsPageSecurityZone homePageZone = (new CmsZoneDb()).fetchByPage(CmsContext.HomePage);
             WebPortalUser dummyPublicUser = new WebPortalUser(-1, nothing, nothing, new WebPortalUserRole[] { WebPortalUserRole.dummyPublicUserRole });
             bool requireAnonLogin = homePageZone.canRead(dummyPublicUser);            
             

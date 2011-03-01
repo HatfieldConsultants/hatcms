@@ -17,7 +17,7 @@ namespace HatCMS
         public CmsZoneDb() : base(ConfigurationManager.AppSettings["ConnectionString"])
         { }
 
-        public CmsZone fetch(int zoneId)
+        public CmsPageSecurityZone fetch(int zoneId)
         {
             StringBuilder sql = new StringBuilder("SELECT ZoneId, StartingPageId, ZoneName FROM ");
             sql.Append(TABLE_NAME);
@@ -26,7 +26,7 @@ namespace HatCMS
 
             DataSet ds = this.RunSelectQuery(sql.ToString());
             if (this.hasSingleRow(ds) == false)
-                return new CmsZone();
+                return new CmsPageSecurityZone();
 
             DataRow dr = ds.Tables[0].Rows[0];
             return fromDataRow(dr);
@@ -39,14 +39,14 @@ namespace HatCMS
         /// </summary>
         /// <param name="page"></param>
         /// <returns></returns>
-        public CmsZone fetchByPage(CmsPage page)
+        public CmsPageSecurityZone fetchByPage(CmsPage page)
         {
             StringBuilder sql = new StringBuilder("SELECT p.ParentPageId, p.PageId, z.ZoneId, z.StartingPageId, z.ZoneName FROM pages p LEFT JOIN ");
             sql.Append("(SELECT * FROM " + TABLE_NAME + " WHERE Deleted IS NULL) z on p.PageId=z.StartingPageId");
             sql.Append(" WHERE p.PageId={0};");
 
             int id = page.ID;
-            CmsZone z = null;
+            CmsPageSecurityZone z = null;
             while (z == null)
             {
                 string formattedSQL = String.Format(sql.ToString(), new string[] { id.ToString() });
@@ -78,7 +78,7 @@ namespace HatCMS
         /// <param name="page"></param>
         /// <param name="recursive"></param>
         /// <returns></returns>
-        public CmsZone fetchByPage(CmsPage page, bool recursive)
+        public CmsPageSecurityZone fetchByPage(CmsPage page, bool recursive)
         {
             if (recursive)
                 return fetchByPage(page);
@@ -88,7 +88,7 @@ namespace HatCMS
             sql.Append(" WHERE p.PageId={0};");
 
             int id = page.ID;
-            CmsZone z = null;
+            CmsPageSecurityZone z = null;
             string formattedSQL = String.Format(sql.ToString(), new string[] { id.ToString() });
             DataSet ds = this.RunSelectQuery(formattedSQL);
             DataRow dr = ds.Tables[0].Rows[0];
@@ -104,7 +104,7 @@ namespace HatCMS
         /// Select all zone records order by their names
         /// </summary>
         /// <returns></returns>
-        public List<CmsZone> fetchAll()
+        public List<CmsPageSecurityZone> fetchAll()
         {
             StringBuilder sql = new StringBuilder("SELECT ZoneId, StartingPageId, ZoneName FROM ");
             sql.Append(TABLE_NAME);
@@ -113,7 +113,7 @@ namespace HatCMS
 
             DataSet ds = this.RunSelectQuery(sql.ToString());
 
-            List<CmsZone> list = new List<CmsZone>();
+            List<CmsPageSecurityZone> list = new List<CmsPageSecurityZone>();
             if (this.hasRows(ds))
             {
                 foreach (DataRow dr in ds.Tables[0].Rows)
@@ -127,7 +127,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool insert(CmsZone entity)
+        public bool insert(CmsPageSecurityZone entity)
         {
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.Append(TABLE_NAME);
@@ -150,7 +150,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool update(CmsZone entity)
+        public bool update(CmsPageSecurityZone entity)
         {
             StringBuilder sql = new StringBuilder("UPDATE ");
             sql.Append(TABLE_NAME);
@@ -167,7 +167,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool delete(CmsZone entity)
+        public bool delete(CmsPageSecurityZone entity)
         {
             StringBuilder sql = new StringBuilder("UPDATE ");
             sql.Append(TABLE_NAME);
@@ -183,9 +183,9 @@ namespace HatCMS
         /// </summary>
         /// <param name="dr"></param>
         /// <returns></returns>
-        protected CmsZone fromDataRow(DataRow dr)
+        protected CmsPageSecurityZone fromDataRow(DataRow dr)
         {
-            CmsZone entity = new CmsZone();
+            CmsPageSecurityZone entity = new CmsPageSecurityZone();
             entity.ZoneId = Convert.ToInt32(dr["ZoneId"]);
             entity.StartingPageId = Convert.ToInt32(dr["StartingPageId"]);
             entity.ZoneName = dr["ZoneName"].ToString();

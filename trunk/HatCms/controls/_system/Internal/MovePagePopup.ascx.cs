@@ -70,8 +70,7 @@ namespace HatCMS.controls
                         }
                         else
                         {
-                            CmsPage newParentPage = CmsContext.getPageById(parent);
-                            CmsPageDb db = new CmsPageDb();
+                            CmsPage newParentPage = CmsContext.getPageById(parent);                            
 
                             if (pageToMove.ID == CmsContext.HomePage.ID)
                             {

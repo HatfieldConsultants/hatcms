@@ -582,7 +582,7 @@ namespace HatCMS.Controls.Admin
                 if ((f.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
                     break;
 
-                if (f.Name.StartsWith(CmsResource.DeletedFileFilenamePrefix)) // skip resources that have been deleted
+                if (f.Name.StartsWith(CmsLocalFileOnDisk.DeletedFileFilenamePrefix)) // skip resources that have been deleted
                     break;
 
                 string url = InlineImageBrowser2.ReverseMapPath(f.FullName);
@@ -938,7 +938,7 @@ namespace HatCMS.Controls.Admin
                 
             } // foreach
 
-            int numCached = CmsResource.DeleteAllCachedThumbnailUrls();
+            int numCached = CmsLocalFileOnDisk.DeleteAllCachedThumbnailUrls();
 
             html.Append(deleted.ToString() + " files and " + numCached + " URLs in the thumbnail cache have been deleted.<br>");
 

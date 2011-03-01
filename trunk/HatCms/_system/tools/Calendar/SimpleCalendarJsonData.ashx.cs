@@ -14,12 +14,10 @@ using Hatfield.Web.Portal.Imaging;
 namespace HatCMS._system.Calendar
 {
     public class SimpleCalendarJsonData : IHttpHandler
-    {
-        protected CmsPageDb pageDb = new CmsPageDb();
-
+    {        
         /// <summary>
         /// AJAX handler to reply a JSON containing the events for
-        /// EventCalendarAggregator and SimpleCalendar
+        /// EventCalendarAggregator placeholder and SimpleCalendar control
         /// </summary>
         /// <param name="context"></param>
         public void ProcessRequest(HttpContext context)
@@ -36,7 +34,7 @@ namespace HatCMS._system.Calendar
                 return;
             }
 
-            bool showFile = PageUtils.getFromForm("showFile", false); // Basic rule: event calendar shows, simple calendar does not
+            bool showFile = PageUtils.getFromForm("showFile", false); // Basic rule: event calendar shows files, simple calendar does not
 
             CmsLanguage lang = new CmsLanguage(PageUtils.getFromForm("lang", "en"));
             List<EventCalendarDb.EventCalendarDetailsData> list = new EventCalendarDb().fetchDetailsDataByRange(start, end, lang);
@@ -47,7 +45,7 @@ namespace HatCMS._system.Calendar
                 if (!showFile)
                     continue;
 
-                CmsPage eventPage = pageDb.getPage(c.PageId);
+                CmsPage eventPage = CmsContext.getPageById(c.PageId);
                 List<FileLibraryDetailsData> fileList = new FileLibraryDb().fetchDetailsData(lang, eventPage);
                 foreach (FileLibraryDetailsData f in fileList)
                 {
@@ -69,7 +67,8 @@ namespace HatCMS._system.Calendar
         /// <returns></returns>
         protected bool userHasAuthority(FileLibraryDetailsData f)
         {
-            CmsPage filePage = pageDb.getPage(f.PageId);
+            CmsPage filePage = CmsContext.getPageById(f.PageId);
+            
             WebPortalUser u = CmsContext.currentWebPortalUser;
             if (filePage.Zone.canRead(u) || filePage.Zone.canWrite(u))
                 return true;
@@ -103,7 +102,7 @@ namespace HatCMS._system.Calendar
 
             public FullCalendarEvent(EventCalendarDb.EventCalendarDetailsData c)
             {
-                CmsPage page = new CmsPageDb().getPage(c.PageId);
+                CmsPage page = CmsContext.getPageById(c.PageId);
                 id = c.PageId.ToString();
                 title = page.getTitle(c.Lang);
                 start = c.StartDateTime;
@@ -119,7 +118,7 @@ namespace HatCMS._system.Calendar
             /// <param name="f"></param>
             public FullCalendarEvent(EventCalendarDb.EventCalendarDetailsData c, FileLibraryDetailsData f)
             {
-                CmsPage page = new CmsPageDb().getPage(f.PageId);
+                CmsPage page = CmsContext.getPageById(f.PageId);
                 id = "EventFile_" + f.PageId.ToString();
                 title = f.FileName;
                 start = c.StartDateTime.AddSeconds(1);  // show below the event

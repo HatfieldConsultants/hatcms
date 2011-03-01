@@ -9,16 +9,7 @@ using System.Collections.Specialized;
 namespace HatCMS.placeholders.Procurement
 {
     public class ProcurementAggregator : BaseCmsPlaceholder
-    {
-        /// <summary>
-        /// If the CmsPage contains a "ProcurementAggregator", then it is a ProcurementAggregator page
-        /// </summary>
-        /// <param name="page"></param>
-        /// <returns></returns>
-        public static bool isProcurementAggregator(CmsPage page)
-        {
-            return (StringUtils.IndexOf(page.getAllPlaceholderNames(), "ProcurementAggregator", StringComparison.CurrentCultureIgnoreCase) > -1);
-        }
+    {        
 
         /// <summary>
         /// 
@@ -44,7 +35,7 @@ namespace HatCMS.placeholders.Procurement
         }
 
         /// <summary>
-        /// Render the "Add a Procurement opportunity"
+        /// Render the "Add a Procurement opportunity" in the Edit menu
         /// </summary>
         /// <param name="action"></param>
         /// <param name="pageToRenderFor"></param>
@@ -107,7 +98,7 @@ namespace HatCMS.placeholders.Procurement
             pageToAddCommandTo.EditMenu.addCustomActionItem(newAction);
         }
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
@@ -158,8 +149,7 @@ namespace HatCMS.placeholders.Procurement
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] param)
         {
             AddProcurementCommandToEditMenu(page, page);
-            // CmsContext.setCurrentCultureInfo(langToRenderFor);
-            CmsPage currentPage = CmsContext.currentPage;
+            
             StringBuilder html = new StringBuilder();
 
             ProcurementDb db = new ProcurementDb();
@@ -170,12 +160,14 @@ namespace HatCMS.placeholders.Procurement
                 currYear = ProcurementAggregator.YearToDisplay;
 
             List<ProcurementDb.ProcurementDetailsData> articleList = new List<ProcurementDb.ProcurementDetailsData>();
-            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childPages = page.getPlaceholderDefinitionsForChildPages("ProcurementDetails");
+            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childPages = CmsContext.getAllPlaceholderDefinitions("ProcurementDetails", page, CmsContext.PageGatheringMode.ChildPagesOnly);
             foreach (CmsPage childPage in childPages.Keys)
             {
-                CmsPlaceholderDefinition[] def = childPages[childPage];
-                ProcurementDb.ProcurementDetailsData entity = db.fetchProcurementDetails(childPage, def[0].Identifier, langToRenderFor, true);
-                articleList.Add(entity);
+                foreach (CmsPlaceholderDefinition def in childPages[childPage])
+                {
+                    ProcurementDb.ProcurementDetailsData entity = db.fetchProcurementDetails(childPage, def.Identifier, langToRenderFor, true);
+                    articleList.Add(entity);
+                }
             }
 
             // -- display results
@@ -212,6 +204,9 @@ namespace HatCMS.placeholders.Procurement
 
                 foreach (ProcurementDb.ProcurementDetailsData Procurement in ProcurementDetails)
                 {
+                    if (displayYear > 0 && Procurement.DateOfProcurement.Year != displayYear)
+                        continue; // skip this item
+
                     if (showYearTitles && (previousYearTitle == -1 || Procurement.DateOfProcurement.Year != previousYearTitle))
                     {
                         if (monthULStarted)
@@ -244,7 +239,7 @@ namespace HatCMS.placeholders.Procurement
                     // -- create the details url
                     NameValueCollection paramList = new NameValueCollection();
 
-                    CmsPage childPage = new CmsPageDb().getPage(Procurement.PageId);
+                    CmsPage childPage = CmsContext.getPageById(Procurement.PageId);
                     string detailsUrl = CmsContext.getUrlByPagePath(childPage.Path, paramList);
                     string ProcurementTitle = childPage.getTitle(Procurement.Lang);
                     string readArticle = getReadArticleText(Procurement.Lang);
@@ -280,6 +275,11 @@ namespace HatCMS.placeholders.Procurement
             comparer.Field = ProcurementDb.ProcurementDetailsDataComparer.CompareType.DateOfProcurement;
             Array.Sort(ProcurementArray, comparer);
             Array.Reverse(ProcurementArray);
+        }
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            throw new Exception("The method or operation is not implemented.");
         }
     }
 }

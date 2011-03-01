@@ -84,7 +84,7 @@ namespace HatCMS.Placeholders
         }
         
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented;; // this placeholder doesn't implement revisions
         }
@@ -338,92 +338,101 @@ namespace HatCMS.Placeholders
             return System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath + data.subDir);
         }
 
-		private string getHtmlForThumbView(CmsPage page, ImageGalleryData data, string ImageGalleryId, bool inEditMode)
-		{
-			
-			StringBuilder html = new StringBuilder();
-            string DirOnDiskToView = getDirOnDiskToView(data);		
-			
-			
-			if (!Directory.Exists(DirOnDiskToView))
-			{
-				return ("Error with Image Gallery: ImageGallery directory does not exist!");
-				
-			}
-			
-			string[] JPGFiles = Directory.GetFiles(DirOnDiskToView, "*.jpg");
-			if (JPGFiles.Length < 1)
-			{
-				return ("no images are in this image gallery");				
-			}			
-			
-			html.Append("<table>");
-			int imgCount = 0;
-			ArrayList formCaptionNames = new ArrayList();
-			foreach(string jpg in JPGFiles)
-			{
-				if (imgCount % data.numThumbsPerRow == 0)
-				{
-					html.Append("<tr>");						
-				}
-					
-				string imgFilenameUnderAppPath = data.subDir+Path.GetFileName(jpg);
-				string thumbUrl = showThumbPage.getThumbDisplayUrl(imgFilenameUnderAppPath, data.thumbSize, -1);
+        private string getHtmlForThumbView(CmsPage page, ImageGalleryData data, string ImageGalleryId, bool inEditMode)
+        {
 
-				ImageGalleryImageData imgData = data.getImageData(imgFilenameUnderAppPath);
+            StringBuilder html = new StringBuilder();
+            string DirOnDiskToView = getDirOnDiskToView(data);
 
-				NameValueCollection imgParams = new NameValueCollection();
-				imgParams.Add("galleryMode", Convert.ToInt32(RenderMode.FullSize).ToString());
-				imgParams.Add("galleryImg", Path.GetFileName(jpg));
-					
-				string fullSizeUrl = CmsContext.getUrlByPagePath(page.Path, imgParams);
 
-				html.Append("<td class=\"ImageGalleryImage_td\">");
-				
-				if (!inEditMode)
-					html.Append("<a class=\"ImageGalleryImageLink\" href=\""+fullSizeUrl+"\">");
-				
-				html.Append("<img class=\"ImageGalleryImage\" src=\""+thumbUrl+"\">");
-				
-				if (!inEditMode)
-					html.Append("</a>");
-				
-				html.Append("<br>");
-				if (inEditMode)
-				{
-					string tbName = page.Server.UrlEncode("imgCaption"+ImageGalleryId+"_"+imgFilenameUnderAppPath);					
-					formCaptionNames.Add(tbName);					
-					string tb = PageUtils.getInputTextHtml(tbName, tbName, imgData.Caption, 15, 255);
-					tb = "<nobr>caption: "+tb+"</nobr>";
-					html.Append(tb);
-				}
-				else
-				{
-					html.Append(imgData.Caption);
-				}
-				html.Append("</td>");
-				if (imgCount % data.numThumbsPerRow == data.numThumbsPerRow)
-					html.Append("</tr>");
+            if (!Directory.Exists(DirOnDiskToView))
+            {
+                return ("Error with Image Gallery: ImageGallery directory does not exist!");
 
-				imgCount++;
-			}
-			if (imgCount % data.numThumbsPerRow != data.numThumbsPerRow)
-				html.Append("</tr>");
-			html.Append("</table>");
+            }
 
-			if (inEditMode)
-			{
-				string csv = "";
-				foreach(string id in formCaptionNames)
-				{
-					csv = csv + id +",";
-				}
-				string h = PageUtils.getHiddenInputHtml(ImageGalleryId+"_captions", csv);
-				html.Append(h);
-			}
-			
-			return html.ToString();
+            string[] JPGFiles = Directory.GetFiles(DirOnDiskToView, "*.jpg");
+            if (JPGFiles.Length < 1)
+            {
+                return ("no images are in this image gallery");
+            }
 
-		} // getHtmlForThumbView
+            html.Append("<table>");
+            int imgCount = 0;
+            ArrayList formCaptionNames = new ArrayList();
+            foreach (string jpg in JPGFiles)
+            {
+                if (imgCount % data.numThumbsPerRow == 0)
+                {
+                    html.Append("<tr>");
+                }
+
+                string imgFilenameUnderAppPath = data.subDir + Path.GetFileName(jpg);
+                string thumbUrl = showThumbPage.getThumbDisplayUrl(imgFilenameUnderAppPath, data.thumbSize, -1);
+
+                ImageGalleryImageData imgData = data.getImageData(imgFilenameUnderAppPath);
+
+                NameValueCollection imgParams = new NameValueCollection();
+                imgParams.Add("galleryMode", Convert.ToInt32(RenderMode.FullSize).ToString());
+                imgParams.Add("galleryImg", Path.GetFileName(jpg));
+
+                string fullSizeUrl = CmsContext.getUrlByPagePath(page.Path, imgParams);
+
+                html.Append("<td class=\"ImageGalleryImage_td\">");
+
+                if (!inEditMode)
+                    html.Append("<a class=\"ImageGalleryImageLink\" href=\"" + fullSizeUrl + "\">");
+
+                html.Append("<img class=\"ImageGalleryImage\" src=\"" + thumbUrl + "\">");
+
+                if (!inEditMode)
+                    html.Append("</a>");
+
+                html.Append("<br>");
+                if (inEditMode)
+                {
+                    string tbName = page.Server.UrlEncode("imgCaption" + ImageGalleryId + "_" + imgFilenameUnderAppPath);
+                    formCaptionNames.Add(tbName);
+                    string tb = PageUtils.getInputTextHtml(tbName, tbName, imgData.Caption, 15, 255);
+                    tb = "<nobr>caption: " + tb + "</nobr>";
+                    html.Append(tb);
+                }
+                else
+                {
+                    html.Append(imgData.Caption);
+                }
+                html.Append("</td>");
+                if (imgCount % data.numThumbsPerRow == data.numThumbsPerRow)
+                    html.Append("</tr>");
+
+                imgCount++;
+            }
+            if (imgCount % data.numThumbsPerRow != data.numThumbsPerRow)
+                html.Append("</tr>");
+            html.Append("</table>");
+
+            if (inEditMode)
+            {
+                string csv = "";
+                foreach (string id in formCaptionNames)
+                {
+                    csv = csv + id + ",";
+                }
+                string h = PageUtils.getHiddenInputHtml(ImageGalleryId + "_captions", csv);
+                html.Append(h);
+            }
+
+            return html.ToString();
+
+        } // getHtmlForThumbView
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            Rss.RssItem rssItem = CreateAndInitRssItem(page, langToRenderFor);
+
+            rssItem.Description = page.renderPlaceholderToString(placeholderDefinition, langToRenderFor);
+
+            return new Rss.RssItem[] { rssItem };
+        }
 	}
 }

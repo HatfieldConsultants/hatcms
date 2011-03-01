@@ -54,7 +54,7 @@ namespace HatCMS.FCKHelpers
 
                 jpeg_image_upload.SaveAs(fullFilename);
 
-                CmsResource r = CmsResource.CreateFromFile(fullFilename);
+                CmsLocalFileOnDisk r = CmsLocalFileOnDisk.CreateFromFile(fullFilename);
                 bool b = r.SaveToDatabase();
                 if (b)
                 {

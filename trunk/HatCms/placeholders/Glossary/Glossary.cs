@@ -28,7 +28,7 @@ namespace HatCMS.Placeholders
         }
 
  
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
@@ -338,6 +338,41 @@ namespace HatCMS.Placeholders
 
         } // RenderView
 
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            GlossaryDb db = new GlossaryDb();
+            GlossaryPlaceholderData placeholderData = db.getGlossary(page, placeholderDefinition.Identifier, langToRenderFor, true);
+            GlossaryPlaceholderData.GlossaryViewMode origViewMode = placeholderData.ViewMode;
+            
+            // -- gets all glossary items (regardless of the ViewMode)
+            GlossaryData[] items = db.getGlossaryData(placeholderData.GlossaryId);
+            
+            // -- each glossary item gets its own rssItem
+            List<Rss.RssItem> ret = new List<Rss.RssItem>();
+            foreach (GlossaryData glData in items)
+            {
+                Rss.RssItem rssItem = new Rss.RssItem();
+                rssItem = base.InitRssItem(rssItem, page, langToRenderFor);
+
+                rssItem.Description = glData.description;
+                // -- setup the proper link
+                switch (placeholderData.ViewMode)
+                {
+                    case GlossaryPlaceholderData.GlossaryViewMode.PagePerLetter:
+
+                        Dictionary<string, string> urlParams = new Dictionary<string, string>();
+                        urlParams.Add("l", glData.word.ToUpper()[0].ToString());
+                        rssItem.Link = new Uri(page.getUrl(urlParams, langToRenderFor));
+                        break;
+                    case GlossaryPlaceholderData.GlossaryViewMode.SinglePageWithJumpList:
+                        // nothing to do
+                        break;
+                    default:
+                        throw new Exception("Error: invalid GlossaryViewMode");
+                } // switch
+            }
+            return ret.ToArray();
+        }
 
     } // Glossary placeholder class
 }

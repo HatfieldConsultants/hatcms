@@ -31,7 +31,7 @@ namespace HatCMS.controls.Admin
         /// <param name="r"></param>
         /// <param name="accessMode"></param>
         /// <returns></returns>
-        protected CmsZoneUserRole createUserRoleEntity(CmsZone z, WebPortalUserRole r, string[] accessMode)
+        protected CmsZoneUserRole createUserRoleEntity(CmsPageSecurityZone z, WebPortalUserRole r, string[] accessMode)
         {
             CmsZoneUserRole entity = new CmsZoneUserRole();
             entity.ZoneId = z.ZoneId;
@@ -54,13 +54,13 @@ namespace HatCMS.controls.Admin
         /// </summary>
         /// <param name="zoneList"></param>
         /// <returns></returns>
-        protected string handleZoneAuthorityUpdate(List<CmsZone> zoneList, List<WebPortalUserRole> roleList)
+        protected string handleZoneAuthorityUpdate(List<CmsPageSecurityZone> zoneList, List<WebPortalUserRole> roleList)
         {
             if (PageUtils.getFromForm("update", "") != "updateZoneAuthority")
                 return "";
 
             List<CmsZoneUserRole> authority = new List<CmsZoneUserRole>();
-            foreach (CmsZone z in zoneList)
+            foreach (CmsPageSecurityZone z in zoneList)
             {
                 roleDb.deleteByZone(z);
                 foreach (WebPortalUserRole r in roleList)
@@ -120,10 +120,10 @@ namespace HatCMS.controls.Admin
         /// <param name="roleList"></param>
         /// <param name="adminRoleName"></param>
         /// <returns></returns>
-        protected string RenderZoneAuthorityContent(List<CmsZone> zoneList, List<WebPortalUserRole> roleList, string adminRoleName)
+        protected string RenderZoneAuthorityContent(List<CmsPageSecurityZone> zoneList, List<WebPortalUserRole> roleList, string adminRoleName)
         {
             StringBuilder html = new StringBuilder();
-            foreach (CmsZone z in zoneList)
+            foreach (CmsPageSecurityZone z in zoneList)
             {
                 html.Append("<tr>" + EOL);
                 html.Append(RenderZoneAuthorityRow(z, roleList, adminRoleName));
@@ -139,7 +139,7 @@ namespace HatCMS.controls.Admin
         /// <param name="roleList"></param>
         /// <param name="adminRoleName"></param>
         /// <returns></returns>
-        protected string RenderZoneAuthorityRow(CmsZone zone, List<WebPortalUserRole> roleList, string adminRoleName)
+        protected string RenderZoneAuthorityRow(CmsPageSecurityZone zone, List<WebPortalUserRole> roleList, string adminRoleName)
         {
             int zID = zone.ZoneId;
             List<CmsZoneUserRole> authority = roleDb.fetchAllByZone(zone);
@@ -218,7 +218,7 @@ namespace HatCMS.controls.Admin
         {
             string controlId = "zoneAuthority_";
             StringBuilder html = new StringBuilder();
-            List<CmsZone> zoneList = db.fetchAll();
+            List<CmsPageSecurityZone> zoneList = db.fetchAll();
             List<WebPortalUserRole> roleList = getRoleList();
             html.Append(handleZoneAuthorityUpdate(zoneList, roleList));
 

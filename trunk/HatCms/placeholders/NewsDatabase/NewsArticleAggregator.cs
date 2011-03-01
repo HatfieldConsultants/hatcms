@@ -107,7 +107,7 @@ namespace HatCMS.placeholders.NewsDatabase
             pageToAddCommandTo.EditMenu.addCustomActionItem(newAction);
         }
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
@@ -153,7 +153,7 @@ namespace HatCMS.placeholders.NewsDatabase
             html.Append("<input type=\"hidden\" name=\"" + ProjectSummaryId + "_ProjectSummaryId\" value=\"" + page.ID.ToString() + "\">");
 
             writer.WriteLine(html.ToString());
-        }
+        }        
 
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] param)
         {
@@ -170,7 +170,7 @@ namespace HatCMS.placeholders.NewsDatabase
                 currYear = newsAggregator.YearToDisplay;
 
             List<NewsArticleDb.NewsArticleDetailsData> articleList = new List<NewsArticleDb.NewsArticleDetailsData>();
-            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childPages = page.getPlaceholderDefinitionsForChildPages("NewsArticleDetails");
+            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childPages = CmsContext.getAllPlaceholderDefinitions("NewsArticleDetails", page, CmsContext.PageGatheringMode.ChildPagesOnly);
             foreach (CmsPage childPage in childPages.Keys)
             {
                 CmsPlaceholderDefinition[] def = childPages[childPage];
@@ -195,7 +195,7 @@ namespace HatCMS.placeholders.NewsDatabase
 
             if (newsDetails.Length == 0)
             {
-                if (displayYear == -1)
+                if (displayYear < 0)
                     html.Append("<p><strong>" + getNoNewsText(lang) + "</strong>");
                 else
                     html.Append("<p><strong>" + getNoNewsForYearText(lang) + displayYear.ToString() + ".</strong>");
@@ -212,6 +212,9 @@ namespace HatCMS.placeholders.NewsDatabase
 
                 foreach (NewsArticleDb.NewsArticleDetailsData news in newsDetails)
                 {
+                    if (displayYear >= 0 && news.DateOfNews.Year != displayYear)
+                        continue; // skip this item.
+
                     if (showYearTitles && (previousYearTitle == -1 || news.DateOfNews.Year != previousYearTitle))
                     {
                         if (monthULStarted)
@@ -245,7 +248,7 @@ namespace HatCMS.placeholders.NewsDatabase
                     NameValueCollection paramList = new NameValueCollection();
                     //paramList.Add(NewsDetails.CurrentNewsIdFormName, news.PageId.ToString());
 
-                    CmsPage childPage = new CmsPageDb().getPage(news.PageId);
+                    CmsPage childPage = CmsContext.getPageById(news.PageId);
                     string detailsUrl = CmsContext.getUrlByPagePath(childPage.Path, paramList);
                     string newsTitle = childPage.getTitle(news.Lang);
                     string readArticle = getReadArticleText(news.Lang);
@@ -261,13 +264,13 @@ namespace HatCMS.placeholders.NewsDatabase
 
         private string getNoNewsText(CmsLanguage lang)
         {
-            string defaultTxt = "No news postings are currently in the system.";
+            string defaultTxt = "No news postings are currently available.";
             return CmsConfig.getConfigValue("NewsArticle.NoNewsText", defaultTxt, lang);
         }
 
         private string getNoNewsForYearText(CmsLanguage lang)
         {
-            string defaultTxt = "There is no news for the year ";
+            string defaultTxt = "No news postings are currently available.";
             return CmsConfig.getConfigValue("NewsArticle.NoNewsTextForText", defaultTxt, lang);
         }
 
@@ -282,5 +285,39 @@ namespace HatCMS.placeholders.NewsDatabase
             Array.Sort(newsArray, comparer);
             Array.Reverse(newsArray);
         }
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            List<Rss.RssItem> ret = new List<Rss.RssItem>();
+
+            // -- get the
+            NewsArticleDb db = new NewsArticleDb();
+            NewsArticleDb.NewsArticleAggregatorData newsAggregator = db.fetchNewsAggregator(page, placeholderDefinition.Identifier, langToRenderFor, true);
+
+            
+            int currYear = newsAggregator.YearToDisplay;
+
+            List<NewsArticleDb.NewsArticleDetailsData> articleList = new List<NewsArticleDb.NewsArticleDetailsData>();
+            
+            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childPages = CmsContext.getAllPlaceholderDefinitions("NewsArticleDetails", page, CmsContext.PageGatheringMode.ChildPagesOnly);
+            foreach (CmsPage childPage in childPages.Keys)
+            {
+                CmsPlaceholderDefinition[] def = childPages[childPage];
+                NewsArticleDb.NewsArticleDetailsData entity = db.fetchNewsDetails(childPage, def[0].Identifier, langToRenderFor, true);
+                if (currYear < 0 || entity.DateOfNews.Year == currYear)
+                {
+                    Rss.RssItem rssItem = new Rss.RssItem();
+                    rssItem = InitRssItem(rssItem, childPage, entity.Lang);
+                    rssItem.PubDate = entity.DateOfNews;
+
+                    rssItem.Description = childPage.renderAllPlaceholdersToString(langToRenderFor);
+                    ret.Add(rssItem);
+                }
+            }
+
+
+            return ret.ToArray();
+        }
+
     }
 }

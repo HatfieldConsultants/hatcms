@@ -41,7 +41,7 @@ namespace HatCMS.Placeholders
         }
 
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
@@ -221,7 +221,13 @@ namespace HatCMS.Placeholders
 
         } // AddImageFilesToListRecursive
 
-  
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            Rss.RssItem rssItem = base.CreateAndInitRssItem(page, langToRenderFor);
+            rssItem.Description = page.renderPlaceholderToString(placeholderDefinition, langToRenderFor);
+
+            return new Rss.RssItem[] { rssItem };
+        }  
 
 
 	}

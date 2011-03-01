@@ -128,6 +128,17 @@ namespace HatCMS.Placeholders
             }
         } // callExternalPlaceholderRender
 
+
+        public static Rss.RssItem[] GetRssFeedItems(string PlaceholderType, CmsPage page, CmsPlaceholderDefinition placeholderDefinition , CmsLanguage langToRenderFor)
+        {
+            // public abstract Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor);        
+            object ret = InvokePlaceholderFunction(PlaceholderType, "GetRssFeedItems", new object[] { page, placeholderDefinition, langToRenderFor });
+            if (ret is Rss.RssItem[])
+                return ret as Rss.RssItem[];
+            
+            return new Rss.RssItem[0];
+        }
+
         public static string getParameterValue(string paramKey, string returnOnErrorOrNotFound, string[] placeholderParamList)
         {
             if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)

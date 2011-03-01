@@ -13,8 +13,7 @@ namespace HatCMS.Placeholders
     public class FileLibraryDetails : BaseCmsPlaceholder
     {
         protected string EOL = Environment.NewLine;
-        protected FileLibraryDb db = new FileLibraryDb();
-        protected CmsPageDb pageDb = new CmsPageDb();
+        protected FileLibraryDb db = new FileLibraryDb();        
         protected List<FileLibraryCategoryData> categoryList;        
 
         /// <summary>
@@ -66,7 +65,7 @@ namespace HatCMS.Placeholders
             return ret.ToArray();
         }
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented;
         }
@@ -268,7 +267,7 @@ namespace HatCMS.Placeholders
             for (int x = 0; x < eventList.Count; x++)
             {
                 EventCalendarDb.EventCalendarDetailsData e = eventList[x];
-                CmsPage p = pageDb.getPage(e.PageId);
+                CmsPage p = CmsContext.getPageById(e.PageId);
                 pageList.Add(p);
                 eventPageCollection.Add(e.PageId.ToString(), p.getTitle(lang));
             }
@@ -528,7 +527,7 @@ namespace HatCMS.Placeholders
                 string eventHtml = "(n/a)";
                 if (fileData.EventPageId > -1)
                 {
-                    CmsPage eventPage = pageDb.getPage(fileData.EventPageId);
+                    CmsPage eventPage = CmsContext.getPageById(fileData.EventPageId);
                     eventHtml = "<a href=\"" + eventPage.getUrl(lang) + "\">" + eventPage.getTitle(lang) + "</a>" + EOL;
                 }
                 html.Append(renderDiv(getAttachedEventText(lang), eventHtml));
@@ -538,7 +537,7 @@ namespace HatCMS.Placeholders
             string uploadPersonName = (u == null) ? fileData.CreatedBy : u.FullName;
             html.Append(renderDiv(getUploadedByText(lang), uploadPersonName));
 
-            html.Append(renderDiv(getLastUpdatedText(lang), fileData.LastModified.ToString("MMMM d yyyy h:mm tt")));
+            html.Append(renderDiv(getLastUpdatedText(lang), aggregatorPage.LastUpdatedDateTime.ToString("MMMM d yyyy h:mm tt")));
 
             html.Append("</div>" + EOL);
             return html.ToString();
@@ -594,7 +593,7 @@ namespace HatCMS.Placeholders
             string uploadPersonName = (u == null) ? fileData.CreatedBy : u.FullName;
             html.Append(renderDiv(getUploadedByText(lang), uploadPersonName));
 
-            html.Append(renderDiv(getLastUpdatedText(lang), fileData.LastModified.ToString("MMMM d yyyy h:mm tt")));
+            html.Append(renderDiv(getLastUpdatedText(lang), aggregatorPage.LastUpdatedDateTime.ToString("MMMM d yyyy h:mm tt")));
 
             html.Append("</div>" + EOL);
             return html.ToString();
@@ -653,6 +652,20 @@ namespace HatCMS.Placeholders
             html.Append(PageUtils.getHiddenInputHtml(controlId + "action", "update") + EOL);
             html.Append("</p>" + EOL);
             writer.Write(html.ToString());
+        }
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            
+            Rss.RssItem rssItem = CreateAndInitRssItem(page, langToRenderFor);
+
+            FileLibraryDetailsData fileData = db.fetchDetailsData(page, placeholderDefinition.Identifier, langToRenderFor, true);
+            rssItem.Description = fileData.Description;
+            rssItem.Author = fileData.Author;
+            string controlId = "fileLibrary_" + page.ID.ToString() + "_" + placeholderDefinition.Identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
+            rssItem.Guid = new Rss.RssGuid(controlId);
+
+            return new Rss.RssItem[] { rssItem };
         }
     }
 }

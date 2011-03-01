@@ -99,7 +99,7 @@ namespace HatCMS.Placeholders
         {
             try
             {
-                CmsPage editCategoryPage = new CmsPageDb().getPage("_admin/FileLibraryCategory");
+                CmsPage editCategoryPage = CmsContext.getPageByPath("_admin/FileLibraryCategory");
                 string anchor = "<a href=\"{0}\" onclick=\"window.open(this.href,'{1}','resizable=1,scrollbars=1,width=800,height=400'); return false;\">{2}</a>";
                 return string.Format(anchor, new string[] { editCategoryPage.getUrl(lang), htmlDomId, displayText });
             }

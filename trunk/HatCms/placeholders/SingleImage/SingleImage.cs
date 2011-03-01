@@ -95,7 +95,7 @@ namespace HatCMS.Placeholders
             return ret.ToArray();
         }
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             SingleImageDb imageDb = new SingleImageDb();
             foreach (int identifier in identifiers)
@@ -604,9 +604,21 @@ namespace HatCMS.Placeholders
 
             writer.WriteLine(html.ToString());
 
-        }       
-  
+        }
 
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            Rss.RssItem rssItem = base.CreateAndInitRssItem(page, langToRenderFor);
+            
+            string content = page.renderPlaceholderToString(placeholderDefinition, langToRenderFor);
+            if (content.Trim() != "")
+            {
+                rssItem.Description = content;
+
+                return new Rss.RssItem[] { rssItem };
+            }
+            return new Rss.RssItem[0];
+        }
 
 	}
 }

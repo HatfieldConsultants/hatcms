@@ -17,9 +17,7 @@ using Hatfield.Web.Portal.Imaging;
 namespace HatCMS.placeholders.Calendar
 {
     public class EventCalendarDetails : BaseCmsPlaceholder
-    {
-        protected CmsPageDb pageDb = new CmsPageDb();
-
+    {        
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
@@ -61,7 +59,7 @@ namespace HatCMS.placeholders.Calendar
             return ret.ToArray();
         }
 
-        public override RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
+        public override RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language)
         {
             return RevertToRevisionResult.NotImplemented;
         }
@@ -138,7 +136,7 @@ namespace HatCMS.placeholders.Calendar
         /// <returns></returns>
         protected string renderAttachedFile(CmsLanguage lang, FileLibraryDetailsData f, WebPortalUser u)
         {
-            CmsPage detailsFilePage = pageDb.getPage(f.PageId);
+            CmsPage detailsFilePage = CmsContext.getPageById(f.PageId);
             if (detailsFilePage.Zone.canRead(u) || detailsFilePage.Zone.canWrite(u))
             {
                 CmsPage aggregatorFilePage = detailsFilePage.ParentPage;
@@ -275,7 +273,7 @@ namespace HatCMS.placeholders.Calendar
 
             try
             {
-                CmsPage editCategoryPage = pageDb.getPage("_admin/EventCalendarCategory");
+                CmsPage editCategoryPage = CmsContext.getPageByPath("_admin/EventCalendarCategory");
                 html.Append(" <a href=\"" + editCategoryPage.getUrl(langToRenderFor) + "\" onclick=\"window.open(this.href,'" + categoryDropDown + "','resizable=1,scrollbars=1,width=800,height=400'); return false;\">(edit)</a>");
             }
             catch (Exception ex)
@@ -298,6 +296,14 @@ namespace HatCMS.placeholders.Calendar
             html.Append(PageUtils.getHiddenInputHtml(controlId + "_action", "saveNewValues"));
 
             writer.WriteLine(html.ToString());
+        }
+
+        public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
+        {
+            Rss.RssItem rssItem = base.CreateAndInitRssItem(page, langToRenderFor);
+            rssItem.Description = page.renderPlaceholderToString(placeholderDefinition, langToRenderFor);
+
+            return new Rss.RssItem[] { rssItem };
         }
     }
 }
