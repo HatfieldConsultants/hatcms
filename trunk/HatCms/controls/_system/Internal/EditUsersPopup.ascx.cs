@@ -46,7 +46,7 @@ namespace HatCMS.controls
             bool requireAnonLogin = homePageZone.canRead(dummyPublicUser);            
             
             string loginRole = CmsConfig.getConfigValue("LoginUserRole", nothing);
-            if (requireAnonLogin && loginRole != nothing && String.Compare(loginRole, authorUserRoleName, true) != 0 && String.Compare(loginRole, adminUserRoleName, true) != 0)
+            if (!requireAnonLogin && loginRole != nothing && String.Compare(loginRole, authorUserRoleName, true) != 0 && String.Compare(loginRole, adminUserRoleName, true) != 0)
             {
                 ret.Add(WebPortalUserRole.Fetch(loginRole));
             }
@@ -93,7 +93,7 @@ namespace HatCMS.controls
             html.Append("<table cellpadding=\"2\">"+Environment.NewLine);
             foreach (WebPortalUserRole role in allRoles)
             {
-                html.Append("<tr><td style=\"background-color: #CCC;\" colspan=\"2\"><strong>" + role.Name + " - " + role.Description + "</strong></td></tr>" + Environment.NewLine);
+                html.Append("<tr><td style=\"background-color: #CCC;\" colspan=\"2\"><strong>" + role.Description + " (" + role.Name + ")</strong></td></tr>" + Environment.NewLine);
                 WebPortalUser[] users = WebPortalUser.FetchAll(role, CmsPortalApplication.GetInstance());
                 if (users.Length == 0)
                 {

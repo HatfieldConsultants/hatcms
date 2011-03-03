@@ -32,6 +32,8 @@ namespace HatCMS.controls
             ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.placeAfterDom"));
             ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.pdfIcon"));
             ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.printerIcon"));
+
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/printerAndPdfVersion.js", new DateTime(2011, 03, 03)));
             return ret.ToArray();
         }
 

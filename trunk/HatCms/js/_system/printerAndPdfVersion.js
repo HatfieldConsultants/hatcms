@@ -86,15 +86,23 @@ function createAnchor( url, displayHtml ) {
 function addPrinterAndPdfIcon( printerVer, printerIcon, pdfVer, pdfIcon, placeAfterDom ) {
 	var targetDom = document.getElementById(placeAfterDom);
 
+	if (!targetDom || (!printerVer && ! pdfVer ))
+		return;
+
+	var parentDiv = document.createElement('div');
+	parentDiv.setAttribute('class', 'PrinterPdfVersionLinks');
+	
 	if (printerVer == true) {
 		var printerVerUrl = addUrlParameter( window.location.href, 'print', '1', true );
-		targetDom.parentNode.insertBefore( createAnchor(printerVerUrl, '<img src="'+ printerIcon +'" border="0" />'), targetDom.nextSibling );
+		parentDiv.appendChild( createAnchor(printerVerUrl, '<img src="'+ printerIcon +'" border="0" />') );
 	}
 
 	if (pdfVer == true) {
 		var pdfVerUrl = getRelativeUrl(window.location.href,'/html2pdf/convert.php?URL=');
-		targetDom.parentNode.insertBefore( createAnchor(pdfVerUrl, '<img src="'+ pdfIcon +'" border="0" />'), targetDom.nextSibling );	
+		parentDiv.appendChild( createAnchor(pdfVerUrl, '<img src="'+ pdfIcon +'" border="0" />') );	
 	}
+
+	targetDom.parentNode.insertBefore(parentDiv, targetDom.nextSibling);
 }
 
 /*******************************************************************
