@@ -99,7 +99,6 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="classes\AlternateView.cs" />
     <Compile Include="classes\Config.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -115,6 +114,7 @@
     <Compile Include="classes\dependencies\DirectoryDoesNotExistDependency.cs" />
     <Compile Include="classes\dependencies\FileDependency.cs" />
     <Compile Include="classes\dependencies\PageDependency.cs" />
+    <Compile Include="classes\dependencies\PlaceholderContentDependency.cs" />
     <Compile Include="classes\dependencies\TemplateDependency.cs" />
     <Compile Include="classes\dependencies\WritableDirectoryDependency.cs" />
     <Compile Include="classes\EditMode.cs" />
@@ -144,8 +144,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="classes\placeholderCommonControls\SWFUploadHelpers.cs" />
-    <Compile Include="classes\resource\Resource.cs" />
-    <Compile Include="classes\resource\ResourceMetaItem.cs" />
+    <Compile Include="classes\resource\LocalFileOnDisk.cs" />
+    <Compile Include="classes\resource\LocalFileOnDiskMetaItem.cs" />
+    <Compile Include="classes\resource\LocalImageOnDisk.cs" />
     <Compile Include="classes\template\PlaceholderDefinition.cs" />
     <Compile Include="classes\template\TemplateEngine.cs" />
     <Compile Include="classes\template\TemplateEngineVersion.cs" />
@@ -543,6 +544,7 @@
     <Compile Include="placeholders\Calendar\EventCalendarDb.cs" />
     <Compile Include="placeholders\Calendar\EventCalendarDetails.cs" />
     <Compile Include="placeholders\Contacts\ContactsDb.cs" />
+    <Compile Include="placeholders\FileLibrary\FileLibraryAggregator2.cs" />
     <Compile Include="placeholders\FlashObject\FlashObject.cs" />
     <Compile Include="placeholders\FlashObject\FlashObjectDb.cs" />
     <Compile Include="placeholders\Glossary\GlossaryDb.cs" />

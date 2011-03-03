@@ -299,9 +299,9 @@ namespace HatCMS.WebEditor.Helpers
             
         }
 
-        CmsLocalFileOnDisk[] FilterOutNonImageFiles(CmsLocalFileOnDisk[] resources)
+        CmsLocalImageOnDisk[] FilterOutNonImageFiles(CmsLocalImageOnDisk[] resources)
         {
-            List<CmsLocalFileOnDisk> ret = new List<CmsLocalFileOnDisk>();
+            List<CmsLocalImageOnDisk> ret = new List<CmsLocalImageOnDisk>();
 
             List<string> allowedExtensions = new List<string>();
             foreach (string filter in ImageFileFilters)
@@ -310,9 +310,9 @@ namespace HatCMS.WebEditor.Helpers
                 allowedExtensions.Add(ext.ToLower());
             }
             
-            foreach (CmsLocalFileOnDisk res in resources)
+            foreach (CmsLocalImageOnDisk res in resources)
             {
-                if (StringUtils.IndexOf(allowedExtensions.ToArray(), Path.GetExtension(res.Filename), StringComparison.CurrentCultureIgnoreCase) >= 0)
+                if (StringUtils.IndexOf(allowedExtensions.ToArray(), Path.GetExtension(res.FileName), StringComparison.CurrentCultureIgnoreCase) >= 0)
                     ret.Add(res);
             } // foreach
             return ret.ToArray();
@@ -327,10 +327,10 @@ namespace HatCMS.WebEditor.Helpers
 
             DirectoryInfo di = new DirectoryInfo(FolderTreeView.SelectedNode.Value);
 
-            CmsLocalFileOnDisk[] dirResources = CmsLocalFileOnDisk.UpdateFolderInDatabase(di);
+            CmsLocalImageOnDisk[] dirResources = CmsLocalImageOnDisk.UpdateFolderInDatabase(di);
              // CmsResource.GetResourcesInDirectory(di.FullName);
 
-            CmsLocalFileOnDisk[] imgResources = FilterOutNonImageFiles(dirResources);
+            CmsLocalImageOnDisk[] imgResources = FilterOutNonImageFiles(dirResources);
 
             
 
@@ -339,7 +339,7 @@ namespace HatCMS.WebEditor.Helpers
             filenames.Add(di.FullName);
             int fileNum = 0; bool rowStarted = false;
             html.Append("<table cellpadding=\"2\" cellspacing=\"2\" width=\"100%\">");
-            foreach (CmsLocalFileOnDisk res in imgResources)
+            foreach (CmsLocalImageOnDisk res in imgResources)
             {
                 bool updateResource = false;
                 
@@ -348,7 +348,7 @@ namespace HatCMS.WebEditor.Helpers
                 string fileUrl = res.getUrl(Context);
 
 
-                string fiName = res.Filename;
+                string fiName = res.FileName;
                 if (fiName.IndexOf("'") > -1)
                 {
                     fiName = fiName.Replace("'", "\\'");
@@ -394,7 +394,7 @@ namespace HatCMS.WebEditor.Helpers
                 html.Append(imgHtmlTag);
                 
                 html.Append("</a> ");
-                html.Append("<br /><div style=\"font-family: arial; font-size: 8pt; text-align: center; width: 120px; overflow: hidden;\">"+res.Filename+"</div>");                                
+                html.Append("<br /><div style=\"font-family: arial; font-size: 8pt; text-align: center; width: 120px; overflow: hidden;\">"+res.FileName+"</div>");                                
 
                 if (SelImagePath != "" && fileUrl == SelImagePath)
                 {

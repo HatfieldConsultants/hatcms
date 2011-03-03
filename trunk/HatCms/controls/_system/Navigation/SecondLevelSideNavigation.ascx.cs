@@ -63,7 +63,7 @@ namespace HatCMS.controls._system
 			if(page.ID == -1 || currentLevel > maxLevel)
 				return "";
 
-            if (! page.isVisibleForCurrentUser)
+            if (! page.isVisibleForCurrentUser || ! page.ShowInMenu )
 				return "";
 		
 			bool outputChildren = false;

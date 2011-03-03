@@ -75,8 +75,8 @@ namespace HatCMS.Controls.Admin
                 case AdminTool.EmptyThumbnailCache: ret = "Empty Image Cache"; break;
                 case AdminTool.PageUrlsById: ret = "Page Urls by Id"; break;
                 case AdminTool.ListRegisteredProjects: ret = "List Registered Projects"; break;
-                case AdminTool.ZoneManagement: ret = "Zone Management"; break;
-                case AdminTool.ZoneAuthority: ret = "Zone Authority"; break;
+                case AdminTool.ZoneManagement: ret = "Create/Edit Zones"; break;
+                case AdminTool.ZoneAuthority: ret = "User permissions"; break;
                 default:
                     throw new ArgumentException("An unknown AdminTool was passed to getMenuDisplay()");
             }
@@ -104,7 +104,7 @@ namespace HatCMS.Controls.Admin
                 Dictionary<string, List<AdminTool>> ret = new Dictionary<string, List<AdminTool>>();
                 ret.Add("Search Tools", new List<AdminTool>(new AdminTool[] { AdminTool.SearchAndReplace, AdminTool.SearchHtmlContent, AdminTool.SearchSingleImagesByCaption }));
                 ret.Add("Utilities", new List<AdminTool>(new AdminTool[] { AdminTool.EmptyThumbnailCache, AdminTool.ValidateConfig }));
-                ret.Add("Zones", new List<AdminTool>(new AdminTool[] { AdminTool.ZoneManagement, AdminTool.ZoneAuthority }));
+                ret.Add("Security Zones", new List<AdminTool>(new AdminTool[] { AdminTool.ZoneManagement, AdminTool.ZoneAuthority }));
                 return ret;
             }
         }
@@ -938,7 +938,7 @@ namespace HatCMS.Controls.Admin
                 
             } // foreach
 
-            int numCached = CmsLocalFileOnDisk.DeleteAllCachedThumbnailUrls();
+            int numCached = CmsLocalImageOnDisk.DeleteAllCachedThumbnailUrls();
 
             html.Append(deleted.ToString() + " files and " + numCached + " URLs in the thumbnail cache have been deleted.<br>");
 

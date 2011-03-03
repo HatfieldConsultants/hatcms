@@ -54,11 +54,13 @@ namespace HatCMS
                     return (CmsPage)PerRequestCache.GetFromCache(cacheKey, new CmsPage());
                 }                
                 
-                string path = getRequestedPagePathFromForm();
-                                
-                // -- get page by revision
-                if (CmsContext.currentUserIsLoggedIn && CmsContext.currentEditMode == CmsEditMode.View)
+                string path = getRequestedPagePathFromForm();                                                                
+                
+                // -- default view by path (ignore the revision param)
+                CmsPage ret = getPageByPath(path);
+                if (ret.ID >= 0 && ret.currentUserCanWrite) // note: don't check against the current ViewMode because a stack overflow (circular references) will occur.
                 {
+                    // -- get page by revision
                     int revisionNumberToDisplay = PageUtils.getFromForm("revNum", -1);
                     if (revisionNumberToDisplay >= 0)
                     {
@@ -70,10 +72,8 @@ namespace HatCMS
                             return revToRet;
                         }
                     }
+
                 }
-                
-                // -- default view by path (ignore the revision param)
-                CmsPage ret = getPageByPath(path);
                 
                 PerRequestCache.AddToCache(cacheKey, ret);
                 return ret;
@@ -340,7 +340,10 @@ namespace HatCMS
             get
             {
                 string formVal = PageUtils.getFromForm(EditModeFormName, "");
-                if (formVal == "1" && currentPage.currentUserCanWrite) // note: the currentPage.currentUserCanWrite potentially goes to the database
+                if (formVal == "")
+                    return CmsEditMode.View;
+
+                if (formVal == "1" && currentPage.currentUserCanWrite) // note: the currentPage.currentUserCanWrite potentially goes to the database                
                 {                    
                     return CmsEditMode.Edit;
                 }

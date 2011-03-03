@@ -50,7 +50,7 @@ namespace HatCMS.controls._system
                 string ctrlPath = ctrlPaths[x];
                 string suffix = ctrlPath.Split(new char[] { ' ' })[0];
                 if (currCtrlPath.EndsWith(suffix))
-                    ret.Add(new CmsControlParmDependency(ctrlPath, new string[] { "calendarpage" }));
+                    ret.Add(new CmsControlParameterDependency(ctrlPath, new string[] { "calendarpage" }));
             }
 
             ret.Add(CmsFileDependency.UnderAppPath("css/_system/simpleCalendar.css"));

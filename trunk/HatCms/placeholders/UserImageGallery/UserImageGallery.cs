@@ -113,20 +113,20 @@ namespace HatCMS.Placeholders
         /// returns a blank (newly created) resource if not found
         /// </summary>
         /// <returns></returns>
-        private CmsLocalFileOnDisk getCurrentImageResource()
+        private CmsLocalImageOnDisk getCurrentImageResource()
         {
             int resId = getCurrentImageResourceId();
             if (resId >= 0)
             {
-                return CmsLocalFileOnDisk.GetLastRevision(resId);
+                return (CmsLocalImageOnDisk)CmsLocalImageOnDisk.FetchLastRevision(resId);
             }
-            return new CmsLocalFileOnDisk();
+            return new CmsLocalImageOnDisk();
         }
 
 
         public override BaseCmsMasterDetailsPlaceholder.PlaceholderDisplay getCurrentDisplayMode()
         {
-            CmsLocalFileOnDisk r = getCurrentImageResource();
+            CmsLocalImageOnDisk r = getCurrentImageResource();
             if (r.ResourceId < 0)
                 return PlaceholderDisplay.MultipleItems;
             else
@@ -139,7 +139,7 @@ namespace HatCMS.Placeholders
             StringBuilder html = new StringBuilder();
 
             UserImageGalleryPlaceholderData placeholderData = db.getUserImageGalleryPlaceholderData(page, identifier, langToRenderFor, true);
-            CmsLocalFileOnDisk currentImage = getCurrentImageResource();
+            CmsLocalImageOnDisk currentImage = getCurrentImageResource();
 
             html.Append("<div class=\"UserImageGallery\">");
             html.Append(renderFullSize(placeholderData, currentImage, page, langToRenderFor));
@@ -154,8 +154,8 @@ namespace HatCMS.Placeholders
             StringBuilder html = new StringBuilder();
 
             UserImageGalleryPlaceholderData placeholderData = db.getUserImageGalleryPlaceholderData(page, identifier, langToRenderFor, true);
-            CmsLocalFileOnDisk currentImage = getCurrentImageResource();
-            CmsLocalFileOnDisk[] allResources = CmsLocalFileOnDisk.GetResourcesInDirectory(placeholderData.getImageStorageDirectory(page), UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
+            CmsLocalImageOnDisk currentImage = getCurrentImageResource();
+            CmsLocalImageOnDisk[] allResources = CmsLocalImageOnDisk.FetchAllImagesInDirectory(placeholderData.getImageStorageDirectory(page), UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
 
             string action = PageUtils.getFromForm("action_" + currentImage.ResourceId.ToString(), "");
             if (String.Compare(action, "updateCaption", true) == 0)
@@ -166,7 +166,7 @@ namespace HatCMS.Placeholders
             }
             else if (String.Compare(action, "deleteImage", true) == 0)
             {
-                bool b = CmsLocalFileOnDisk.Delete(currentImage, true);
+                bool b = CmsLocalImageOnDisk.Delete(currentImage, true);
                 html.Append("<div class=\"UserImageGallery\">" + getImageRemovedText(langToRenderFor) + " <a href=\"" + page.Url + "\">" + getReturnToGalleryText(langToRenderFor) + "</a></div>");
                 writer.Write(html.ToString());
                 return;
@@ -180,7 +180,7 @@ namespace HatCMS.Placeholders
             writer.Write(html.ToString());
         }
 
-        private string getSelectedItem_NextPrevLinks( UserImageGalleryPlaceholderData placeholderData, CmsLocalFileOnDisk imageToShow, CmsLocalFileOnDisk[] allImagesInGallery, CmsLanguage lang)
+        private string getSelectedItem_NextPrevLinks(UserImageGalleryPlaceholderData placeholderData, CmsLocalImageOnDisk imageToShow, CmsLocalImageOnDisk[] allImagesInGallery, CmsLanguage lang)
         {
             string nextUrl = "";
 
@@ -286,13 +286,13 @@ namespace HatCMS.Placeholders
                     return;
                 }
             }
-            
-            CmsLocalFileOnDisk[] allResources = CmsLocalFileOnDisk.GetResourcesInDirectory(imageStorageDir, UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
+
+            CmsLocalImageOnDisk[] allResources = CmsLocalImageOnDisk.FetchAllImagesInDirectory(imageStorageDir, UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
 
             if (allResources.Length == 0 && page.currentUserCanWrite)
             {
-                CmsLocalFileOnDisk.UpdateFolderInDatabase(new System.IO.DirectoryInfo(imageStorageDir));
-                allResources = CmsLocalFileOnDisk.GetResourcesInDirectory(imageStorageDir, UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
+                CmsLocalImageOnDisk.UpdateFolderInDatabase(new System.IO.DirectoryInfo(imageStorageDir));
+                allResources = CmsLocalImageOnDisk.FetchAllImagesInDirectory(imageStorageDir, UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
             }
 
             html.Append("<div class=\"UserImageGallery\">");
@@ -338,7 +338,7 @@ namespace HatCMS.Placeholders
             return html.ToString();
         }
 
-        private string renderFullSize(UserImageGalleryPlaceholderData placeholderData, CmsLocalFileOnDisk imgToShow, CmsPage page, CmsLanguage lang)
+        private string renderFullSize(UserImageGalleryPlaceholderData placeholderData, CmsLocalImageOnDisk imgToShow, CmsPage page, CmsLanguage lang)
         {
 
             string caption = imgToShow.getImageCaption();
@@ -396,7 +396,7 @@ namespace HatCMS.Placeholders
             return html.ToString();
         }
 
-        private string renderThumbnail(UserImageGalleryPlaceholderData placeholderData, CmsLocalFileOnDisk img, CmsPage page)
+        private string renderThumbnail(UserImageGalleryPlaceholderData placeholderData, CmsLocalImageOnDisk img, CmsPage page)
         {
 
             string caption = img.getImageCaption();
@@ -440,7 +440,7 @@ namespace HatCMS.Placeholders
 
 
 
-        public string getGalleryView(UserImageGalleryPlaceholderData placeholderData, CmsLocalFileOnDisk[] imageDatas, CmsPage page, CmsLanguage lang)
+        public string getGalleryView(UserImageGalleryPlaceholderData placeholderData, CmsLocalImageOnDisk[] imageDatas, CmsPage page, CmsLanguage lang)
         {
 
             if (imageDatas.Length == 0)
@@ -483,7 +483,7 @@ namespace HatCMS.Placeholders
                         rowStarted = true;
                     }
 
-                    CmsLocalFileOnDisk image = imageDatas[i];
+                    CmsLocalImageOnDisk image = imageDatas[i];
                     html.Append("<td>");
                     html.Append(renderThumbnail(placeholderData, image, page));
                     html.Append("</td>" + Environment.NewLine);
@@ -500,7 +500,7 @@ namespace HatCMS.Placeholders
 
         } // RenderView
 
-        private int getCurrentPageNumber(CmsLocalFileOnDisk[] searchResults, CmsLocalFileOnDisk imageToShow, UserImageGalleryPlaceholderData placeholderData)
+        private int getCurrentPageNumber(CmsLocalImageOnDisk[] searchResults, CmsLocalImageOnDisk imageToShow, UserImageGalleryPlaceholderData placeholderData)
         {
             int numPages = (int)Math.Ceiling((double)searchResults.Length / placeholderData.NumThumbsPerPage);
             if (numPages <= 0)
@@ -536,7 +536,7 @@ namespace HatCMS.Placeholders
             return currPageNum;
         }
 
-        protected string getThumbnailPagerOutput(CmsLocalFileOnDisk[] searchResults, UserImageGalleryPlaceholderData data, CmsLanguage lang)
+        protected string getThumbnailPagerOutput(CmsLocalImageOnDisk[] searchResults, UserImageGalleryPlaceholderData data, CmsLanguage lang)
         {
             StringBuilder html = new StringBuilder();
 
@@ -594,14 +594,14 @@ namespace HatCMS.Placeholders
             UserImageGalleryPlaceholderData placeholderData = db.getUserImageGalleryPlaceholderData(page, placeholderDefinition.Identifier, langToRenderFor, true);
             string imageStorageDir = placeholderData.getImageStorageDirectory(page);
 
-            CmsLocalFileOnDisk[] allResources = CmsLocalFileOnDisk.GetResourcesInDirectory(imageStorageDir, UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
+            CmsLocalImageOnDisk[] allResources = CmsLocalImageOnDisk.FetchAllImagesInDirectory(imageStorageDir, UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
 
-            foreach (CmsLocalFileOnDisk image in allResources)
+            foreach (CmsLocalImageOnDisk image in allResources)
             {
                 Rss.RssItem item = new Rss.RssItem();
                 string title = image.getImageCaption();
                 if (title == "")
-                    title = image.Filename;
+                    title = image.FileName;
                 item.Title = title;
 
                 Dictionary<string, string> pageParams = new Dictionary<string, string>();

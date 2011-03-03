@@ -520,7 +520,7 @@ namespace HatCMS.Placeholders
         /// <param name="lang"></param>
         /// <param name="controlId"></param>
         /// <returns></returns>
-        protected string handleUploadSubmit(CmsPage page, int identifier, CmsLanguage lang, string controlId, RenderParameters renderParameters)
+        protected string handleUploadSubmit(CmsPage page, int identifier, CmsLanguage lang, string controlId)
         {
             if (PageUtils.getFromForm(controlId + "action", "") != "postFile")
                 return "";
@@ -926,7 +926,7 @@ namespace HatCMS.Placeholders
             StringBuilder html = new StringBuilder();
             bool canWrite = page.Zone.canWrite(CmsContext.currentWebPortalUser);
             if (canWrite)
-                html.Append("<p>" + handleUploadSubmit(page, identifier, langToRenderFor, controlId, renderParameters) + "</p>" + EOL);
+                html.Append("<p>" + handleUploadSubmit(page, identifier, langToRenderFor, controlId) + "</p>" + EOL);
 
             FileLibraryAggregatorData aggregatorData = db.fetchAggregatorData(page, identifier, langToRenderFor, true);
             categoryList = db.fetchCategoryList(langToRenderFor);

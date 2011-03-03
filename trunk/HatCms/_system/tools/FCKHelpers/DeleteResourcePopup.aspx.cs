@@ -57,7 +57,7 @@ namespace HatCMS.FCKHelpers
         {
             string filename = Server.MapPath(FileUrl);
 
-            CmsLocalFileOnDisk resources = CmsLocalFileOnDisk.GetResourceByFilename(filename);
+            CmsLocalFileOnDisk resources = CmsLocalFileOnDisk.FetchByFilename(filename);
             bool resDeleted = false;
             if (CmsLocalFileOnDisk.Delete(resources, true))
                 resDeleted = true;

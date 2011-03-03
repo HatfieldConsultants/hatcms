@@ -96,7 +96,7 @@ CKEDITOR.on( 'dialogDefinition', function( ev )
 				  var imgHeight = this.getValueOf('info', 'txtHeight');
 				  var appPath = this.getValueOf('advanced','appPath');
 
-				  var thumbUrl = appPath+'_system/showThumb.aspx?file='+encodeURIComponent(imgUrl)+"&w="+imgWidth+"&h="+imgHeight; 
+				  var thumbUrl = appPath+'_system/tools/showThumb.aspx?file='+encodeURIComponent(imgUrl)+"&w="+imgWidth+"&h="+imgHeight; 
 
 				  // alert('Override image.onOk - '+imgWidth+" x "+imgHeight);
 				  

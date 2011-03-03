@@ -542,3 +542,15 @@ CREATE TABLE  `filelibrarydetails` (
   PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE  `filelibraryaggregator2` (
+  `SimpleFileAggregatorId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `LinkedPageId` int(11) NOT NULL,
+  `LinkedIdentifier` int(11) NOT NULL,
+  `LinkedLangCode` varchar(5) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`SimpleFileAggregatorId`),
+  KEY `simplefileaggregatorPageIndex` (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -1,4 +1,5 @@
 using System;
+using System.Web;
 using System.IO;
 using System.Text;
 using System.Collections;
@@ -12,33 +13,36 @@ namespace HatCMS
 {
     public class CmsLocalFileOnDisk
     {
-        private int autoincid;        
+        public int autoincid;        
 
-        private int resourceid;
+        protected int resourceid;
+        /// <summary>
+        /// the unique identifier for this File.
+        /// </summary>
         public int ResourceId
         {
             get { return resourceid; }
             set { resourceid = value; }
         }
 
-        private int revisionnumber;
+        protected int revisionnumber;
         public int RevisionNumber
         {
             get { return revisionnumber; }
             set { revisionnumber = value; }
         }
 
-        private string filename;
+        protected string filename;
         /// <summary>
         /// the name of the file (does NOT contain the full path of the file!!)
         /// </summary>
-        public string Filename
+        public string FileName
         {
             get { return filename; }
             set { filename = value; }
         }
 
-        private string filepath;
+        protected string filepath;
         /// <summary>
         /// the full file path (including drive name, path, and filename) of the resource on disk. Eg: "C:\Inetpub\wwwroot\hatCms\UserFiles\Image\(Evening Grosbeak)  J Elser.jpg"
         /// </summary>
@@ -48,7 +52,7 @@ namespace HatCMS
             set { filepath = value; }
         }
 
-        private string fileDirectory;
+        protected string fileDirectory;
         /// <summary>
         /// the directory part of the file path of the resource on disk
         /// Eg: "C:\Inetpub\wwwroot\hatCms\UserFiles\Image".
@@ -59,7 +63,7 @@ namespace HatCMS
             set { fileDirectory = value; }
         }
 
-        private long filesize;
+        protected long filesize;
         /// <summary>
         /// the size of the file, in bytes
         /// </summary>
@@ -69,7 +73,7 @@ namespace HatCMS
             set { filesize = value; }
         }
 
-        private DateTime filetimestamp;
+        protected DateTime filetimestamp;
         /// <summary>
         /// the timestamp that the file was last modified at
         /// </summary>
@@ -79,14 +83,14 @@ namespace HatCMS
             set { filetimestamp = value; }
         }
 
-        private string mimetype;
+        protected string mimetype;
         public string MimeType
         {
             get { return mimetype; }
             set { mimetype = value; }
         }
 
-        private string modifiedby;
+        protected string modifiedby;
         /// <summary>
         /// the username that last modified this record
         /// </summary>
@@ -96,7 +100,7 @@ namespace HatCMS
             set { modifiedby = value.ToString(); }
         }
 
-        private DateTime modificationdate;
+        protected DateTime modificationdate;
         /// <summary>
         /// the date that this database record was last modified (not the date that the file on disk was last modified)
         /// </summary>
@@ -106,7 +110,7 @@ namespace HatCMS
             set { modificationdate = value; }
         }
 
-        private List<CmsLocalFileOnDiskMetaItem> metaData;
+        protected List<CmsLocalFileOnDiskMetaItem> metaData;
         public CmsLocalFileOnDiskMetaItem[] MetaData
         {
             get { return metaData.ToArray(); }
@@ -134,6 +138,46 @@ namespace HatCMS
             return getUrl(System.Web.HttpContext.Current);
         }
 
+        /// <summary>
+        /// derive the file storage folder path
+        /// </summary>
+        /// <param name="aggregatorPage"></param>
+        /// <param name="identifier"></param>
+        /// <returns></returns>
+        public static string getDMSStorageFolderUrl(CmsPage fileDetailsPage, int identifier, CmsLanguage language)
+        {
+            string DMSFileStorageFolderUrl = CmsConfig.getConfigValue("DMSFileStorageFolderUrl", "");
+
+            DMSFileStorageFolderUrl = VirtualPathUtility.ToAbsolute(DMSFileStorageFolderUrl);
+            DMSFileStorageFolderUrl = VirtualPathUtility.AppendTrailingSlash(DMSFileStorageFolderUrl);
+
+            string subDir = "";
+            if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V2")
+                subDir = fileDetailsPage.ID.ToString() + identifier.ToString() + language.shortCode.ToLower() + "/";
+
+            return DMSFileStorageFolderUrl + subDir;
+        }
+
+        public static string getDMSStorageFilenameOnDisk(CmsPage pageLinkedToFile, int identifier, CmsLanguage language, string userFilename)
+        {
+            string prependToFilename = "";
+            if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V1")
+                prependToFilename = pageLinkedToFile.ID.ToString() + identifier.ToString();
+
+            string baseUrl = getDMSStorageFolderUrl(pageLinkedToFile, identifier, language);
+
+            string fn = baseUrl + prependToFilename + userFilename;
+            string fnOnDisk = System.Web.HttpContext.Current.Server.MapPath(fn);
+            return fnOnDisk;
+        }
+
+        public static string getDMSDownloadUrl(CmsPage pageLinkedToFile, int identifier, CmsLanguage language, string fileName)
+        {
+            string baseUrl = getDMSStorageFolderUrl(pageLinkedToFile, identifier, language);
+            string url = baseUrl + fileName;
+            return url;
+        }
+
         public string getUrl(System.Web.HttpContext context)
         {
             string rootPath = context.Server.MapPath(CmsContext.ApplicationPath);
@@ -147,187 +191,111 @@ namespace HatCMS
 
         }
 
-        public string getThumbnailMetaDataNameRoot(int displayBoxWidth, int displayBoxHeight)
-        {
-            if (displayBoxWidth <= 0)
-                displayBoxWidth = -1;
-            if (displayBoxHeight <= 0)
-                displayBoxHeight = -1;
-
-            return "IMAGEThumb(" + displayBoxWidth + "," + displayBoxHeight + ")";
-        }
-
-        
-        /// <summary>
-        /// returns String.Empty if display URL is not set
-        /// </summary>
-        /// <param name="displayBoxWidth"></param>
-        /// <param name="displayBoxHeight"></param>
-        /// <returns></returns>
-        public string getThumbDisplayUrl(int displayBoxWidth, int displayBoxHeight)
-        {
-            string metaName = getThumbnailMetaDataNameRoot(displayBoxWidth, displayBoxHeight);
-            metaName = metaName + "_URL";
-            CmsLocalFileOnDiskMetaItem[] metaItems = getMetaDataByName(metaName);
-            if (metaItems.Length > 0)
-                return metaItems[0].ItemValue;
-            else
-                return String.Empty;                        
-        }
-
-        /// <summary>
-        /// returns TRUE if metaData set. Note: does NOT update the database!
-        /// </summary>
-        /// <param name="displayBoxWidth"></param>
-        /// <param name="displayBoxHeight"></param>
-        /// <param name="thumbUrl"></param>
-        /// <returns></returns>
-        public bool setThumbDisplayUrl(int displayBoxWidth, int displayBoxHeight, string thumbUrl)
-        {
-            if (thumbUrl.Trim() == "")
-                return false;
-            string metaName = getThumbnailMetaDataNameRoot(displayBoxWidth, displayBoxHeight);
-            metaName = metaName + "_URL";
-            removeMetaDataByName(metaName);
-
-            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, metaName, thumbUrl));
-            
-            return true;
-        }
-
-
-        /// <summary>
-        /// returns string.empty if no caption found
-        /// </summary>
-        /// <returns></returns>
-        public string getImageCaption()
-        {
-            CmsLocalFileOnDiskMetaItem[] xmpDescriptions = getMetaDataByName("Xmp:Description");
-            if (xmpDescriptions.Length > 0)
-                return xmpDescriptions[0].ItemValue;
-
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// returns TRUE if metaAta set. Note: does NOT update the database!
-        /// </summary>
-        /// <param name="newCaption"></param>
-        /// <returns></returns>
-        public bool setImageCaption(string newCaption)
-        {            
-            removeMetaDataByName("Xmp:Description");
-            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, "Xmp:Description", newCaption));
-
-            return true;
-        }
-
-        /// <summary>
-        /// returns a zero length array on error or failure
-        /// </summary>
-        /// <returns></returns>
-        public int[] getImageDimensions()
-        {
-            try
-            {
-                //  ret.Add(new MetaDataItem("IMAGE:Width", mbp.Width));
-                // ret.Add(new MetaDataItem("IMAGE:Height", mbp.Height));
-                CmsLocalFileOnDiskMetaItem[] widthItems = getMetaDataByName("IMAGE:Width");
-                CmsLocalFileOnDiskMetaItem[] heightItems = getMetaDataByName("IMAGE:Height");
-                if (widthItems.Length >= 1 && heightItems.Length >= 1)
-                {
-                    return new int[] { Convert.ToInt32(widthItems[0].ItemValue), Convert.ToInt32(heightItems[0].ItemValue) };
-                }
-            }
-            catch
-            { }
-            return new int[0];
-        }
-
-        public bool setImageDimensions(int[] dimensions)
-        {
-            if (dimensions.Length != 2)
-                return false;
-
-            removeMetaDataByName("IMAGE:Width");
-            removeMetaDataByName("IMAGE:Height");
-
-            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, "IMAGE:Width", dimensions[0].ToString()));
-            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, "IMAGE:Height", dimensions[1].ToString()));
-
-            return true;
-        }
-
-
-        public string getImageHtmlTag(int displayWidth, int displayHeight, string CssClassName)
-        {
-
-            if (displayWidth <= 0)
-                displayWidth = -1;
-            if (displayHeight <= 0)
-                displayHeight = -1;
-
-            bool updateResource = false;
-            // -- create the image's display Url	            
-
-            string thumbUrl = this.getThumbDisplayUrl(displayWidth, displayHeight);
-            if (thumbUrl == "")
-            {
-                thumbUrl = showThumbPage.getThumbDisplayUrl(this, displayWidth, displayHeight);
-                if (thumbUrl.ToLower().IndexOf(".aspx") < 0)
-                {
-                    this.setThumbDisplayUrl(displayWidth, displayHeight, thumbUrl);
-                    updateResource = true;
-                }
-
-            }
-            
-            string imgId = "file_" + this.ResourceId.ToString();
-            // int[] dimensions = InlineImageBrowser2.getImageDimensions(fi.FullName);
-
-            System.Drawing.Size sz = showThumbPage.getDisplayWidthAndHeight(this, displayWidth, displayHeight);
-            string html = "";
-            if (sz.IsEmpty)
-            {                
-                html = ("<img id=\"" + imgId + "\" class=\"" + CssClassName + "\" src=\"" + thumbUrl + "\" />");                     
-            }
-            else
-            {                
-                html = ("<img id=\"" + imgId + "\" class=\"" + CssClassName + "\" width=\""+sz.Width+"\" height=\""+sz.Height+"\" src=\"" + thumbUrl + "\" />");
-            }
-            
-
-            if (updateResource)
-            {
-                bool b = this.SaveToDatabase();
-                if (!b)
-                    Console.Write("resource failed to update.");
-            }
-
-            return html;
-        }
-
         
 
 
-        public CmsLocalFileOnDiskMetaItem[] getMetaDataByName(string name)
+
+        public void setMetaDataValue(string metaName, string newValue)
+        {
+            removeAllMetaDataWithName(metaName);
+
+            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, metaName, newValue));
+
+        }
+
+        public void setMetaDataValue(string metaName, int newValue)
+        {
+            removeAllMetaDataWithName(metaName);
+
+            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, metaName, newValue.ToString()));
+        }
+
+        public void setMetaDataValue(string metaName, double newValue)
+        {
+            removeAllMetaDataWithName(metaName);
+
+            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, metaName, newValue.ToString()));
+        }
+
+        public void setMetaDataValue(string metaName, bool newValue)
+        {
+            removeAllMetaDataWithName(metaName);
+
+            metaData.Add(new CmsLocalFileOnDiskMetaItem(this, metaName, newValue.ToString()));
+        }
+
+
+        public string getMetaDataValue(string metaDataKey, string valueToReturnOnNotFoundOrError)
+        {
+            CmsLocalFileOnDiskMetaItem[] arr = getMetaDataByName(metaDataKey);
+            if (arr.Length == 1)
+                return arr[0].ItemValue;
+            return valueToReturnOnNotFoundOrError;
+        }
+
+        public int getMetaDataValue(string metaDataKey, int valueToReturnOnNotFoundOrError)
+        {
+            CmsLocalFileOnDiskMetaItem[] arr = getMetaDataByName(metaDataKey);
+            if (arr.Length == 1)
+            {
+                try
+                {
+                    return Convert.ToInt32(arr[0].ItemValue);
+                }
+                catch
+                { }
+            }
+            return valueToReturnOnNotFoundOrError;
+        }
+
+        public double getMetaDataValue(string metaDataKey, double valueToReturnOnNotFoundOrError)
+        {
+            CmsLocalFileOnDiskMetaItem[] arr = getMetaDataByName(metaDataKey);
+            if (arr.Length == 1)
+            {
+                try
+                {
+                    return Convert.ToDouble(arr[0].ItemValue);
+                }
+                catch
+                { }
+            }
+            return valueToReturnOnNotFoundOrError;
+        }
+
+        public bool getMetaDataValue(string metaDataKey, bool valueToReturnOnNotFoundOrError)
+        {
+            CmsLocalFileOnDiskMetaItem[] arr = getMetaDataByName(metaDataKey);
+            if (arr.Length == 1)
+            {
+                try
+                {
+                    return Convert.ToBoolean(arr[0].ItemValue);
+                }
+                catch
+                { }
+            }
+            return valueToReturnOnNotFoundOrError;
+        }
+
+        public CmsLocalFileOnDiskMetaItem[] getMetaDataByName(string metaName)
         {
             List<CmsLocalFileOnDiskMetaItem> ret = new List<CmsLocalFileOnDiskMetaItem>();
             foreach (CmsLocalFileOnDiskMetaItem mi in MetaData)
             {
-                if (String.Compare(name, mi.Name, true) == 0)
+                if (String.Compare(metaName, mi.Name, true) == 0)
                     ret.Add(mi);
 
             }
             return ret.ToArray();
         }
 
-        public void removeMetaDataByName(string name)
+        public void removeAllMetaDataWithName(string metaName)
         {
             List<CmsLocalFileOnDiskMetaItem> itemsToRemove = new List<CmsLocalFileOnDiskMetaItem>();
             foreach (CmsLocalFileOnDiskMetaItem mi in MetaData)
             {
-                if (String.Compare(name, mi.Name, true) == 0)
+                if (String.Compare(metaName, mi.Name, true) == 0)
                     itemsToRemove.Add(mi);
 
             }
@@ -370,23 +338,16 @@ namespace HatCMS
         /// </summary>
         /// <param name="ResourceId"></param>
         /// <returns></returns>
-        public static CmsLocalFileOnDisk GetLastRevision(int ResourceId)
+        public static CmsLocalFileOnDisk FetchLastRevision(int ResourceId)
         {
             return (new CmsResourceDB()).GetLastRevision(ResourceId);
         } // get
 
-        public static CmsLocalFileOnDisk Get(int ResourceId, int RevisionNumber)
+        public static CmsLocalFileOnDisk Fetch(int ResourceId, int RevisionNumber)
         {
             return (new CmsResourceDB()).Get(ResourceId, RevisionNumber);
         } // get
-
-        /*
-        public static CmsResource[] GetAll()
-        {
-            return (new CmsResourceDB()).GetAll();
-        } // getAll
-        */
-                
+               
 
         public static bool Delete(CmsLocalFileOnDisk resource, bool deletePhysicalFiles)
         {
@@ -394,35 +355,7 @@ namespace HatCMS
         } // Delete
 
         
-        /// <summary>
-        /// creates a new CmsResource object from an image file
-        /// </summary>
-        /// <param name="imageFilename"></param>
-        /// <returns></returns>
-        public static CmsLocalFileOnDisk CreateFomImageFile(string imageFilename)
-        {
-            CmsLocalFileOnDisk ret = new CmsLocalFileOnDisk();
 
-            ret.filename = Path.GetFileName(imageFilename);
-            ret.filepath = imageFilename;
-            ret.fileDirectory = Path.GetDirectoryName(imageFilename);
-            ret.MimeType = PageUtils.MimeTypeLookup(Path.GetExtension(imageFilename));
-
-            if (File.Exists(imageFilename))
-            {
-                FileInfo fi = new FileInfo(imageFilename);
-
-                
-                ret.FileSize = fi.Length;
-                ret.FileTimestamp = fi.LastWriteTime;
-
-                MetaDataItem[] metaData = MetaDataUtils.GetFromImageFile(imageFilename);
-                ret.MetaData = CmsLocalFileOnDiskMetaItem.FromMetaDataItems(ret, metaData);
-
-            }
-            
-            return ret;
-        }
 
         /// <summary>
         /// creates a new CmsResource object from an OLE file (ie old-style Word, Excel, PPT files)
@@ -454,30 +387,30 @@ namespace HatCMS
             return ret;
         }
 
-        public static CmsLocalFileOnDisk CreateFromFile(string filename)
+        public static CmsLocalFileOnDisk CreateFromFile(string filenameOnDisk)
         {
             CmsLocalFileOnDisk ret = new CmsLocalFileOnDisk();
 
-            ret.filename = Path.GetFileName(filename);
-            ret.filepath = filename;
-            ret.fileDirectory = Path.GetDirectoryName(filename);
-            ret.MimeType = PageUtils.MimeTypeLookup(Path.GetExtension(filename));
+            ret.filename = Path.GetFileName(filenameOnDisk);
+            ret.filepath = filenameOnDisk;
+            ret.fileDirectory = Path.GetDirectoryName(filenameOnDisk);
+            ret.MimeType = PageUtils.MimeTypeLookup(Path.GetExtension(filenameOnDisk));
 
-            if (File.Exists(filename))
+            if (File.Exists(filenameOnDisk))
             {
-                FileInfo fi = new FileInfo(filename);
+                FileInfo fi = new FileInfo(filenameOnDisk);
 
 
                 ret.FileSize = fi.Length;
                 ret.FileTimestamp = fi.LastWriteTime;
 
                 MetaDataItem[] metaData = new MetaDataItem[0];
-                if (MetaDataUtils.CanExtractImageMetaData(filename))
-                    metaData = MetaDataUtils.GetFromImageFile(filename);
-                else if (MetaDataUtils.CanExtractOLEMetaData(filename))
-                    metaData = MetaDataUtils.GetFromOLEDocument(filename);
-                else if (MetaDataUtils.CanExtractXmpData(filename))
-                    metaData = MetaDataUtils.GetXmpData(filename);
+                if (MetaDataUtils.CanExtractImageMetaData(filenameOnDisk))
+                    metaData = MetaDataUtils.GetFromImageFile(filenameOnDisk);
+                else if (MetaDataUtils.CanExtractOLEMetaData(filenameOnDisk))
+                    metaData = MetaDataUtils.GetFromOLEDocument(filenameOnDisk);
+                else if (MetaDataUtils.CanExtractXmpData(filenameOnDisk))
+                    metaData = MetaDataUtils.GetXmpData(filenameOnDisk);
 
                 ret.MetaData = CmsLocalFileOnDiskMetaItem.FromMetaDataItems(ret, metaData);
 
@@ -516,9 +449,9 @@ namespace HatCMS
             return ret;
         }
 
-        public static bool ResourceWithFilenameExists(string filename)
+        public static bool FileWithFilenameExists(string filename)
         {
-            CmsLocalFileOnDisk res = GetResourceByFilename(filename);
+            CmsLocalFileOnDisk res = FetchByFilename(filename);
             if (res.FilePath == filename)
                 return true;
             return false;
@@ -530,9 +463,9 @@ namespace HatCMS
         /// <param name="filename"></param>
         /// <param name="resourcesToSearchIn"></param>
         /// <returns></returns>
-        public static CmsLocalFileOnDisk GetResourceByFilename(string filename, CmsLocalFileOnDisk[] resourcesToSearchIn)
+        public static CmsLocalFileOnDisk GetByFilename(string filename, CmsLocalFileOnDisk[] haystack)
         {
-            foreach (CmsLocalFileOnDisk res in resourcesToSearchIn)
+            foreach (CmsLocalFileOnDisk res in haystack)
             {
                 if (String.Compare(filename, res.FilePath, true) == 0)
                     return res;
@@ -546,28 +479,45 @@ namespace HatCMS
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
-        public static CmsLocalFileOnDisk GetResourceByFilename(string filename)
+        public static CmsLocalFileOnDisk FetchByFilename(string filename)
         {
             return (new CmsResourceDB()).GetResourceByFilename(filename);
         }
 
-        public static CmsLocalFileOnDisk[] GetResourcesInDirectory(string directoryPath, string[] fileExtensions)
+        /// <summary>
+        /// does an "AND" query for all metaDataNamesAndValuesToMatch. To do an "OR" query, use FetchAllFilesWithAnyMetaData
+        /// </summary>
+        /// <param name="metaDataNamesAndValuesToMatch"></param>
+        /// <returns></returns>
+        public static CmsLocalFileOnDisk[] FetchAllFilesWithMetaData(Dictionary<string, string> metaDataNamesAndValuesToMatch)
         {
-            return (new CmsResourceDB()).GetResourcesInDirectory(directoryPath, fileExtensions);
+            return (new CmsResourceDB()).FetchAllFilesWithMetaData(metaDataNamesAndValuesToMatch);
         }
 
-        public static CmsLocalFileOnDisk[] GetResourcesInDirectory(string directoryPath)
+        /// <summary>
+        /// does an "OR" query for all metaDataNamesAndValuesToPossiblyMatch. To do an "AND" query, use FetchAllFilesWithMetaData
+        /// </summary>
+        /// <param name="metaDataNamesAndValuesToPossiblyMatch"></param>
+        /// <returns></returns>
+        public static CmsLocalFileOnDisk[] FetchAllFilesWithAnyMetaData(Dictionary<string, string> metaDataNamesAndValuesToPossiblyMatch)
         {
-            return (new CmsResourceDB()).GetResourcesInDirectory(directoryPath, new string[0]);
+            return (new CmsResourceDB()).FetchAllFilesWithAnyMetaData(metaDataNamesAndValuesToPossiblyMatch);
+        }
+
+        public static CmsLocalFileOnDisk[] FetchAllFilesInDirectory(string directoryPath, string[] fileExtensions)
+        {
+            return (new CmsResourceDB()).FetchFilesInDirectory(directoryPath, fileExtensions);
+        }
+
+        public static CmsLocalFileOnDisk[] FetchAllFilesInDirectory(string directoryPath)
+        {
+            return (new CmsResourceDB()).FetchFilesInDirectory(directoryPath, new string[0]);
         }
 
         public static string DeletedFileFilenamePrefix = "..DELETED..";
 
 
-        public static int DeleteAllCachedThumbnailUrls()
-        {
-            return (new CmsResourceDB()).DeleteAllCachedThumbnailUrls();                       
-        }
+        
 
         /// <summary>
         /// 
@@ -576,7 +526,7 @@ namespace HatCMS
         /// <returns></returns>
         public static CmsLocalFileOnDisk[] UpdateFolderInDatabase(DirectoryInfo directoryInfo)
         {
-            List<CmsLocalFileOnDisk> existingResources = new List<CmsLocalFileOnDisk>(GetResourcesInDirectory(directoryInfo.FullName));
+            List<CmsLocalFileOnDisk> existingResources = new List<CmsLocalFileOnDisk>(FetchAllFilesInDirectory(directoryInfo.FullName));
 
             List<CmsLocalFileOnDisk> ret = new List<CmsLocalFileOnDisk>();
 
@@ -585,7 +535,7 @@ namespace HatCMS
                 if (fi.Name.StartsWith(DeletedFileFilenamePrefix)) // skip deleted files
                     continue;
 
-                CmsLocalFileOnDisk res = GetResourceByFilename(fi.FullName, existingResources.ToArray());
+                CmsLocalFileOnDisk res = GetByFilename(fi.FullName, existingResources.ToArray());
                 bool doSave = false;
                 if (res.FilePath == fi.FullName)
                 {
@@ -646,7 +596,7 @@ namespace HatCMS
 
 
         #region CmsResourceDB
-        private class CmsResourceDB : Hatfield.Web.Portal.Data.MySqlDbObject
+        protected class CmsResourceDB : Hatfield.Web.Portal.Data.MySqlDbObject
         {
             public CmsResourceDB()
                 : base(ConfigUtils.getConfigValue("ConnectionString", ""))
@@ -744,7 +694,7 @@ namespace HatCMS
                     } // foreach
 
                     // -- rename the actual file on disk
-                    renamedFilename = DeletedFileFilenamePrefix + DateTime.Now.ToString("yyyyMMdd.HH.mm.ss.") + resToDelete.Filename;
+                    renamedFilename = DeletedFileFilenamePrefix + DateTime.Now.ToString("yyyyMMdd.HH.mm.ss.") + resToDelete.FileName;
                     string currentFilenameOnDisk = resToDelete.FilePath;
                     renamedFilenameOnDisk = Path.GetDirectoryName(currentFilenameOnDisk) + Path.DirectorySeparatorChar + renamedFilename;
 
@@ -779,7 +729,7 @@ namespace HatCMS
                 return true;
             }
 
-            private CmsLocalFileOnDisk ResourceFromDataRow(DataRow dr)
+            protected CmsLocalFileOnDisk ResourceFromDataRow(DataRow dr)
             {
                 CmsLocalFileOnDisk item = new CmsLocalFileOnDisk();
                 item.autoincid = Convert.ToInt32(dr["AutoIncId"]);
@@ -853,7 +803,77 @@ namespace HatCMS
                 return new CmsLocalFileOnDisk();
             }
 
-            private CmsLocalFileOnDisk[] ResourcesWithMetaItemsFromDataRows(DataRowCollection rows)
+
+            public CmsLocalFileOnDisk[] FetchAllFilesWithAnyMetaData(Dictionary<string, string> metaDataNamesAndValuesToMatch)
+            {
+                if (metaDataNamesAndValuesToMatch.Keys.Count == 0)
+                    return new CmsLocalFileOnDisk[0];
+
+                StringBuilder sql = new StringBuilder();
+                sql.Append("select r.AutoIncId, r.ResourceId, r.RevisionNumber, r.Filename, r.FilePath, r.FileDirectory, r.FileSize, r.FileTimestamp, r.MimeType, r.ModifiedBy, r.ModificationDate, ");
+                sql.Append(" m.AutoIncId as metaId, m.Name as metaName, m.`Value` as metaValue ");
+                sql.Append(" from resourceitems r ");
+                sql.Append(" left join resourceitemmetadata m on (m.ResourceId = r.ResourceId) ");
+                sql.Append(" where ");
+                sql.Append(" RevisionNumber = (select max(RevisionNumber) from resourceitems r2 where r2.resourceid = r.resourceid) ");
+                sql.Append(" AND (m.ResourceRevisionNumber = r.RevisionNumber OR m.ResourceRevisionNumber is null) ");
+                sql.Append(" AND r.deleted is null and m.deleted is null ");
+
+                List<string> ORs = new List<string>();
+
+                foreach (string metaName in metaDataNamesAndValuesToMatch.Keys)
+                {
+                    string metaVal = metaDataNamesAndValuesToMatch[metaName];
+                    ORs.Add(" (m.Name = '" + dbEncode(metaName) + "' AND m.`Value` = '" + dbEncode(metaVal) + "') ");
+                }
+
+                sql.Append(" AND (" + string.Join(" OR ", ORs.ToArray()) + ")");
+
+                sql.Append(" order by ResourceId; ");
+
+                DataSet ds = this.RunSelectQuery(sql.ToString());
+
+                if (this.hasRows(ds))
+                {
+                    return ResourcesWithMetaItemsFromDataRows(ds.Tables[0].Rows);
+                }
+                return new CmsLocalFileOnDisk[0];
+            }
+
+
+            public CmsLocalFileOnDisk[] FetchAllFilesWithMetaData(Dictionary<string, string> metaDataNamesAndValuesToMatch)
+            {
+                if (metaDataNamesAndValuesToMatch.Keys.Count == 0)
+                    return new CmsLocalFileOnDisk[0];
+
+                StringBuilder sql = new StringBuilder();
+                sql.Append("select r.AutoIncId, r.ResourceId, r.RevisionNumber, r.Filename, r.FilePath, r.FileDirectory, r.FileSize, r.FileTimestamp, r.MimeType, r.ModifiedBy, r.ModificationDate, ");
+                sql.Append(" m.AutoIncId as metaId, m.Name as metaName, m.`Value` as metaValue ");
+                sql.Append(" from resourceitems r ");
+                sql.Append(" left join resourceitemmetadata m on (m.ResourceId = r.ResourceId) ");
+                sql.Append(" where ");
+                sql.Append(" RevisionNumber = (select max(RevisionNumber) from resourceitems r2 where r2.resourceid = r.resourceid) ");
+                sql.Append(" AND (m.ResourceRevisionNumber = r.RevisionNumber OR m.ResourceRevisionNumber is null) ");
+                sql.Append(" AND r.deleted is null and m.deleted is null ");
+
+                foreach (string metaName in metaDataNamesAndValuesToMatch.Keys)
+                {
+                    string metaVal = metaDataNamesAndValuesToMatch[metaName];
+                    sql.Append(" AND (m.Name = '" + dbEncode(metaName) + "' AND m.`Value` = '" + dbEncode(metaVal) + "') ");
+                }
+
+                sql.Append(" order by ResourceId; ");
+
+                DataSet ds = this.RunSelectQuery(sql.ToString());
+
+                if (this.hasRows(ds))
+                {
+                    return ResourcesWithMetaItemsFromDataRows(ds.Tables[0].Rows);
+                }
+                return new CmsLocalFileOnDisk[0];
+            }
+
+            protected CmsLocalFileOnDisk[] ResourcesWithMetaItemsFromDataRows(DataRowCollection rows)
             {
                 Dictionary<int, CmsLocalFileOnDisk> resources = new Dictionary<int, CmsLocalFileOnDisk>();
 
@@ -909,7 +929,7 @@ namespace HatCMS
                 return (new List<CmsLocalFileOnDisk>(resources.Values)).ToArray();
             }
 
-            public CmsLocalFileOnDisk[] GetResourcesInDirectory(string directoryPath, string[] fileExtensions)
+            public CmsLocalFileOnDisk[] FetchFilesInDirectory(string directoryPath, string[] fileExtensions)
             {
                 string dir = directoryPath;
                 if (dir.EndsWith(Path.DirectorySeparatorChar.ToString()))
@@ -922,7 +942,7 @@ namespace HatCMS
                 sql += " where ";
                 sql += " RevisionNumber = (select max(RevisionNumber) from resourceitems r2 where r2.resourceid = r.resourceid) ";
                 sql += " AND (m.ResourceRevisionNumber = r.RevisionNumber OR m.ResourceRevisionNumber is null) ";
-                sql += " AND LOWER(FileDirectory) = '" + dbEncode(dir.ToLower()) + "' AND r.deleted is null and m.deleted is null ";
+                sql += " AND FileDirectory like '" + dbEncode(dir) + "' AND r.deleted is null and m.deleted is null ";
                 if (fileExtensions.Length > 0)
                 {
                     sql += " AND ("+ StringUtils.Join(" OR ", fileExtensions, " r.Filename like '%", "'") + ") ";
@@ -991,7 +1011,7 @@ namespace HatCMS
             /// returns Int32.MinValue if failed.
             /// </summary>
             /// <returns></returns>
-            private int getLastExistingResourceId()
+            protected int getLastExistingResourceId()
             {
                 string sql = "select max(ResourceId) as maxResourceId from resourceitems ; "; // note: do not filter out deleted items!
                 int ret = Int32.MinValue;
@@ -1002,24 +1022,10 @@ namespace HatCMS
                 }
                 return Int32.MinValue;
             }
-
-            public int DeleteAllCachedThumbnailUrls()
-            {
-                int width = 200;
-                int height = 400;
-                string name = (new CmsLocalFileOnDisk()).getThumbnailMetaDataNameRoot(width, height);
-                name = name.Replace(width.ToString(), "%");
-                name = name.Replace(height.ToString(), "%");
-                name += "%";
-
-                string sql = "update resourceitemmetadata set deleted = NOW() where `name` like '" + dbEncode(name) + "'; ";
-                int numUpdated = RunUpdateQuery(sql);
-                return numUpdated;
-                    
-            }
             
 
         } // class CmsResourceDB
         #endregion
     } // class CmsResource
 } // namespace
+

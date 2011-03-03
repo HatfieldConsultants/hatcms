@@ -1324,14 +1324,43 @@ namespace HatCMS
             SortOrdinalComparer comparer = new SortOrdinalComparer();
             a.Sort(comparer);
             return (CmsPage[])a.ToArray(typeof(CmsPage));
-            
-        } // SortPagesByLastModifiedDate 
+
+        } // SortPagesBySortOrdinal 
+
+        private class SortByTitleComparer : System.Collections.IComparer
+        {
+            CmsLanguage lang;
+            public SortByTitleComparer(CmsLanguage langToUse)
+            {
+                lang = langToUse;
+            }
+
+            int IComparer.Compare(Object x, Object y)
+            {
+                return String.Compare((x as CmsPage).getTitle(lang), (y as CmsPage).getTitle(lang));
+            }
+        } // SortByTitleComparer
+
+        public static CmsPage[] SortPagesByTitle(CmsPage[] pages, CmsLanguage langForTitles)
+        {
+            ArrayList a = new ArrayList(pages);
+            SortByTitleComparer comparer = new SortByTitleComparer(langForTitles);
+            a.Sort(comparer);
+            return (CmsPage[])a.ToArray(typeof(CmsPage));
+
+        } // SortPagesByTitle
+
 
         public static bool ArrayContainsPage(CmsPage[] haystack, CmsPage needle)
         {
+            return ArrayContainsPageId(haystack, needle.ID);
+        }
+
+        public static bool ArrayContainsPageId(CmsPage[] haystack, int needlePageId)
+        {
             foreach (CmsPage p in haystack)
             {
-                if (p.ID == needle.ID)
+                if (p.ID == needlePageId)
                     return true;
             } // foreach
             return false;

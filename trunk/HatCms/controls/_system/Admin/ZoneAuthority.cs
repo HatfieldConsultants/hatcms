@@ -89,7 +89,7 @@ namespace HatCMS.controls.Admin
         protected string RenderZoneAuthorityHeader(List<WebPortalUserRole> roleList)
         {
             StringBuilder html = new StringBuilder();
-            html.Append("<caption><h2>Zone authority</h2></caption>" + EOL);
+            html.Append("<caption><h2>Security Zone User Permissions</h2></caption>" + EOL);
             html.Append("<tr>" + EOL);
             html.Append("<th rowspan=\"2\"> </th>" + EOL);
             foreach (WebPortalUserRole r in roleList)

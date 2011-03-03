@@ -27,8 +27,9 @@ using System.Runtime.CompilerServices;
 // by using the '*' as shown below:
 
 // Version 1: first open source release
+// Version 1.1: major re-org of files.
 
-[assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("1.1.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

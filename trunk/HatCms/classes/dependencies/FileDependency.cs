@@ -67,7 +67,17 @@ namespace HatCMS
                     if (relPath.StartsWith(@"\"))
                         relPath = relPath.Substring(1); // remove first slash
                     string url = relPath.Replace(@"\", @"/"); // switch slashes
-                    if (String.Compare(url, "default.aspx", true) != 0 && Hatfield.Web.Portal.StringUtils.IndexOf(CmsConfig.URLsToNotRemap, url, StringComparison.CurrentCultureIgnoreCase) < 0)
+
+#if ! DEBUG
+                    if (String.Compare(url, "setup/default.aspx", true) == 0)
+                    {
+                        ret.Add(CmsDependencyMessage.Error("'setup/default.aspx' should be taken out of the \"URLsToNotRemap\" configuration entry on production sites."));
+                        return ret.ToArray();
+                    }
+#endif
+
+                    if (String.Compare(url, "default.aspx", true) != 0 &&  
+                        Hatfield.Web.Portal.StringUtils.IndexOf(CmsConfig.URLsToNotRemap, url, StringComparison.CurrentCultureIgnoreCase) < 0)
                         ret.Add(CmsDependencyMessage.Error("\"" + url + "\" is a required ASPX page, and should be listed in the \"URLsToNotRemap\" configuration entry."));
                 }
 

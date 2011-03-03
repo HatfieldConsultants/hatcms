@@ -28,7 +28,7 @@ namespace HatCMS
                     CmsFileDependency.UnderAppPath("js/_system/ckeditor/contents.css"),                    
 
                     // -- ckeditor plugin enhancements
-                    CmsFileDependency.UnderAppPath("js/_system/ckeditor/plugins/hatCms/plugin.js", new DateTime(2011,02,25)),
+                    CmsFileDependency.UnderAppPath("js/_system/ckeditor/plugins/hatCms/plugin.js", new DateTime(2011,03,02)),
                     CmsFileDependency.UnderAppPath("js/_system/ckeditor/plugins/hatCms_styles/plugin.js", new DateTime(2010,04,30)),
                     CmsFileDependency.UnderAppPath("_system/tools/FCKHelpers/DeleteResourcePopup.aspx"),
                     CmsFileDependency.UnderAppPath("_system/tools/FCKHelpers/InlineImageBrowser2.aspx"),

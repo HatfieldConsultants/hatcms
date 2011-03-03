@@ -15,7 +15,7 @@ namespace HatCMS.classes.dependencies
     /// <summary>
     /// Class to valid the parameters for a control.
     /// </summary>
-    public class CmsControlParmDependency : CmsDependency
+    public class CmsControlParameterDependency : CmsDependency
     {
         private string controlId;
         private string[] keys;
@@ -25,7 +25,7 @@ namespace HatCMS.classes.dependencies
         /// </summary>
         /// <param name="newControlId"></param>
         /// <param name="newKeys"></param>
-        public CmsControlParmDependency(string newControlId, string[] newKeys)
+        public CmsControlParameterDependency(string newControlId, string[] newKeys)
         {
             controlId = newControlId;
             keys = newKeys;

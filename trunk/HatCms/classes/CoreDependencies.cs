@@ -44,6 +44,9 @@ namespace HatCMS
             ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("setup"));
             ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("placeholders"));
 			ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("_system/_AdminDocs"));
+
+            ret.Add(CmsFileDependency.UnderAppPath("bin/XmpToolkit.dll")); // ensure that the XmpToolkit is being copied over
+
             #endif
 
             // -- files
@@ -75,8 +78,8 @@ namespace HatCMS
             ret.Add(new CmsConfigItemDependency("blogPostTemplate", CmsDependency.ExistsMode.MustNotExist)); // blogging is no more.
             ret.Add(new CmsConfigItemDependency("DefaultImageThumbnailSize", CmsDependency.ExistsMode.MustNotExist)); // not used any more
             
-            
-            
+            // -- ensure that the HtmlContent placeholders do not have the old link to the showThumb.aspx page (note: this validation is slow!!)
+            ret.Add(new CmsPlaceholderContentDependency("HtmlContent", "_system/showthumb.aspx", CmsDependency.ExistsMode.MustNotExist, StringComparison.CurrentCultureIgnoreCase));
           
             // -- all pages should have valid templates, placeholders and controls
             Dictionary<int, CmsPage> allPages = CmsContext.HomePage.getLinearizedPages();

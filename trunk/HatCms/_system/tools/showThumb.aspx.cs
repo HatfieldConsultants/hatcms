@@ -41,7 +41,7 @@ namespace HatCMS
             string ThumbDiskCacheStorageDir = ThumbImageCacheDirectory;
 
             BaseShowThumbnailPageParameters ret = new BaseShowThumbnailPageParameters(
-                CmsContext.ApplicationPath + "_system/showThumb.aspx", /* this page's url */
+                CmsContext.ApplicationPath + "_system/tools/showThumb.aspx", /* this page's url */
                 true, /* use Memory Cache */
                 true, /* use Disk Cache */
                 FullSizeImageStorageDir,
@@ -71,7 +71,7 @@ namespace HatCMS
 
         }
 
-        public static string getThumbDisplayUrl(CmsLocalFileOnDisk resource, int displayBoxWidth, int displayBoxHeight)
+        public static string getThumbDisplayUrl(CmsLocalImageOnDisk resource, int displayBoxWidth, int displayBoxHeight)
         {
             string url = resource.getThumbDisplayUrl(displayBoxWidth, displayBoxHeight);
             if (url != "")
@@ -129,7 +129,7 @@ namespace HatCMS
         /// <param name="displayBoxWidth"></param>
         /// <param name="displayBoxHeight"></param>
         /// <returns></returns>
-        public static System.Drawing.Size getDisplayWidthAndHeight(CmsLocalFileOnDisk resource, int displayBoxWidth, int displayBoxHeight)
+        public static System.Drawing.Size getDisplayWidthAndHeight(CmsLocalImageOnDisk resource, int displayBoxWidth, int displayBoxHeight)
         {
             int[] actualSize = resource.getImageDimensions();
             if (actualSize.Length == 2)

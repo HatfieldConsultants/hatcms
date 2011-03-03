@@ -145,7 +145,7 @@ namespace HatCMS.controls.Admin
         /// <returns></returns>
         protected string RenderHeader()
         {
-            StringBuilder html = new StringBuilder("<caption><h2>Zone Management</h2></caption>");
+            StringBuilder html = new StringBuilder("<caption><h2>Create/Edit Security Zones</h2></caption>");
             html.Append("<tr>" + EOL);
             html.Append("<th style=\"width: 10em;\"> </th>" + EOL);
             html.Append("<th>Zone Name</th>" + EOL);

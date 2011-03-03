@@ -125,7 +125,7 @@ namespace HatCMS._system.Calendar
                 end = c.EndDateTime.AddSeconds(1);      // show below the event
                 allDay = true;
                 url = page.getUrl(f.Lang);
-                className = "EventCategory_file_" + f.fileExtension.Substring(1) + "_gif";
+                className = "EventCategory_file_" + System.IO.Path.GetExtension(f.FileName).Substring(1) + "_gif";
             }
         }
 

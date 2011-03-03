@@ -591,7 +591,7 @@ namespace HatCMS.Placeholders
             js.Append("   document.getElementById('" + ImageRenderAreaId + "').innerHTML = '<span style=\"margin: 10px; padding: 10px; background: #edff96; border: 1px solid #C00;\">no image is selected</span>';" + Environment.NewLine);
             js.Append(" } // if " + Environment.NewLine);
             js.Append(" else { " + Environment.NewLine);
-            js.Append("   document.getElementById('" + ImageRenderAreaId + "').innerHTML = '<img src=\"" + CmsContext.ApplicationPath + "_system/showThumb.aspx?file='+ImagePath+'&w=" + thumbWidth + "&h="+thumbHeight+"&nocache='+((new Date()).getTime())+'\">';" + Environment.NewLine);
+            js.Append("   document.getElementById('" + ImageRenderAreaId + "').innerHTML = '<img src=\"" + CmsContext.ApplicationPath + "_system/tools/showThumb.aspx?file='+ImagePath+'&w=" + thumbWidth + "&h="+thumbHeight+"&nocache='+((new Date()).getTime())+'\">';" + Environment.NewLine);
             js.Append(" } // else " + Environment.NewLine);
             js.Append(" document.getElementById('" + formName + "OpenEditorLink').href = '" + editUrl + "&SelImagePath='+ImagePath;" + Environment.NewLine);
             js.Append("} " + Environment.NewLine + Environment.NewLine);
