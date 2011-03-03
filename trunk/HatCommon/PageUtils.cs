@@ -980,7 +980,7 @@ namespace Hatfield.Web.Portal
 		}
 
         /// <summary>
-        /// the key is the dropdown's value, options[key] is the display text
+        /// the name is the dropdown's value, options[name] is the display text. Use options.Add(value, displayText);
         /// </summary>
         /// <param name="FormName"></param>
         /// <param name="id"></param>
