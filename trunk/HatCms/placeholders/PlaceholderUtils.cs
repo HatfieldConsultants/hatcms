@@ -16,7 +16,7 @@ namespace HatCMS.Placeholders
 {
     public class PlaceholderUtils
     {
-        public static object InvokePlaceholderFunction(string PlaceholderType, string MethodName, object[] MethodParams)
+        private static object InvokePlaceholderFunction(string PlaceholderType, string MethodName, object[] MethodParams)
         {
             System.Reflection.Assembly exAssembly = System.Reflection.Assembly.GetExecutingAssembly();
             string AssemblyFileNameOnDisk = exAssembly.Location;
@@ -69,8 +69,8 @@ namespace HatCMS.Placeholders
 
         public static BaseCmsPlaceholder.RevertToRevisionResult revertToRevision(string PlaceholderType, CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage phLanguage)
         {
-            // public abstract RevertToRevisionResult revertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, AppLanguage language);
-            object ret = InvokePlaceholderFunction(PlaceholderType, "revertToRevision", new object[] { oldPage, currentPage, identifiers, phLanguage });
+            // public abstract RevertToRevisionResult RevertToRevision(CmsPage oldPage, CmsPage currentPage, int[] identifiers, CmsLanguage language);
+            object ret = InvokePlaceholderFunction(PlaceholderType, "RevertToRevision", new object[] { oldPage, currentPage, identifiers, phLanguage });
 
             if (ret is BaseCmsPlaceholder.RevertToRevisionResult)
                 return (BaseCmsPlaceholder.RevertToRevisionResult)ret;

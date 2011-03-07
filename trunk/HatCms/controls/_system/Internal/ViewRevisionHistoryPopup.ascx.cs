@@ -114,7 +114,7 @@ namespace HatCMS.controls
                     }
                     html.Append("<td>" + rev.RevisionSavedAt.ToString("d MMM yyyy") + " at " + rev.RevisionSavedAt.ToString("%h:mm tt") + "</td>" + Environment.NewLine);
                     html.Append("<td>" + rev.RevisionSavedByUsername + "</td>" + Environment.NewLine);
-                    if (CmsConfig.Languages.Length > 1)
+                    if (CmsConfig.Languages.Length >= 1)
                     {
                         NameValueCollection urlParams = new NameValueCollection();
                         urlParams.Add("revNum", rev.RevisionNumber.ToString());
