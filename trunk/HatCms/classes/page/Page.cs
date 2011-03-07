@@ -1012,7 +1012,7 @@ namespace HatCMS
         {
             try
             {
-                CmsPlaceholderDefinition[] defs = this.getAllPlaceholderDefinitions();
+                CmsPlaceholderDefinition[] defs = this.getAllPlaceholderDefinitions(); // use "All.." because it is cached.
                 List<string> ret = new List<string>();
                 foreach (CmsPlaceholderDefinition phDef in defs)
                 {
@@ -1027,7 +1027,7 @@ namespace HatCMS
 
         public bool hasPlaceholder(string placeholderType)
         {
-            string[] allPhNames = getAllPlaceholderNames();
+            string[] allPhNames = getAllPlaceholderNames(); // use "All.." because it is cached.
             return (StringUtils.IndexOf(allPhNames, placeholderType, StringComparison.CurrentCultureIgnoreCase) > -1);
         }
 

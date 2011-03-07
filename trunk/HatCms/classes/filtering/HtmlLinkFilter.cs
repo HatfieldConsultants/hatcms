@@ -92,7 +92,12 @@ namespace HatCMS
 
                 string s = html.ToString();
                 int prefixIndex = s.IndexOf(macroPrefix);
-                int suffixIndex = s.IndexOf(macroSuffix);
+                int suffixIndex = -1;
+                if (prefixIndex >= 0)
+                    suffixIndex = s.IndexOf(macroSuffix, prefixIndex);
+                else
+                    suffixIndex = -1;              
+
                 while (prefixIndex >= 0 && suffixIndex > 0)
                 {
                     string macro = html.ToString(prefixIndex, suffixIndex - prefixIndex + macroSuffix.Length);
@@ -101,7 +106,10 @@ namespace HatCMS
                     html.Insert(prefixIndex, getMacroReplacement(macro, macroPrefix, macroSuffix, pageBeingFiltered));
                     s = html.ToString();
                     prefixIndex = s.IndexOf(macroPrefix);
-                    suffixIndex = s.IndexOf(macroSuffix);
+                    if (prefixIndex >= 0)
+                        suffixIndex = s.IndexOf(macroSuffix, prefixIndex);
+                    else
+                        suffixIndex = -1;
                 } // while                    
             }
             return html.ToString();

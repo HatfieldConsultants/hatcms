@@ -621,6 +621,7 @@ namespace HatCMS.TemplateEngine
                         int phId = Convert.ToInt32(tokens["id"]);
                         string[] subParamsArray = new string[] { c };
                         CmsPlaceholderDefinition def = new CmsPlaceholderDefinition(phName, phId, subParamsArray);
+                        ret.Add(def);
                     }
                 } // foreach
             }            
