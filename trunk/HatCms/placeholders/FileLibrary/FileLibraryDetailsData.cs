@@ -17,7 +17,7 @@ namespace HatCMS.Placeholders
     public class FileLibraryDetailsData
     {
         private int pageId = -1;
-        public int PageId
+        public int DetailsPageId
         {
             get { return pageId; }
             set { pageId = value; }
@@ -132,13 +132,13 @@ namespace HatCMS.Placeholders
         /// <param name="identifier"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static string getTargetNameOnDisk(CmsPage aggregatorPage, int identifier, CmsLanguage language, string fileName)
+        public static string getTargetNameOnDisk(CmsPage fileDetailsPage, int identifier, CmsLanguage language, string fileName)
         {
-            StringBuilder sb = new StringBuilder(getFileStorageFolderUrl(aggregatorPage, identifier, language));
+            StringBuilder sb = new StringBuilder(getFileStorageFolderUrl(fileDetailsPage, identifier, language));
 
             if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V1")
             {
-                sb.Append(aggregatorPage.ID);
+                sb.Append(fileDetailsPage.ID);
                 sb.Append(identifier);
             }
 
@@ -173,9 +173,10 @@ namespace HatCMS.Placeholders
         /// <param name="identifier"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static string getDownloadUrl(CmsPage aggregatorPage, int identifier, CmsLanguage language, string fileName)
+        public static string getDownloadUrl(CmsPage fileDetailsPage, int identifier, CmsLanguage language, string fileName)
         {
-            string baseUrl = getFileStorageFolderUrl(aggregatorPage, identifier, language);
+            
+            string baseUrl = getFileStorageFolderUrl(fileDetailsPage, identifier, language);
             string url = baseUrl + fileName;
             return url;
         }
@@ -187,9 +188,9 @@ namespace HatCMS.Placeholders
         /// <param name="identifier"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static string getDownloadAnchorHtml(CmsPage aggregatorPage, int identifier, CmsLanguage lang, string fileName)
+        public static string getDownloadAnchorHtml(CmsPage fileDetailsPage, int identifier, CmsLanguage lang, string fileName)
         {
-            return getDownloadAnchorHtml(aggregatorPage, identifier, lang, fileName, fileName, "_blank", "");
+            return getDownloadAnchorHtml(fileDetailsPage, identifier, lang, fileName, fileName, "_blank", "");
         }
 
         /// <summary>
@@ -202,10 +203,10 @@ namespace HatCMS.Placeholders
         /// <param name="target"></param>
         /// <param name="cssClass"></param>
         /// <returns></returns>
-        public static string getDownloadAnchorHtml(CmsPage aggregatorPage, int identifier, CmsLanguage lang, string fileName, string displayHtml, string target, string cssClass)
+        public static string getDownloadAnchorHtml(CmsPage fileDetailsPage, int identifier, CmsLanguage lang, string fileName, string displayHtml, string target, string cssClass)
         {
             StringBuilder html = new StringBuilder("<a href=\"");
-            html.Append(getDownloadUrl(aggregatorPage, identifier, lang, fileName));
+            html.Append(getDownloadUrl(fileDetailsPage, identifier, lang, fileName));
             html.Append("\"");
             if (target != "")
                 html.Append(" target=\"" + target + "\" ");
@@ -224,9 +225,9 @@ namespace HatCMS.Placeholders
         /// <param name="identifier"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static long getFileSize(CmsPage aggregatorPage, int identifier, CmsLanguage lang, string fileName)
+        public static long getFileSize(CmsPage fileDetailsPage, int identifier, CmsLanguage lang, string fileName)
         {
-            string nameOnDisk = getTargetNameOnDisk(aggregatorPage, identifier, lang, fileName);
+            string nameOnDisk = getTargetNameOnDisk(fileDetailsPage, identifier, lang, fileName);
             FileInfo fi = new FileInfo(nameOnDisk);
             return fileName.Length;
         }

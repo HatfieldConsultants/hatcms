@@ -222,6 +222,25 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsConfigItemDependency("PageFiles.SaveButtonText"));
             ret.Add(new CmsConfigItemDependency("PageFiles.DeleteFileText"));
 
+            // -- make sure all the files are available
+            PageFilesDb db = new PageFilesDb();
+            Dictionary<CmsPage, CmsPlaceholderDefinition[]> phDefDict = CmsContext.getAllPlaceholderDefinitions("PageFiles", CmsContext.HomePage, CmsContext.PageGatheringMode.FullRecursion);
+            foreach (CmsPage page in phDefDict.Keys)
+            {                
+                foreach (CmsPlaceholderDefinition phDef in phDefDict[page])
+                {
+                    foreach (CmsLanguage lang in CmsConfig.Languages)
+                    {
+                        PageFilesPlaceholderData phData = db.getPageFilesData(page, phDef.Identifier, lang, true);
+                        PageFilesItemData[] fileItems = db.getPageFilesItemDatas(page, phDef.Identifier, lang, phData);
+                        foreach (PageFilesItemData file in fileItems)
+                        {
+                            ret.Add(new CmsFileDependency(file.getFilenameOnDisk(page, phDef.Identifier, lang)));
+                        } // foreach file
+                    } // foreach lang
+                } // for each placeholder definition
+            } // foreach page
+
             return ret.ToArray();
         }
 

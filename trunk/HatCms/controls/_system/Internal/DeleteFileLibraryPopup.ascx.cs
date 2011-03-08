@@ -127,14 +127,14 @@ namespace HatCMS.controls._system.Internal
             if (fileList.Count == 0)
                 return "";
 
-            CmsPage aggregatorPage = detailsPage.ParentPage;
+            
             foreach (FileLibraryDetailsData f in fileList)
             {
                 try
                 {
                     string newFileName = "Deleted." + DateTime.Now.ToString("yyyyMMdd.HH.mm.ss.") + f.FileName;
-                    string oldFileNameOnDisk = FileLibraryDetailsData.getTargetNameOnDisk(aggregatorPage, f.Identifier, language, f.FileName);
-                    string newFileNameOnDisk = FileLibraryDetailsData.getTargetNameOnDisk(aggregatorPage, f.Identifier, language, newFileName);
+                    string oldFileNameOnDisk = FileLibraryDetailsData.getTargetNameOnDisk(detailsPage, f.Identifier, language, f.FileName);
+                    string newFileNameOnDisk = FileLibraryDetailsData.getTargetNameOnDisk(detailsPage, f.Identifier, language, newFileName);
                     if (File.Exists(oldFileNameOnDisk))
                         File.Move(oldFileNameOnDisk, newFileNameOnDisk);
                 }

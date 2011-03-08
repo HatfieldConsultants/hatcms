@@ -133,6 +133,7 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsConfigItemDependency("FileLibrary.UploadButtonText"));
             ret.Add(new CmsConfigItemDependency("FileLibrary.EventNotAttachedText"));
             ret.Add(new CmsConfigItemDependency("FileLibrary.PageText"));
+
             return ret.ToArray();
         }
 
@@ -560,7 +561,7 @@ namespace HatCMS.Placeholders
                         }
                     }
 
-                    string status = putUploadFileToFolder(page, identifier, lang, postedFile);
+                    string status = putUploadFileToFolder(childPage, identifier, lang, postedFile);
                     if (status != "")
                     {
                         msg.Append(status);
@@ -589,10 +590,10 @@ namespace HatCMS.Placeholders
         /// <param name="lang"></param>
         /// <param name="postedFile"></param>
         /// <returns></returns>
-        protected string putUploadFileToFolder(CmsPage page, int identifier, CmsLanguage lang, HttpPostedFile postedFile)
-        {
+        protected string putUploadFileToFolder(CmsPage fileDetailsPage, int identifier, CmsLanguage lang, HttpPostedFile postedFile)
+        {            
             string targetFileName = getFileNameWithoutPath(postedFile.FileName);
-            targetFileName = FileLibraryDetailsData.getTargetNameOnDisk(page, identifier, lang, targetFileName);
+            targetFileName = FileLibraryDetailsData.getTargetNameOnDisk(fileDetailsPage, identifier, lang, targetFileName);
             if (System.IO.File.Exists(targetFileName))
                 return formatErrorMsg("A file named \"" + postedFile.FileName + "\" already exists.");
 
@@ -778,7 +779,7 @@ namespace HatCMS.Placeholders
                 }
                 else
                 {
-                    urlDetails = CmsContext.getPageById(d.PageId).getUrl(lang);
+                    urlDetails = CmsContext.getPageById(d.DetailsPageId).getUrl(lang);
                 }
 
                 html.Append("<td>" + EOL);
@@ -888,11 +889,11 @@ namespace HatCMS.Placeholders
                             }
                             else
                             {
-                                urlDetails = CmsContext.getPageById(file.PageId).getUrl(lang);
+                                urlDetails = CmsContext.getPageById(file.DetailsPageId).getUrl(lang);
                             }
 
                             html.Append("<li>");
-                            string title = CmsContext.getPageById(file.PageId).getTitle(lang);
+                            string title = CmsContext.getPageById(file.DetailsPageId).getTitle(lang);
 
                             html.Append("<a href=\"" + urlDetails + "\">" + title + "</a>");
                             html.Append("</li>" + EOL);
@@ -1023,7 +1024,7 @@ namespace HatCMS.Placeholders
 
             foreach (FileLibraryDetailsData file in fileDetails)
             {
-                CmsPage childPage = CmsContext.getPageById(file.PageId);
+                CmsPage childPage = CmsContext.getPageById(file.DetailsPageId);
                 if (childPage.isVisibleForCurrentUser)
                 {
                     Rss.RssItem rssItem = CreateAndInitRssItem(childPage, langToRenderFor);

@@ -136,12 +136,12 @@ namespace HatCMS.placeholders.Calendar
         /// <returns></returns>
         protected string renderAttachedFile(CmsLanguage lang, FileLibraryDetailsData f, WebPortalUser u)
         {
-            CmsPage detailsFilePage = CmsContext.getPageById(f.PageId);
+            CmsPage detailsFilePage = CmsContext.getPageById(f.DetailsPageId);
             if (detailsFilePage.Zone.canRead(u) || detailsFilePage.Zone.canWrite(u))
             {
-                CmsPage aggregatorFilePage = detailsFilePage.ParentPage;
+                
                 string iconTag = IconUtils.getIconTag(CmsContext.ApplicationPath, false, f.fileExtension);
-                string urlDownload = FileLibraryDetailsData.getDownloadAnchorHtml(aggregatorFilePage, f.Identifier, lang, f.FileName, f.FileName, "_blank", "");
+                string urlDownload = FileLibraryDetailsData.getDownloadAnchorHtml(detailsFilePage, f.Identifier, lang, f.FileName, f.FileName, "_blank", "");
 
                 string urlPage = detailsFilePage.getUrl(lang);
                 urlPage = "&#160;&#160;<a href=\"" + urlPage + "\" class=\"rightArrowLink\">" + getSeeFileDetailsText(lang) + "</a>";

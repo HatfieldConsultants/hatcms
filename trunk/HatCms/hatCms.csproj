@@ -1345,7 +1345,7 @@
     <Content Include="_system\tools\swfUpload\SwfUploadTarget.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\hatCommon\hatCommon.csproj">
+    <ProjectReference Include="..\HatCommon\hatCommon.csproj">
       <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
       <Name>hatCommon</Name>
     </ProjectReference>

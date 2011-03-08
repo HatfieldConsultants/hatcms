@@ -149,12 +149,12 @@ namespace HatCMS.Placeholders
         /// <param name="lang"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool insertDetailsData(CmsPage page, int identifier, CmsLanguage lang, FileLibraryDetailsData entity)
+        public bool insertDetailsData(CmsPage detailsPage, int identifier, CmsLanguage lang, FileLibraryDetailsData entity)
         {
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.Append(DETAILS_TABLE);
             sql.Append(" (PageId,Identifier,LangCode,FileName,CategoryId,Author,Description,LastModified,CreatedBy,EventPageId) VALUES (");
-            sql.Append(page.ID.ToString() + ",");
+            sql.Append(detailsPage.ID.ToString() + ",");
             sql.Append(identifier.ToString() + ",'");
             sql.Append(dbEncode(lang.shortCode) + "','");
             sql.Append(dbEncode(entity.FileName) + "',");
@@ -167,10 +167,10 @@ namespace HatCMS.Placeholders
 
             int affected = this.RunUpdateQuery(sql.ToString());
             if (affected > 0) {
-                entity.PageId = page.ID;
+                entity.DetailsPageId = detailsPage.ID;
                 entity.Identifier = identifier;
                 entity.Lang = lang;
-                return page.setLastUpdatedDateTimeToNow();
+                return detailsPage.setLastUpdatedDateTimeToNow();
             }
             else
                 return false;
@@ -184,7 +184,7 @@ namespace HatCMS.Placeholders
         /// <param name="lang"></param>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool updateDetailsData(CmsPage page, int identifier, CmsLanguage lang, FileLibraryDetailsData entity)
+        public bool updateDetailsData(CmsPage detailsPage, int identifier, CmsLanguage lang, FileLibraryDetailsData entity)
         {
             StringBuilder sql = new StringBuilder("UPDATE ");
             sql.Append(DETAILS_TABLE);
@@ -193,7 +193,7 @@ namespace HatCMS.Placeholders
             sql.Append(" Description='" + dbEncode(entity.Description) + "',");
             sql.Append(" LastModified=" + dbEncode(DateTime.Now) + ",");
             sql.Append(" EventPageId=" + entity.EventPageId.ToString());
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + detailsPage.ID.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
 
@@ -433,7 +433,7 @@ namespace HatCMS.Placeholders
 
         protected void rowToData(DataRow dr, FileLibraryDetailsData entity)
         {
-            entity.PageId = Convert.ToInt32(dr["PageId"]);
+            entity.DetailsPageId = Convert.ToInt32(dr["PageId"]);
             entity.Identifier = Convert.ToInt32(dr["Identifier"]);
             entity.Lang = new CmsLanguage(dr["LangCode"].ToString());
             entity.FileName = dr["FileName"].ToString();

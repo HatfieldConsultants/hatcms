@@ -67,7 +67,7 @@ namespace HatCMS._system.Calendar
         /// <returns></returns>
         protected bool userHasAuthority(FileLibraryDetailsData f)
         {
-            CmsPage filePage = CmsContext.getPageById(f.PageId);
+            CmsPage filePage = CmsContext.getPageById(f.DetailsPageId);
             
             WebPortalUser u = CmsContext.currentWebPortalUser;
             if (filePage.Zone.canRead(u) || filePage.Zone.canWrite(u))
@@ -118,8 +118,8 @@ namespace HatCMS._system.Calendar
             /// <param name="f"></param>
             public FullCalendarEvent(EventCalendarDb.EventCalendarDetailsData c, FileLibraryDetailsData f)
             {
-                CmsPage page = CmsContext.getPageById(f.PageId);
-                id = "EventFile_" + f.PageId.ToString();
+                CmsPage page = CmsContext.getPageById(f.DetailsPageId);
+                id = "EventFile_" + f.DetailsPageId.ToString();
                 title = f.FileName;
                 start = c.StartDateTime.AddSeconds(1);  // show below the event
                 end = c.EndDateTime.AddSeconds(1);      // show below the event
