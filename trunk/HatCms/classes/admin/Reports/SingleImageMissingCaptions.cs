@@ -47,7 +47,7 @@ namespace HatCMS.Controls.Admin
             else
             {
                 html.Append("<br>" + imageDatasWithoutCaptions.Count.ToString() + " images are missing captions (" + imageDatas.Count.ToString() + " images audited)");
-                html.Append("<table border=\"1\">" + Environment.NewLine);
+                html.Append(TABLE_START_HTML + Environment.NewLine);
                 html.Append("<tr><th>Image</th><th>On Page</th></tr>");
                 foreach (SingleImageData img in imageDatasWithoutCaptions)
                 {

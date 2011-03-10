@@ -103,6 +103,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="classes\admin\BaseAdminTool.cs" />
     <Compile Include="classes\admin\Reports\DuplicateSingleImages.cs" />
     <Compile Include="classes\admin\Reports\LastModifiedTable.cs" />
     <Compile Include="classes\admin\Reports\ListRegisteredProjects.cs" />
@@ -117,6 +118,8 @@
     <Compile Include="classes\admin\Tools\SearchHtmlContent.cs" />
     <Compile Include="classes\admin\Tools\SearchSingleImagesByCaption.cs" />
     <Compile Include="classes\admin\Tools\ValidateConfig.cs" />
+    <Compile Include="classes\admin\Tools\ZoneAuthority.cs" />
+    <Compile Include="classes\admin\Tools\ZoneManagement.cs" />
     <Compile Include="classes\Config.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -176,7 +179,6 @@
     <Compile Include="classes\zone\CmsZone.cs" />
     <Compile Include="classes\zone\CmsZoneUserRole.cs" />
     <Compile Include="classes\zone\CmsZoneUserRoleDb.cs" />
-    <Compile Include="controls\_system\Admin\AdminController.cs" />
     <Compile Include="controls\_system\Admin\Audit.ascx.cs">
       <DependentUpon>Audit.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -184,8 +186,6 @@
     <Compile Include="controls\_system\Admin\Audit.ascx.designer.cs">
       <DependentUpon>Audit.ascx</DependentUpon>
     </Compile>
-    <Compile Include="controls\_system\Admin\ZoneAuthority.cs" />
-    <Compile Include="controls\_system\Admin\ZoneManagement.cs" />
     <Compile Include="controls\_system\Breadcrumb.ascx.cs">
       <DependentUpon>Breadcrumb.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

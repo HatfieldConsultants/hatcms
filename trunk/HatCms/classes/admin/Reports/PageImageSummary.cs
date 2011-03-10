@@ -20,7 +20,7 @@ namespace HatCMS.Controls.Admin
             Dictionary<int, CmsPage> allPages = CmsContext.HomePage.getLinearizedPages();
             StringBuilder html = new StringBuilder();
             html.Append("<p><strong>Page - Image Summary</strong></p>");
-            html.Append("<table border=\"1\">");
+            html.Append(TABLE_START_HTML);
             html.Append("<tr><th>Page</th><th>Images</th></tr>");
             SingleImageDb db = new SingleImageDb();
             foreach (int pageId in allPages.Keys)

@@ -25,8 +25,8 @@ namespace HatCMS.Controls.Admin
             }
             StringBuilder html = new StringBuilder();
             html.Append("<p>");
-            html.Append("<table border=\"1\">");
-            html.Append("<caption><h2>User feedback <a style=\"font-size: small;\" href=\"" + CmsContext.ApplicationPath + "_system/tools/download.ashx?adminTool=" + Enum.GetName(typeof(AdminMenuControl.CmsAdminToolEnum), AdminMenuControl.CmsAdminToolEnum.ListUserFeedback) + "\">(download)</a></h2></caption>");
+            html.Append(TABLE_START_HTML);
+            html.Append("<caption><h2>User feedback <a style=\"font-size: small;\" href=\"" + CmsContext.ApplicationPath + "_system/tools/download.ashx?adminTool=" + Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolClass), CmsBaseAdminTool.CmsAdminToolClass.ListUserFeedback) + "\">(download)</a></h2></caption>");
             html.Append("<tr>");
             html.Append("<th>Submitted</th>");
             html.Append("<th>Name</th><th>Email Address</th><th>Location</th><th>Question</th><th>Answer</th><th>ReferringUrl</th>");

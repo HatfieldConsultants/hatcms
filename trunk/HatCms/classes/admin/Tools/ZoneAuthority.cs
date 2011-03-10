@@ -18,7 +18,7 @@ namespace HatCMS.Controls.Admin
         protected string generateFormHiddenField()
         {
             StringBuilder html = new StringBuilder();
-            html.Append(PageUtils.getHiddenInputHtml("AdminTool", AdminMenuControl.CmsAdminToolEnum.ZoneAuthority.ToString()) + EOL);
+            html.Append(PageUtils.getHiddenInputHtml("AdminTool", CmsBaseAdminTool.CmsAdminToolClass.ZoneAuthority.ToString()) + EOL);
             html.Append(PageUtils.getHiddenInputHtml("update", "updateZoneAuthority") + EOL);
             return html.ToString();
         }

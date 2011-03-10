@@ -63,7 +63,7 @@ namespace HatCMS.Controls.Admin
 
             StringBuilder html = new StringBuilder();
             html.Append("<p><strong>Duplicate images used on this site:</strong></p>");
-            html.Append("<table border=\"1\">");
+            html.Append(TABLE_START_HTML);
             html.Append("<tr><th>Image</th><th>Found on pages</th></tr>");
             if (toReport.Keys.Count > 0)
             {

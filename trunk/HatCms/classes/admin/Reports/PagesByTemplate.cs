@@ -29,7 +29,7 @@ namespace HatCMS.Controls.Admin
             } // foreach
 
             StringBuilder html = new StringBuilder();
-            html.Append("<table border=\"0\">");
+            html.Append(TABLE_START_HTML);
             foreach (string templateName in reportStorage.Keys)
             {
                 html.Append("<tr><td style=\"background-color: #CCC;\"><strong>" + templateName + "</strong><td></tr>");

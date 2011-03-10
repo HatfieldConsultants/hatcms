@@ -34,133 +34,110 @@ namespace HatCMS.Controls.Admin
             return ret.ToArray();
         }
 
-        private enum CmsAdminToolCategory { Reports, Tools }
 
-        // Note: if using an AdminController based class, the name of the class must match EXACTLY the name listed here,
-        // and be in the HatCMS.Controls.Admin namespace.
-        public enum CmsAdminToolEnum { 
-            AdminMenu, 
-            SearchAndReplace, 
-            SearchHtmlContent, 
-            ListUserFeedback, 
-            SearchSingleImagesByCaption, 
-            LastModifiedTable, 
-            DuplicateSingleImages, 
-            SingleImageMissingCaptions, 
-            PageImageSummary, 
-            UnusedFiles, 
-            ValidateConfig, 
-            PagesByTemplate, 
-            EmptyThumbnailCache, 
-            PageUrlsById,
-            ListRegisteredProjects,
-            ZoneManagement,
-            ZoneAuthority
-        }
-
-        private string getMenuDisplay(CmsAdminToolEnum tool)
+        private string getMenuDisplay(CmsBaseAdminTool.CmsAdminToolClass tool)
         {
             string ret = "";
             switch (tool)
             {
-                case CmsAdminToolEnum.AdminMenu: ret = "Admin Menu"; break;
-                case CmsAdminToolEnum.SearchAndReplace: ret = "Global Search &amp; Replace"; break;
-                case CmsAdminToolEnum.SearchHtmlContent: ret = "Search in editable HTML"; break;
-                case CmsAdminToolEnum.ListUserFeedback: ret = "List User Feedback"; break;
-                case CmsAdminToolEnum.SearchSingleImagesByCaption: ret = "Search Images by caption"; break;
-                case CmsAdminToolEnum.LastModifiedTable: ret = "Pages by last modified date"; break;
-                case CmsAdminToolEnum.DuplicateSingleImages: ret = "Duplicate Images"; break;
-                case CmsAdminToolEnum.SingleImageMissingCaptions: ret = "Images without captions"; break;
-                case CmsAdminToolEnum.PageImageSummary: ret = "Images by Page"; break;
-                case CmsAdminToolEnum.UnusedFiles: ret = "Unused files"; break;
-                case CmsAdminToolEnum.ValidateConfig: ret = "Validate CMS Config"; break;
-                case CmsAdminToolEnum.PagesByTemplate: ret = "Pages by template"; break;
-                case CmsAdminToolEnum.EmptyThumbnailCache: ret = "Empty Image Cache"; break;
-                case CmsAdminToolEnum.PageUrlsById: ret = "Page Urls by Id"; break;
-                case CmsAdminToolEnum.ListRegisteredProjects: ret = "List Registered Projects"; break;
-                case CmsAdminToolEnum.ZoneManagement: ret = "Create/Edit Zones"; break;
-                case CmsAdminToolEnum.ZoneAuthority: ret = "User permissions"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.AdminMenu: ret = "Admin Menu"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.SearchAndReplace: ret = "Global Search &amp; Replace"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.SearchHtmlContent: ret = "Search in editable HTML"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.ListUserFeedback: ret = "List User Feedback"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.SearchSingleImagesByCaption: ret = "Search Images by caption"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.LastModifiedTable: ret = "Pages by last modified date"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.DuplicateSingleImages: ret = "Duplicate Images"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.SingleImageMissingCaptions: ret = "Images without captions"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.PageImageSummary: ret = "Images by Page"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.UnusedFiles: ret = "Unused files"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.ValidateConfig: ret = "Validate CMS Config"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.PagesByTemplate: ret = "Pages by template"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.EmptyThumbnailCache: ret = "Empty Image Cache"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.PageUrlsById: ret = "Page Urls by Id"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.ListRegisteredProjects: ret = "List Registered Projects"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.ZoneManagement: ret = "Create/Edit Zones"; break;
+                case CmsBaseAdminTool.CmsAdminToolClass.ZoneAuthority: ret = "User permissions"; break;
                 default:
                     throw new ArgumentException("An unknown AdminTool was passed to getMenuDisplay()");
             }
             return ret;
         }
 
-        private Dictionary<string, List<CmsAdminToolEnum>> CategorizedAdminReports
+        private Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>> CategorizedAdminReports
         {
             get
             {
-                Dictionary<string, List<CmsAdminToolEnum>> ret = new Dictionary<string, List<CmsAdminToolEnum>>();                
-                ret.Add("Image Reports", new List<CmsAdminToolEnum>(new CmsAdminToolEnum[] { CmsAdminToolEnum.DuplicateSingleImages, CmsAdminToolEnum.PageImageSummary, CmsAdminToolEnum.SingleImageMissingCaptions }));
-                ret.Add("Page Reports", new List<CmsAdminToolEnum>(new CmsAdminToolEnum[] { CmsAdminToolEnum.LastModifiedTable, CmsAdminToolEnum.PagesByTemplate, CmsAdminToolEnum.PageUrlsById }));
-                ret.Add("Feedback Reports", new List<CmsAdminToolEnum>(new CmsAdminToolEnum[] { CmsAdminToolEnum.ListUserFeedback }));
-                ret.Add("Registered Project Reports", new List<CmsAdminToolEnum>(new CmsAdminToolEnum[] { CmsAdminToolEnum.ListRegisteredProjects }));
-                ret.Add("Other Reports", new List<CmsAdminToolEnum>(new CmsAdminToolEnum[] { CmsAdminToolEnum.UnusedFiles, CmsAdminToolEnum.ValidateConfig }));
+                Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>> ret = new Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>>();
+                ret.Add("Image Reports", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.DuplicateSingleImages, CmsBaseAdminTool.CmsAdminToolClass.PageImageSummary, CmsBaseAdminTool.CmsAdminToolClass.SingleImageMissingCaptions }));
+                ret.Add("Page Reports", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.LastModifiedTable, CmsBaseAdminTool.CmsAdminToolClass.PagesByTemplate, CmsBaseAdminTool.CmsAdminToolClass.PageUrlsById }));
+                ret.Add("Feedback Reports", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.ListUserFeedback }));
+                ret.Add("Registered Project Reports", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.ListRegisteredProjects }));
+                ret.Add("Other Reports", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.UnusedFiles, CmsBaseAdminTool.CmsAdminToolClass.ValidateConfig }));
                 return ret;
             }
         }
 
-        private Dictionary<string, List<CmsAdminToolEnum>> CategorizedAdminTools
+        private Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>> CategorizedAdminTools
         {
             get
             {
-                Dictionary<string, List<CmsAdminToolEnum>> ret = new Dictionary<string, List<CmsAdminToolEnum>>();
-                ret.Add("Search Tools", new List<CmsAdminToolEnum>(new CmsAdminToolEnum[] { CmsAdminToolEnum.SearchAndReplace, CmsAdminToolEnum.SearchHtmlContent, CmsAdminToolEnum.SearchSingleImagesByCaption }));
-                ret.Add("Utilities", new List<CmsAdminToolEnum>(new CmsAdminToolEnum[] { CmsAdminToolEnum.EmptyThumbnailCache, CmsAdminToolEnum.ValidateConfig }));
-                ret.Add("Security Zones", new List<CmsAdminToolEnum>(new CmsAdminToolEnum[] { CmsAdminToolEnum.ZoneManagement, CmsAdminToolEnum.ZoneAuthority }));
+                Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>> ret = new Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>>();
+                ret.Add("Search Tools", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.SearchAndReplace, CmsBaseAdminTool.CmsAdminToolClass.SearchHtmlContent, CmsBaseAdminTool.CmsAdminToolClass.SearchSingleImagesByCaption }));
+                ret.Add("Utilities", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.EmptyThumbnailCache, CmsBaseAdminTool.CmsAdminToolClass.ValidateConfig }));
+                ret.Add("Security Zones", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.ZoneManagement, CmsBaseAdminTool.CmsAdminToolClass.ZoneAuthority }));
                 return ret;
             }
         }
 
-        
 
-        
 
-        private CmsAdminToolEnum selectedAdminTool
+
+
+        private CmsBaseAdminTool.CmsAdminToolClass selectedAdminTool
         {
             get
             {
-                return (CmsAdminToolEnum)PageUtils.getFromForm("AdminTool", typeof(CmsAdminToolEnum), CmsAdminToolEnum.AdminMenu);
+                return (CmsBaseAdminTool.CmsAdminToolClass)PageUtils.getFromForm("AdminTool", typeof(CmsBaseAdminTool.CmsAdminToolClass), CmsBaseAdminTool.CmsAdminToolClass.AdminMenu);
             }
         }
 
-        private string getUrl(CmsPage adminPage, CmsAdminToolEnum tool)
+        private string getUrl(CmsPage adminPage, CmsBaseAdminTool.CmsAdminToolClass tool)
         {
             NameValueCollection pageParams = new NameValueCollection();
-            string menuName = Enum.GetName(typeof(CmsAdminToolEnum), tool);
+            string menuName = Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolClass), tool);
             pageParams.Add("AdminTool", menuName);
             string url = adminPage.getUrl(pageParams);
             return url;
         }
 
-        private CmsAdminToolCategory selectedAdminMenu
+        private CmsBaseAdminTool.CmsAdminToolCategory selectedAdminMenu
         {
             get
             {
-                CmsAdminToolEnum selTool = selectedAdminTool;
-                if (selTool == CmsAdminToolEnum.AdminMenu)
-                    return (CmsAdminToolCategory)PageUtils.getFromForm("AdminMenu", typeof(CmsAdminToolCategory), CmsAdminToolCategory.Reports);
+                CmsBaseAdminTool.CmsAdminToolClass selTool = selectedAdminTool;
+                if (selTool == CmsBaseAdminTool.CmsAdminToolClass.AdminMenu)
+                    return (CmsBaseAdminTool.CmsAdminToolCategory)PageUtils.getFromForm("AdminMenu", typeof(CmsBaseAdminTool.CmsAdminToolCategory), CmsBaseAdminTool.CmsAdminToolCategory.Reports);
                 else
                 {
                     foreach (string cat in CategorizedAdminReports.Keys)
                     {
                         if (CategorizedAdminReports[cat].IndexOf(selTool) > -1)
-                            return CmsAdminToolCategory.Reports;
+                            return CmsBaseAdminTool.CmsAdminToolCategory.Reports;
                     }
                     foreach (string cat in CategorizedAdminTools.Keys)
                     {
                         if (CategorizedAdminTools[cat].IndexOf(selTool) > -1)
-                            return CmsAdminToolCategory.Tools;
+                            return CmsBaseAdminTool.CmsAdminToolCategory.Tools;
                     }
-                    return CmsAdminToolCategory.Reports;
+                    return CmsBaseAdminTool.CmsAdminToolCategory.Reports;
                 }
             }
         }
 
-        private string getUrl(CmsPage adminPage, CmsAdminToolCategory menu)
+        private string getUrl(CmsPage adminPage, CmsBaseAdminTool.CmsAdminToolCategory menu)
         {
             NameValueCollection pageParams = new NameValueCollection();
-            string menuName = Enum.GetName(typeof(CmsAdminToolCategory), menu);
+            string menuName = Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolCategory), menu);
             pageParams.Add("AdminMenu", menuName);
             string url = adminPage.getUrl(pageParams);
             return url;
@@ -181,7 +158,7 @@ namespace HatCMS.Controls.Admin
             StringBuilder html = new StringBuilder();
             html.Append(RenderAdminMenu());
 
-            if (selectedAdminTool != CmsAdminToolEnum.AdminMenu)
+            if (selectedAdminTool != CmsBaseAdminTool.CmsAdminToolClass.AdminMenu)
             {
                 CmsBaseAdminTool c = CmsBaseAdminTool.getAdminTool(selectedAdminTool);
                 html.Append(c.Render());
@@ -196,21 +173,21 @@ namespace HatCMS.Controls.Admin
         {
             StringBuilder html = new StringBuilder();
             CmsPage page = CmsContext.currentPage;
-            Dictionary<string, List<CmsAdminToolEnum>> toolsToDisplay = new Dictionary<string, List<CmsAdminToolEnum>>();
+            Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>> toolsToDisplay = new Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>>();
 
             html.Append("<table class=\"AdminMenu\">");
             html.Append("<tr>");
             switch (selectedAdminMenu)
             {
-                case CmsAdminToolCategory.Reports:
+                case CmsBaseAdminTool.CmsAdminToolCategory.Reports:
                     toolsToDisplay = CategorizedAdminReports;
-                    html.Append("<td class=\"MenuSel\"><a href=\"" + getUrl(page, CmsAdminToolCategory.Reports) + "\">Reports</a></td>");
-                    html.Append("<td class=\"MenuNotSel\"><a href=\"" + getUrl(page, CmsAdminToolCategory.Tools) + "\">Tools</a></td>");
+                    html.Append("<td class=\"MenuSel\"><a href=\"" + getUrl(page, CmsBaseAdminTool.CmsAdminToolCategory.Reports) + "\">Reports</a></td>");
+                    html.Append("<td class=\"MenuNotSel\"><a href=\"" + getUrl(page, CmsBaseAdminTool.CmsAdminToolCategory.Tools) + "\">Tools</a></td>");
                     break;
-                case CmsAdminToolCategory.Tools:
+                case CmsBaseAdminTool.CmsAdminToolCategory.Tools:
                     toolsToDisplay = CategorizedAdminTools;
-                    html.Append("<td class=\"MenuNotSel\"><a href=\"" + getUrl(page, CmsAdminToolCategory.Reports) + "\">Reports</a></td>");
-                    html.Append("<td class=\"MenuSel\"><a href=\"" + getUrl(page, CmsAdminToolCategory.Tools) + "\">Tools</a></td>");
+                    html.Append("<td class=\"MenuNotSel\"><a href=\"" + getUrl(page, CmsBaseAdminTool.CmsAdminToolCategory.Reports) + "\">Reports</a></td>");
+                    html.Append("<td class=\"MenuSel\"><a href=\"" + getUrl(page, CmsBaseAdminTool.CmsAdminToolCategory.Tools) + "\">Tools</a></td>");
                     break;
             }
             html.Append("</tr>");
@@ -219,7 +196,7 @@ namespace HatCMS.Controls.Admin
             {
                 html.Append("<div class=\"AdminTool menu\"><strong>" + category + ":</strong> ");
                 List<string> toolLinks = new List<string>();
-                foreach (CmsAdminToolEnum tool in toolsToDisplay[category])
+                foreach (CmsBaseAdminTool.CmsAdminToolClass tool in toolsToDisplay[category])
                 {
                     string toolName = getMenuDisplay(tool);                    
                     string url = getUrl(page, tool);

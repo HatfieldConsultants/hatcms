@@ -20,7 +20,7 @@ namespace HatCMS.Controls.Admin
         {
             StringBuilder html = new StringBuilder();
             Dictionary<int, CmsPage> allPages = CmsContext.HomePage.getLinearizedPages();
-            html.Append("<table border=\"1\">");
+            html.Append(TABLE_START_HTML);
             html.Append("<tr><th>Page Id</th><th>URL Macro</th><th>Urls</th></tr>");
             foreach (int pageId in allPages.Keys)
             {
@@ -55,7 +55,7 @@ namespace HatCMS.Controls.Admin
 
                 NameValueCollection srParams = new NameValueCollection();
 
-                srParams.Add("AdminTool", Enum.GetName(typeof(AdminMenuControl.CmsAdminToolEnum), AdminMenuControl.CmsAdminToolEnum.SearchAndReplace));
+                srParams.Add("AdminTool", Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolClass), CmsBaseAdminTool.CmsAdminToolClass.SearchAndReplace));
                 string searchForUrl = allPages[pageId].Urls[0];
                 if (CmsConfig.Languages.Length > 1 && searchForUrl.StartsWith("/" + CmsConfig.Languages[0].shortCode, StringComparison.CurrentCultureIgnoreCase))
                 {

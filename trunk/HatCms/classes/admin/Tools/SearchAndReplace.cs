@@ -164,7 +164,7 @@ namespace HatCMS.Controls.Admin
                 html.Append("<p style=\"color: red; font-weight: bold;\">" + _errorMessage + "</p>");
             }
 
-            html.Append(PageUtils.getHiddenInputHtml("AdminTool", Enum.GetName(typeof(AdminMenuControl.CmsAdminToolEnum), AdminMenuControl.CmsAdminToolEnum.SearchAndReplace)));
+            html.Append(PageUtils.getHiddenInputHtml("AdminTool", Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolClass), CmsBaseAdminTool.CmsAdminToolClass.SearchAndReplace)));
             html.Append(CmsContext.currentPage.getFormCloseHtml("SearchReplaceForm"));
             // -- do the search
             if (searchFor.Trim() != "" && replaceWith.Trim() != "" && _errorMessage == "")

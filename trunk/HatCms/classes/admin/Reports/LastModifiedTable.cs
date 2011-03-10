@@ -28,7 +28,7 @@ namespace HatCMS.Controls.Admin
             }
             CmsPage[] sortedPages = CmsPage.SortPagesByLastModifiedDate(allPages.ToArray());
 
-            html.Append("<table border=\"1\">" + Environment.NewLine);
+            html.Append(TABLE_START_HTML + Environment.NewLine);
             string rowHeader = ("<tr><th>Last Modified</th><th>Created on</th><th>Title</th><th>Path</th></tr>");
             string lastTitle = "";
             foreach (CmsPage p in sortedPages)

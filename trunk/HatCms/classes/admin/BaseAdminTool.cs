@@ -10,6 +10,32 @@ namespace HatCMS.Controls.Admin
     /// </summary>
     public abstract class CmsBaseAdminTool
     {
+        public enum CmsAdminToolCategory { Reports, Tools }
+
+        // Note: if using an AdminController based class, the name of the class must match EXACTLY the name listed here,
+        // and be in the HatCMS.Controls.Admin namespace.
+        public enum CmsAdminToolClass
+        {
+            AdminMenu,
+            SearchAndReplace,
+            SearchHtmlContent,
+            ListUserFeedback,
+            SearchSingleImagesByCaption,
+            LastModifiedTable,
+            DuplicateSingleImages,
+            SingleImageMissingCaptions,
+            PageImageSummary,
+            UnusedFiles,
+            ValidateConfig,
+            PagesByTemplate,
+            EmptyThumbnailCache,
+            PageUrlsById,
+            ListRegisteredProjects,
+            ZoneManagement,
+            ZoneAuthority
+        }
+
+        
         protected static string EOL = Environment.NewLine;
         protected static string TABLE_START_HTML = "<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">";
         protected static string TABLE_END_HTML = "</table>";
@@ -19,7 +45,7 @@ namespace HatCMS.Controls.Admin
         /// </summary>
         /// <param name="tool"></param>
         /// <returns></returns>
-        public static CmsBaseAdminTool getAdminTool(AdminMenuControl.CmsAdminToolEnum tool)
+        public static CmsBaseAdminTool getAdminTool(CmsBaseAdminTool.CmsAdminToolClass tool)
         {
             string className = "HatCMS.Controls.Admin." + tool.ToString();
             return (CmsBaseAdminTool)Assembly.GetExecutingAssembly().CreateInstance(className);

@@ -35,7 +35,7 @@ namespace HatCMS._system
             string adminTool = PageUtils.getFromForm("adminTool", "");
             try
             {
-                AdminMenuControl.CmsAdminToolEnum tool = (AdminMenuControl.CmsAdminToolEnum)Enum.Parse(typeof(AdminMenuControl.CmsAdminToolEnum), adminTool);
+                CmsBaseAdminTool.CmsAdminToolClass tool = (CmsBaseAdminTool.CmsAdminToolClass)Enum.Parse(typeof(CmsBaseAdminTool.CmsAdminToolClass), adminTool);
                 downloadContent(tool, context);
             }
             catch { }
@@ -46,17 +46,17 @@ namespace HatCMS._system
         /// </summary>
         /// <param name="tool"></param>
         /// <param name="context"></param>
-        protected void downloadContent(AdminMenuControl.CmsAdminToolEnum tool, HttpContext context)
+        protected void downloadContent(CmsBaseAdminTool.CmsAdminToolClass tool, HttpContext context)
         {
             string fileName = tool.ToString() + "_" + DateTime.Now.ToString("yyyy-MM-dd") + ".xls";
             GridView gridview1 = new GridView();
             
             switch (tool)
             {
-                case AdminMenuControl.CmsAdminToolEnum.ListUserFeedback:
+                case CmsBaseAdminTool.CmsAdminToolClass.ListUserFeedback:
                     gridview1 = new UserFeedbackDb().FetchAllUserFeedbackSubmittedDataAsGrid();
                     break;
-                case AdminMenuControl.CmsAdminToolEnum.ListRegisteredProjects:
+                case CmsBaseAdminTool.CmsAdminToolClass.ListRegisteredProjects:
                     gridview1 = new RegisterProjectDb().fetchAllAsGrid();
                     break;
                 default:

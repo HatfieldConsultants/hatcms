@@ -31,7 +31,7 @@ namespace HatCMS.Controls.Admin
             html.Append("<strong>Search Image Captions: </strong> ");
             html.Append(PageUtils.getInputTextHtml("AuditSearch", "AuditSearch", searchText, 40, 1024));
             html.Append("<input type=\"submit\" value=\"search\">");
-            html.Append(PageUtils.getHiddenInputHtml("AdminTool", Enum.GetName(typeof(AdminMenuControl.CmsAdminToolEnum), AdminMenuControl.CmsAdminToolEnum.SearchSingleImagesByCaption)));
+            html.Append(PageUtils.getHiddenInputHtml("AdminTool", Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolClass), CmsBaseAdminTool.CmsAdminToolClass.SearchSingleImagesByCaption)));
             html.Append(currentPage.getFormCloseHtml(formId));
 
             if (searchText != "")
