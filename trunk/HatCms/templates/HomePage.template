@@ -1,12 +1,57 @@
-##TemplateLayout(HomePageLayout)##
+##TemplateLayout(PageLayout)##
 ##StartPlaceholderRegion("MainContent")##
 
 		##PlaceHolder(PageTitle id="1")## 
 				 
-		##PlaceHolder(HtmlContent id="1" width="690px" height="400px" OutputOnlyIfHasContent="true")##
+		<div class="ContentTop_1"></div>
+		<table cellpadding="0" cellspacing="0">
+			<tr>
+				<td valign="top">##PlaceHolder(SingleImage id="1" width="165" height="-1")##</td>
+				<td valign="top" class="content">##PlaceHolder(HtmlContent id="1" width="690px" height="300px" OutputTemplate="{0}" OutputOnlyIfHasContent="true")##</td>
+			</tr>
+		</table>
 		
-		##PlaceHolder(SingleImage id="1" width="500" height="-1")##						
-		
-		##PlaceHolder(FileLibraryAggregator2 id="1")##
+		<br /> <!-- Thematic Areas Grid -->	
+		<table cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td valign="top" width="50%">
+					<div class="ContentTop_33"></div>
+					##PlaceHolder(SingleImage id="3" width="165" height="-1")##
+					##PlaceHolder(HtmlContent id="3" width="400px" height="200px" OutputTemplate="{0}" OutputOnlyIfHasContent="true")##
+				</td>
+				<td>&nbsp;</td>
+				<td valign="top" width="50%">
+					<div class="ContentTop_25"></div>
+					##PlaceHolder(SingleImage id="4" width="165" height="-1")##
+					##PlaceHolder(HtmlContent id="4" width="400px" height="200px" OutputTemplate="{0}" OutputOnlyIfHasContent="true")##
+				</td>
+			</tr>
+			<tr>
+				<td valign="top" width="50%">
+					<div class="ContentTop_26"></div>
+					##PlaceHolder(SingleImage id="5" width="165" height="-1")##
+					##PlaceHolder(HtmlContent id="5" width="400px" height="200px" OutputTemplate="{0}" OutputOnlyIfHasContent="true")##
+				</td>
+				<td>&nbsp;</td>
+				<td valign="top" width="50%">
+					<div class="ContentTop_27"></div>
+					##PlaceHolder(SingleImage id="6" width="165" height="-1")##
+					##PlaceHolder(HtmlContent id="6" width="400px" height="200px" OutputTemplate="{0}" OutputOnlyIfHasContent="true")##
+				</td>
+			</tr>
+			<tr>
+				<td valign="top" width="50%">
+					<div class="ContentTop_28"></div>
+					##PlaceHolder(SingleImage id="7" width="165" height="-1")##
+					##PlaceHolder(HtmlContent id="7" width="400px" height="200px" OutputTemplate="{0}" OutputOnlyIfHasContent="true")##
+				</td>
+				<td>&nbsp;</td>
+				<td valign="top" width="50%">
+					<div class="ContentTop_29"></div>
+					##PlaceHolder(SingleImage id="8" width="165" height="-1")##
+					##PlaceHolder(HtmlContent id="8" width="400px" height="200px" OutputTemplate="{0}" OutputOnlyIfHasContent="true")##
+				</td>
+			</tr>
+		</table>
 
 ##EndPlaceholderRegion("MainContent")##
