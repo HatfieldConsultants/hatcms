@@ -108,7 +108,9 @@ namespace HatCMS.setup
 
                 string SQLTableSetupFilename = Server.MapPath("~/setup/HatCMS_TableCreation.sql");
                 string sqlTableSetup = System.IO.File.ReadAllText(SQLTableSetupFilename);
-                RunQuery(conn, sqlTableSetup, trans);                               
+                string[] sqlArray = sqlTableSetup.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (string sql in sqlArray)
+                    RunQuery(conn, sql, trans);
 
                 trans.Commit();
                 conn.Close();
