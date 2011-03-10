@@ -12,7 +12,7 @@ using System.Text;
 using System.Collections.Generic;
 using Hatfield.Web.Portal;
 
-namespace HatCMS.placeholders.RegisterProject
+namespace HatCMS.Placeholders.RegisterProject
 {
     public class RegisterProject : BaseCmsPlaceholder
     {

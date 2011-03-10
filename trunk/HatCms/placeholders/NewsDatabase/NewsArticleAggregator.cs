@@ -6,7 +6,7 @@ using System.Text;
 using Hatfield.Web.Portal;
 using System.Collections.Specialized;
 
-namespace HatCMS.placeholders.NewsDatabase
+namespace HatCMS.Placeholders.NewsDatabase
 {
     public class NewsArticleAggregator : BaseCmsPlaceholder
     {

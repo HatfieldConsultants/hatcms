@@ -1,4 +1,4 @@
-namespace HatCMS.controls
+namespace HatCMS.Controls
 {
 	using System;
     using System.Collections;

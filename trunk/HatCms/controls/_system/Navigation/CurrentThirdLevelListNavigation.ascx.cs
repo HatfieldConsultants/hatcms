@@ -10,7 +10,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Text;
 
-namespace HatCMS.controls.Navigation
+namespace HatCMS.Controls.Navigation
 {
     public partial class CurrentThirdLevelListNavigation : System.Web.UI.UserControl
     {

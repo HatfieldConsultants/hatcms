@@ -4,7 +4,7 @@ using System.Web.UI;
 using HatCMS.Placeholders;
 using Hatfield.Web.Portal;
 
-namespace HatCMS.controls._system.Internal
+namespace HatCMS.Controls._system.Internal
 {
     public partial class JobLocationPopup : System.Web.UI.UserControl
     {

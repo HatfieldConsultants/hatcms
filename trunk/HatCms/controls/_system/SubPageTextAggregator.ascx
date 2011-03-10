@@ -1,1 +1,1 @@
-<%@ Control Language="c#" AutoEventWireup="True" Codebehind="SubPageTextAggregator.ascx.cs" Inherits="HatCMS.controls.SubPageTextAggregator" TargetSchema="http://schemas.microsoft.com/intellisense/ie3-2nav3-0" %>
+<%@ Control Language="c#" AutoEventWireup="True" Codebehind="SubPageTextAggregator.ascx.cs" Inherits="HatCMS.Controls.SubPageTextAggregator" TargetSchema="http://schemas.microsoft.com/intellisense/ie3-2nav3-0" %>

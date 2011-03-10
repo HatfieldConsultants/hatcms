@@ -1,14 +1,14 @@
 using System;
 using System.Reflection;
 using System.Text;
-using HatCMS.Controls.Admin;
+using HatCMS.Placeholders;
 
-namespace HatCMS.controls.Admin
+namespace HatCMS.Controls.Admin
 {
     /// <summary>
     /// Super class for the Audit tool 
     /// </summary>
-    public abstract class AdminController
+    public abstract class CmsBaseAdminTool
     {
         protected static string EOL = Environment.NewLine;
         protected static string TABLE_START_HTML = "<table border=\"1\" cellspacing=\"0\" cellpadding=\"2\">";
@@ -19,10 +19,24 @@ namespace HatCMS.controls.Admin
         /// </summary>
         /// <param name="tool"></param>
         /// <returns></returns>
-        public static AdminController getController(Audit.AdminTool tool) {
-            string className = "HatCMS.controls.Admin." + tool.ToString();
-            return (AdminController)Assembly.GetExecutingAssembly().CreateInstance(className);
+        public static CmsBaseAdminTool getAdminTool(AdminMenuControl.CmsAdminToolEnum tool)
+        {
+            string className = "HatCMS.Controls.Admin." + tool.ToString();
+            return (CmsBaseAdminTool)Assembly.GetExecutingAssembly().CreateInstance(className);
         }
+
+        protected string SingleImageHtmlDisplay(SingleImageData img)
+        {
+            StringBuilder html = new StringBuilder();
+            string thumbUrl = showThumbPage.getThumbDisplayUrl(img.ImagePath, 150, 150);
+            html.Append("<img src=\"" + thumbUrl + "\">");
+            html.Append("<br />" + img.ImagePath + "");
+            html.Append("<br />Caption: " + img.Caption + "");
+            html.Append("<br />Credits: " + img.Credits + "");
+
+            return html.ToString();
+        }
+
 
         /// <summary>
         /// Set the color to green for a normal message

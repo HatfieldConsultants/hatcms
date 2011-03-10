@@ -1,1 +1,1 @@
-<%@ Control Language="c#" AutoEventWireup="True" Codebehind="SortSubPagesPopup.ascx.cs" Inherits="HatCMS.controls.SortSubPagesPopup" TargetSchema="http://schemas.microsoft.com/intellisense/ie3-2nav3-0" %>
+<%@ Control Language="c#" AutoEventWireup="True" Codebehind="SortSubPagesPopup.ascx.cs" Inherits="HatCMS.Controls.SortSubPagesPopup" TargetSchema="http://schemas.microsoft.com/intellisense/ie3-2nav3-0" %>

@@ -13,9 +13,9 @@ using System.Collections.Generic;
 using Hatfield.Web.Portal.Collections;
 using System.Text;
 using HatCMS.classes.dependencies;
-using HatCMS.placeholders.Calendar;
+using HatCMS.Placeholders.Calendar;
 
-namespace HatCMS.controls._system
+namespace HatCMS.Controls._system
 {
     public partial class SimpleCalendar : System.Web.UI.UserControl
     {

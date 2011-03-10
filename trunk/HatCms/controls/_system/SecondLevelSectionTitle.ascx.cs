@@ -10,7 +10,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Text;
 
-namespace HatCMS.controls
+namespace HatCMS.Controls
 {
     public partial class SecondLevelSectionTitle : System.Web.UI.UserControl
     {

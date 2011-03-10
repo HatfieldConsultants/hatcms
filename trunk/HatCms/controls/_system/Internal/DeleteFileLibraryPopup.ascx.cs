@@ -6,7 +6,7 @@ using System.Web.UI;
 using Hatfield.Web.Portal;
 using HatCMS.Placeholders;
 
-namespace HatCMS.controls._system.Internal
+namespace HatCMS.Controls._system.Internal
 {
     public partial class DeleteFileLibraryPopup : System.Web.UI.UserControl
     {

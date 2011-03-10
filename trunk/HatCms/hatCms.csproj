@@ -73,6 +73,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DDay.iCal, Version=1.0.1.490, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>classes\iCal\DDay.iCal.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data, Version=5.0.8.1, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\hatWebPortal\Data\MySql.Data.dll</HintPath>
@@ -99,6 +103,20 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="classes\admin\Reports\DuplicateSingleImages.cs" />
+    <Compile Include="classes\admin\Reports\LastModifiedTable.cs" />
+    <Compile Include="classes\admin\Reports\ListRegisteredProjects.cs" />
+    <Compile Include="classes\admin\Reports\ListUserFeedback.cs" />
+    <Compile Include="classes\admin\Reports\PageImageSummary.cs" />
+    <Compile Include="classes\admin\Reports\PagesByTemplate.cs" />
+    <Compile Include="classes\admin\Reports\PageUrlsById.cs" />
+    <Compile Include="classes\admin\Reports\SingleImageMissingCaptions.cs" />
+    <Compile Include="classes\admin\Reports\UnusedFiles.cs" />
+    <Compile Include="classes\admin\Tools\EmptyThumbnailCache.cs" />
+    <Compile Include="classes\admin\Tools\SearchAndReplace.cs" />
+    <Compile Include="classes\admin\Tools\SearchHtmlContent.cs" />
+    <Compile Include="classes\admin\Tools\SearchSingleImagesByCaption.cs" />
+    <Compile Include="classes\admin\Tools\ValidateConfig.cs" />
     <Compile Include="classes\Config.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -639,6 +657,9 @@
     </Compile>
     <Compile Include="setup\default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="_system\tools\Calendar\CalendarICalData.ashx.cs">
+      <DependentUpon>CalendarICalData.ashx</DependentUpon>
     </Compile>
     <Compile Include="_system\tools\Calendar\SimpleCalendarJsonData.ashx.cs">
       <DependentUpon>SimpleCalendarJsonData.ashx</DependentUpon>
@@ -1295,6 +1316,7 @@
     <None Include="templates\UserImageGallery.template" />
     <None Include="templates\UserImageGalleryAggregator.template" />
     <None Include="templates\_SingleImageDisplay.template" />
+    <Content Include="_system\tools\Calendar\CalendarICalData.ashx" />
     <Content Include="_system\tools\rss.ashx" />
     <Content Include="_system\tools\Calendar\SimpleCalendarJsonData.ashx" />
     <Content Include="_system\tools\ckhelpers\dhtmlxFiles_xml.ashx" />

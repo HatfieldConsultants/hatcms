@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 
-namespace HatCMS.controls._system
+namespace HatCMS.Controls._system
 {
     public partial class SwitchLanguage : System.Web.UI.UserControl
     {

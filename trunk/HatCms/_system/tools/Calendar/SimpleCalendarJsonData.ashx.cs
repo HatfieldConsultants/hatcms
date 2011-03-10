@@ -4,7 +4,7 @@ using System.Web;
 using System.Collections;
 using System.Web.Services;
 using System.Web.Services.Protocols;
-using HatCMS.placeholders.Calendar;
+using HatCMS.Placeholders.Calendar;
 using System.Collections.Generic;
 using JsonFx.Json;
 using Hatfield.Web.Portal;
@@ -36,7 +36,7 @@ namespace HatCMS._system.Calendar
 
             bool showFile = PageUtils.getFromForm("showFile", false); // Basic rule: event calendar shows files, simple calendar does not
 
-            CmsLanguage lang = new CmsLanguage(PageUtils.getFromForm("lang", "en"));
+            CmsLanguage lang = CmsLanguage.GetFromHaystack(PageUtils.getFromForm("lang", "en"), CmsConfig.Languages);
             List<EventCalendarDb.EventCalendarDetailsData> list = new EventCalendarDb().fetchDetailsDataByRange(start, end, lang);
             List<FullCalendarEvent> events = new List<FullCalendarEvent>();
             foreach (EventCalendarDb.EventCalendarDetailsData c in list)

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
 
-namespace HatCMS.controls._system
+namespace HatCMS.Controls._system
 {
     public partial class LanguageSwitcherLarge : System.Web.UI.UserControl
     {

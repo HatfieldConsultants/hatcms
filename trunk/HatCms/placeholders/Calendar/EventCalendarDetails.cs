@@ -14,7 +14,7 @@ using Hatfield.Web.Portal;
 using System.Collections.Specialized;
 using Hatfield.Web.Portal.Imaging;
 
-namespace HatCMS.placeholders.Calendar
+namespace HatCMS.Placeholders.Calendar
 {
     public class EventCalendarDetails : BaseCmsPlaceholder
     {        

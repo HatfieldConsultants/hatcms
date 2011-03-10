@@ -11,7 +11,7 @@ using HatCMS.Placeholders;
 using System.Text;
 using System.Collections.Generic;
 
-namespace HatCMS.placeholders.RegisterProject
+namespace HatCMS.Placeholders.RegisterProject
 {
     public class RegisterProjectDb : PlaceholderDb
     {

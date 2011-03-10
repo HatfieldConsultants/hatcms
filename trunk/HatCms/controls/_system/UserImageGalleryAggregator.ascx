@@ -1,4 +1,4 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="UserImageGalleryAggregator.ascx.cs" Inherits="HatCMS.controls._system.UserImageGalleryAggregator" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="UserImageGalleryAggregator.ascx.cs" Inherits="HatCMS.Controls._system.UserImageGalleryAggregator" %>
 <%@ Import Namespace="HatCMS" %>
 <%@ Import Namespace="HatCMS.Placeholders" %>
 <%

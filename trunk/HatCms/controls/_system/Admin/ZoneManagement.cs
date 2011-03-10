@@ -1,13 +1,12 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
-using HatCMS.Controls.Admin;
 using Hatfield.Web.Portal;
 using System.Collections.Specialized;
 
-namespace HatCMS.controls.Admin
+namespace HatCMS.Controls.Admin
 {
-    public class ZoneManagement : AdminController
+    public class ZoneManagement : CmsBaseAdminTool
     {
         protected CmsZoneDb zoneDb = new CmsZoneDb();
 
@@ -94,7 +93,7 @@ namespace HatCMS.controls.Admin
         protected string generateFormHiddenField(string controlId)
         {
             StringBuilder html = new StringBuilder();
-            html.Append(PageUtils.getHiddenInputHtml("AdminTool", Audit.AdminTool.ZoneManagement.ToString()) + EOL);
+            html.Append(PageUtils.getHiddenInputHtml("AdminTool", AdminMenuControl.CmsAdminToolEnum.ZoneManagement.ToString()) + EOL);
             html.Append(PageUtils.getHiddenInputHtml(controlId + "id", controlId + "id", "") + EOL);
             html.Append(PageUtils.getHiddenInputHtml(controlId + "delete", controlId + "delete", "") + EOL);
             return html.ToString();

@@ -11,7 +11,7 @@ using System.Web.UI.HtmlControls;
 using Hatfield.Web.Portal;
 using HatCMS.Placeholders;
 
-namespace HatCMS.controls.Image
+namespace HatCMS.Controls.Image
 {
     public partial class SingleImageDisplay : System.Web.UI.UserControl
     {

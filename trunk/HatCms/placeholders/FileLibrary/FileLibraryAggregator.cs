@@ -8,7 +8,7 @@ using HatCMS.Placeholders;
 using Hatfield.Web.Portal;
 using Hatfield.Web.Portal.Imaging;
 using System.Collections.Specialized;
-using HatCMS.placeholders.Calendar;
+using HatCMS.Placeholders.Calendar;
 using Hatfield.Web.Portal.Html;
 
 namespace HatCMS.Placeholders

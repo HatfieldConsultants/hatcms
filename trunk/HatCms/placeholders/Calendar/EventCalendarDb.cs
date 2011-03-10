@@ -11,7 +11,7 @@ using HatCMS.Placeholders;
 using System.Text;
 using System.Collections.Generic;
 
-namespace HatCMS.placeholders.Calendar
+namespace HatCMS.Placeholders.Calendar
 {
     public enum CalendarViewMode { Month, Agenda_Week, Agenda_Day }
 

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HatCMS.controls {
+namespace HatCMS.Controls {
     
     
     /// <summary>

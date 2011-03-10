@@ -11,9 +11,9 @@ using System.Web.UI.HtmlControls;
 using HatCMS.Placeholders;
 using System.Collections.Generic;
 using System.Text;
-using HatCMS.placeholders.Calendar;
+using HatCMS.Placeholders.Calendar;
 
-namespace HatCMS.controls._system
+namespace HatCMS.Controls._system
 {
     public partial class UpcomingEvents : System.Web.UI.UserControl
     {

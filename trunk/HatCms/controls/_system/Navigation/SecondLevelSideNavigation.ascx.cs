@@ -1,4 +1,4 @@
-namespace HatCMS.controls._system
+namespace HatCMS.Controls._system
 {
 	using System;
 	using System.Data;

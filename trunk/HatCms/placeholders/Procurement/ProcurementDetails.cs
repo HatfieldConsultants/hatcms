@@ -14,7 +14,7 @@ using System.Text;
 using System.Globalization;
 using System.Threading;
 
-namespace HatCMS.placeholders.Procurement
+namespace HatCMS.Placeholders.Procurement
 {
     public class ProcurementDetails : BaseCmsPlaceholder
     {

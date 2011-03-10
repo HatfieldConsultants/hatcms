@@ -1,1 +1,1 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="CurrentThirdLevelListNavigation.ascx.cs" Inherits="HatCMS.controls.Navigation.CurrentThirdLevelListNavigation" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="CurrentThirdLevelListNavigation.ascx.cs" Inherits="HatCMS.Controls.Navigation.CurrentThirdLevelListNavigation" %>

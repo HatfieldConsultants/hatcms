@@ -3,9 +3,9 @@ using System.Web.UI;
 using System.Collections.Generic;
 using Hatfield.Web.Portal;
 using System.Text;
-using HatCMS.placeholders.NewsDatabase;
+using HatCMS.Placeholders.NewsDatabase;
 
-namespace HatCMS.controls._system
+namespace HatCMS.Controls._system
 {
     public partial class MostRecentNewsItem : System.Web.UI.UserControl
     {

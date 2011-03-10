@@ -1,1 +1,1 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="AllSubPagesList.ascx.cs" Inherits="HatCMS.controls._system.AllSubPagesList" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="AllSubPagesList.ascx.cs" Inherits="HatCMS.Controls._system.AllSubPagesList" %>

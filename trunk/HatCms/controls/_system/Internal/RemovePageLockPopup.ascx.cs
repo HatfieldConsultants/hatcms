@@ -10,7 +10,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using Hatfield.Web.Portal;
 
-namespace HatCMS.controls.Internal
+namespace HatCMS.Controls.Internal
 {
     public partial class RemovePageLockPopup : System.Web.UI.UserControl
     {

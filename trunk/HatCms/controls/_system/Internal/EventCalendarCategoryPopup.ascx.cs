@@ -8,13 +8,13 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
-using HatCMS.placeholders.Calendar;
+using HatCMS.Placeholders.Calendar;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Hatfield.Web.Portal;
 
-namespace HatCMS.controls._system.Internal
+namespace HatCMS.Controls._system.Internal
 {
     public partial class EventCalendarCategoryPopup : System.Web.UI.UserControl
     {

@@ -12,7 +12,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace HatCMS.placeholders.NewsDatabase
+namespace HatCMS.Placeholders.NewsDatabase
 {
     public class NewsArticleDb : PlaceholderDb
     {

@@ -6,7 +6,7 @@ using System.Web.Services;
 using System.Web.Services.Protocols;
 using System.Web.UI.WebControls;
 using Hatfield.Web.Portal.Data;
-using HatCMS.placeholders.RegisterProject;
+using HatCMS.Placeholders.RegisterProject;
 using Hatfield.Web.Portal;
 using HatCMS.Controls.Admin;
 using HatCMS.Placeholders;
@@ -35,7 +35,7 @@ namespace HatCMS._system
             string adminTool = PageUtils.getFromForm("adminTool", "");
             try
             {
-                Audit.AdminTool tool = (Audit.AdminTool)Enum.Parse(typeof(Audit.AdminTool), adminTool);
+                AdminMenuControl.CmsAdminToolEnum tool = (AdminMenuControl.CmsAdminToolEnum)Enum.Parse(typeof(AdminMenuControl.CmsAdminToolEnum), adminTool);
                 downloadContent(tool, context);
             }
             catch { }
@@ -46,17 +46,17 @@ namespace HatCMS._system
         /// </summary>
         /// <param name="tool"></param>
         /// <param name="context"></param>
-        protected void downloadContent(Audit.AdminTool tool, HttpContext context)
+        protected void downloadContent(AdminMenuControl.CmsAdminToolEnum tool, HttpContext context)
         {
             string fileName = tool.ToString() + "_" + DateTime.Now.ToString("yyyy-MM-dd") + ".xls";
             GridView gridview1 = new GridView();
             
             switch (tool)
             {
-                case Audit.AdminTool.ListUserFeedback:
+                case AdminMenuControl.CmsAdminToolEnum.ListUserFeedback:
                     gridview1 = new UserFeedbackDb().FetchAllUserFeedbackSubmittedDataAsGrid();
                     break;
-                case Audit.AdminTool.ListRegisteredProjects:
+                case AdminMenuControl.CmsAdminToolEnum.ListRegisteredProjects:
                     gridview1 = new RegisterProjectDb().fetchAllAsGrid();
                     break;
                 default:

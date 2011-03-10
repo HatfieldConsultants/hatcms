@@ -212,7 +212,7 @@ namespace HatCMS
                 StringBuilder js = new StringBuilder();
                 js.Append("function FloatingEditMenuSubmit() {" + Environment.NewLine);
                 js.Append(" submitting = true;" + Environment.NewLine);
-                js.Append(" document.getElementById('" + HatCMS.controls.StartEditForm.FormId + "').submit();" + Environment.NewLine);
+                js.Append(" document.getElementById('" + HatCMS.Controls.StartEditForm.FormId + "').submit();" + Environment.NewLine);
                 js.Append(" return false;" + Environment.NewLine);
                 js.Append("}" + Environment.NewLine);
                 pageToRenderFor.HeadSection.AddJSStatements(js.ToString());

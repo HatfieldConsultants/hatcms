@@ -6,7 +6,7 @@ using System.Text;
 using Hatfield.Web.Portal;
 using System.Collections.Specialized;
 
-namespace HatCMS.placeholders.Procurement
+namespace HatCMS.Placeholders.Procurement
 {
     public class ProcurementAggregator : BaseCmsPlaceholder
     {        

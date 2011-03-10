@@ -1,1 +1,1 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MostRecentNewsItem.ascx.cs" Inherits="HatCMS.controls._system.MostRecentNewsItem" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MostRecentNewsItem.ascx.cs" Inherits="HatCMS.Controls._system.MostRecentNewsItem" %>

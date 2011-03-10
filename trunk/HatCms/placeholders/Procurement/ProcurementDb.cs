@@ -12,7 +12,7 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace HatCMS.placeholders.Procurement
+namespace HatCMS.Placeholders.Procurement
 {
     public class ProcurementDb : PlaceholderDb
     {

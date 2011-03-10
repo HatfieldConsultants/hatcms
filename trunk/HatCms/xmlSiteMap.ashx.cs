@@ -2,7 +2,7 @@ using System.Xml;
 using System.Web;
 using System.Collections.Generic;
 using System.Web.Services;
-using HatCMS.placeholders.NewsDatabase;
+using HatCMS.Placeholders.NewsDatabase;
 
 namespace HatCMS
 {
@@ -32,43 +32,7 @@ namespace HatCMS
             writer.WriteValue(page.LastUpdatedDateTime.ToString(W3CTimeFormatString));
             writer.WriteEndElement(); // </lastmod>
 
-            writer.WriteEndElement(); // </url>
-            
-            if (NewsArticleAggregator.isNewsArticleAggregator(page))
-            {
-                CmsLanguage lang;
-                try
-                {
-                    lang = CmsContext.currentLanguage;
-                }
-                catch
-                {
-                    lang = CmsConfig.Languages[0];
-                }
-                NewsArticleDb db = new NewsArticleDb();
-                NewsArticleDb.NewsArticleAggregatorData aggregator = db.fetchNewsAggregator(page, 1, lang, true);
-                NewsArticleDb.NewsArticleDetailsData[] thisYearsNews = db.getNewsDetailsByYear(aggregator.YearToDisplay, lang);
-
-                
-                foreach (NewsArticleDb.NewsArticleDetailsData d in thisYearsNews)
-                {
-                    CmsPage newsDetailPage = CmsContext.getPageById(d.PageId);
-                    string itemUrl = rootUrl + newsDetailPage.getUrl(lang);
-                    writer.WriteStartElement("url");// <url>
-                    writer.WriteStartElement("loc"); // <loc>
-
-                    writer.WriteValue(itemUrl);
-
-                    writer.WriteEndElement(); // </loc>
-
-                    writer.WriteStartElement("lastmod");  // <lastmod>
-
-                    writer.WriteValue(page.LastUpdatedDateTime.ToString(W3CTimeFormatString));
-                    writer.WriteEndElement(); // </lastmod>                    
-
-                    writer.WriteEndElement(); // </url>
-                } // foreach
-            }
+            writer.WriteEndElement(); // </url>                        
 
         } // AddPageNodes
 

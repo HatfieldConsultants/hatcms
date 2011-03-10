@@ -12,7 +12,7 @@ using Hatfield.Web.Portal;
 using System.Text;
 using System.Collections.Generic;
 
-namespace HatCMS.controls._system.Internal
+namespace HatCMS.Controls._system.Internal
 {
     public partial class MenuVisibilityPopup : System.Web.UI.UserControl
     {

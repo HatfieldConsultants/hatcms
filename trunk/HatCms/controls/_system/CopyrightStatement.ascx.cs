@@ -11,7 +11,7 @@ using System.Web.UI.HtmlControls;
 using System.Text;
 using System.Collections.Generic;
 
-namespace HatCMS.controls._system
+namespace HatCMS.Controls._system
 {
     public partial class CopyrightStatement : System.Web.UI.UserControl
     {

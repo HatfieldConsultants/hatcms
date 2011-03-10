@@ -6,7 +6,7 @@ using HatCMS.Placeholders;
 using Hatfield.Web.Portal;
 using Hatfield.Web.Portal.Imaging;
 using System.Collections.Specialized;
-using HatCMS.placeholders.Calendar;
+using HatCMS.Placeholders.Calendar;
 
 namespace HatCMS.Placeholders
 {
@@ -63,7 +63,7 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsConfigItemDependency("FileLibrary.EventNotAttachedText"));
             ret.Add(new CmsConfigItemDependency("FileLibrary.PageText"));
 
-
+            // make sure that all files associated with FileLibraryDetails placeholder are live.
             Dictionary<CmsPage, CmsPlaceholderDefinition[]> phDefsDict = CmsContext.getAllPlaceholderDefinitions("FileLibraryDetails", CmsContext.HomePage, CmsContext.PageGatheringMode.FullRecursion);
             foreach (CmsPage page in phDefsDict.Keys)
             {
@@ -72,8 +72,13 @@ namespace HatCMS.Placeholders
                     foreach (CmsLanguage lang in CmsConfig.Languages)
                     {
                         FileLibraryDetailsData fileData = db.fetchDetailsData(page, phDef.Identifier, lang, true);
-                        string filenameOnDisk = FileLibraryDetailsData.getTargetNameOnDisk(page, phDef.Identifier, lang, fileData.FileName);
-                        ret.Add(new CmsFileDependency(filenameOnDisk));
+                        if (fileData.FileName != "")
+                        {
+                            string filenameOnDisk = FileLibraryDetailsData.getTargetNameOnDisk(page, phDef.Identifier, lang, fileData.FileName);
+                            ret.Add(new CmsFileDependency(filenameOnDisk));
+                            if (fileData.EventPageId >= 0) // make sure that the linked event page exists.
+                                ret.Add(new CmsPageDependency(fileData.EventPageId, new CmsLanguage[] { lang }));
+                        }
                     } // foreach lang
                 } // foreach placeholder definition
             }// foreach page

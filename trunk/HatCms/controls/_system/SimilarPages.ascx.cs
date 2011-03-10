@@ -12,7 +12,7 @@ using System.Web.UI.HtmlControls;
 using Hatfield.Web.Portal.Search.Lucene;
 using Hatfield.Web.Portal;
 
-namespace HatCMS.controls
+namespace HatCMS.Controls
 {
     public partial class SimilarPages : System.Web.UI.UserControl
     {

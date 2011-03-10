@@ -4,9 +4,9 @@ using System.Text;
 using System.Web.UI;
 using HatCMS.Placeholders;
 using Hatfield.Web.Portal;
-using HatCMS.placeholders;
+using HatCMS.Placeholders;
 
-namespace HatCMS.controls._system.Internal
+namespace HatCMS.Controls._system.Internal
 {
     public partial class FileLibraryCategoryPopup : System.Web.UI.UserControl
     {

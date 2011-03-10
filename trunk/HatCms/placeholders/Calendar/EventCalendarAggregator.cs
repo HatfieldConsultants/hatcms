@@ -15,7 +15,7 @@ using System.Collections.Specialized;
 using Hatfield.Web.Portal.Collections;
 using Hatfield.Web.Portal.Imaging;
 
-namespace HatCMS.placeholders.Calendar
+namespace HatCMS.Placeholders.Calendar
 {
     public class EventCalendarAggregator : BaseCmsPlaceholder
     {
@@ -39,6 +39,9 @@ namespace HatCMS.placeholders.Calendar
             // -- Hatfield modified version of jquery.fullcalendar -- SimpleCalendar
             ret.Add(CmsFileDependency.UnderAppPath("_system/tools/Calendar/SimpleCalendarJsonData.ashx"));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/EventCalendar/EventCalendarCategory.js"));
+
+            // -- iCal output
+            ret.Add(CmsFileDependency.UnderAppPath("_system/tools/Calendar/CalendarICalData.ashx"));
 
             // -- Date/Time picker and jQuery UI
             ret.Add(CmsFileDependency.UnderAppPath("css/_system/jquery-ui-lightness/jquery-ui-1.8.custom.css"));
