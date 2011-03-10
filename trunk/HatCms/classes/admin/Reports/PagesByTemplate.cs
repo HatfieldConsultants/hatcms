@@ -10,10 +10,15 @@ using System.Web.UI.HtmlControls;
 using System.Text;
 using System.Collections.Generic;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class PagesByTemplate : CmsBaseAdminTool
-    {        
+    {
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Page, CmsAdminToolClass.PagesByTemplate, "Pages by template");
+        }
+
         public override string Render()
         {
             Dictionary<string, List<CmsPage>> reportStorage = new Dictionary<string, List<CmsPage>>();

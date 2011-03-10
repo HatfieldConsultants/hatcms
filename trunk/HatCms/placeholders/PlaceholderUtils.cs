@@ -45,14 +45,14 @@ namespace HatCMS.Placeholders
             {
                 Assembly exAssembly = Assembly.GetExecutingAssembly();
                 Assembly callAssembly = Assembly.GetCallingAssembly();
-                Assembly entryAssemly = Assembly.GetEntryAssembly();
+                Assembly entryAssembly = Assembly.GetEntryAssembly();
 
                 assembliesToSearch.Add(exAssembly);
                 if (callAssembly != null && callAssembly.FullName != exAssembly.FullName)
                     assembliesToSearch.Add(callAssembly);
 
-                if (entryAssemly != null && entryAssemly.FullName != exAssembly.FullName && exAssembly.FullName != callAssembly.FullName)
-                    assembliesToSearch.Add(entryAssemly);
+                if (entryAssembly != null && entryAssembly.FullName != exAssembly.FullName && exAssembly.FullName != callAssembly.FullName)
+                    assembliesToSearch.Add(entryAssembly);
 
                 assembliesToSearch.AddRange(AppDomain.CurrentDomain.GetAssemblies());
             }

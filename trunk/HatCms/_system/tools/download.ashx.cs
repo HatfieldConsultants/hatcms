@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 using Hatfield.Web.Portal.Data;
 using HatCMS.Placeholders.RegisterProject;
 using Hatfield.Web.Portal;
-using HatCMS.Controls.Admin;
+using HatCMS.Admin;
 using HatCMS.Placeholders;
 
 namespace HatCMS._system
@@ -16,7 +16,7 @@ namespace HatCMS._system
     /// <summary>
     /// Summary description for $codebehindclassname$
     /// </summary>
-    [WebService(Namespace = "http://hatfieldgroup.com/")]
+    [WebService(Namespace = "http://hatcms.net/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     public class download : IHttpHandler
     {

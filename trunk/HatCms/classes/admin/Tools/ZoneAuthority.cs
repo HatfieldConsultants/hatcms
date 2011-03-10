@@ -4,10 +4,15 @@ using System.Text;
 using Hatfield.Web.Portal;
 using Hatfield.Web.Portal.Collections;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class ZoneAuthority : CmsBaseAdminTool
     {
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Security, CmsAdminToolClass.ZoneAuthority, "User access permissions");
+        }
+
         protected CmsZoneDb db = new CmsZoneDb();
         protected CmsZoneUserRoleDb roleDb = new CmsZoneUserRoleDb();
 

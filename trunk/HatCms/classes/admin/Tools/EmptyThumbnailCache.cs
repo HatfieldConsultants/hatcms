@@ -10,11 +10,15 @@ using System.Web.UI.HtmlControls;
 using System.IO;
 using System.Text;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class EmptyThumbnailCache : CmsBaseAdminTool
     {
-        
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Utility, CmsAdminToolClass.EmptyThumbnailCache, "Empty Image Cache");
+        } 
+
         public override string Render()
         {
             StringBuilder html = new StringBuilder();

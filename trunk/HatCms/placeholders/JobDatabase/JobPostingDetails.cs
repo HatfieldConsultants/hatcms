@@ -59,12 +59,31 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            // -- Database tables:
-            string[] requiredCols = new string[] { "JobId", "PageId", "Identifier", "langShortCode", "Location", "RemoveAnonAccessAt" };
+            // -- Database tables:            
             string[] colsToRemove = new string[] { "Title", "Location", "HtmlJobDescription", "LastUpdatedDateTime" };
-            ret.Add(new CmsDatabaseTableDependency("jobdetails", requiredCols, colsToRemove));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `jobdetails` (
+                  `JobId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `langShortCode` varchar(255) NOT NULL,
+                  `JobLocationId` int(10) NOT NULL,
+                  `RemoveAnonAccessAt` datetime NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`JobId`),
+                  KEY `JobDetailsIndex` (`PageId`,`Identifier`,`langShortCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                ", colsToRemove));
             
-            ret.Add(new CmsDatabaseTableDependency("joblocations", new string[] { "JobLocationId", "LocationText", "IsAllLocations", "SortOrdinal" }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `joblocations` (
+                  `JobLocationId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `LocationText` text NOT NULL,
+                  `IsAllLocations` int(10) unsigned NOT NULL DEFAULT '0',
+                  `SortOrdinal` int(10) unsigned NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`JobLocationId`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                "));
 
             // Config entries:
             ret.Add(new CmsConfigItemDependency("JobPostingDetails.AllowPostingToAllLocations", CmsDependency.ExistsMode.MustExist));

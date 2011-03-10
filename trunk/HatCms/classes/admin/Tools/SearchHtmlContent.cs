@@ -12,10 +12,15 @@ using HatCMS.Placeholders;
 using Hatfield.Web.Portal;
 using System.Collections.Generic;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class SearchHtmlContent : CmsBaseAdminTool
-    {        
+    {
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Search, CmsAdminToolClass.SearchHtmlContent, "Search in editable HTML");
+        }
+
         public override string Render()
         {
             CmsPage currentPage = CmsContext.currentPage;

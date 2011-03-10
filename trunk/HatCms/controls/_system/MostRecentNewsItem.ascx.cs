@@ -18,8 +18,26 @@ namespace HatCMS.Controls._system
             List<CmsDependency> ret = new List<CmsDependency>();
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("NewsArticleAggregator"));
-            ret.Add(new CmsDatabaseTableDependency("NewsArticleDetails"));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE `NewsArticleAggregator` (
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(2) NOT NULL,
+                  `DefaultYearToDisplay` int(11) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE `NewsArticleDetails` (
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(2) NOT NULL,
+                  `DateOfNews` datetime DEFAULT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("MostRecentNews.Count"));

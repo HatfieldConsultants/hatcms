@@ -29,9 +29,43 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("DeleteFileLibraryPath", "/_admin/actions/deleteFileLibrary"), CmsConfig.Languages));
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryAggregator", new string[] {"PageId","Identifier","LangCode","NumFilesOverview","NumFilesPerPage"}));
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryDetails", new string[] {"PageId","Identifier","LangCode","FileName","CategoryId","Author","Description","LastModified","CreatedBy","EventPageId"}));
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryCategory", new string[] { "CategoryId", "LangCode", "EventRequired", "CategoryName", "SortOrdinal" }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE `FileLibraryAggregator` (
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(5) NOT NULL,
+                  `NumFilesOverview` int(11) NOT NULL,
+                  `NumFilesPerPage` int(11) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `filelibrarydetails` (
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(5) NOT NULL,
+                  `Filename` varchar(255) NOT NULL,
+                  `CategoryId` int(11) NOT NULL,
+                  `Author` varchar(255) NOT NULL DEFAULT '',
+                  `Description` text NOT NULL,
+                  `LastModified` datetime NOT NULL,
+                  `CreatedBy` varchar(255) NOT NULL,
+                  `EventPageId` int(11) NOT NULL DEFAULT '-1',
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `filelibrarycategory` (
+                  `CategoryId` int(11) NOT NULL,
+                  `LangCode` varchar(5) NOT NULL,
+                  `EventRequired` int(1) NOT NULL DEFAULT '0',
+                  `CategoryName` varchar(255) NOT NULL,
+                  `SortOrdinal` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`CategoryId`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("FileLibrary.DetailsTemplateName"));

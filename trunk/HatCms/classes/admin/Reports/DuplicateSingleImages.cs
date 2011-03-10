@@ -11,10 +11,15 @@ using System.Collections.Generic;
 using System.Text;
 using HatCMS.Placeholders;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class DuplicateSingleImages : CmsBaseAdminTool
-    {        
+    {
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Image, CmsAdminToolClass.DuplicateSingleImages, "Duplicate Images");
+        }
+
         public override string Render()
         {
 

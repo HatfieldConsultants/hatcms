@@ -22,12 +22,26 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency("singleimagegallery", 
-                new string[] {
-                "SingleImageGalleryId", "PageId" , "Identifier", "langShortCode", "PageIdToGatherImagesFrom" ,
-                "RecursiveGatherImages", "ThumbnailDisplayBoxWidth","ThumbnailDisplayBoxHeight", "OverrideFullDisplayBoxSize",
-                "FullSizeDisplayBoxWidth", "FullSizeDisplayBoxHeight", "NumThumbsPerRow", "NumThumbsPerPage", "ShowOnlyTags", "Deleted"
-                }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `singleimagegallery` (
+                  `SingleImageGalleryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `langShortCode` varchar(255) NOT NULL,
+                  `PageIdToGatherImagesFrom` int(10) NOT NULL,
+                  `RecursiveGatherImages` int(10) unsigned NOT NULL,
+                  `ThumbnailDisplayBoxWidth` int(11) NOT NULL,
+                  `ThumbnailDisplayBoxHeight` int(11) NOT NULL,
+                  `OverrideFullDisplayBoxSize` int(10) unsigned NOT NULL,
+                  `FullSizeDisplayBoxWidth` int(11) NOT NULL,
+                  `FullSizeDisplayBoxHeight` int(11) NOT NULL,
+                  `NumThumbsPerRow` int(10) unsigned NOT NULL,
+                  `NumThumbsPerPage` int(11) NOT NULL,
+                  `ShowOnlyTags` varchar(255) NOT NULL DEFAULT '',
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`SingleImageGalleryId`)
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+            "));
 
             ret.AddRange(new SingleImage().getDependencies());
             

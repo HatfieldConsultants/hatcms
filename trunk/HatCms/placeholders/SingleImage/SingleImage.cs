@@ -34,11 +34,26 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsPageDependency(showLargerPagePath, CmsConfig.Languages));
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("singleimage",
-                new string[] {
-                "SingleImageId", "PageId", "Identifier", "langShortCode", "RevisionNumber", "ImagePath", "ThumbnailDisplayBoxWidth",
-                "ThumbnailDisplayBoxHeight", "FullSizeDisplayBoxWidth", "FullSizeDisplayBoxHeight", "Caption", "Credits", "Tags", "Deleted"
-                }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `singleimage` (
+                  `SingleImageId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `langShortCode` varchar(255) NOT NULL DEFAULT '',
+                  `RevisionNumber` int(11) NOT NULL DEFAULT '1',
+                  `ImagePath` varchar(255) NOT NULL,
+                  `ThumbnailDisplayBoxWidth` int(11) NOT NULL DEFAULT '-1',
+                  `ThumbnailDisplayBoxHeight` int(11) NOT NULL DEFAULT '-1',
+                  `FullSizeDisplayBoxWidth` int(11) NOT NULL DEFAULT '-1',
+                  `FullSizeDisplayBoxHeight` int(11) NOT NULL DEFAULT '-1',
+                  `Caption` varchar(255) NOT NULL,
+                  `Credits` varchar(255) NOT NULL,
+                  `Tags` varchar(255) NOT NULL DEFAULT '',
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`SingleImageId`),
+                  KEY `singleimage_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`) USING BTREE
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+            "));
             
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("SingleImage.WithLinkTemplate"));

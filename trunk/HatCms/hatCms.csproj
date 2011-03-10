@@ -103,6 +103,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="classes\admin\AdminToolInfo.cs" />
     <Compile Include="classes\admin\BaseAdminTool.cs" />
     <Compile Include="classes\admin\Reports\DuplicateSingleImages.cs" />
     <Compile Include="classes\admin\Reports\LastModifiedTable.cs" />

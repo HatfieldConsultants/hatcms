@@ -35,7 +35,21 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency("googlemap"));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `googlemap` (
+                  `GoogleMapId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `APIKey` varchar(255) NOT NULL,
+                  `PopupHtml` varchar(255) NOT NULL,
+                  `Latitude` double NOT NULL,
+                  `Longitude` double NOT NULL,
+                  `intitialZoomLevel` int(10) unsigned NOT NULL DEFAULT '13',
+                  `MapType` varchar(50) NOT NULL DEFAULT 'G_NORMAL_MAP',
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`GoogleMapId`),
+                  KEY `googlemap_secondary` (`PageId`,`Identifier`,`Deleted`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"));
             return ret.ToArray();
         }
 

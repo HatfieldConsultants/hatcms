@@ -25,7 +25,16 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency("pagenotfoundredirect"));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `pagenotfoundredirect` (
+                  `PageNotFoundRedirectId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `requestedUrl` mediumtext NOT NULL,
+                  `redirectToPageId` int(10) unsigned NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageNotFoundRedirectId`),
+                  KEY `pagenotfoundredirect_secondary` (`requestedUrl`(255),`Deleted`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                "));
             return ret.ToArray();
         }
 

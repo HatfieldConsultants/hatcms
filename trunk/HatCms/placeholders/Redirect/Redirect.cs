@@ -23,7 +23,19 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency("pageredirect", new string[] { "PageRedirectId", "PageId", "Identifier", "langShortCode", "url", "Deleted" }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `pageredirect` (
+                  `PageRedirectId` int(11) NOT NULL AUTO_INCREMENT,
+                  `PageId` int(11) NOT NULL DEFAULT '0',
+                  `Identifier` int(11) NOT NULL DEFAULT '0',
+                  `langShortCode` varchar(6) NOT NULL,
+                  `url` varchar(1024) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageRedirectId`),
+                  KEY `PageId` (`PageId`,`Identifier`),
+                  KEY `pageredirect_secondary` (`PageId`,`Identifier`,`Deleted`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                "));
             ret.Add(new CmsConfigItemDependency("RedirectPlaceholder_autoRedirectAfterSeconds"));
             return ret.ToArray();
         }        

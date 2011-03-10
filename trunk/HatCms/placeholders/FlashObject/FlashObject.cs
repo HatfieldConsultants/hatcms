@@ -36,7 +36,19 @@ namespace HatCMS.Placeholders
             List<CmsDependency> ret = new List<CmsDependency>();
             ret.Add(CmsFileDependency.UnderAppPath("_system/tools/FlashObject/PopupFlashObjectBrowser.aspx"));
             ret.Add(CmsWritableDirectoryDependency.UnderAppPath("UserFiles/Flash"));
-            ret.Add(new CmsDatabaseTableDependency("flashobject"));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `flashobject` (
+                  `FlashObjectId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `SWFPath` varchar(255) NOT NULL DEFAULT '',
+                  `DisplayWidth` int(11) NOT NULL,
+                  `DisplayHeight` int(11) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`FlashObjectId`),
+                  KEY `flashobject_secondary` (`PageId`,`Identifier`,`Deleted`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
             return ret.ToArray();
         }
 

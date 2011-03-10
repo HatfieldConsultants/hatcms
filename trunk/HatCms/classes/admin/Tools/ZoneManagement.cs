@@ -4,10 +4,17 @@ using System.Collections.Generic;
 using Hatfield.Web.Portal;
 using System.Collections.Specialized;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class ZoneManagement : CmsBaseAdminTool
     {
+
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Security, CmsAdminToolClass.ZoneManagement, "Create/Edit Zones");
+        }
+
+        
         protected CmsZoneDb zoneDb = new CmsZoneDb();
 
         /// <summary>

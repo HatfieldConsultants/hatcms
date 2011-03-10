@@ -37,9 +37,41 @@ namespace HatCMS.Placeholders.Calendar
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery/jquery-ui-timepicker-addon.min.js"));
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("EventCalendarAggregator", new string[] { "PageId", "Identifier", "LangCode", "ViewMode", "Deleted" }));
-            ret.Add(new CmsDatabaseTableDependency("EventCalendarDetails", new string[] { "PageId", "Identifier", "LangCode", "Description", "CategoryId", "StartDateTime", "EndDateTime", "CreatedBy", "Deleted" }));
-            ret.Add(new CmsDatabaseTableDependency("EventCalendarCategory", new string[] { "CategoryId", "LangCode", "ColorHex", "Title", "Description", "Deleted" }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE `EventCalendarAggregator` (
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(2) NOT NULL,
+                  `ViewMode` varchar(50) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE `eventcalendardetails` (
+                  `PageId` int(11) NOT NULL,
+                  `Identifier` int(11) NOT NULL,
+                  `LangCode` varchar(2) NOT NULL,
+                  `Description` text NOT NULL,
+                  `CategoryId` int(11) NOT NULL,
+                  `StartDateTime` datetime NOT NULL,
+                  `EndDateTime` datetime NOT NULL,
+                  `CreatedBy` varchar(255) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ")); 
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `eventcalendarcategory` (
+                  `CategoryId` int(11) NOT NULL,
+                  `LangCode` varchar(2) NOT NULL,
+                  `ColorHex` varchar(7) NOT NULL,
+                  `Title` varchar(255) NOT NULL,
+                  `Description` text NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`CategoryId`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("EventCalendar.DefaultEventStartHour"));

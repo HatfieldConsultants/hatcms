@@ -28,15 +28,75 @@ namespace HatCMS
             
             List<CmsDependency> ret = new List<CmsDependency>();
             // -- tables
-            ret.Add(new CmsDatabaseTableDependency("pages",
-                new string[] { "pageId", "showInMenu", "template", "parentPageId", "SortOrdinal", "CreatedDateTime", "LastUpdatedDateTime", "LastModifiedBy", "RevisionNumber", "Deleted" }));
-            ret.Add(new CmsDatabaseTableDependency("pagelocks",
-                new string[] { "pageid", "LockedByUsername", "LockExpiresAt" }));
-            ret.Add(new CmsDatabaseTableDependency("pagelanginfo",
-                new string[] { "pageId", "langCode", "name", "title", "menuTitle", "searchEngineDescription" }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `pages` (
+                  `pageId` int(11) NOT NULL AUTO_INCREMENT,
+                  `showInMenu` int(10) unsigned NOT NULL DEFAULT '1',
+                  `template` varchar(255) NOT NULL,
+                  `parentPageId` int(11) NOT NULL DEFAULT '0',
+                  `SortOrdinal` int(11) NOT NULL DEFAULT '0',
+                  `CreatedDateTime` datetime NOT NULL,
+                  `LastUpdatedDateTime` datetime NOT NULL,
+                  `LastModifiedBy` varchar(255) NOT NULL DEFAULT '',
+                  `RevisionNumber` int(11) NOT NULL DEFAULT '1',
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`pageId`),
+                  KEY `pages_secondary` (`pageId`,`Deleted`),
+                  KEY `pages_tertiary` (`parentPageId`,`Deleted`),
+                  KEY `pages_quartinary` (`parentPageId`,`Deleted`) USING BTREE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `pagelocks` (
+                  `pageid` int(11) NOT NULL,
+                  `LockedByUsername` varchar(255) NOT NULL,
+                  `LockExpiresAt` datetime NOT NULL,
+                  PRIMARY KEY (`pageid`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `pagelanginfo` (
+                  `pageId` int(10) unsigned NOT NULL,
+                  `langCode` varchar(255) NOT NULL,
+                  `name` varchar(255) DEFAULT NULL,
+                  `title` varchar(255) NOT NULL,
+                  `menuTitle` varchar(255) NOT NULL,
+                  `searchEngineDescription` text NOT NULL,
+                  PRIMARY KEY (`pageId`,`langCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
 
-            ret.Add(new CmsDatabaseTableDependency("resourceitemmetadata", new string[] { "AutoIncId", "ResourceId", "ResourceRevisionNumber", "Name", "Value", "Deleted" }));
-            ret.Add(new CmsDatabaseTableDependency("resourceitems", new string[] { "AutoIncId", "ResourceId", "RevisionNumber", "Filename", "FilePath", "FileDirectory", "FileSize", "FileTimestamp", "MimeType", "ModifiedBy", "ModificationDate", "Deleted" }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `resourceitemmetadata` (
+                  `AutoIncId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `ResourceId` int(10) unsigned NOT NULL,
+                  `ResourceRevisionNumber` int(10) unsigned NOT NULL,
+                  `Name` varchar(255) NOT NULL,
+                  `Value` longtext NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`AutoIncId`),
+                  KEY `ResourceId` (`ResourceId`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `resourceitems` (
+                  `AutoIncId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `ResourceId` int(11) NOT NULL,
+                  `RevisionNumber` int(11) NOT NULL,
+                  `Filename` varchar(255) NOT NULL,
+                  `FilePath` text NOT NULL,
+                  `FileDirectory` text NOT NULL,
+                  `FileSize` int(10) unsigned NOT NULL,
+                  `FileTimestamp` datetime NOT NULL,
+                  `MimeType` varchar(255) NOT NULL,
+                  `ModifiedBy` varchar(255) NOT NULL,
+                  `ModificationDate` datetime NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`AutoIncId`),
+                  UNIQUE KEY `ResourceItemsUniqueIdRevisionNumber` (`ResourceId`,`RevisionNumber`),
+                  KEY `RevisionNumIndex` (`RevisionNumber`,`FileDirectory`(255),`Deleted`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                "));
 
             // -- some project directories should be removed from production sites
             #if  ! DEBUG

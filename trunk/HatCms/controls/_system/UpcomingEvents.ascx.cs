@@ -26,8 +26,30 @@ namespace HatCMS.Controls._system
             List<CmsDependency> ret = new List<CmsDependency>();
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("EventCalendarAggregator"));
-            ret.Add(new CmsDatabaseTableDependency("EventCalendarDetails"));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE `EventCalendarAggregator` (
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(2) NOT NULL,
+                  `ViewMode` varchar(50) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE `eventcalendardetails` (
+                  `PageId` int(11) NOT NULL,
+                  `Identifier` int(11) NOT NULL,
+                  `LangCode` varchar(2) NOT NULL,
+                  `Description` text NOT NULL,
+                  `CategoryId` int(11) NOT NULL,
+                  `StartDateTime` datetime NOT NULL,
+                  `EndDateTime` datetime NOT NULL,
+                  `CreatedBy` varchar(255) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("UpcomingEvents.TitleText"));

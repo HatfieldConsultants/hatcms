@@ -1,19 +1,24 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using HatCMS.Placeholders;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     /// <summary>
     /// Super class for the Audit tool 
     /// </summary>
     public abstract class CmsBaseAdminTool
     {
-        public enum CmsAdminToolCategory { Reports, Tools }
+        public enum CmsAdminToolCategory
+        {
+            Report_Image, Report_Page, Report_Feedback, Report_Projects, Report_Other,
+            Tool_Search, Tool_Utility, Tool_Security
+        }
 
-        // Note: if using an AdminController based class, the name of the class must match EXACTLY the name listed here,
-        // and be in the HatCMS.Controls.Admin namespace.
+        // Notes: the name of the class must match EXACTLY (case-sensitive) the name listed here,
+        // and be in the HatCMS.Admin namespace.
         public enum CmsAdminToolClass
         {
             AdminMenu,
@@ -47,8 +52,22 @@ namespace HatCMS.Controls.Admin
         /// <returns></returns>
         public static CmsBaseAdminTool getAdminTool(CmsBaseAdminTool.CmsAdminToolClass tool)
         {
-            string className = "HatCMS.Controls.Admin." + tool.ToString();
-            return (CmsBaseAdminTool)Assembly.GetExecutingAssembly().CreateInstance(className);
+            string className = "HatCMS.Admin." + tool.ToString();
+            return (CmsBaseAdminTool)Assembly.GetExecutingAssembly().CreateInstance(className); 
+        }
+
+        public static CmsAdminToolInfo[] getAllAdminToolInfos()
+        {
+            List<CmsAdminToolInfo> ret = new List<CmsAdminToolInfo>();
+            foreach (CmsBaseAdminTool.CmsAdminToolClass toolClass in Enum.GetValues(typeof(CmsBaseAdminTool.CmsAdminToolClass)))
+            {
+                if (toolClass != CmsAdminToolClass.AdminMenu)
+                {
+                    CmsBaseAdminTool tool = getAdminTool(toolClass);
+                    ret.Add(tool.GetToolInfo());
+                }
+            }
+            return ret.ToArray();
         }
 
         protected string SingleImageHtmlDisplay(SingleImageData img)
@@ -97,5 +116,11 @@ namespace HatCMS.Controls.Admin
         /// </summary>
         /// <returns></returns>
         public abstract string Render();
+
+        /// <summary>
+        /// Method to get the tool's information
+        /// </summary>
+        /// <returns></returns>
+        public abstract CmsAdminToolInfo GetToolInfo();
     }
 }

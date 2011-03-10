@@ -23,7 +23,18 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency("plaintextcontent"));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `plaintextcontent` (
+                  `PlainTextContentId` int(11) NOT NULL AUTO_INCREMENT,
+                  `PageId` int(11) NOT NULL DEFAULT '0',
+                  `Identifier` int(11) NOT NULL DEFAULT '0',
+                  `langShortCode` varchar(255) NOT NULL,
+                  `plaintext` longtext NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PlainTextContentId`),
+                  KEY `plaintextcontent_secondary` (`PageId`,`Identifier`,`Deleted`)
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+            "));
             return ret.ToArray();
         }        
         

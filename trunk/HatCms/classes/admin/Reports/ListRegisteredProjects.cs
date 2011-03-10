@@ -12,10 +12,14 @@ using HatCMS.Placeholders;
 using HatCMS.Placeholders.RegisterProject;
 using System.Collections.Generic;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class ListRegisteredProjects : CmsBaseAdminTool
     {
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Projects, CmsAdminToolClass.ListRegisteredProjects, "List Registered Projects");
+        }
 
         /// <summary>
         /// List the registered projects in descending order;

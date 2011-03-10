@@ -12,11 +12,15 @@ using Hatfield.Web.Portal;
 using System.Collections.Generic;
 using HatCMS.Placeholders;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class SearchSingleImagesByCaption : CmsBaseAdminTool
     {
-        
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Search, CmsAdminToolClass.SearchSingleImagesByCaption, "Search Images by caption");
+        }
+
         public override string Render()
         {
             CmsPage currentPage = CmsContext.currentPage;

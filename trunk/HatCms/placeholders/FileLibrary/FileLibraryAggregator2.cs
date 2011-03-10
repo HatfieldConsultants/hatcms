@@ -79,9 +79,22 @@ namespace HatCMS.Placeholders
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/FileLibrary/FileLibraryCategory.js"));
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryAggregator2", new string[] { "PageId", "Identifier", "LangCode", "LinkedPageId", "LinkedIdentifier", "LinkedLangCode" }));
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryDetails", new string[] { "PageId", "Identifier", "LangCode", "FileName", "CategoryId", "Author", "Description", "LastModified", "CreatedBy", "EventPageId" }));
-            ret.Add(new CmsDatabaseTableDependency("FileLibraryCategory", new string[] { "CategoryId", "LangCode", "EventRequired", "CategoryName", "SortOrdinal" }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `filelibraryaggregator2` (
+                  `SimpleFileAggregatorId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(5) NOT NULL,
+                  `LinkedPageId` int(11) NOT NULL,
+                  `LinkedIdentifier` int(11) NOT NULL,
+                  `LinkedLangCode` varchar(5) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`SimpleFileAggregatorId`),
+                  KEY `simplefileaggregatorPageIndex` (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+
+            ret.AddRange(base.getDependencies());
             
             return ret.ToArray();
         }

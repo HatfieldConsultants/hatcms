@@ -23,8 +23,26 @@ namespace HatCMS.Placeholders.Procurement
             ret.AddRange(CKEditorHelpers.CKEditorDependencies);
 
             // -- database tables
-            ret.Add(new CmsDatabaseTableDependency("ProcurementAggregator"));
-            ret.Add(new CmsDatabaseTableDependency("ProcurementDetails"));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE `ProcurementAggregator` (
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(5) NOT NULL,
+                  `DefaultYearToDisplay` int(11) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE `ProcurementDetails` (
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(5) NOT NULL,
+                  `DateOfProcurement` datetime DEFAULT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("Procurement.ReadArticleText"));

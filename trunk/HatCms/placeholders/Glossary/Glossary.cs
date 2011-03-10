@@ -22,8 +22,29 @@ namespace HatCMS.Placeholders
                 CmsFileDependency.UnderAppPath("js/_system/GlossaryEditor.js", new DateTime(2010,4,22)),
                 CmsFileDependency.UnderAppPath("js/_system/json2.js"),
                 CmsWritableDirectoryDependency.UnderAppPath("_system/writable/Glossary"),
-                new CmsDatabaseTableDependency("glossary"),
-                new CmsDatabaseTableDependency("glossarydata")
+                new CmsDatabaseTableDependency(@"
+                    CREATE TABLE  `glossary` (
+                      `glossaryid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                      `pageid` int(10) unsigned NOT NULL,
+                      `identifier` int(10) unsigned NOT NULL,
+                      `langShortCode` varchar(255) NOT NULL,
+                      `sortOrder` varchar(255) NOT NULL,
+                      `ViewMode` varchar(255) NOT NULL,
+                      `deleted` datetime DEFAULT NULL,
+                      PRIMARY KEY (`glossaryid`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                "),
+                new CmsDatabaseTableDependency(@"
+                    CREATE TABLE  `glossarydata` (
+                      `GlossaryDataId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                      `phGlossaryId` int(10) unsigned NOT NULL,
+                      `isAcronym` int(10) unsigned NOT NULL,
+                      `word` varchar(255) NOT NULL,
+                      `description` text NOT NULL,
+                      `deleted` datetime DEFAULT NULL,
+                      PRIMARY KEY (`GlossaryDataId`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                ")
             };
         }
 

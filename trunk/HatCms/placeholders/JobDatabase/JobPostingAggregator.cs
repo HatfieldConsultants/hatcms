@@ -31,9 +31,20 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            string[] requiredCols = new string[] {"JobSummaryId", "PageId", "Identifier", "langShortCode", "locationId", "Deleted"};
+            
             string[] removedCols = new string[] {"LocationToDisplay", "HtmlHeader"};
-            ret.Add(new CmsDatabaseTableDependency("jobsummary",requiredCols, removedCols));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `jobsummary` (
+                  `JobSummaryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `langShortCode` varchar(255) NOT NULL,
+                  `locationId` int(11) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`JobSummaryId`),
+                  KEY `jobsummary_secondary` (`PageId`,`Identifier`,`Deleted`)
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+                ", removedCols));
 
             ret.Add(new CmsConfigItemDependency("JobPosting.DetailsTemplateName", CmsDependency.ExistsMode.MustExist));
             ret.Add(new CmsConfigItemDependency("JobPosting.FullJobDescriptionText", CmsDependency.ExistsMode.MustExist));

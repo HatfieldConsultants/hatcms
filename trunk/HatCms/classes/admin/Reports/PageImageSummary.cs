@@ -11,10 +11,15 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using HatCMS.Placeholders;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class PageImageSummary : CmsBaseAdminTool
     {
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Image, CmsAdminToolClass.PageImageSummary, "Images by Page");
+        } 
+
         public override string Render()       
         {
             Dictionary<int, CmsPage> allPages = CmsContext.HomePage.getLinearizedPages();

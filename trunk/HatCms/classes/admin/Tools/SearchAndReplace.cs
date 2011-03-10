@@ -13,10 +13,15 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using HatCMS.Placeholders;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class SearchAndReplace : CmsBaseAdminTool
     {
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Search, CmsAdminToolClass.SearchAndReplace, "Global Search &amp; Replace");
+        }
+
         #region SearchAndReplace
         public override string Render()
         {

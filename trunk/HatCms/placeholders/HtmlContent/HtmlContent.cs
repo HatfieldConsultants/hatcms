@@ -90,14 +90,19 @@ namespace HatCMS.Placeholders
             ret.AddRange(CKEditorHelpers.CKEditorDependencies);
 
             // -- Database tables
-            ret.Add(new CmsDatabaseTableDependency("htmlcontent", new CmsDatabaseTableDependency.DBColumnDescription[]
-                        {   new CmsDatabaseTableDependency.DBColumnDescription("HtmlContentId"),
-                            new CmsDatabaseTableDependency.DBColumnDescription("PageId"),
-                            new CmsDatabaseTableDependency.DBColumnDescription("Identifier"),
-                            new CmsDatabaseTableDependency.DBColumnDescription("RevisionNumber"),
-                            new CmsDatabaseTableDependency.DBColumnDescription("html"),
-                            new CmsDatabaseTableDependency.DBColumnDescription("Deleted")
-                        }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `htmlcontent` (
+                  `HtmlContentId` int(11) NOT NULL AUTO_INCREMENT,
+                  `PageId` int(11) NOT NULL DEFAULT '0',
+                  `Identifier` int(11) NOT NULL DEFAULT '0',
+                  `langShortCode` varchar(255) NOT NULL DEFAULT '',
+                  `RevisionNumber` int(11) NOT NULL DEFAULT '1',
+                  `html` longtext NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`HtmlContentId`),
+                  KEY `htmlcontent_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`) USING BTREE
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+            "));
             return ret.ToArray();
         }        
 

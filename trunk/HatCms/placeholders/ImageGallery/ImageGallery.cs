@@ -77,8 +77,29 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency("ImageGallery"));
-            ret.Add(new CmsDatabaseTableDependency("ImageGalleryImages"));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `imagegallery` (
+                  `ImageGalleryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `subDir` varchar(255) NOT NULL,
+                  `thumbSize` int(11) NOT NULL,
+                  `largeSize` int(11) NOT NULL,
+                  `numThumbsPerRow` int(11) NOT NULL,
+                  `deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`ImageGalleryId`),
+                  KEY `imagegallery_secondary` (`PageId`,`Identifier`,`deleted`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `imagegalleryimages` (
+                  `ImageGalleryImageId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `Caption` varchar(255) NOT NULL,
+                  `Filename` varchar(255) NOT NULL,
+                  `ImageGalleryId` int(10) unsigned NOT NULL,
+                  PRIMARY KEY (`ImageGalleryImageId`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
             return ret.ToArray();
             
         }

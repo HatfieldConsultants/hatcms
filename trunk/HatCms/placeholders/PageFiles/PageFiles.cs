@@ -178,13 +178,39 @@ namespace HatCMS.Placeholders
             List<CmsDependency> ret = new List<CmsDependency>();
             ret.Add(new CmsConfigItemDependency("DMSFileStorageLocationVersion"));
 
-            ret.Add(new CmsDatabaseTableDependency("pagefiles", new string[] {
-                "PageFilesId", "PageId", "Identifier", "langShortCode", "sortDirection", "sortColumn", "langShortCode", "tabularDisplayLinkMode",
-                "numFilesToShowPerPage", "accessLevelToAddFiles", "accessLevelToEditFiles", "deleted"
-                }));
-            ret.Add(new CmsDatabaseTableDependency("pagefileitem", new string[] {
-                "PageFileItemId", "PageId", "Identifier", "langShortCode", "Filename", "Title", "Author", "Abstract", "FileSize", "LastModified", "CreatorUsername", "Deleted"
-                }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `pagefiles` (
+                  `PageFilesId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `langShortCode` varchar(255) NOT NULL,
+                  `sortDirection` varchar(50) NOT NULL,
+                  `sortColumn` varchar(50) NOT NULL,
+                  `tabularDisplayLinkMode` varchar(50) NOT NULL,
+                  `numFilesToShowPerPage` int(11) NOT NULL,
+                  `accessLevelToAddFiles` varchar(50) NOT NULL,
+                  `accessLevelToEditFiles` varchar(50) NOT NULL,
+                  `deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageFilesId`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `pagefileitem` (
+                  `PageFileItemId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `langShortCode` varchar(255) NOT NULL,
+                  `Filename` varchar(255) NOT NULL,
+                  `Title` varchar(255) NOT NULL,
+                  `Author` varchar(255) NOT NULL DEFAULT '',
+                  `Abstract` text NOT NULL,
+                  `FileSize` int(10) unsigned NOT NULL,
+                  `LastModified` datetime NOT NULL,
+                  `CreatorUsername` varchar(255) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`PageFileItemId`)
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+            "));
             ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/DMSStorage"));
 
             ret.AddRange(SWFUploadHelpers.SWFUploadDependencies);

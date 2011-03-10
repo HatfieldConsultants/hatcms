@@ -16,7 +16,22 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency("userimagegallery"));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `userimagegallery` (
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(5) NOT NULL,
+                  `NumThumbsPerPage` int(10) NOT NULL,
+                  `NumThumbsPerRow` int(10) NOT NULL,
+                  `ThumbnailDisplayBoxWidth` int(10) NOT NULL,
+                  `ThumbnailDisplayBoxHeight` int(10) NOT NULL,
+                  `FullSizeDisplayBoxWidth` int(10) NOT NULL,
+                  `FullSizeDisplayBoxHeight` int(10) NOT NULL,
+                  `FullSizeLinkMode` varchar(255) NOT NULL,
+                  `CaptionDisplayLocation` varchar(255) NOT NULL,
+                  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+            "));
 
             ret.AddRange(SWFUploadHelpers.SWFUploadDependencies);            
 

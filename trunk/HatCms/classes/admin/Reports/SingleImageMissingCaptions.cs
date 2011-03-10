@@ -11,10 +11,15 @@ using HatCMS.Placeholders;
 using System.Text;
 using System.Collections.Generic;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class SingleImageMissingCaptions : CmsBaseAdminTool
-    {        
+    {
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Image, CmsAdminToolClass.SingleImageMissingCaptions, "Images without captions");
+
+        }
 
         public override string Render()
         {

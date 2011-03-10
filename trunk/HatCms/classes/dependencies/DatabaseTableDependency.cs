@@ -66,35 +66,15 @@ namespace HatCMS
         public string TableName = "";
         public DBColumnDescription[] Columns;
 
-        public CmsDatabaseTableDependency(string tableName)
+        public CmsDatabaseTableDependency(string mysqlCreateTableStatement)
         {
-            TableName = tableName.ToLower(); // mysql needs lower-case table names
-            Columns = new DBColumnDescription[0];
+            initFromMySqlCreateStatement(mysqlCreateTableStatement);
         }
 
-
-        public CmsDatabaseTableDependency(string tableName, string[] requiredColumnNames)
+        public CmsDatabaseTableDependency(string mysqlCreateTableStatement, string[] colNamesThatMustNotExist)
         {
-            TableName = tableName.ToLower(); // mysql needs lower-case table names
+            initFromMySqlCreateStatement(mysqlCreateTableStatement);
             List<DBColumnDescription> columns = new List<DBColumnDescription>();
-            foreach (string colName in requiredColumnNames)
-            {
-                DBColumnDescription c = new DBColumnDescription(colName, ExistsMode.MustExist);
-                columns.Add(c);
-            }
-            Columns = columns.ToArray();
-        }
-
-        public CmsDatabaseTableDependency(string tableName, string[] requiredColumnNames, string[] colNamesThatMustNotExist)
-        {
-            TableName = tableName.ToLower(); // mysql needs lower-case table names
-            List<DBColumnDescription> columns = new List<DBColumnDescription>();
-            foreach (string colName in requiredColumnNames)
-            {
-                DBColumnDescription c = new DBColumnDescription(colName, ExistsMode.MustExist);
-                columns.Add(c);
-            }
-
             foreach (string colName in colNamesThatMustNotExist)
             {
                 DBColumnDescription c = new DBColumnDescription(colName, ExistsMode.MustNotExist);
@@ -103,10 +83,65 @@ namespace HatCMS
             Columns = columns.ToArray();
         }
 
-        public CmsDatabaseTableDependency(string tableName, DBColumnDescription[] columns)
+
+        protected static string RemoveAtStartAndEnd(string toRemoveAtStartAndEnd, string removeFrom)
         {
-            TableName = tableName.ToLower(); // mysql needs lower-case table names
-            Columns = columns;
+            string ret = removeFrom.Trim();
+            if (ret.StartsWith(toRemoveAtStartAndEnd, StringComparison.CurrentCultureIgnoreCase))
+                ret = ret.Substring(toRemoveAtStartAndEnd.Length); // remove beginning
+            if (ret.EndsWith(toRemoveAtStartAndEnd, StringComparison.CurrentCultureIgnoreCase))
+                ret = ret.Substring(0, ret.Length - toRemoveAtStartAndEnd.Length);
+            
+            return ret;
+        }
+
+        protected void initFromMySqlCreateStatement(string mysqlCreateTableStatement)
+        {
+                       
+            if (mysqlCreateTableStatement.IndexOf("CREATE TABLE", StringComparison.CurrentCultureIgnoreCase) < 0)
+                throw new ArgumentException("Error: you have not specified a CREATE TABLE statement for CmsDatabaseTableDependency("+mysqlCreateTableStatement+")");
+            
+            // -- 1: table name
+            int indexFirstOpenBracket = mysqlCreateTableStatement.IndexOf("(", StringComparison.CurrentCultureIgnoreCase);
+            int indexLastCloseBracket = mysqlCreateTableStatement.LastIndexOf(")", StringComparison.CurrentCultureIgnoreCase);
+            string tNameStartsAfter = "CREATE TABLE ";
+            int tNameStartsAfterIndex = mysqlCreateTableStatement.IndexOf(tNameStartsAfter) + tNameStartsAfter.Length;
+            string tName = mysqlCreateTableStatement.Substring(tNameStartsAfterIndex, (indexFirstOpenBracket - 1 ) - tNameStartsAfterIndex);            
+            tName = RemoveAtStartAndEnd("`", tName);
+            this.TableName = tName.ToLower();
+            
+
+            // -- column statements
+            string allColumnStatements = mysqlCreateTableStatement.Substring(indexFirstOpenBracket, indexLastCloseBracket - indexFirstOpenBracket); 
+            // remove first open bracket
+            allColumnStatements = allColumnStatements.Substring(1);
+            string[] colStatements = allColumnStatements.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            List<DBColumnDescription> dbColumnDescriptions = new List<DBColumnDescription>();
+            foreach (string rawColStatement in colStatements)
+            {
+                string colStatement = rawColStatement.Trim();
+                int firstTickIndex = colStatement.IndexOf("`", StringComparison.CurrentCultureIgnoreCase);
+                int lastTickIndex = colStatement.LastIndexOf("`", StringComparison.CurrentCultureIgnoreCase);
+
+                bool isKey = false;
+                if (colStatement.IndexOf("PRIMARY KEY", StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    isKey = true;
+                else if (colStatement.IndexOf("UNIQUE KEY", StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    isKey = true;
+                else if (colStatement.IndexOf("KEY `", StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    isKey = true;                
+
+                if (!isKey && firstTickIndex >= 0 && lastTickIndex > firstTickIndex)
+                {
+                    string cName = colStatement.Substring(0, lastTickIndex);
+                    cName = RemoveAtStartAndEnd("`", cName);
+
+                    DBColumnDescription c = new DBColumnDescription(cName, ExistsMode.MustExist);
+                    dbColumnDescriptions.Add(c);
+                }
+            } // foreach colStatement            
+
+            this.Columns = dbColumnDescriptions.ToArray();
         }
 
         public override string GetContentHash()
@@ -120,6 +155,8 @@ namespace HatCMS
             }
             return ret.ToString();
         }
+
+
         
         public override CmsDependencyMessage[] ValidateDependency()
         {

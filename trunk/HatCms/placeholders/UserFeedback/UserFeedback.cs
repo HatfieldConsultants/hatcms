@@ -43,12 +43,31 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency("userfeedbackform", new string[] {
-                "pageid", "identifier", "LangCode", "EmailAddressesToNotify", "ThankyouMessage", "FormFieldDisplayWidth", "TextAreaQuestion"
-                }));
-            ret.Add(new CmsDatabaseTableDependency("userfeedbacksubmitteddata", new string[] {
-                "dateTimeSubmitted", "Name", "EmailAddress", "Location", "TextAreaQuestion", "TextAreaValue", "ReferringUrl"
-                }));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `userfeedbackform` (
+                  `pageid` int(10) unsigned NOT NULL,
+                  `identifier` int(10) unsigned NOT NULL,
+                  `LangCode` varchar(5) NOT NULL,
+                  `EmailAddressesToNotify` text NOT NULL,
+                  `ThankyouMessage` text NOT NULL,
+                  `FormFieldDisplayWidth` int(10) unsigned NOT NULL,
+                  `TextAreaQuestion` varchar(255) NOT NULL,
+                  PRIMARY KEY (`pageid`,`identifier`,`LangCode`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `userfeedbacksubmitteddata` (
+                  `UserFeedbackSubmittedDataId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `dateTimeSubmitted` datetime NOT NULL,
+                  `Name` varchar(255) NOT NULL,
+                  `EmailAddress` varchar(255) NOT NULL,
+                  `Location` varchar(255) NOT NULL,
+                  `TextAreaQuestion` varchar(255) NOT NULL,
+                  `TextAreaValue` text NOT NULL,
+                  `ReferringUrl` text NOT NULL,
+                  PRIMARY KEY (`UserFeedbackSubmittedDataId`)
+                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+            "));
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("UserFeedback.ValuesPreloadedText"));

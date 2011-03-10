@@ -11,11 +11,15 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class LastModifiedTable : CmsBaseAdminTool
     {
-        
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Page, CmsAdminToolClass.LastModifiedTable, "Pages by last modified date");
+        }
+
         public override string Render()
         {
             StringBuilder html = new StringBuilder();

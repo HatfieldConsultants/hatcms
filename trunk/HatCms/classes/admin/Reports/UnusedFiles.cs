@@ -13,11 +13,15 @@ using HatCMS.Placeholders;
 using HatCMS.WebEditor.Helpers;
 using System.Collections.Generic;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class UnusedFiles : CmsBaseAdminTool
     {
-        
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Other, CmsAdminToolClass.UnusedFiles, "Unused files");
+        }
+
         public override string Render()
         {
             string rootDirName = HttpContext.Current.Server.MapPath(InlineImageBrowser2.UserFilesPath);

@@ -10,10 +10,14 @@ using System.Web.UI.HtmlControls;
 using HatCMS.Placeholders;
 using System.Text;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class ListUserFeedback : CmsBaseAdminTool
     {
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Feedback, CmsAdminToolClass.ListUserFeedback, "List User Feedback");
+        }
 
         public override string Render()
         {

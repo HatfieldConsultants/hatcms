@@ -19,7 +19,7 @@ using HatCMS.Placeholders;
 using HatCMS.WebEditor.Helpers;
 using HatCMS.setup;
 using HatCMS.Placeholders.RegisterProject;
-using HatCMS.Controls.Admin;
+using HatCMS.Admin;
 
 namespace HatCMS.Controls.Admin
 {
@@ -33,112 +33,72 @@ namespace HatCMS.Controls.Admin
             ret.Add(CmsFileDependency.UnderAppPath("css/_system/AdminTools.css"));
             return ret.ToArray();
         }
+            
 
-
-        private string getMenuDisplay(CmsBaseAdminTool.CmsAdminToolClass tool)
+        private CmsBaseAdminTool.CmsAdminToolClass selectedToolToRun
         {
-            string ret = "";
-            switch (tool)
+            get
             {
-                case CmsBaseAdminTool.CmsAdminToolClass.AdminMenu: ret = "Admin Menu"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.SearchAndReplace: ret = "Global Search &amp; Replace"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.SearchHtmlContent: ret = "Search in editable HTML"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.ListUserFeedback: ret = "List User Feedback"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.SearchSingleImagesByCaption: ret = "Search Images by caption"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.LastModifiedTable: ret = "Pages by last modified date"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.DuplicateSingleImages: ret = "Duplicate Images"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.SingleImageMissingCaptions: ret = "Images without captions"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.PageImageSummary: ret = "Images by Page"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.UnusedFiles: ret = "Unused files"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.ValidateConfig: ret = "Validate CMS Config"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.PagesByTemplate: ret = "Pages by template"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.EmptyThumbnailCache: ret = "Empty Image Cache"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.PageUrlsById: ret = "Page Urls by Id"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.ListRegisteredProjects: ret = "List Registered Projects"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.ZoneManagement: ret = "Create/Edit Zones"; break;
-                case CmsBaseAdminTool.CmsAdminToolClass.ZoneAuthority: ret = "User permissions"; break;
+                return (CmsBaseAdminTool.CmsAdminToolClass)PageUtils.getFromForm("RunTool", typeof(CmsBaseAdminTool.CmsAdminToolClass), CmsBaseAdminTool.CmsAdminToolClass.AdminMenu);
+            }
+        }
+
+        private enum AdminMenuTab { Reports, Tools }
+        private AdminMenuTab selectedMenuTab
+        {
+            get
+            {
+                return (AdminMenuTab)PageUtils.getFromForm("tab", typeof(AdminMenuTab), AdminMenuTab.Reports);
+            }
+        }
+
+        private string getCategoryDisplayTitle(CmsBaseAdminTool.CmsAdminToolCategory cat)
+        {
+            string title = "";
+            switch (cat)
+            {
+                case CmsBaseAdminTool.CmsAdminToolCategory.Report_Image: title = "Image Reports"; break;
+                case CmsBaseAdminTool.CmsAdminToolCategory.Report_Page: title = "Page Reports"; break;
+                case CmsBaseAdminTool.CmsAdminToolCategory.Report_Feedback: title = "Feedback Reports"; break;
+                case CmsBaseAdminTool.CmsAdminToolCategory.Report_Projects: title = "Registered Project Reports"; break;
+                case CmsBaseAdminTool.CmsAdminToolCategory.Report_Other: title = "Other Reports"; break;
+                case CmsBaseAdminTool.CmsAdminToolCategory.Tool_Search: title = "Search Tools"; break;
+                case CmsBaseAdminTool.CmsAdminToolCategory.Tool_Utility: title = "Utilities"; break;
+                case CmsBaseAdminTool.CmsAdminToolCategory.Tool_Security: title = "Security Zones"; break;
                 default:
-                    throw new ArgumentException("An unknown AdminTool was passed to getMenuDisplay()");
+                    throw new ArgumentException("Error: invalid/unknown CmsAdminToolCategory in getCategoryDisplayTitle()");
             }
-            return ret;
+            return title;
         }
 
-        private Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>> CategorizedAdminReports
-        {
-            get
-            {
-                Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>> ret = new Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>>();
-                ret.Add("Image Reports", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.DuplicateSingleImages, CmsBaseAdminTool.CmsAdminToolClass.PageImageSummary, CmsBaseAdminTool.CmsAdminToolClass.SingleImageMissingCaptions }));
-                ret.Add("Page Reports", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.LastModifiedTable, CmsBaseAdminTool.CmsAdminToolClass.PagesByTemplate, CmsBaseAdminTool.CmsAdminToolClass.PageUrlsById }));
-                ret.Add("Feedback Reports", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.ListUserFeedback }));
-                ret.Add("Registered Project Reports", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.ListRegisteredProjects }));
-                ret.Add("Other Reports", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.UnusedFiles, CmsBaseAdminTool.CmsAdminToolClass.ValidateConfig }));
-                return ret;
-            }
-        }
-
-        private Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>> CategorizedAdminTools
-        {
-            get
-            {
-                Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>> ret = new Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>>();
-                ret.Add("Search Tools", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.SearchAndReplace, CmsBaseAdminTool.CmsAdminToolClass.SearchHtmlContent, CmsBaseAdminTool.CmsAdminToolClass.SearchSingleImagesByCaption }));
-                ret.Add("Utilities", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.EmptyThumbnailCache, CmsBaseAdminTool.CmsAdminToolClass.ValidateConfig }));
-                ret.Add("Security Zones", new List<CmsBaseAdminTool.CmsAdminToolClass>(new CmsBaseAdminTool.CmsAdminToolClass[] { CmsBaseAdminTool.CmsAdminToolClass.ZoneManagement, CmsBaseAdminTool.CmsAdminToolClass.ZoneAuthority }));
-                return ret;
-            }
-        }
-
-
-
-
-
-        private CmsBaseAdminTool.CmsAdminToolClass selectedAdminTool
-        {
-            get
-            {
-                return (CmsBaseAdminTool.CmsAdminToolClass)PageUtils.getFromForm("AdminTool", typeof(CmsBaseAdminTool.CmsAdminToolClass), CmsBaseAdminTool.CmsAdminToolClass.AdminMenu);
-            }
-        }
-
-        private string getUrl(CmsPage adminPage, CmsBaseAdminTool.CmsAdminToolClass tool)
+        /// <summary>
+        /// get the url for a tab
+        /// </summary>
+        /// <param name="adminPage"></param>
+        /// <param name="tool"></param>
+        /// <returns></returns>
+        private string getTabUrl(CmsPage adminPage, AdminMenuTab Tab)
         {
             NameValueCollection pageParams = new NameValueCollection();
-            string menuName = Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolClass), tool);
-            pageParams.Add("AdminTool", menuName);
+            string tabName = Tab.ToString();
+            pageParams.Add("tab", tabName);            
             string url = adminPage.getUrl(pageParams);
             return url;
         }
 
-        private CmsBaseAdminTool.CmsAdminToolCategory selectedAdminMenu
-        {
-            get
-            {
-                CmsBaseAdminTool.CmsAdminToolClass selTool = selectedAdminTool;
-                if (selTool == CmsBaseAdminTool.CmsAdminToolClass.AdminMenu)
-                    return (CmsBaseAdminTool.CmsAdminToolCategory)PageUtils.getFromForm("AdminMenu", typeof(CmsBaseAdminTool.CmsAdminToolCategory), CmsBaseAdminTool.CmsAdminToolCategory.Reports);
-                else
-                {
-                    foreach (string cat in CategorizedAdminReports.Keys)
-                    {
-                        if (CategorizedAdminReports[cat].IndexOf(selTool) > -1)
-                            return CmsBaseAdminTool.CmsAdminToolCategory.Reports;
-                    }
-                    foreach (string cat in CategorizedAdminTools.Keys)
-                    {
-                        if (CategorizedAdminTools[cat].IndexOf(selTool) > -1)
-                            return CmsBaseAdminTool.CmsAdminToolCategory.Tools;
-                    }
-                    return CmsBaseAdminTool.CmsAdminToolCategory.Reports;
-                }
-            }
-        }
-
-        private string getUrl(CmsPage adminPage, CmsBaseAdminTool.CmsAdminToolCategory menu)
+        /// <summary>
+        /// get the url for a tool
+        /// </summary>
+        /// <param name="adminPage"></param>
+        /// <param name="menu"></param>
+        /// <returns></returns>
+        private string getToolRunUrl(CmsPage adminPage, AdminMenuTab Tab, CmsBaseAdminTool.CmsAdminToolClass toolClassToRun)
         {
             NameValueCollection pageParams = new NameValueCollection();
-            string menuName = Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolCategory), menu);
-            pageParams.Add("AdminMenu", menuName);
+            string tabName = Tab.ToString();
+            string toolNameToRun = toolClassToRun.ToString();
+            pageParams.Add("tab", tabName);
+            pageParams.Add("RunTool", toolNameToRun);
             string url = adminPage.getUrl(pageParams);
             return url;
         }
@@ -155,13 +115,15 @@ namespace HatCMS.Controls.Admin
 
             CmsContext.currentPage.HeadSection.AddCSSFile("css/_system/AdminTools.css");
 
-            StringBuilder html = new StringBuilder();
-            html.Append(RenderAdminMenu());
+            CmsAdminToolInfo[] allToolInfos = CmsBaseAdminTool.getAllAdminToolInfos();
 
-            if (selectedAdminTool != CmsBaseAdminTool.CmsAdminToolClass.AdminMenu)
+            StringBuilder html = new StringBuilder();
+            html.Append(RenderAdminMenu(allToolInfos, CmsContext.currentLanguage));
+
+            if (selectedToolToRun != CmsBaseAdminTool.CmsAdminToolClass.AdminMenu)
             {
-                CmsBaseAdminTool c = CmsBaseAdminTool.getAdminTool(selectedAdminTool);
-                html.Append(c.Render());
+                CmsBaseAdminTool c = CmsBaseAdminTool.getAdminTool(selectedToolToRun);
+                html.Append(c.Render()); // execute the admin tool
             }
 
             writer.Write(html.ToString());
@@ -169,37 +131,60 @@ namespace HatCMS.Controls.Admin
 
         #region AdminMenu
 
-        private string RenderAdminMenu()
+        private Dictionary<CmsBaseAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>> getToolsForTab(AdminMenuTab tab, Dictionary<CmsBaseAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>> haystack)
+        {
+            Dictionary<CmsBaseAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>> ret = new Dictionary<CmsBaseAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>>();
+            foreach (CmsBaseAdminTool.CmsAdminToolCategory toolCat in haystack.Keys)
+            {
+                string toolCatName = Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolCategory), toolCat);
+                switch (tab)
+                {
+                    case AdminMenuTab.Reports:
+                        if (toolCatName.StartsWith("Report", StringComparison.CurrentCultureIgnoreCase))
+                            ret.Add(toolCat, haystack[toolCat]);
+                        break;
+                    case AdminMenuTab.Tools:
+                        if (toolCatName.StartsWith("Tool", StringComparison.CurrentCultureIgnoreCase))
+                            ret.Add(toolCat, haystack[toolCat]);
+                        break;
+                    default:
+                        throw new Exception("Error: invalid AdminMenuTab");
+                }                
+            } // foreach
+            return ret;
+        }
+
+        private string RenderAdminMenu(CmsAdminToolInfo[] allToolInfos, CmsLanguage langToRenderFor)
         {
             StringBuilder html = new StringBuilder();
             CmsPage page = CmsContext.currentPage;
-            Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>> toolsToDisplay = new Dictionary<string, List<CmsBaseAdminTool.CmsAdminToolClass>>();
+                      
+            Dictionary<CmsBaseAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>> toolsToDisplay = getToolsForTab(selectedMenuTab, CmsAdminToolInfo.ToCategoryKeyedDictionary(allToolInfos));
 
             html.Append("<table class=\"AdminMenu\">");
             html.Append("<tr>");
-            switch (selectedAdminMenu)
+            switch (selectedMenuTab)
             {
-                case CmsBaseAdminTool.CmsAdminToolCategory.Reports:
-                    toolsToDisplay = CategorizedAdminReports;
-                    html.Append("<td class=\"MenuSel\"><a href=\"" + getUrl(page, CmsBaseAdminTool.CmsAdminToolCategory.Reports) + "\">Reports</a></td>");
-                    html.Append("<td class=\"MenuNotSel\"><a href=\"" + getUrl(page, CmsBaseAdminTool.CmsAdminToolCategory.Tools) + "\">Tools</a></td>");
+                case AdminMenuTab.Reports:                    
+                    html.Append("<td class=\"MenuSel\"><a href=\"" + getTabUrl(page, AdminMenuTab.Reports) + "\">Reports</a></td>");
+                    html.Append("<td class=\"MenuNotSel\"><a href=\"" + getTabUrl(page, AdminMenuTab.Tools) + "\">Tools</a></td>");
                     break;
-                case CmsBaseAdminTool.CmsAdminToolCategory.Tools:
-                    toolsToDisplay = CategorizedAdminTools;
-                    html.Append("<td class=\"MenuNotSel\"><a href=\"" + getUrl(page, CmsBaseAdminTool.CmsAdminToolCategory.Reports) + "\">Reports</a></td>");
-                    html.Append("<td class=\"MenuSel\"><a href=\"" + getUrl(page, CmsBaseAdminTool.CmsAdminToolCategory.Tools) + "\">Tools</a></td>");
+                case AdminMenuTab.Tools:
+                    html.Append("<td class=\"MenuNotSel\"><a href=\"" + getTabUrl(page, AdminMenuTab.Reports) + "\">Reports</a></td>");
+                    html.Append("<td class=\"MenuSel\"><a href=\"" + getTabUrl(page, AdminMenuTab.Tools) + "\">Tools</a></td>");
                     break;
             }
             html.Append("</tr>");
             html.Append("<tr><td colspan=\"2\">");
-            foreach (string category in toolsToDisplay.Keys)
+            foreach (CmsBaseAdminTool.CmsAdminToolCategory category in toolsToDisplay.Keys)
             {
-                html.Append("<div class=\"AdminTool menu\"><strong>" + category + ":</strong> ");
+                string catDisplayTitle = getCategoryDisplayTitle(category);
+                html.Append("<div class=\"AdminTool menu\"><strong>" + catDisplayTitle + ":</strong> ");
                 List<string> toolLinks = new List<string>();
-                foreach (CmsBaseAdminTool.CmsAdminToolClass tool in toolsToDisplay[category])
+                foreach (CmsAdminToolInfo tool in toolsToDisplay[category])
                 {
-                    string toolName = getMenuDisplay(tool);                    
-                    string url = getUrl(page, tool);
+                    string toolName = tool.MenuDisplayText[langToRenderFor];                    
+                    string url = getToolRunUrl(page, selectedMenuTab, tool.Class);
                     string link = "<a href=\"" + url + "\">" + toolName + "</a>";
                     toolLinks.Add(link);
                 } // foreach

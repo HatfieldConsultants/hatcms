@@ -28,9 +28,45 @@ namespace HatCMS.Placeholders
                     "numColumnsToShow", "nameDisplayMode", "forceFilterToCategoryId", 
                     "allowFilterByCategory", "allowFilterByCompany", 
                     "accessLevelToEditContacts", "accessLevelToAddContacts", "deleted" }));
-            ret.Add(new CmsDatabaseTableDependency("contactdata"));
-            ret.Add(new CmsDatabaseTableDependency("contactdatacategory"));
-            ret.Add(new CmsDatabaseTableDependency("contactlinktocategory"));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `contactdata` (
+                  `ContactId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `firstName` varchar(255) NOT NULL,
+                  `lastName` varchar(255) NOT NULL,
+                  `title` varchar(255) NOT NULL,
+                  `organizationName` varchar(255) NOT NULL,
+                  `address1` varchar(255) NOT NULL,
+                  `address2` varchar(255) NOT NULL,
+                  `city` varchar(255) NOT NULL,
+                  `provinceState` varchar(255) NOT NULL,
+                  `postalZipCode` varchar(255) NOT NULL,
+                  `phoneNumber1` varchar(255) NOT NULL,
+                  `phoneNumber2` varchar(255) NOT NULL,
+                  `faxNumber` varchar(255) NOT NULL,
+                  `mobileNumber` varchar(255) NOT NULL,
+                  `emailAddress` varchar(255) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`ContactId`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `contactdatacategory` (
+                  `categoryid` int(11) NOT NULL AUTO_INCREMENT,
+                  `colourHex` varchar(255) NOT NULL,
+                  `title` varchar(1024) NOT NULL,
+                  `description` varchar(1024) NOT NULL,
+                  `Deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`categoryid`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
+            ret.Add(new CmsDatabaseTableDependency(@"
+                CREATE TABLE  `contactlinktocategory` (
+                  `ContactLinkToCategoryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `ContactId` int(10) unsigned NOT NULL,
+                  `CategoryId` int(10) unsigned NOT NULL,
+                  PRIMARY KEY (`ContactLinkToCategoryId`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
 
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery/jquery-1.4.1.min.js"));
             return ret.ToArray();

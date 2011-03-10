@@ -11,10 +11,14 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class PageUrlsById : CmsBaseAdminTool
     {
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Page, CmsAdminToolClass.PageUrlsById, "Page Urls by Id");
+        }
 
         public override string Render()
         {

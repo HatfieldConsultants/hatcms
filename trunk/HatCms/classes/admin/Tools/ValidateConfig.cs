@@ -10,11 +10,15 @@ using System.Web.UI.HtmlControls;
 using System.Text;
 using HatCMS.setup;
 
-namespace HatCMS.Controls.Admin
+namespace HatCMS.Admin
 {
     public class ValidateConfig : CmsBaseAdminTool
     {
-        
+        public override CmsAdminToolInfo GetToolInfo()
+        {
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Other, CmsAdminToolClass.ValidateConfig, "Validate CMS Config");
+        }
+
         public override string Render()
         {
             StringBuilder html = new StringBuilder();
