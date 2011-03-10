@@ -349,12 +349,16 @@ namespace HatCMS.setup
                 
                 // home page 
                 int HomePageId = InsertPage("", "Home Page", "Home Page", "", "HomePage", 0, 0, true);
+                // create the home page security zones
+                InsertHomePageZone(HomePageId);
 
                 //# /_Login Page (not visible in menu)
                 InsertPage("_Login", "Login", "Login", "", "_login", HomePageId, 0, false);
                 
                 // _Admin Page (hidden)
                 int AdminPageId = InsertPage("_admin", "HatCMS Administration", "Admin", "", RedirectTemplateName, HomePageId, 0, false);
+                // create the admin area security zones
+                InsertAdminAreaZone(AdminPageId);
 
                 // -- redirect the admin page to the home page.
                 InsertRedirectPlaceholder(CmsContext.getPageById(AdminPageId), 1, "~/");
@@ -437,12 +441,6 @@ namespace HatCMS.setup
 
                 //# Show Single Image page (/_internal/showImage)
                 InsertPage("showImage", "Show Image", "Show Image", "", "_SingleImageDisplay", InternalPageId, -1, false);
-
-
-				// create the home page and admin area security zones
-                InsertHomePageZone(HomePageId);
-                InsertAdminAreaZone(AdminPageId);
-                
 
                 l_msg.Text = "All standard pages have been added successfully.";
             }
