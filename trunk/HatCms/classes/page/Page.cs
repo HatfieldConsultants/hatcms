@@ -1384,6 +1384,16 @@ namespace HatCMS
         }
 
         /// <summary>
+        /// Fetch pages given a template name
+        /// </summary>
+        /// <param name="template"></param>
+        /// <returns></returns>
+        public static CmsPage[] FetchPageByTemplate(string template)
+        {
+            return new CmsPageDb().FetchPagesByTemplateName(template);
+        }
+
+        /// <summary>
         /// returns the PageId for the Home Page (the home page has it's name set to NULL, and it's parentId set to 0).
         /// If the home page is not found, or multiple pages are found, returns -1.
         /// </summary>
