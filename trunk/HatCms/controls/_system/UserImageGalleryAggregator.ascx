@@ -19,13 +19,13 @@
 
 			string dirOnDiskToView = data.getImageStorageDirectory(g);
 
-			CmsResource[] allResources = CmsResource.GetResourcesInDirectory(dirOnDiskToView, UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
+            CmsLocalFileOnDisk[] allResources = CmsLocalImageOnDisk.FetchAllFilesInDirectory(dirOnDiskToView, UserImageGalleryPlaceholderData.ImageExtensionsToDisplay);
 
 			if (allResources.Length >= 1)
 			{
 				numGalleriesOutput ++;
 
-				string thumbUrl = showThumbPage.getThumbDisplayUrl(allResources[0], 100, 100);;
+				string thumbUrl = showThumbPage.getThumbDisplayUrl((CmsLocalImageOnDisk)allResources[0], 100, 100);
                 html.Append("<tr><td><a href=\"" + g.Url + "\"><img border=\"0\" src=\"" + thumbUrl + "\"></a></td><td><a href=\"" + g.Url + "\">" + g.Title + "</a><br />[ " + imgText + ": " + allResources.Length + " ]</td></tr>");
 			}
 			
