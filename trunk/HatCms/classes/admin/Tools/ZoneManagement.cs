@@ -100,7 +100,7 @@ namespace HatCMS.Admin
         protected string generateFormHiddenField(string controlId)
         {
             StringBuilder html = new StringBuilder();
-            html.Append(PageUtils.getHiddenInputHtml("AdminTool", CmsBaseAdminTool.CmsAdminToolClass.ZoneManagement.ToString()) + EOL);
+            html.Append(PageUtils.getHiddenInputHtml("RunTool", CmsBaseAdminTool.CmsAdminToolClass.ZoneManagement.ToString()) + EOL);
             html.Append(PageUtils.getHiddenInputHtml(controlId + "id", controlId + "id", "") + EOL);
             html.Append(PageUtils.getHiddenInputHtml(controlId + "delete", controlId + "delete", "") + EOL);
             return html.ToString();
