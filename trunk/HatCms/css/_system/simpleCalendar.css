@@ -14,23 +14,22 @@
  */
 
 .SimpleCalendar-Container {
-	background-color: #e4ded7;
+	background-color: #ffffff;
 	width: 200px;
+	border: 1px solid #8a5d48;
 }
  
 .SimpleCalendar-Title {
 	text-align: left;
-	background-color: #e4ded7;
-	border-bottom: 2px solid #2d2522;
-	font-size: small;
+	background-color: #ffffff;
+	font-size: large;
 	font-weight: bold;
-	text-transform: uppercase;
 	margin: 3px;
 	padding: 2px;
 }
 #SimpleCalendar {
     padding: 3px;
-    background-color: #e4ded7;
+    background-color: #ffffff;
 }
 
 .sc,
@@ -59,8 +58,8 @@
 
 /* HatCms */
 .sc-view-month > table > thead > tr:first-child > th {
-	border-top: 1px solid #b8b1ab;
-	border-bottom: 1px solid #b8b1ab;
+	border-top: 1px dotted #b8b1ab;
+	border-bottom: 1px dotted #b8b1ab;
 	color: #943400;
 	font-weight: bold;
 	padding: 3px;
@@ -70,14 +69,14 @@
 	vertical-align: center;
 }
 .sc-today > .sc-day-number {
-	border: 3px solid #dc9840;
+	border: 3px solid #d2dce6;
 	padding: 2px 0px;
 	cursor: pointer;
 	color: #2d2522;
 	margin: 0px 2px 1px 2px;
 }
 .sc-not-today > .sc-day-number {
-	border: 3px solid #e4ded7;
+	border: 3px solid #ffffff;
 	padding: 2px 0px;
 	cursor: pointer;
 	color: #2d2522;
@@ -88,6 +87,9 @@
 	visibility: hidden;
 	width: 0px;
 	height: 0px;
+}
+.sc-button-prev span, .sc-button-next span {
+    color: #679f48;
 }
 /* HatCms */
 
@@ -129,7 +131,7 @@ table.sc-header {
 	font-size: 11px; /* HatCms */
 	vertical-align: middle; /* HatCms */
 	text-transform: uppercase; /* HatCms */
-	color: #943400;
+	color: #000000;
 	}
 	
 .sc-header-space {
@@ -451,8 +453,8 @@ table.sc-header {
 	}
 	
 .sc-grid .sc-other-month .sc-day-number {
-	opacity: 0.1;
-	filter: alpha(opacity=10); /* for IE */
+	opacity: 0.01;
+	filter: alpha(opacity=1); /* for IE */
 	/* opacity with small font can sometimes look too faded
 	   might want to set the 'color' property instead
 	   making day-numbers bold also fixes the problem */

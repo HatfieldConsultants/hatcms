@@ -55,7 +55,7 @@ function simpleCalenderHighlightCell() {
 				var formattedDate = tempDate.getFullYear() + '/' + (tempDate.getMonth()+1) + '/' + tempDate.getDate();
 				var cellTitle = $(this).attr('title');
 				if ( cellTitle == formattedDate ) {
-					$(this).css('background-color','#9f9b96');
+					$(this).css('background-color','#8a5d48');
 				}
 			});
 		}
@@ -73,7 +73,7 @@ function simpleCalenderAddFooter( txtToday, txtEvents ) {
 		'		<div style="margin-top: 5px; margin-left: 3px;">' + txtToday + '</div>'+
 		'	</td>'+
 		'	<td class="sc-not-today">'+
-		'		<div class="sc-day-number" style="background-color: #9f9b96;">&#160;</div>'+
+		'		<div class="sc-day-number" style="background-color: #8a5d48;">&#160;</div>'+
 		'	</td>'+
 		'	<td class="sc-not-today" colspan="3">'+
 		'		<div style="margin-top: 5px;">' + txtEvents + '</div>'+
@@ -1271,7 +1271,7 @@ function Grid(element, options, methods, viewName) {
 				td.find('div.sc-day-number').text(d.getDate());
 /* HatCms */	var ymd = d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate();
 /* HatCms */	td.find('div.sc-day-number').attr('title',ymd);
-/* HatCms */	td.find('div.sc-day-number').css('background-color','#e4ded7');
+/* HatCms */	td.find('div.sc-day-number').css('background-color','#ffffff');
 				addDays(d, 1);
 				if (nwe) {
 					skipWeekend(d);
