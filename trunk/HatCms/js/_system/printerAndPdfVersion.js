@@ -83,14 +83,17 @@ function createAnchor( url, displayHtml ) {
 /*******************************************************************
 * Add icons for printer friendly version and pdf version
 *******************************************************************/
-function addPrinterAndPdfIcon( printerVer, printerIcon, pdfVer, pdfIcon, placeAfterDom ) {
+function addPrinterAndPdfIcon( printerVer, printerIcon, pdfVer, pdfIcon, placeAfterDom, blockDisplay, floatAlignment ) {
 	var targetDom = document.getElementById(placeAfterDom);
 
 	if (!targetDom || (!printerVer && ! pdfVer ))
 		return;
 
-	var parentDiv = document.createElement('div');
+	var parentDiv = document.createElement( (blockDisplay == 0) ? 'span' : 'div' );
 	parentDiv.setAttribute('class', 'PrinterPdfVersionLinks');
+	if ( floatAlignment == 'right' ) {
+	    $(parentDiv).css('float', 'right');
+	}
 	
 	if (printerVer == true) {
 		var printerVerUrl = addUrlParameter( window.location.href, 'print', '1', true );
