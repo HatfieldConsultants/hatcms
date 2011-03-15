@@ -123,6 +123,7 @@ namespace HatCMS.setup
 
                 l_msg.Text = "Step 1 Completed Successfully: the Database \""+tb_DbName.Text.Trim()+"\" has been created, and tables have been created.";
                 l_NewConnStr.Text = "Edit the web.config file and set ConnectionString to \"<strong>" + connStr + "</strong>\"";
+                l_NewConnStr.Text += ", make sure user \"<strong>" + db_un.Text + "</strong>\" has the required rights to access the new database \"<strong>" + tb_DbName.Text.Trim() + "</strong>\" which you just created.";
             }
             catch (Exception ex)
             {
