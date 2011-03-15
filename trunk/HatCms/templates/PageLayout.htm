@@ -1,40 +1,49 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-	<head>
-	##RenderControl(_system/headsection)##
+<head>
+##RenderControl(_system/headsection)##
+</head>
 
-
-	</head>
-	<body>
-    ##StartPageBody##		        
-		##RenderControl(_system/header)##
-		##RenderControl(_system/Navigation/TopMultiLevelDropDownMenu UseMenuTitles="true" IncludeHomepage="true")##
-		<table width="100%" border="0">			
-			<tr>
-				<td valign="top" id="SideNav_td">
-					##RenderControl(_system/Navigation/CurrentThirdLevelListNavigation)##
-				</td>
-				<td valign="top">
-					##RenderControl(_system/breadcrumb)##
-					
-					<div id="content">
-						<h1 class="pageTitle"><span id="pageTitleSpan">##RenderControl(_system/PageTitle)##</span></h1>
-						
-						##PlaceholderRegion("MainContent")##
-						 																													
-														
-								
+<body>
+##StartPageBody##		 
+	##RenderControl(site/header)##
+	##RenderControl(_system/Navigation/TopMultiLevelDropDownMenu UseMenuTitles="true")##
+    ##RenderControl(_system/breadcrumb)##
+	<table width="100%" border="0" cellpadding="5" cellspacing="5">			
+		<tr>
+			<td valign="top">
+				<div style="WIDTH: 100%; padding: 5px;" id="content">
+					<h1 class="pageTitle"><span id="pageTitleSpan">##RenderControl(_system/PageTitle)##</span></h1>
+					##PlaceholderRegion("MainContent")##
+				</div>
+			</td>
+			<td valign="top" class="sideBar">
+				##RenderControl(_system/LanguageSwitcherLarge)##
+				<p>
+                    ##RenderControl(site/LinkToRAK)##
+				</p>
+				<p>
+					<div class="MostRecentNews">
+						##RenderControl(_system/MostRecentNewsItem id="1" newsIndex="0" summaryLength="115" template="<div class='MostRecentNewsText'><a href='{0}'>{1}</a></div>")##
 					</div>
-				</td>
-			</tr>
-		</table>
-    	##RenderControl(_system/CopyrightStatement)##
-		##RenderControl(_system/footer)##
-		<div id="LoginStatus">
-			##RenderControl(_system/LoginStatus)##
-		</div>		
-			
-		##EndPageBody##
-		##RenderControl(_system/FloatingEditMenu)##	
-	</body>
+				</p>
+				<p>
+				    ##RenderControl(_system/SimpleCalendar calendarPage="62")##
+				</p>
+			    <p>
+			        ##RenderControl(_system/UpcomingEvents count="3")##
+			    </p>
+			</td>
+		</tr>
+	</table>
+	##RenderControl(_system/CopyrightStatement)##
+	##RenderControl(_system/footer)##
+	<div id="LoginStatus">
+		##RenderControl(_system/LoginStatus)##
+	</div>		
+		
+	##EndPageBody##
+	##RenderControl(_system/FloatingEditMenu)##	
+	<script type="text/javascript" src="/js/site/pjtc.js"></script>
+</body>
 </html>
