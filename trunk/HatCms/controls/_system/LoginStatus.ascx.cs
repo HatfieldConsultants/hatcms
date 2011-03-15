@@ -29,7 +29,7 @@ namespace HatCMS.Controls
                 NameValueCollection paramList = new NameValueCollection();
                 paramList.Add("target", page.ID.ToString());
                 paramList.Add("action", "logoff");
-                string logoffUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("LoginPath","/_admin/login"), paramList);
+                string logoffUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("LoginPath","/_login"), paramList);
 
                 writer.WriteLine("You are logged in as " + CmsContext.currentWebPortalUser.UserName + " (<a href=\"" + logoffUrl + "\">logoff</a>)");
 			}
@@ -38,7 +38,7 @@ namespace HatCMS.Controls
 				CmsPage page = CmsContext.currentPage;
 				NameValueCollection paramList = new NameValueCollection();
 				paramList.Add("target",page.ID.ToString());
-                string logonUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("LoginPath", "/_admin/login"), paramList);
+                string logonUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("LoginPath", "/_login"), paramList);
 
 				writer.WriteLine("Not logged on: <a href=\""+logonUrl+"\">log on here</a>");
 			}

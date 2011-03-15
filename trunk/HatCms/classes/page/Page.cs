@@ -837,11 +837,11 @@ namespace HatCMS
 
             // -- checks if the current user can read the current page. If not authorized, redirect to the Login page.
             bool canRead = this.Zone.canRead(CmsContext.currentWebPortalUser);
-            if ( canRead == false && this.Path != CmsConfig.getConfigValue("LoginPath","/_admin/login"))
+            if ( canRead == false && this.Path != CmsConfig.getConfigValue("LoginPath","/_login"))
             {
                 NameValueCollection loginParams = new NameValueCollection();
                 loginParams.Add("target", this.ID.ToString());
-                CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath", "/_admin/login")), loginParams);
+                CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath", "/_login")), loginParams);
             }	
 			
             // -- create all placeholders and controls based on the page's template.

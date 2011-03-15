@@ -91,7 +91,7 @@ namespace HatCMS
                 List<CmsDependency> ret = new List<CmsDependency>();
                 // -- required pages
                 ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("KillLockPath", "/_admin/actions/killLock"), CmsConfig.Languages));
-                ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("LoginPath", "/_admin/login"), CmsConfig.Languages));
+                ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("LoginPath", "/_login"), CmsConfig.Languages));
                 ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("GotoEditModePath", "/_admin/action/gotoEdit"), CmsConfig.Languages));
                 ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("GotoViewModePath", "/_admin/actions/gotoView"), CmsConfig.Languages));
                 ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("CreateNewPagePath", "/_admin/createPage"), CmsConfig.Languages));
@@ -140,7 +140,7 @@ namespace HatCMS
 
             public static string Logoff(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
             {
-                string actionPagePath = CmsConfig.getConfigValue("LoginPath", "/_admin/login");
+                string actionPagePath = CmsConfig.getConfigValue("LoginPath", "/_login");
                 NameValueCollection paramList = new NameValueCollection();
                 
                 paramList.Add("action", "logoff");
