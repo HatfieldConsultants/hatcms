@@ -69,21 +69,32 @@ namespace HatCMS.Controls._system
         }
 
         /// <summary>
+        /// Get the multi-language text from config file: NewsArticle.ReadArticleText
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <returns></returns>
+        protected string getReadArticleText(CmsLanguage lang)
+        {
+            return CmsConfig.getConfigValue("NewsArticle.ReadArticleText", "read article", lang);
+        }
+
+        /// <summary>
         /// Format the header
         /// </summary>
         /// <returns></returns>
         protected string renderHeader(CmsLanguage lang)
         {
-            StringBuilder html = new StringBuilder("<div class=\"MostRecentNewsTitle\">");
+            string imgUrl = CmsConfig.getConfigValue("MostRecentNews.Image", "");
+            StringBuilder html = new StringBuilder("<table width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"3\"><tr>");
+            html.Append("<td width=\"50%\" valign=\"middle\">");
+            html.Append((imgUrl == "") ? "" : "<img src=\"" + imgUrl + "\" />");
+            html.Append("</td>");
+            html.Append("<td width=\"50%\" valign=\"middle\">");
+            html.Append("<div class=\"MostRecentNewsTitle\">");
             html.Append(getTitleText(lang));
             html.Append("</div>");
-
-            string imgUrl = CmsConfig.getConfigValue("MostRecentNews.Image", "");
-            if (imgUrl == "")
-                return html.ToString();
-            else
-                html.Append("<img src=\"" + imgUrl + "\" />");
-
+            html.Append("</td>");
+            html.Append("</tr></table>");
             return html.ToString();
         }
 
@@ -129,6 +140,9 @@ namespace HatCMS.Controls._system
 
                 string output = String.Format(template, new string[] { url, summaryOutput });
                 html.Append(output);
+
+                string extraAnchor = "<div style=\"text-align: right; padding-right: 3px; margin-top: -10px; margin-bottom: 5px;\"><a href=\"{0}\" class=\"readNewsArticle\">{1}</a></div>";
+                html.Append(string.Format(extraAnchor, new string[]{url, getReadArticleText(lang)}));
             }
 
             return html.ToString();
