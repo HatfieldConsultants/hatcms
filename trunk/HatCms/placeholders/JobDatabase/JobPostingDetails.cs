@@ -95,6 +95,8 @@ namespace HatCMS.Placeholders
             // -- obsolete config entries:
             ret.Add(new CmsConfigItemDependency("JobPostingLocations", CmsDependency.ExistsMode.MustNotExist));            
             ret.Add(new CmsConfigItemDependency("DeleteJobPath", CmsDependency.ExistsMode.MustNotExist));
+
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowLeft.jpg", new DateTime(2011, 3, 1)));
             return ret.ToArray();
         }
 

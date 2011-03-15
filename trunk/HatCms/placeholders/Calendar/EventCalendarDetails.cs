@@ -88,6 +88,7 @@ namespace HatCMS.Placeholders.Calendar
             ret.Add(new CmsConfigItemDependency("EventCalendar.EndDateTimeText"));
             ret.Add(new CmsConfigItemDependency("EventCalendar.CategoryColor"));
 
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowLeft.jpg", new DateTime(2011, 3, 1)));
             return ret.ToArray();
         }
 

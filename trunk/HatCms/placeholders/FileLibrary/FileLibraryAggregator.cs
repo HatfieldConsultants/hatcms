@@ -167,6 +167,8 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsConfigItemDependency("FileLibrary.EventNotAttachedText"));
             ret.Add(new CmsConfigItemDependency("FileLibrary.PageText"));
 
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowRight.jpg", new DateTime(2011, 3, 1)));
+
             return ret.ToArray();
         }
 

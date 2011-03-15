@@ -45,6 +45,8 @@ namespace HatCMS.Controls._system
             ret.Add(new CmsConfigItemDependency("MostRecentNews.TitleText"));
             ret.Add(new CmsConfigItemDependency("MostRecentNews.NoNewsText"));
 
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowRight.jpg", new DateTime(2011, 3, 1)));
+
             return ret.ToArray();
         }
 

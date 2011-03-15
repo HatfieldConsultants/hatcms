@@ -24,6 +24,9 @@ namespace HatCMS.Placeholders
         {
             List<CmsDependency> ret = new List<CmsDependency>();
 
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowLeft.jpg", new DateTime(2011, 3, 1)));
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/arrowDown.jpg", new DateTime(2011, 3, 1)));
+
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/FileLibrary/FileLibrary.js"));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/FileLibrary/FileLibraryCategory.js"));
             ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("DeleteFileLibraryPath", "/_admin/actions/deleteFileLibrary"), CmsConfig.Languages));

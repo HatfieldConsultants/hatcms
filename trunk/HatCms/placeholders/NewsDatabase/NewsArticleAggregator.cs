@@ -57,6 +57,8 @@ namespace HatCMS.Placeholders.NewsDatabase
             ret.Add(new CmsConfigItemDependency("NewsArticle.NoNewsText"));
             ret.Add(new CmsConfigItemDependency("NewsArticle.NoNewsTextForText"));
 
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowRight.jpg", new DateTime(2011, 3, 1)));
+
             return ret.ToArray();
         }
 

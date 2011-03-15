@@ -21,6 +21,13 @@ namespace HatCMS.Controls._system
 
         }
 
+        public CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/arrowRight_white.png", new DateTime(2011, 3, 1)));
+            return ret.ToArray();
+        }
+        
         protected override void Render(HtmlTextWriter writer)
         {
             CultureInfo[] cultureInfoArray = CmsConfig.CultureInformation;

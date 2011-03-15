@@ -215,6 +215,9 @@ namespace HatCMS.Placeholders
 
             ret.AddRange(SWFUploadHelpers.SWFUploadDependencies);
 
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowLeft.jpg", new DateTime(2011, 3, 1)));
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/arrowDown.jpg", new DateTime(2011, 3, 1)));
+
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/fileIcons/16x16/doc.gif"));
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/fileIcons/16x16/pdf.gif"));
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/fileIcons/16x16/xls.gif"));
