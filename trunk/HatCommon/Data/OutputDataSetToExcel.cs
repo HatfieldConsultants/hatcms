@@ -51,12 +51,17 @@ namespace Hatfield.Web.Portal.Data
             }
         }
 
-        private static void clearDataGridControls(System.Web.UI.Control control)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="control"></param>
+        /// note: made public so that RAMP project can use it!
+        public static void ClearDataGridControls(System.Web.UI.Control control)
         {
             // translated from VB: http://forums.asp.net/p/466278/466278.aspx
             for (int i = control.Controls.Count - 1; i >= 0; i--)
             {
-                clearDataGridControls(control.Controls[i]);
+                ClearDataGridControls(control.Controls[i]);
             }
 
             if (!(control is System.Web.UI.WebControls.TableCell))
@@ -147,7 +152,7 @@ namespace Hatfield.Web.Portal.Data
             // clear controls. if you do not do this, you get the Exception "'DataGridLinkButton' must be placed inside a form tag with runat=server";
             foreach (Control c in gridView.Controls)
             {
-                clearDataGridControls(c);
+                ClearDataGridControls(c);
             }
             //tell the datagrid to render itself to our htmltextwriter
             try
@@ -204,7 +209,7 @@ namespace Hatfield.Web.Portal.Data
             // clear controls. if you do not do this, you get the Exception "'DataGridLinkButton' must be placed inside a form tag with runat=server";
             foreach (System.Web.UI.Control c in dataGrid.Controls)
             {
-                clearDataGridControls(c);
+                ClearDataGridControls(c);
             }
 
 

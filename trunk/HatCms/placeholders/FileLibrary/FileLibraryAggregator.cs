@@ -920,7 +920,7 @@ namespace HatCMS.Placeholders
                             // -- link direct to the file only if the current user can't edit the file.
                             if (renderParameters.fileLinkMode == RenderParameters.FileLinkMode.LinkToFile && !page.Zone.canWrite(CmsContext.currentWebPortalUser))
                             {
-                                urlDetails = FileLibraryDetailsData.getDownloadUrl(page, identifier, lang, file.FileName);
+                                urlDetails = FileLibraryDetailsData.getDownloadUrl(CmsContext.getPageById(file.DetailsPageId), identifier, lang, file.FileName);
                             }
                             else
                             {
@@ -930,7 +930,7 @@ namespace HatCMS.Placeholders
                             html.Append("<li>");
                             string title = CmsContext.getPageById(file.DetailsPageId).getTitle(lang);
 
-                            html.Append("<a href=\"" + urlDetails + "\">" + title + "</a>");
+                            html.Append("<a target=\"_blank\" href=\"" + urlDetails + "\">" + title + "</a>");
                             html.Append("</li>" + EOL);
                         }
                         html.Append("</ul>");

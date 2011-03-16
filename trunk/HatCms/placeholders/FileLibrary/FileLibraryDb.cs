@@ -311,6 +311,11 @@ namespace HatCMS.Placeholders
             return list;
         }
 
+        public List<FileLibraryDetailsData> fetchDetailsData(CmsPage[] pageArray, CmsLanguage lang)
+        {
+            return fetchDetailsData(pageArray, Int32.MinValue, lang, null, Int32.MinValue, Int32.MinValue);
+        }
+
         public List<FileLibraryDetailsData> fetchDetailsData(CmsPage[] pageArray, int identifier, CmsLanguage lang)
         {
             return fetchDetailsData(pageArray, identifier, lang, null, Int32.MinValue, Int32.MinValue);
@@ -330,7 +335,8 @@ namespace HatCMS.Placeholders
             sql.Append(DETAILS_TABLE);
             sql.Append(" WHERE ");
             sql.Append(" PageId IN(" + string.Join(",", pageIds.ToArray()) + ")");
-            sql.Append(" AND Identifier=" + identifier.ToString());
+            if (identifier >= 0 )
+                sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND LangCode='" + dbEncode(lang.shortCode) + "'");
             if (category != null)
             {

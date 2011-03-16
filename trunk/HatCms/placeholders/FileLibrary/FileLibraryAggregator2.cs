@@ -27,8 +27,8 @@ namespace HatCMS.Placeholders
 
             public string ListingTitle = "Files:";
 
-            // public enum FileLinkMode { LinkToPage, LinkToFile }
-            // public FileLinkMode fileLinkMode = FileLinkMode.LinkToPage;
+            public enum FileLinkMode { LinkToPage, LinkToFile }
+            public FileLinkMode fileLinkMode = FileLinkMode.LinkToPage;
 
             /// <summary>
             /// Set to Int32.MinValue for the current page.
@@ -40,7 +40,9 @@ namespace HatCMS.Placeholders
             /// </summary>
             public bool RecursiveGatherFiles = false;
 
-            // public bool ShowByCategory = false;
+            public string LinkTarget = "_blank";
+
+            public bool ShowByCategory = false;
 
 
             public RenderParameters(string[] paramList)
@@ -51,22 +53,29 @@ namespace HatCMS.Placeholders
                 }
                 else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
                 {
-                    /*
+                    
                     string sLinkMode = "";
                     try
                     {
-                        sLinkMode = PlaceholderUtils.getParameterValue("filelinks", Enum.GetName(typeof(FileLinkMode), displayMode), paramList);
+                        sLinkMode = PlaceholderUtils.getParameterValue("filelinks", Enum.GetName(typeof(FileLinkMode), fileLinkMode), paramList);
                         fileLinkMode = (FileLinkMode)Enum.Parse(typeof(FileLinkMode), sLinkMode, true);
+                        // set the default link target based on the link mode. This can be overridden by the linktarget parameter.
+                        switch (fileLinkMode)
+                        {                            
+                            case FileLinkMode.LinkToFile: LinkTarget = "_blank"; break;
+                            case FileLinkMode.LinkToPage: LinkTarget = "_self"; break;                                
+                        }
                     }
                     catch
                     {
-                        throw new Exception("Error: invalid FileLibraryAggregator filelinks parameter. Valid values: " + String.Join(", ", Enum.GetNames(typeof(FileLinkMode))));
+                        throw new Exception("Error: invalid FileLibraryAggregator2 filelinks parameter. Valid values: " + String.Join(", ", Enum.GetNames(typeof(FileLinkMode))));
                     }
-                    */
+                    
                     PageIdToGatherFilesFrom = PlaceholderUtils.getParameterValue("gatherfrompageid", Int32.MinValue, paramList);
                     RecursiveGatherFiles = PlaceholderUtils.getParameterValue("gatherrecusive", RecursiveGatherFiles, paramList);
                     ListingTitle = PlaceholderUtils.getParameterValue("listingtitle", ListingTitle, paramList);
-                    // ShowByCategory = PlaceholderUtils.getParameterValue("ShowByCategory", false, paramList);
+                    LinkTarget = PlaceholderUtils.getParameterValue("linktarget", LinkTarget, paramList);
+                    ShowByCategory = PlaceholderUtils.getParameterValue("showbycategory", false, paramList);
                 }
             }
             
@@ -223,13 +232,55 @@ namespace HatCMS.Placeholders
             if (pagesToShow.Count > 0)
             {
                 CmsPage[] sortedPagesToShow = CmsPage.SortPagesByTitle(pagesToShow.ToArray(), langToRenderFor);
-                html.Append("<span class=\"SimpleFileAggregatorHeader\">" + renderParams.ListingTitle + "</span>");
-                html.Append("<ul class=\"SimpleFileAggregator\">");
-                foreach (CmsPage pageToShow in sortedPagesToShow)
+                html.Append("<div class=\"SimpleFileAggregatorHeader\">" + renderParams.ListingTitle + "</div>");
+                
+                if (renderParams.ShowByCategory)
                 {
-                    html.Append("<li><a href=\"" + pageToShow.getUrl(langToRenderFor) + "\">" + pageToShow.getTitle(langToRenderFor) + "</a></li>");
+                    List<FileLibraryDetailsData> filesToShow = db.fetchDetailsData(sortedPagesToShow, langToRenderFor);
+                    foreach (FileLibraryCategoryData fileCat in categoryList)
+                    {
+                        FileLibraryDetailsData[] filesInCat = FileLibraryDetailsData.getFilesByCategory(filesToShow, fileCat);
+                        if (filesInCat.Length > 0)
+                        {
+                            html.Append("<div class=\"SimpleFileAggregatorCategoryHeader\">" + fileCat.CategoryName + "</div>");
+                            html.Append("<ul class=\"SimpleFileAggregator\">");
+                            foreach (FileLibraryDetailsData fileToShow in filesInCat)
+                            {
+                                CmsPage pageToShow = CmsContext.getPageById(fileToShow.DetailsPageId);
+                                if (renderParams.fileLinkMode == RenderParameters.FileLinkMode.LinkToPage)
+                                {
+                                    html.Append("<li><a target=\"" + renderParams.LinkTarget + "\" href=\"" + pageToShow.getUrl(langToRenderFor) + "\">" + pageToShow.getTitle(langToRenderFor) + "</a></li>");
+                                }
+                                else if (renderParams.fileLinkMode == RenderParameters.FileLinkMode.LinkToFile)
+                                {
+                                    html.Append("<li><a target=\"" + renderParams.LinkTarget + "\" href=\"" + FileLibraryDetailsData.getDownloadUrl(pageToShow, fileToShow.Identifier, fileToShow.Lang, fileToShow.FileName) + "\">" + pageToShow.getTitle(langToRenderFor) + "</a></li>");
+                                }
+                            } // foreach
+                            html.Append("</ul>");
+                        }
+                    } // foreach category
                 }
-                html.Append("</ul>");
+                else
+                {
+                    html.Append("<ul class=\"SimpleFileAggregator\">");
+                    foreach (CmsPage pageToShow in sortedPagesToShow)
+                    {
+                        if (renderParams.fileLinkMode == RenderParameters.FileLinkMode.LinkToPage)
+                        {
+                            html.Append("<li><a target=\"" + renderParams.LinkTarget + "\" href=\"" + pageToShow.getUrl(langToRenderFor) + "\">" + pageToShow.getTitle(langToRenderFor) + "</a></li>");
+                        }
+                        else if (renderParams.fileLinkMode == RenderParameters.FileLinkMode.LinkToFile)
+                        {
+                            List<FileLibraryDetailsData> filesToShow = db.fetchDetailsData(pageToShow);
+                            foreach (FileLibraryDetailsData file in filesToShow)
+                            {
+                                html.Append("<li><a target=\"" + renderParams.LinkTarget + "\" href=\"" + FileLibraryDetailsData.getDownloadUrl(pageToShow, file.Identifier, file.Lang, file.FileName) + "\">" + pageToShow.getTitle(langToRenderFor) + "</a></li>");
+                            } // foreach file
+                        }
+                    } // foreach
+                    html.Append("</ul>");
+                } // if not show by category
+                
             }
 
             if (canWrite)
@@ -243,7 +294,7 @@ namespace HatCMS.Placeholders
             writer.Write(html.ToString());
         }
 
-        public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        public new void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
             RenderInViewMode(writer, page, identifier, langToRenderFor, paramList);
         }

@@ -20,7 +20,7 @@ namespace HatCMS.Placeholders
         /// <summary>
         /// the assemblies are staticly cached so that they are held as long as the assemblies are
         /// </summary>
-        private static Dictionary<string, Assembly> assemblyCache = new Dictionary<string, Assembly>();
+        private static Dictionary<string, Assembly> assemblyPlaceholderCache = new Dictionary<string, Assembly>();
 
         /// <summary>
         /// Invokes a method on a placeholder. The placeholder's assembly must be in the bin directory to be found, and must
@@ -37,9 +37,9 @@ namespace HatCMS.Placeholders
 
             // -- if the placeholderType was previously found in a particular assembly, get that assembly from the cache
             string cacheKey = PlaceholderType.ToLower();
-            if (assemblyCache.ContainsKey(cacheKey))
+            if (assemblyPlaceholderCache.ContainsKey(cacheKey))
             {
-                assembliesToSearch.Add(assemblyCache[cacheKey]);
+                assembliesToSearch.Add(assemblyPlaceholderCache[cacheKey]);
             }
             else
             {
@@ -64,11 +64,11 @@ namespace HatCMS.Placeholders
                 foreach (Type type in assembly.GetTypes())
                 {
                     if (type.IsClass == true &&
-                        type.BaseType != null && type.BaseType.FullName == typeof(BaseCmsPlaceholder).FullName &&
+                        type.IsSubclassOf(typeof(BaseCmsPlaceholder)) &&                        
                         type.FullName.ToLower().EndsWith("." + PlaceholderType.ToLower()))
                     {
                         // -- cache the found assembly for next time around
-                        assemblyCache[cacheKey] = assembly;
+                        assemblyPlaceholderCache[cacheKey] = assembly;
 
                         foreach (MethodInfo method in type.GetMethods())
                         {
