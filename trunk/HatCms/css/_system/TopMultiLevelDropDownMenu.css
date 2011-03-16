@@ -1,7 +1,8 @@
 .TopMultiLevelDropDownMenu{
-font: bold 11px Verdana;
-background: #4e92bd;
-width: 100%;
+font: bold 10px Verdana;
+background-color: white;
+border-bottom: 3px solid #8a5d48;
+margin: 0px 5px 5px 5px;
 }
 
 .TopMultiLevelDropDownMenu ul{
@@ -20,11 +21,13 @@ float: left;
 /*Top level menu link items style*/
 .TopMultiLevelDropDownMenu ul li a{
 display: block;
-background: #4e92bd; /*background of tabs (default state)*/
-color: white;
+background-color: white; /*background of tabs (default state)*/
 padding: 8px 10px;
-border-right: 1px solid #778;
+border-right: 1px solid #ffffff;
 text-decoration: none;
+color: #8a5d48;
+text-transform: uppercase;
+font-weight: bold;
 }
 
 * html .TopMultiLevelDropDownMenu ul li a{ /*IE6 hack to get sub menu links to behave correctly*/
@@ -32,12 +35,12 @@ display: inline-block;
 }
 
 .TopMultiLevelDropDownMenu ul li a:link, .TopMultiLevelDropDownMenu ul li a:visited{
-color: white;
+    color: #8a5d48;
 }
 
-.TopMultiLevelDropDownMenu ul li a:hover{
-background: #5d8741; /*tab link background during hover state*/
-color: white;
+.TopMultiLevelDropDownMenu ul li a:hover, .TopMultiLevelDropDownMenu ul li a:active, .TopMultiLevelDropDownMenu ul li a.itemSelected {
+    color: #ffffff;
+    background-color: #8a5d48;
 }
 	
 /*1st sub level menu*/
@@ -61,17 +64,23 @@ top: 0;
 
 /* Sub level menu links style */
 .TopMultiLevelDropDownMenu ul li ul li a{
-font: normal 10px Verdana;
 width: 160px; /*width of sub menus*/
-padding: 5px;
-margin: 0;
-border-top-width: 0;
-border-bottom: 1px solid gray;
+padding: 5px 10px;
+background-color: #8a5d48; /*background of tabs (default state)*/
+border-top: 1px dotted #d7cfc5;
+color: white;
+text-decoration: none;
+text-transform: none;
+font-weight: bold;
+opacity: 0.95;
+filter: alpha(opacity=95);
 }
 
-.TopMultiLevelDropDownMenu ul li ul li a:hover{ /*sub menus hover style*/
-background: #1a4a56;
-color: black;
+.TopMultiLevelDropDownMenu ul li ul li a:link, .TopMultiLevelDropDownMenu ul li ul li a:visited {
+    color: #d7cfc5;
+}
+.TopMultiLevelDropDownMenu ul li ul li a:hover, .TopMultiLevelDropDownMenu ul li ul li a:active { /*sub menus hover style*/
+    color: white;
 }
 
 /* ######### CSS classes applied to down and right arrow images  ######### */
