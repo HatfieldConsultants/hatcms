@@ -231,12 +231,20 @@ namespace HatCMS
 
         public static CmsLocalImageOnDisk[] FetchAllImagesInDirectory(string directoryPath, string[] fileExtensions)
         {
-            return (CmsLocalImageOnDisk[])CmsLocalFileOnDisk.FetchAllFilesInDirectory(directoryPath, fileExtensions);
+            CmsLocalFileOnDisk[] fileArray = CmsLocalFileOnDisk.FetchAllFilesInDirectory(directoryPath, fileExtensions);
+            CmsLocalImageOnDisk[] imgArray = new CmsLocalImageOnDisk[fileArray.Length];
+            for(int x= 0; x< fileArray.Length; x++)
+                imgArray[x] = (CmsLocalImageOnDisk)(fileArray[x]);
+            return imgArray;
         }
 
         public static CmsLocalImageOnDisk[] FetchAllImagesInDirectory(string directoryPath)
         {
-            return (CmsLocalImageOnDisk[])CmsLocalFileOnDisk.FetchAllFilesInDirectory(directoryPath);
+            CmsLocalFileOnDisk[] fileArray = CmsLocalFileOnDisk.FetchAllFilesInDirectory(directoryPath);
+            CmsLocalImageOnDisk[] imgArray = new CmsLocalImageOnDisk[fileArray.Length];
+            for (int x = 0; x < fileArray.Length; x++)
+                imgArray[x] = (CmsLocalImageOnDisk)(fileArray[x]);
+            return imgArray;
         }
 
 
