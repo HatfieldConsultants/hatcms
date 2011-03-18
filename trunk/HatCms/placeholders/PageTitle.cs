@@ -43,16 +43,16 @@ namespace HatCMS.Placeholders
 			
             // -- get the placeholder width and height parameters
             string width = "100%";
-            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1 && paramList.Length > 0)
-                width = paramList[0] as string;
-            else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
                 width = PlaceholderUtils.getParameterValue("width", width, paramList);
+            else            
+                throw new ArgumentException("Invalid CmsTemplateEngineVersion");            
 
 			string height = "1.5em";
-            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1 && paramList.Length > 1)
-				height = paramList[1] as string;
-            else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
                 height = PlaceholderUtils.getParameterValue("height", height, paramList);
+            else            
+                throw new ArgumentException("Invalid CmsTemplateEngineVersion");            
 			
 			string pageTitle = "";
 			string menuTitle = "";

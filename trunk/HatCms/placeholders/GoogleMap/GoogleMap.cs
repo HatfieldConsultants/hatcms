@@ -64,14 +64,7 @@ namespace HatCMS.Placeholders
         {
             string width = "400px";
             string height = "200px";
-            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1)
-            {
-                if (paramList.Length > 0)
-                    width = paramList[0];
-                if (paramList.Length > 1)
-                    height = paramList[1];
-            }
-            else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
                 width = PlaceholderUtils.getParameterValue("width", width, paramList);
                 height = PlaceholderUtils.getParameterValue("height", height, paramList);
@@ -136,14 +129,7 @@ namespace HatCMS.Placeholders
         {
             string width = "400px";
             string height = "200px";
-            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1)
-            {
-                if (paramList.Length > 0)
-                    width = paramList[0];
-                if (paramList.Length > 1)
-                    height = paramList[1];
-            }
-            else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
                 width = PlaceholderUtils.getParameterValue("width", width, paramList);
                 height = PlaceholderUtils.getParameterValue("height", height, paramList);

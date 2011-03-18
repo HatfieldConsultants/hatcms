@@ -23,9 +23,20 @@ namespace HatCMS
         /// </summary>
         public DateTime FileShouldBeLastModifiedAfter = DateTime.MinValue;
 
-        public CmsControlDependency(string ControlPathUnderControlsDir)
+        public CmsControlDependency(CmsControlDefinition controlDefinition)
         {
-            controlPath = ControlPathUnderControlsDir;
+            controlPath = controlDefinition.ControlPath;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ControlPathUnderControlsDirWithoutFileExtension">        
+        /// The control path never has a filename extension (ie "_system/login" is a valid control path, while "_system/login.ascx" is invalid).
+        /// </param>
+        public CmsControlDependency(string ControlPathUnderControlsDirWithoutFileExtension)
+        {
+            controlPath = ControlPathUnderControlsDirWithoutFileExtension;
         }
 
         public CmsControlDependency(string ControlPathUnderControlsDir, DateTime fileshouldbelastmodifiedafter)

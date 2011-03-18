@@ -12,7 +12,6 @@ using HatCMS.Placeholders;
 using System.Collections.Generic;
 using Hatfield.Web.Portal.Collections;
 using System.Text;
-using HatCMS.classes.dependencies;
 using HatCMS.Placeholders.Calendar;
 
 namespace HatCMS.Controls._system
@@ -35,24 +34,8 @@ namespace HatCMS.Controls._system
         {
             List<CmsDependency> ret = new List<CmsDependency>();
 
-            // check if ##RenderControl(_system/SimpleCalendar calendarPage="...")## is defined
-            CmsPage dummyPage = new CmsPage();
-            dummyPage.TemplateName = "HomePage";
-            string[] ctrlPaths = dummyPage.getAllControlPaths();
-            for (int x = 0; x < ctrlPaths.Length; x++)
-            {
-                string[] parts = ctrlPaths[x].Split(new char[] { '/' });
-                ctrlPaths[x] = parts[parts.Length - 1];
-            }
-            string currCtrlPath = this.GetType().Name;
-            for (int x = 0; x < ctrlPaths.Length; x++)
-            {
-                string ctrlPath = ctrlPaths[x];
-                string suffix = ctrlPath.Split(new char[] { ' ' })[0];
-                if (currCtrlPath.EndsWith(suffix))
-                    ret.Add(new CmsControlParameterDependency(ctrlPath, new string[] { "calendarpage" }));
-            }
-
+            // check if calendarpage param ##RenderControl(_system/SimpleCalendar calendarPage="...")## is defined            
+            ret.Add(new CmsControlParameterDependency(this, new string[] { "calendarpage" }));
             ret.Add(CmsFileDependency.UnderAppPath("css/_system/simpleCalendar.css"));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery.simpleCalendar/simpleCalendar.min.js"));
 

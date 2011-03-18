@@ -173,16 +173,16 @@ namespace HatCMS.Controls._system
             string dateOutputFormat = "MMMM d, yyyy";
             int maxLengthOfSummary = 115;
 
-            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1)
-            {
-                throw new Exception("MostRecentNewsItem does not support version 1.");
-            }
-            else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
                 newsIndexToDisplay = CmsControlUtils.getControlParameterKeyValue(this, "newsIndex", newsIndexToDisplay);
                 template = CmsControlUtils.getControlParameterKeyValue(this, "template", template);
                 dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(this, "dateFormat", dateOutputFormat);
                 maxLengthOfSummary = CmsControlUtils.getControlParameterKeyValue(this, "summaryLength", maxLengthOfSummary);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid CmsTemplateEngineVersion");
             }
 
             if (newsIndexToDisplay < 0)

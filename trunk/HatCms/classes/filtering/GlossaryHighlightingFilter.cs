@@ -69,11 +69,15 @@ namespace HatCMS
                     GlossaryDb db = new GlossaryDb();
                     gData = db.getGlossaryData(glossaryId);
                     if (!CmsContext.currentUserIsLoggedIn)
-                        System.Web.HttpContext.Current.Cache.Insert(cacheKey, gData, null, DateTime.Now.AddHours(1), System.Web.Caching.Cache.NoSlidingExpiration);
+                        System.Web.HttpContext.Current.Cache.Insert(cacheKey, gData, null, DateTime.Now.AddHours(1), System.Web.Caching.Cache.NoSlidingExpiration);                    
 
                     // go through longer words first (longer words/phrases are usually more specific than shorter ones) 
                     gData = GlossaryData.SortByWordLength(gData, SortDirection.Descending);
                 }
+
+                // -- short-circuit processing if there aren't any glossary terms in the system.
+                if (gData.Length == 0)
+                    return placeholderHtml;
 
                 // -- process the placeholderHTML
                 string html = placeholderHtml;

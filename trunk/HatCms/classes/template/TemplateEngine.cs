@@ -19,7 +19,7 @@ namespace HatCMS
         
         public abstract void CreateChildControls();
         public abstract string renderControlToString(string controlPath);
-        public abstract string[] getAllControlPaths();
+        public abstract CmsControlDefinition[] getAllControlDefinitions();
         public abstract CmsPlaceholderDefinition[] getAllPlaceholderDefinitions();
 
         /// <summary>
@@ -52,11 +52,15 @@ namespace HatCMS
         public abstract CmsDependency[] getControlDependencies(string controlPath);
 
 
-        public abstract string[] getControlParameterKeys(System.Web.UI.UserControl control);
+        public abstract string[] getControlParameterKeys(System.Web.UI.UserControl control);        
         public abstract int  getControlParameterKeyValue(System.Web.UI.UserControl control, string key, int defaultValue);
         public abstract bool getControlParameterKeyValue(System.Web.UI.UserControl control, string key, bool defaultValue);
         public abstract string getControlParameterKeyValue(System.Web.UI.UserControl control, string key, string defaultValue);
-        
+
+        public abstract string[] getControlParameterKeys(CmsControlDefinition controlDefinition);
+        public abstract int getControlParameterKeyValue(CmsControlDefinition controlDefinition, string key, int defaultValue);
+        public abstract bool getControlParameterKeyValue(CmsControlDefinition controlDefinition, string key, bool defaultValue);
+        public abstract string getControlParameterKeyValue(CmsControlDefinition controlDefinition, string key, string defaultValue);
         /// <summary>
 		/// gets the names of the currently available templates for the current user.
 		/// </summary>

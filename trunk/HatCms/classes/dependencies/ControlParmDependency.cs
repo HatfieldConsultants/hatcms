@@ -10,25 +10,31 @@ using System.Web.UI.HtmlControls;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HatCMS.classes.dependencies
+namespace HatCMS
 {
     /// <summary>
     /// Class to valid the parameters for a control.
     /// </summary>
     public class CmsControlParameterDependency : CmsDependency
     {
-        private string controlId;
+        private string ControlName;
         private string[] keys;
 
+        public CmsControlParameterDependency(System.Web.UI.UserControl control, string[] requiredParameterKeys)
+        {
+            ControlName = control.GetType().Name;
+            keys = requiredParameterKeys;
+        }
+        
         /// <summary>
-        /// Constructor, which accepts the Control.ID and required parameter keys.
+        /// Constructor, which accepts the ControlName and required parameter keys.
         /// </summary>
         /// <param name="newControlId"></param>
         /// <param name="newKeys"></param>
-        public CmsControlParameterDependency(string newControlId, string[] newKeys)
+        public CmsControlParameterDependency(string controlName, string[] requiredParameterKeys)
         {
-            controlId = newControlId;
-            keys = newKeys;
+            ControlName = controlName;
+            keys = requiredParameterKeys;
         }
 
         /// <summary>
@@ -42,14 +48,26 @@ namespace HatCMS.classes.dependencies
         public override CmsDependencyMessage[] ValidateDependency()
         {
             List<CmsDependencyMessage> ret = new List<CmsDependencyMessage>();
-            for (int x = 0; x < keys.Length; x++)
+            string[] templates = CmsContext.getTemplateNamesForCurrentUser();
+            CmsPage dummyPage = new CmsPage();
+            foreach (string template in templates)
             {
-                string testString = " " + keys[x] + "=\"";
-                if (controlId.Contains(testString) == false)
+                dummyPage.TemplateName = template;
+
+                CmsControlDefinition[] controlDefs = dummyPage.getAllControlDefinitions();
+                controlDefs = CmsControlDefinition.GetByControlName(controlDefs, ControlName);
+                foreach (CmsControlDefinition controlDef in controlDefs)
                 {
-                    ret.Add(CmsDependencyMessage.Error("CMS Control parameter for '" + controlId + "' not found: '" + keys[x] + "'"));
-                }
-            }
+                    foreach (string keyToHave in keys)
+                    {
+                        if (!CmsControlUtils.hasControlParameterKey(controlDef, keyToHave))
+                        {
+                            ret.Add(CmsDependencyMessage.Error("CMS Control parameter '" + keyToHave + "' for control '" + controlDef.ControlPath + "' in template '" + dummyPage.TemplateName + "' is required, but was not found."));
+                        }
+                    }
+                } // foreach controlDef
+            } // foreach template
+
             return ret.ToArray();
         }
 
@@ -59,7 +77,7 @@ namespace HatCMS.classes.dependencies
         /// <returns></returns>
         public override string GetContentHash()
         {
-            StringBuilder sb = new StringBuilder(controlId.GetType().ToString());
+            StringBuilder sb = new StringBuilder(ControlName);
             foreach (string k in keys)
                 sb.Append(k);
             return sb.ToString();

@@ -40,22 +40,17 @@ namespace HatCMS.Placeholders
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
 		{									
 			// -- output the text in the parameters
-			if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1 && paramList.Length > 0)
-			{
-				writer.Write("<div class=\"EditModeComment\">");
-				foreach(string s in paramList)
-				{
-					writer.Write(s);
-				} // foreach
-				writer.Write("</div>");
-			}
-            else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+			if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
                 string text = PlaceholderUtils.getParameterValue("text", "", paramList);
                 if (text.Trim() != "")
                 {
                     writer.Write("<div class=\"EditModeComment\">" + text + "</div>");
                 }
+            }
+            else
+            {
+                throw new ArgumentException("Invalid CmsTemplateEngineVersion");
             }
 		} // RenderEdit
 

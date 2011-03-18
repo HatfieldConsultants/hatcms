@@ -408,16 +408,7 @@ namespace HatCMS.Placeholders
         private int getThumbDisplayWidth(CmsPage page, string[] paramList)
         {
             int width = Int32.MinValue;
-            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1 && paramList.Length > 0)
-            {
-                try
-                {
-                    width = Convert.ToInt32(paramList[0]);
-                }
-                catch
-                { }
-            }
-            else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
                 width = PlaceholderUtils.getParameterValue("width", width, paramList);
 
@@ -434,6 +425,10 @@ namespace HatCMS.Placeholders
                     throw new TemplateExecutionException(page.TemplateName, "SingleImage placeholders should no longer have a \"tags\" parameter.");
 
             }
+            else
+            {
+                throw new ArgumentException("Invalid CmsTemplateEngineVersion");
+            }
 
             if (width < -1)
                 throw new TemplateExecutionException(page.TemplateName, "SingleImage placeholder must have a \"width\" parameter.");
@@ -444,17 +439,14 @@ namespace HatCMS.Placeholders
         private int getThumbDisplayHeight(CmsPage page, string[] paramList)
         {
             int forceDefaultThumbHeight = Int32.MinValue;
-            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1 && paramList.Length > 1)
+            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
-                try
-                {
-                    forceDefaultThumbHeight = Convert.ToInt32(paramList[1]);
-                }
-                catch
-                { }
-            }
-            else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
                 forceDefaultThumbHeight = PlaceholderUtils.getParameterValue("height", forceDefaultThumbHeight, paramList);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid CmsTemplateEngineVersion");
+            }
 
             if (forceDefaultThumbHeight < -1)
                 throw new TemplateExecutionException(page.TemplateName, "SingleImage placeholder must have a \"height\" parameter.");

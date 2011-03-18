@@ -121,9 +121,27 @@ namespace HatCMS.setup
                     connStr += ";";
                 connStr += "database=" + tb_DbName.Text.Trim() + ";";
 
-                l_msg.Text = "Step 1 Completed Successfully: the Database \""+tb_DbName.Text.Trim()+"\" has been created, and tables have been created.";
-                l_NewConnStr.Text = "Edit the web.config file and set ConnectionString to \"<strong>" + connStr + "</strong>\"";
-                l_NewConnStr.Text += ", make sure user \"<strong>" + db_un.Text + "</strong>\" has the required rights to access the new database \"<strong>" + tb_DbName.Text.Trim() + "</strong>\" which you just created.";
+                // -- update the ConnectionStrings in the web.config file
+                string[] configKeys = new string[] { "ConnectionString", "hatWebPortalConnectionString" };
+                string ConnStrMsg = "";
+                try
+                {
+                    Configuration cfg = System.Web.Configuration.WebConfigurationManager.OpenWebConfiguration("~");
+                    foreach (string configKey in configKeys)
+                    {
+                        cfg.AppSettings.Settings[configKey].Value = connStr;
+                    }// foreach config key
+                    cfg.Save();
+                    ConnStrMsg = "<p>The ConnectionString has been set using the values you have provided. (\"" + connStr + "\") </p>";
+                }
+                catch
+                {
+                    ConnStrMsg = "<p>Edit the web.config file and set ConnectionString to \"<strong>" + connStr + "</strong>\".</p>> ";
+                }
+
+                l_msg.Text = "Step 2 Completed Successfully: the Database \""+tb_DbName.Text.Trim()+"\" has been created, and tables have been created.";
+                l_NewConnStr.Text = ConnStrMsg;
+                l_NewConnStr.Text += "<p>Make sure user \"<strong>" + db_un.Text + "</strong>\" has the required rights to access the new database \"<strong>" + tb_DbName.Text.Trim() + "</strong>\" which you just created.</p>";
             }
             catch (Exception ex)
             {
@@ -461,6 +479,11 @@ namespace HatCMS.setup
 
         }
 
+        protected void link_HomePage_Click(object sender, EventArgs e)
+        {
+            Response.Redirect(CmsContext.HomePage.Url);
+        }
+    
 
 	}
 }

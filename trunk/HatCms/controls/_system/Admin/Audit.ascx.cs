@@ -23,6 +23,9 @@ using HatCMS.Admin;
 
 namespace HatCMS.Controls.Admin
 {
+    /// <summary>
+    /// The AdminMenuControl renders all administrator tools.
+    /// </summary>
     public partial class AdminMenuControl : System.Web.UI.UserControl
     {
         public CmsDependency[] getDependencies()

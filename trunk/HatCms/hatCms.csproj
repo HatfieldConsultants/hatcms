@@ -169,17 +169,24 @@
     <Compile Include="classes\resource\LocalFileOnDisk.cs" />
     <Compile Include="classes\resource\LocalFileOnDiskMetaItem.cs" />
     <Compile Include="classes\resource\LocalImageOnDisk.cs" />
+    <Compile Include="classes\template\ControlDefinition.cs" />
     <Compile Include="classes\template\PlaceholderDefinition.cs" />
     <Compile Include="classes\template\TemplateEngine.cs" />
     <Compile Include="classes\template\TemplateEngineVersion.cs" />
     <Compile Include="classes\template\TemplateExecutionException.cs" />
-    <Compile Include="classes\template\v1\TemplateEngineV1.cs" />
     <Compile Include="classes\template\v2\TemplateEngineV2.cs" />
     <Compile Include="classes\UrlFormat.cs" />
     <Compile Include="classes\zone\CmsZoneDb.cs" />
     <Compile Include="classes\zone\CmsZone.cs" />
     <Compile Include="classes\zone\CmsZoneUserRole.cs" />
     <Compile Include="classes\zone\CmsZoneUserRoleDb.cs" />
+    <Compile Include="controls\_system\RSSGlossary.ascx.cs">
+      <DependentUpon>RSSGlossary.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="controls\_system\RSSGlossary.ascx.designer.cs">
+      <DependentUpon>RSSGlossary.ascx</DependentUpon>
+    </Compile>
     <Compile Include="controls\_system\Admin\Audit.ascx.cs">
       <DependentUpon>Audit.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -659,6 +666,9 @@
     <Compile Include="setup\default.aspx.designer.cs">
       <DependentUpon>default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="_system\tools\cachingProxy.ashx.cs">
+      <DependentUpon>cachingProxy.ashx</DependentUpon>
+    </Compile>
     <Compile Include="_system\tools\Calendar\CalendarICalData.ashx.cs">
       <DependentUpon>CalendarICalData.ashx</DependentUpon>
     </Compile>
@@ -750,6 +760,7 @@
     <Compile Include="_system\tools\swfUpload\SwfUploadTarget.aspx.designer.cs">
       <DependentUpon>SwfUploadTarget.aspx</DependentUpon>
     </Compile>
+    <Content Include="controls\_system\RSSGlossary.ascx" />
     <Content Include="controls\_system\Admin\Audit.ascx" />
     <Content Include="controls\_system\Breadcrumb.ascx" />
     <Content Include="controls\_system\BreadcrumbList.ascx" />
@@ -1301,6 +1312,7 @@
     <None Include="templates\ContactUs.template" />
     <Content Include="templates\internal\_DeleteFileLibraryPopup.template" />
     <Content Include="templates\internal\_FileLibraryCategoryPopup.template" />
+    <Content Include="templates\Glossary.template" />
     <None Include="templates\EventCalendarAggregator.template" />
     <None Include="templates\EventCalendarDetails.template" />
     <None Include="templates\ProcurementAggregator.template" />
@@ -1317,6 +1329,7 @@
     <None Include="templates\UserImageGallery.template" />
     <None Include="templates\UserImageGalleryAggregator.template" />
     <None Include="templates\_SingleImageDisplay.template" />
+    <Content Include="_system\tools\cachingProxy.ashx" />
     <Content Include="_system\tools\Calendar\CalendarICalData.ashx" />
     <Content Include="_system\tools\rss.ashx" />
     <Content Include="_system\tools\Calendar\SimpleCalendarJsonData.ashx" />

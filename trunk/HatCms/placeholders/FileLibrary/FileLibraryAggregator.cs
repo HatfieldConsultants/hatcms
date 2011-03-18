@@ -43,11 +43,7 @@ namespace HatCMS.Placeholders
 
             public RenderParameters(string[] paramList)
             {
-                if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1)
-                {
-                    throw new Exception("Error: FileLibraryAggregator does not work with TemplateEngine.v1");
-                }
-                else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+                if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
                 {
                     string sDisplayMode = "";
                     try
@@ -73,6 +69,10 @@ namespace HatCMS.Placeholders
 
                     PageIdToGatherFilesFrom = PlaceholderUtils.getParameterValue("gatherfrompageid", Int32.MinValue, paramList);
                     RecursiveGatherFiles = PlaceholderUtils.getParameterValue("gatherrecusive", RecursiveGatherFiles, paramList);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid CmsTemplateEngineVersion");
                 }
             }
         } // RenderParameters        

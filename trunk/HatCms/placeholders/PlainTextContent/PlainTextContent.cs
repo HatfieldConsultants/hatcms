@@ -52,15 +52,8 @@ namespace HatCMS.Placeholders
 
             string width = "100%";
             string height = "200px";
-            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1)
-            {
-                if (paramList.Length > 0)
-                    width = paramList[0] as string;
-
-                if (paramList.Length > 1)
-                    height = paramList[1] as string;
-            }
-            else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+            
+            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
                 width = PlaceholderUtils.getParameterValue("width", width, paramList);
                 height = PlaceholderUtils.getParameterValue("height", height, paramList);

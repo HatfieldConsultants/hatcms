@@ -445,10 +445,9 @@ namespace HatCMS.TemplateEngine
             return HatCMS.CmsControlUtils.getControlDependencies(controlPath);
         }
 
-
-        public override string[] getAllControlPaths()
-        {            
-            List<string> ret = new List<string>();
+        public override CmsControlDefinition[] getAllControlDefinitions()        
+        {
+            List<CmsControlDefinition> ret = new List<CmsControlDefinition>();
             string fullText = getTemplateFileContents();
 
             string[] fileParts = fullText.Split(new string[] { COMMAND_DELIMITER }, StringSplitOptions.RemoveEmptyEntries);
@@ -462,13 +461,19 @@ namespace HatCMS.TemplateEngine
                     int end = part.IndexOf(")");
                     if (start < 2 || end < 1)
                     {
-                        throw new TemplateExecutionException(new ArgumentException(), this._templateName, "The template command \"Placeholder\" needs to have brackets \"()\" after it!");
+                        throw new TemplateExecutionException(new ArgumentException(), this._templateName, "The template command \"rendercontrol\" needs to have brackets \"()\" after it!");
                     }
                     string paramList = part.Substring(start, end - start);
                     string[] paramArray = getParamArray(paramList);
                     if (paramArray.Length >= 1 && paramArray[0].Trim().ToLower() != "")
                     {
-                        ret.Add(paramArray[0].Trim());
+                        string controlPath = paramArray[0].Trim().ToLower();
+                        
+                        string[] controlParams = new string[paramArray.Length-1];
+                        Array.Copy(paramArray, 1, controlParams, 0, controlParams.Length); // parameters are everything after the path
+
+                        CmsControlDefinition controlDef = new CmsControlDefinition(controlPath, controlParams);
+                        ret.Add(controlDef);
                     }
                 } // if
             } // foreach

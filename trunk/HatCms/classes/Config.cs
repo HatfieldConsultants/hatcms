@@ -147,11 +147,7 @@ namespace HatCMS
         {
             get 
             {
-                string ver = getConfigValue("TemplateEngineVersion", "V1");
-                if (string.Compare(ver, "V2", true) == 0)
-                    return CmsTemplateEngineVersion.v2;
-                else
-                    return CmsTemplateEngineVersion.v1;
+                return CmsTemplateEngineVersion.v2;                
             }
 
         }

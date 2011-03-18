@@ -47,11 +47,7 @@ namespace HatCMS.Placeholders
 
             public RenderParameters(string[] paramList)
             {
-                if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1)
-                {
-                    throw new Exception("Error: FileLibraryAggregator does not work with TemplateEngine.v1");
-                }
-                else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+                if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
                 {
                     
                     string sLinkMode = "";
@@ -77,6 +73,9 @@ namespace HatCMS.Placeholders
                     LinkTarget = PlaceholderUtils.getParameterValue("linktarget", LinkTarget, paramList);
                     ShowByCategory = PlaceholderUtils.getParameterValue("showbycategory", false, paramList);
                 }
+                else                
+                    throw new ArgumentException("Invalid CmsTemplateEngineVersion");
+                
             }
             
         } // RenderParameters  
@@ -203,6 +202,8 @@ namespace HatCMS.Placeholders
             return "";
         }
 
+        private bool renderFromEditMode = false;
+
         /// <summary>
         /// Render the placeholder in ViewMode
         /// </summary>
@@ -222,6 +223,9 @@ namespace HatCMS.Placeholders
 
             StringBuilder html = new StringBuilder();
             bool canWrite = page.currentUserCanWrite;
+            if (renderFromEditMode) // don't render forms if we are in Edit Mode.
+                canWrite = false;
+
             if (canWrite)
             {
                 html.Append("<p>" + handleAssociateExistingSubmit(page, identifier, langToRenderFor, controlId, pagesToShow) + "</p>" + EOL);
@@ -296,13 +300,36 @@ namespace HatCMS.Placeholders
 
         public new void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
+            renderFromEditMode = true;
             RenderInViewMode(writer, page, identifier, langToRenderFor, paramList);
         }
 
         public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
         {
-            return new Rss.RssItem[0];
-        }
+            RenderParameters renderParams = new RenderParameters(placeholderDefinition.ParamList);
+
+            List<CmsPage> pagesToShow = new List<CmsPage>(FetchAllPagesToShow(page, placeholderDefinition.Identifier, langToRenderFor, renderParams));
+            List<FileLibraryDetailsData> filesToShow = db.fetchDetailsData(pagesToShow.ToArray(), langToRenderFor);
+
+            List<Rss.RssItem> ret = new List<Rss.RssItem>();
+            foreach (FileLibraryDetailsData file in filesToShow)
+            {
+                CmsPage filePage = CmsContext.getPageById(file.DetailsPageId);
+                Rss.RssItem rssItem = CreateAndInitRssItem(filePage, langToRenderFor);
+
+                // -- link directly to the file url
+                rssItem.Link = new Uri(FileLibraryDetailsData.getDownloadUrl(filePage, placeholderDefinition.Identifier, langToRenderFor, file.FileName), UriKind.RelativeOrAbsolute);
+                rssItem.Guid = new Rss.RssGuid(rssItem.Link);
+
+                rssItem.Author = file.Author;
+                rssItem.Description = file.Description;
+
+                ret.Add(rssItem);
+
+            } // foreach file
+            return ret.ToArray();
+
+        } // GetRssFeedItems
 
 
         private class filelibraryaggregator2Db : PlaceholderDb

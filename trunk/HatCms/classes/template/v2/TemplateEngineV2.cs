@@ -442,7 +442,16 @@ namespace HatCMS.TemplateEngine
             return regionContent;
             
         }
-                
+
+        public static Dictionary<string, string> tokenizeCommandParameters(CmsControlDefinition controlDefinition)
+        {
+            // note: see getAllControlDefinitions(): the whole command is stored in ParamList[0].
+            if (controlDefinition.ParamList.Length >= 1)
+                return tokenizeCommandParameters(controlDefinition.ParamList[0]);
+            else
+                return new Dictionary<string, string>();
+        }
+
         public static Dictionary<string, string> tokenizeCommandParameters(string rawParameters)
         {
             //##Placeholder("PlaceholderName" id="#" param0="value" param2="value" param3="quoted: \"escaped quotes\"" param4="single quotes: 'no escape needed.' ")##
@@ -553,24 +562,7 @@ namespace HatCMS.TemplateEngine
             string html = Hatfield.Web.Portal.PageUtils.RenderUserControl(System.Web.HttpContext.Current, Control_VirtualPath);
             return html;
         }
-
-        public override string[] getAllControlPaths()
-        {            
-            // -- get the template file contents
-            string templateText = getCachedFileContents(getTemplateFilenameOnDisk());
-
-            // -- get the TemplateLayout statement
-            string[] layouts = getCommandStatementParameters("TemplateLayout", templateText);
-
-            string layoutText = getCachedFileContents(getTemplateLayoutFilenameOnDisk(layouts[0]));
-
-            List<string> ret = new List<string>();
-            ret.AddRange(getCommandStatementParameters("rendercontrol", templateText));
-            ret.AddRange(getCommandStatementParameters("rendercontrol", layoutText));
-
-            return ret.ToArray();
-
-        } // getAllControlNames
+                
 
         public override CmsDependency[] getControlDependencies(string controlPath)
         {
@@ -580,8 +572,56 @@ namespace HatCMS.TemplateEngine
 
 
         /// <summary>
-        /// returns a dictionary of [placeholderType] => ArrayOfIdentifiers for this template
-        /// note: all placeholderType dictionary keys are lower case
+        /// returns an array of CmsControlDefinitions  for this template.
+        /// note: all ControlPath entries are converted to lower case
+        /// </summary>
+        /// <returns></returns>
+        public override CmsControlDefinition[] getAllControlDefinitions()
+        {
+            List<CmsControlDefinition> ret = new List<CmsControlDefinition>();
+            
+            // -- get the template file contents
+            string templateText = getCachedFileContents(getTemplateFilenameOnDisk());
+
+            string[] CommandParams = getCommandStatementParameters("rendercontrol", templateText);
+            foreach (string c in CommandParams)
+            {
+                Dictionary<string, string> tokens = tokenizeCommandParameters(c);
+                string controlPath = tokens["##commandname##"].ToLower();
+
+                string[] subParamsArray = new string[] { c };
+                CmsControlDefinition def = new CmsControlDefinition(controlPath, subParamsArray);
+                ret.Add(def);
+
+            }
+
+            // -- get the TemplateLayout statement
+            string[] layouts = getCommandStatementParameters("TemplateLayout", templateText);
+
+            if (layouts.Length > 0)
+            {
+                string layoutText = getCachedFileContents(getTemplateLayoutFilenameOnDisk(layouts[0]));
+                CommandParams = getCommandStatementParameters("rendercontrol", layoutText);
+                foreach (string c in CommandParams)
+                {
+                    Dictionary<string, string> tokens = tokenizeCommandParameters(c);
+                    string controlPath = tokens["##commandname##"].ToLower();
+                 
+                    string[] subParamsArray = new string[] { c };
+                    CmsControlDefinition def = new CmsControlDefinition(controlPath, subParamsArray);
+                    ret.Add(def);
+
+                } // foreach
+            }
+
+            return ret.ToArray();
+
+
+        } // getAllPlaceholderDefinitions
+
+        /// <summary>
+        /// returns an array of CmsPlaceholderDefinitions  for this template
+        /// note: all placeholderType entries are lower case
         /// </summary>
         /// <returns></returns>
         public override CmsPlaceholderDefinition[] getAllPlaceholderDefinitions()
@@ -659,6 +699,14 @@ namespace HatCMS.TemplateEngine
             return keys.ToArray();
         }
 
+        public override string[] getControlParameterKeys(CmsControlDefinition controlDefinition)
+        {
+            Dictionary<string, string> parameters = tokenizeCommandParameters(controlDefinition);
+            List<string> keys = new List<string>(parameters.Keys);
+            return keys.ToArray();
+        }
+
+
         public override int getControlParameterKeyValue(System.Web.UI.UserControl control, string key, int defaultValue)
         {
             Dictionary<string, string> parameters = tokenizeCommandParameters(control.ID);
@@ -690,6 +738,44 @@ namespace HatCMS.TemplateEngine
         public override string getControlParameterKeyValue(System.Web.UI.UserControl control, string key, string defaultValue)
         {
             Dictionary<string, string> parameters = tokenizeCommandParameters(control.ID);
+            if (parameters.ContainsKey(key))
+                return parameters[key];
+            return defaultValue;
+        }
+
+
+        
+        public override int getControlParameterKeyValue(CmsControlDefinition controlDefinition, string key, int defaultValue)
+        {
+            Dictionary<string, string> parameters = tokenizeCommandParameters(controlDefinition);
+            if (parameters.ContainsKey(key))
+            {
+                try
+                {
+                    return Convert.ToInt32(parameters[key]);
+                }
+                catch { }
+            }
+            return defaultValue;
+        }
+
+        public override bool getControlParameterKeyValue(CmsControlDefinition controlDefinition, string key, bool defaultValue)
+        {
+            Dictionary<string, string> parameters = tokenizeCommandParameters(controlDefinition);
+            if (parameters.ContainsKey(key))
+            {
+                try
+                {
+                    return Convert.ToBoolean(parameters[key]);
+                }
+                catch { }
+            }
+            return defaultValue;
+        }
+
+        public override string getControlParameterKeyValue(CmsControlDefinition controlDefinition, string key, string defaultValue)
+        {
+            Dictionary<string, string> parameters = tokenizeCommandParameters(controlDefinition);
             if (parameters.ContainsKey(key))
                 return parameters[key];
             return defaultValue;

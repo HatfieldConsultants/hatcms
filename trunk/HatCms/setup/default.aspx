@@ -6,11 +6,11 @@
 		<link rel="stylesheet" type="text/css" href="../css/_system/Setup.css" />
 	</head>
 	<body>
-		<div id="navigation"><div class="wrapper"><img src="../images/_system/hatCms_logo.png" style="float: left; margin-top: 5px;" /> <h1>HatCMS Setup</h1></div></div>
+		<div id="navigation"><div class="wrapper"><img align="absmiddle" src="../images/_system/hatCms_logo.png" style="float: left; margin-top: 8px; margin-right: 10px;" /> <h1>HatCMS Setup</h1></div></div>
 	    <div class="wrapper">
 		<form id="Form1" method="post" runat="server">
 			
-			<p><asp:Label id="l_msg" runat="server"></asp:Label></p>
+			<p><asp:Label id="l_msg" runat="server" BackColor="Yellow" Font-Bold="True" Font-Size="Large"></asp:Label></p>
 			
 				<h2>Step 1: Edit the web.config file</h2>
             <p>
@@ -37,16 +37,16 @@
 				        <td><asp:TextBox id="db_host" runat="server" Columns="40">localhost</asp:TextBox></td>
 				    </tr>
 				    <tr>
-				        <td>New Database Name: <span class="required">[required]</span></td>
-				        <td><asp:TextBox id="tb_DbName" runat="server" Columns="40">hatCMS3</asp:TextBox>(the script will create this database and must not already exist)</td>
+				        <td>New Database Name: <span class="required">[required, must not already exist]</span></td>
+				        <td><asp:TextBox id="tb_DbName" runat="server" Columns="40">hatCMSDatabase</asp:TextBox></td>
 				    </tr>
 				    <tr>
 				        <td>Database access username: <span class="required">[required]</span></td>
-				        <td><asp:TextBox id="db_un" runat="server" Columns="40">hatCMS</asp:TextBox>(used just for this installation step)</td>
+				        <td><asp:TextBox id="db_un" runat="server" Columns="40">username</asp:TextBox></td>
 				    </tr>
 				    <tr>
-				        <td>Database access password:</td>
-				        <td><asp:TextBox id="db_pw" runat="server" Columns="40">hatCMS</asp:TextBox>(used just for this installation step)</td>
+				        <td>Database access password:<span class="required">[required]</span></td>
+				        <td><asp:TextBox id="db_pw" runat="server" Columns="40">password</asp:TextBox></td>
 				    </tr>
 				</table>
 			
@@ -84,6 +84,11 @@
             <p>
                 Your site is now installed, but is quite bland. You can customize your site by creating
                 custom templates and controls.</p>
+            <p>
+                Check out your new
+                <asp:LinkButton ID="link_HomePage" runat="server" OnClick="link_HomePage_Click">Home Page</asp:LinkButton>.</p>
+            <p>
+                &nbsp;</p>
 		</form>
 		</div>
 	</body>

@@ -36,6 +36,22 @@ namespace HatCMS
             return CmsContext.currentPage.TemplateEngine.getControlParameterKeys(control);
         } // getControlParameterKeys
 
+        public static string[] getControlParameterKeys(CmsControlDefinition controlDefinition)
+        {
+            return CmsContext.currentPage.TemplateEngine.getControlParameterKeys(controlDefinition);
+        } // getControlParameterKeys
+
+        
+
+        public static bool hasControlParameterKey(CmsControlDefinition controlDefinition, string keyName)
+        {
+            string[] keys = getControlParameterKeys(controlDefinition);
+            if (StringUtils.IndexOf(keys, keyName, StringComparison.CurrentCultureIgnoreCase) > -1)
+                return true;
+            return false;
+        }
+
+
         public static bool hasControlParameterKey(System.Web.UI.UserControl control, string keyName)
         {
             string[] keys = getControlParameterKeys(control);

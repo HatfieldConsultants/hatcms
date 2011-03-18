@@ -225,10 +225,8 @@ namespace HatCMS.Placeholders
             return json.ToString() + Environment.NewLine;
         }
 
-        public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        public static string getLetterToDisplay(GlossaryPlaceholderData placeholderData)
         {
-            GlossaryDb db = new GlossaryDb();
-            GlossaryPlaceholderData placeholderData = db.getGlossary(page, identifier, langToRenderFor, true);
             string letterToDisplay = "";
             if (placeholderData.ViewMode == GlossaryPlaceholderData.GlossaryViewMode.PagePerLetter)
             {
@@ -240,19 +238,22 @@ namespace HatCMS.Placeholders
                     // placeholderData.ViewMode = GlossaryPlaceholderData.GlossaryViewMode.SinglePageWithJumpList;
                 }
             }
-            
-            GlossaryData[] items = db.getGlossaryData(placeholderData, letterToDisplay);
+            return letterToDisplay;
+        }
 
+        public static string GetHtmlDisplay(CmsPage page, GlossaryData[] items, GlossaryPlaceholderData placeholderData, string[] charactersWithData, string letterToDisplay)
+        {                                    
+            
             StringBuilder html = new StringBuilder();
-            html.Append("<div class=\"Glossary\">"+Environment.NewLine);
+            html.Append("<div class=\"Glossary\">" + Environment.NewLine);
             // -- output JumpLinks
-            string[] charactersWithData = db.getAllCharactersWithData(placeholderData);
+
             html.Append("<div class=\"JumpLinks\">");
             string JumpLinksSeperator = " | ";
             List<string> jumpLinks = new List<string>();
             if (placeholderData.ViewMode == GlossaryPlaceholderData.GlossaryViewMode.PagePerLetter && letterToDisplay != "")
             {
-                jumpLinks.Add("<a href=\"" + page.Url + "\" title=\"view entire glossary\">[all]</a>");                
+                jumpLinks.Add("<a href=\"" + page.Url + "\" title=\"view entire glossary\">[all]</a>");
             }
 
 
@@ -279,14 +280,14 @@ namespace HatCMS.Placeholders
                     {
                         url = "#letter_" + currentChar.ToString();
                     }
-                        
-                    link += "<a href=\""+url+"\">";
+
+                    link += "<a href=\"" + url + "\">";
                 }
                 link += currentChar.ToString();
 
                 if (outputA)
                     link += "</a>";
-                
+
                 jumpLinks.Add(link);
                 currentChar++;
             }
@@ -336,7 +337,7 @@ namespace HatCMS.Placeholders
                 else if (placeholderData.ViewMode == GlossaryPlaceholderData.GlossaryViewMode.PagePerLetter)
                     itemsToDisplay = items;
 
-                
+
                 bool oddRow = true;
                 foreach (GlossaryData item in itemsToDisplay)
                 {
@@ -346,15 +347,32 @@ namespace HatCMS.Placeholders
                     html.Append("<tr class=\"" + cssClass + "\">");
                     html.Append("<td class=\"word " + cssClass + "\">" + item.word + "</td>");
                     html.Append("<td class=\"description " + cssClass + "\">" + item.description + "</td>");
-                    html.Append("</tr>"+Environment.NewLine);
-                    oddRow = ! oddRow;
+                    html.Append("</tr>" + Environment.NewLine);
+                    oddRow = !oddRow;
                 } // foreach glossarydata item
-                
+
                 currentChar++;
             } while (currentChar != lastChar);
 
             html.Append("</table>");
             html.Append("</div>"); // glossary
+
+            return html.ToString();
+        }
+
+        public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        {
+            GlossaryDb db = new GlossaryDb();
+            GlossaryPlaceholderData placeholderData = db.getGlossary(page, identifier, langToRenderFor, true);
+
+            string letterToDisplay = getLetterToDisplay(placeholderData);
+
+            GlossaryData[] items = db.getGlossaryData(placeholderData, letterToDisplay);
+            string[] charactersWithData = db.getAllCharactersWithData(placeholderData);
+
+            StringBuilder html = new StringBuilder();
+            html.Append(GetHtmlDisplay(page, items, placeholderData, charactersWithData, letterToDisplay));
+
             writer.Write(html.ToString());
 
         } // RenderView

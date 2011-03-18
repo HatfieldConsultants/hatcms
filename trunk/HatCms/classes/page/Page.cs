@@ -1032,14 +1032,41 @@ namespace HatCMS
         }
 
         /// <summary>
-        /// gets a list of control names used in the page's template.
+        /// gets a list of control path used in the page's template.
         /// if a control is referenced more than once, it will be found multiple times in the return array.
+        /// <br/>Note: Control paths never have a filename extension (ie "_system/Login" is a valid control path, while "_system/Login.ascx" is invalid).
         /// <br />WARNING!!! if the template file for this page doesn't exist, this function will throw an Exception!!!
         /// </summary>
         /// <returns></returns>
         public string[] getAllControlPaths()
         {
-            return TemplateEngine.getAllControlPaths();            
+            List<string> ret = new List<string>();
+            CmsControlDefinition[] controlDefs = getAllControlDefinitions(); // use getAllControlDefinitions because it's cached.
+            foreach (CmsControlDefinition controlDef in controlDefs)
+            {
+                ret.Add(controlDef.ControlPath);
+            } // foreach
+            return ret.ToArray();
+        }
+
+        /// <summary>
+        /// gets a list of CmsControlDefinitions used in the page's template.
+        /// if a control is referenced more than once, it will be found multiple times in the return array.
+        /// <br/>Note: Control paths never have a filename extension (ie "_system/Login" is a valid control path, while "_system/Login.ascx" is invalid).
+        /// <br />WARNING!!! if the template file for this page doesn't exist, this function will throw an Exception!!!
+        /// </summary>
+        /// <returns></returns>
+        public CmsControlDefinition[] getAllControlDefinitions()
+        {
+            // -- this function is used all over the place, so let's cache it's results (note: base the cache on the template name, not the page).
+            string cacheKey = "getAllControlDefinitions" + TemplateName;
+            if (PerRequestCache.CacheContains(cacheKey))
+                return (CmsControlDefinition[])PerRequestCache.GetFromCache(cacheKey, new CmsControlDefinition[0]);
+
+            CmsControlDefinition[] arr = TemplateEngine.getAllControlDefinitions();
+            PerRequestCache.AddToCache(cacheKey, arr);
+            return arr;
+                        
         }
        
 
@@ -1123,8 +1150,7 @@ namespace HatCMS
 
                 CmsTemplateEngine engine;
                 switch (templateVersion)
-                {
-                    case CmsTemplateEngineVersion.v1: engine = new TemplateEngine.TemplateEngineV1(TemplateName, this); break;
+                {                    
                     case CmsTemplateEngineVersion.v2: engine = new TemplateEngine.TemplateEngineV2(TemplateName, this); break;
                     default: throw new ArgumentException("Invalid Template Engine Version");
                 }

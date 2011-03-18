@@ -115,17 +115,17 @@ namespace HatCMS
             foreach(string filePath in CmsConfig.URLsToNotRemap)
                 ret.Add(CmsFileDependency.UnderAppPath(filePath));
 
-            // -- config entries
-            ret.Add(new CmsConfigItemDependency("TemplateEngineVersion"));
+            // -- config entries            
             ret.Add(new CmsConfigItemDependency("URLsToNotRemap"));            
             ret.Add(new CmsConfigItemDependency("AdminUserRole"));
             ret.Add(new CmsConfigItemDependency("LoginUserRole"));
             ret.Add(new CmsConfigItemDependency("AuthorAccessUserRole"));
+            ret.Add(new CmsConfigItemDependency("TemplateEngineVersion", CmsDependency.ExistsMode.MustNotExist)); // removed Mar 18, 2011. Only v2 templates are now supported.
             ret.Add(new CmsConfigItemDependency("RequireAnonLogin", CmsDependency.ExistsMode.MustNotExist)); // deprecated 10 Feb 2011. Use the Zones system to manage anon logins
             ret.Add(new CmsConfigItemDependency("PathSpaceReplacementChar", CmsDependency.ExistsMode.MustNotExist)); // always set to "+".
             ret.Add(new CmsConfigItemDependency("RewriteEngineOn", CmsDependency.ExistsMode.MustNotExist)); // RewriteEngine is always on.
             ret.Add(new CmsConfigItemDependency("Languages"));
-            ret.Add(new CmsConfigItemDependency("useInternal404NotFoundErrorHandler"));
+            ret.Add(new CmsConfigItemDependency("useInternal404NotFoundErrorHandler"));            
             
             bool useInternal404NotFoundErrorHandler = CmsConfig.getConfigValue("useInternal404NotFoundErrorHandler", false);
             if (useInternal404NotFoundErrorHandler)
@@ -164,19 +164,19 @@ namespace HatCMS
                     ret.AddRange(PlaceholderUtils.getDependencies(phName));
                 }
 
-                string[] controlNames = new string[0];
+                string[] controlPaths = new string[0];
                 try
                 {
-                    controlNames = page.getAllControlPaths();
+                    controlPaths = page.getAllControlPaths();
                 }
                 catch(Exception ex)
                 {
-                    Console.Write("Could not get page control names: " + ex.Message);
+                    Console.Write("Could not get page control paths: " + ex.Message);
                 }
-                foreach (string controlName in controlNames)
+                foreach (string controlPath in controlPaths)
                 {
-                    ret.Add(new CmsControlDependency(controlName));
-                    ret.AddRange(CmsContext.currentPage.TemplateEngine.getControlDependencies(controlName));
+                    ret.Add(new CmsControlDependency(controlPath));
+                    ret.AddRange(CmsContext.currentPage.TemplateEngine.getControlDependencies(controlPath));
                 }
             } // foreach page
 
@@ -195,14 +195,15 @@ namespace HatCMS
                 }
 
 
-                string[] controlNames = dummyPage.TemplateEngine.getAllControlPaths();
-                foreach (string controlName in controlNames)
+                CmsControlDefinition[] controlDefs = dummyPage.TemplateEngine.getAllControlDefinitions();
+                foreach (CmsControlDefinition controlDef in controlDefs)
                 {
-                    ret.Add(new CmsControlDependency(controlName));
-                    ret.AddRange(dummyPage.TemplateEngine.getControlDependencies(controlName));
+                    ret.Add(new CmsControlDependency(controlDef));
+                    ret.AddRange(dummyPage.TemplateEngine.getControlDependencies(controlDef.ControlPath));
                 }
             } // foreach
 
+            //
 
             return CmsDependency.RemoveDuplicates(ret.ToArray());
         }

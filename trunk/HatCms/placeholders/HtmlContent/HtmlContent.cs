@@ -34,34 +34,17 @@ namespace HatCMS.Placeholders
 
             public RenderParameters(string[] paramList)
             {
-                if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v1)
-                {
-                    if (paramList.Length > 0 && paramList[0].Trim() != "")
-                        renderWidth = paramList[0];
-
-                    if (paramList.Length > 1 && paramList[1].Trim() != "")
-                        renderHeight = paramList[1];
-
-                    if (paramList.Length > 2 && paramList[2].Trim() != "")
-                        renderTemplate = paramList[2];
-
-                    if (paramList.Length > 3 && paramList[3].Trim() != "" && String.Compare(paramList[3].Trim(), "OutputOnlyIfHasContent", true) == 0)
-                    {
-                        outputOnlyIfHasContent = true;
-                    }
-
-                    if (paramList.Length > 3 && paramList[3].Trim() != "" && String.Compare(paramList[3].Trim(), "OutputOnlyInEditMode", true) == 0)
-                    {
-                        outputOnlyInEditMode = true;
-                    }
-                }
-                else if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+                if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
                 {
                     renderWidth = PlaceholderUtils.getParameterValue("width", renderWidth, paramList);
                     renderHeight = PlaceholderUtils.getParameterValue("height", renderHeight, paramList);
                     renderTemplate = PlaceholderUtils.getParameterValue("OutputTemplate", renderTemplate, paramList);
                     outputOnlyIfHasContent = PlaceholderUtils.getParameterValue("OutputOnlyIfHasContent", outputOnlyIfHasContent, paramList);
                     outputOnlyInEditMode = PlaceholderUtils.getParameterValue("OutputOnlyInEditMode", outputOnlyInEditMode, paramList);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid CmsTemplateEngineVersion");
                 }
             }
 
