@@ -309,7 +309,7 @@ namespace HatCMS.Placeholders
 
             PageFilesPlaceholderData phData = db.getPageFilesData(page, identifier, langToRenderFor, true);
             if (phData.tabularDisplayLinkMode == PageFilesPlaceholderData.TabularDisplayLinkMode.LinkToFile && ! page.currentUserCanWrite)
-                throw new CmsPlaceholderNeedsRedirectionException(fileData.getDownloadUrl(page, identifier, langToRenderFor));
+                throw new CmsPlaceholderNeedsRedirectionException(fileData.getDownloadUrl());
 
             string ControlId = "PageFiles_"+page.ID.ToString()+"_"+identifier.ToString();
             bool userCanEditFile = page.currentUserCanWrite;
@@ -378,11 +378,11 @@ namespace HatCMS.Placeholders
             {
                 html.Append("<table border=\"0\">");
                 html.Append("<tr><td valign=\"top\" align=\"center\" width=\"150\">");
-                html.Append("<a href=\"" + fileData.getDownloadUrl(page, identifier, langToRenderFor) + "\" target=\"_blank\">");
+                html.Append("<a href=\"" + fileData.getDownloadUrl() + "\" target=\"_blank\">");
                 html.Append("<img src=\"" + iconUrl + "\" border=\"0\" width=\"32\" height=\"32\">");
                 html.Append("</a>");
                 html.Append("<br>");
-                html.Append("<a class=\"downloadLink\" href=\"" + fileData.getDownloadUrl(page, identifier, langToRenderFor) + "\" target=\"_blank\">");
+                html.Append("<a class=\"downloadLink\" href=\"" + fileData.getDownloadUrl() + "\" target=\"_blank\">");
                 html.Append(getDownloadText(langToRenderFor));
                 html.Append("</a>");
                 html.Append("<br><span style=\"font-style: italic; font-size: smaller;\">(" + getLinkOpensNewWindowText(langToRenderFor) + ")</span>");
@@ -400,7 +400,7 @@ namespace HatCMS.Placeholders
                 string displayName = fileData.Title;
                 if (displayName.Trim() == "")
                     displayName = fileData.Filename;
-                html.Append("<a href=\"" + fileData.getDownloadUrl(page, identifier, langToRenderFor) + "\" target=\"_blank\">" + displayName + "</a>");
+                html.Append("<a href=\"" + fileData.getDownloadUrl() + "\" target=\"_blank\">" + displayName + "</a>");
                 html.Append("</td>");
                 html.Append("</tr>");
 
@@ -465,11 +465,11 @@ namespace HatCMS.Placeholders
 
                 if (fileTypeDescription.EndsWith("graphic", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    string imgPreviewUrl = showThumbPage.getThumbDisplayUrl(fileData.getDownloadUrl(page, identifier, langToRenderFor), 200, -1);
+                    string imgPreviewUrl = showThumbPage.getThumbDisplayUrl(fileData.getDownloadUrl(), 200, -1);
                     html.Append("<tr>");
                     html.Append("<td valign=\"top\">" + getImagePreviewText(langToRenderFor) + ":</td>");
                     html.Append("<td>");
-                    html.Append("<a href=\"" + fileData.getDownloadUrl(page, identifier, langToRenderFor) + "\"><img border=\"0\" src=\"" + imgPreviewUrl + "\"></a>");
+                    html.Append("<a href=\"" + fileData.getDownloadUrl() + "\"><img border=\"0\" src=\"" + imgPreviewUrl + "\"></a>");
                     html.Append("</td>");
                     html.Append("</tr>");
                 }
@@ -721,7 +721,7 @@ namespace HatCMS.Placeholders
         public string getFileDetailsUrl(PageFilesPlaceholderData phData, PageFilesItemData item, CmsPage page, int identifier, CmsLanguage language)
         {
             if (phData.tabularDisplayLinkMode == PageFilesPlaceholderData.TabularDisplayLinkMode.LinkToFile && !page.currentUserCanWrite)
-                return item.getDownloadUrl(page, identifier, language);
+                return item.getDownloadUrl();
             else
             {
                 NameValueCollection pageParams = new NameValueCollection();
@@ -1117,7 +1117,7 @@ namespace HatCMS.Placeholders
                 Rss.RssItem rssItem = CreateAndInitRssItem(page, langToRenderFor);
 
                 rssItem.Title = file.Title;                
-                rssItem.Link = new Uri(file.getDownloadUrl(page, placeholderDefinition.Identifier, langToRenderFor));
+                rssItem.Link = new Uri(file.getDownloadUrl());
                 rssItem.Guid = new Rss.RssGuid(rssItem.Link);
 
                 rssItem.Description = file.AbstractHtml;

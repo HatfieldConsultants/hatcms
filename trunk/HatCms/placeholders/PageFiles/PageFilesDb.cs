@@ -108,6 +108,11 @@ namespace HatCMS.Placeholders
             item.lastModified = Convert.ToDateTime(dr["LastModified"]);
             item.CreatorUsername = dr["CreatorUsername"].ToString();
 
+            item.DetailsPageId = Convert.ToInt32(dr["PageId"]);
+            item.Identifier = Convert.ToInt32(dr["Identifier"]);
+            string langCode = dr["langShortCode"].ToString();
+            item.Lang = CmsLanguage.GetFromHaystack(langCode, CmsConfig.Languages);
+
             return item;
 
         } // ItemDataFromDataRow
@@ -168,7 +173,7 @@ namespace HatCMS.Placeholders
             if (fileId < 1)
                 return new PageFilesItemData();
 
-            string sql = "select PageFileItemId, Filename, Title, Author, Abstract, FileSize, LastModified, CreatorUsername from pagefileitem ";
+            string sql = "select PageFileItemId, PageId, Identifier, langShortCode, Filename, Title, Author, Abstract, FileSize, LastModified, CreatorUsername from pagefileitem ";
             sql += " where PageFileItemId = " + fileId.ToString() + " and deleted is null ";
 
             DataSet ds = this.RunSelectQuery(sql);
@@ -181,9 +186,39 @@ namespace HatCMS.Placeholders
             return new PageFilesItemData();
         }
 
+        public PageFilesItemData[] getPageFilesItemDatas(CmsPage[] pages, CmsLanguage pageLanguage)
+        {
+            if (pages.Length == 0)
+                return new PageFilesItemData[0];
+
+            List<string> pageIds = new List<string>();
+            foreach (CmsPage p in pages)
+            {
+                pageIds.Add(p.ID.ToString());
+            }
+
+            string sql = "select PageFileItemId, PageId, Identifier, langShortCode, Filename, Title, Abstract, Author, FileSize, LastModified, CreatorUsername from pagefileitem ";
+            sql += " where PageId in (" + string.Join(",", pageIds.ToArray()) + ") and langShortCode like '" + pageLanguage.shortCode + "' and deleted is null ";
+
+            // -- run the query
+            DataSet ds = this.RunSelectQuery(sql);
+            if (this.hasRows(ds))
+            {
+                List<PageFilesItemData> ret = new List<PageFilesItemData>();
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    ret.Add(getItemDataFromDataRow(dr));
+                } // foreach
+                return ret.ToArray();
+
+            } // if has data
+            return new PageFilesItemData[0];
+
+        }
+
         public PageFilesItemData[] getPageFilesItemDatas(CmsPage page, int identifier, CmsLanguage pageLanguage, PageFilesPlaceholderData data)
         {
-            string sql = "select PageFileItemId, Filename, Title, Abstract, Author, FileSize, LastModified, CreatorUsername from pagefileitem ";
+            string sql = "select PageFileItemId, PageId, Identifier, langShortCode, Filename, Title, Abstract, Author, FileSize, LastModified, CreatorUsername from pagefileitem ";
             sql += " where PageId = " + page.ID.ToString() + " and Identifier=" + identifier.ToString() + " and langShortCode like '"+pageLanguage.shortCode+"' and deleted is null ";
 
             if (data.sortColumn != PageFilesPlaceholderData.SortColumn.NoSorting)

@@ -1313,6 +1313,7 @@
     <Content Include="templates\internal\_DeleteFileLibraryPopup.template" />
     <Content Include="templates\internal\_FileLibraryCategoryPopup.template" />
     <Content Include="templates\Glossary.template" />
+    <None Include="templates\PageFiles.template" />
     <None Include="templates\EventCalendarAggregator.template" />
     <None Include="templates\EventCalendarDetails.template" />
     <None Include="templates\ProcurementAggregator.template" />

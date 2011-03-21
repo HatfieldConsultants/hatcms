@@ -138,6 +138,7 @@ namespace Rss
 		{
 			return read(oldFeed.url, Request, oldFeed);
 		}
+
 		private static RssFeed read(string url, HttpWebRequest request, RssFeed oldFeed)
 		{
 			// ***** Marked for substantial improvement

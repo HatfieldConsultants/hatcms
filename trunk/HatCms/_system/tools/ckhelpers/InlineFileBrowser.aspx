@@ -4,11 +4,11 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
-    <title>Browse for Page</title>
-   <link rel="STYLESHEET" type="text/css" href="../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.css" />
+    <title>Browse for a File</title>
+   <link rel="STYLESHEET" type="text/css" href="../../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.css" />
 	
-	<script  src="../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxcommon.js"></script>
-	<script  src="../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.js"></script>	
+	<script  src="../../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxcommon.js"></script>
+	<script  src="../../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.js"></script>	
     <style> body</style>
 </head>
 <body>  
@@ -28,7 +28,7 @@ Create sub-folder <input type="text" size="20" maxlength="200" runat="server" id
 			tree=new dhtmlXTreeObject({
 				skin:"dhx_skyblue",
 				parent:"treeboxbox_tree",
-				image_path:"../../js/_system/dhtmlx/dhtmlxTree/codebase/imgs/",
+				image_path:"../../../js/_system/dhtmlx/dhtmlxTree/codebase/imgs/",
 				checkbox:false
 			});
 

@@ -182,7 +182,7 @@ namespace HatCMS
 
                     if (String.Compare(fieldName, col.ColumnName, true) == 0)
                     {
-                        ///TODO: add comparison of (optional) column types
+                        //TODO: add comparison of (optional) column types
                         colFound = true;
                         
                         break;

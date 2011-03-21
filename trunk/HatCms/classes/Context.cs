@@ -803,6 +803,18 @@ namespace HatCMS
         /// <returns></returns>
         public static CmsPage[] getAllPagesWithPlaceholder(string placeholderType, CmsPage rootPageToGatherFrom, PageGatheringMode gatheringMode)
         {
+            return getAllPagesWithPlaceholders(new string[] { placeholderType }, rootPageToGatherFrom, gatheringMode);
+        }
+
+        /// <summary>
+        /// get all pages (from rootPageToGatherFrom and below) that implement one or more placeholderTypes.
+        /// </summary>
+        /// <param name="placeholderType"></param>
+        /// <param name="rootPageToGatherFrom"></param>
+        /// <param name="gatheringMode"></param>
+        /// <returns></returns>
+        public static CmsPage[] getAllPagesWithPlaceholders(string[] placeholderTypes, CmsPage rootPageToGatherFrom, PageGatheringMode gatheringMode)
+        {
             List<CmsPage> ret = new List<CmsPage>();
             try
             {
@@ -811,16 +823,28 @@ namespace HatCMS
                     Dictionary<int, CmsPage> allPages = rootPageToGatherFrom.getLinearizedPages();
                     foreach (CmsPage page in allPages.Values)
                     {
-                        if (page.hasPlaceholder(placeholderType))
-                            ret.Add(page);
+                        foreach (string placeholderType in placeholderTypes)
+                        {
+                            if (page.hasPlaceholder(placeholderType))
+                            {
+                                ret.Add(page);
+                                break; // only add the page once if it implements more than one placeholder
+                            }
+                        }
                     } // foreach page
                 }
                 else if (gatheringMode == PageGatheringMode.ChildPagesOnly)
                 {
                     foreach (CmsPage page in rootPageToGatherFrom.ChildPages)
                     {
-                        if (page.hasPlaceholder(placeholderType))
-                            ret.Add(page);
+                        foreach (string placeholderType in placeholderTypes)
+                        {
+                            if (page.hasPlaceholder(placeholderType))
+                            {
+                                ret.Add(page);
+                                break; // only add the page once if it implements more than one placeholder
+                            }
+                        } // foreach placeholderType
                     } // foreach page
                 }
             }

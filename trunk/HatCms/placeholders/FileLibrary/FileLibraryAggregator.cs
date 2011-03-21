@@ -606,7 +606,8 @@ namespace HatCMS.Placeholders
                     Dictionary<string, string> urlParams = new Dictionary<string,string>();
                     urlParams.Add(CmsContext.EditModeFormName,"1");
                     string detailsView = childPage.getUrl(urlParams, lang);
-                    msg.Append(formatNormalMsg("The file \"" + postedFileName + "\" has been uploaded. <a href=\"" + detailsView + "\">Edit</a> this file's details."));
+                    string m = "The file \"" + postedFileName + "\" has been uploaded. <a href=\"" + detailsView + "\">Edit</a> this file's details. <a href=\"javascript:location.reload(true);\">Refresh</a> to update the listing.";
+                    msg.Append(formatNormalMsg(m));
                 }
                 catch (Exception ex)
                 {

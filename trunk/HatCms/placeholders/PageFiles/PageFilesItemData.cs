@@ -32,6 +32,10 @@ namespace HatCMS.Placeholders
             }
         }
 
+        public int DetailsPageId = Int32.MinValue;
+        public int Identifier = Int32.MinValue;
+        public CmsLanguage Lang = CmsConfig.Languages[0];
+
         public static string getFilenameOnDisk(CmsPage page, int identifier, CmsLanguage language, string userFilename)
         {
             string prependToFilename = "";
@@ -55,12 +59,12 @@ namespace HatCMS.Placeholders
             return getFilenameOnDisk(page, identifier, language, this.Filename);
         }
 
-        public string getDownloadUrl(CmsPage page, int identifier, CmsLanguage lang)
+        public string getDownloadUrl()
         {
+            CmsPage page = CmsContext.getPageById(this.DetailsPageId);
+            string baseUrl = GetFileStorageDirectoryUrl(page, this.Identifier, this.Lang);
 
-            string baseUrl = GetFileStorageDirectoryUrl(page, identifier, lang);
-
-            string url = baseUrl + System.IO.Path.GetFileName(getFilenameOnDisk(page, identifier, lang));
+            string url = baseUrl + System.IO.Path.GetFileName(getFilenameOnDisk(page, this.Identifier, this.Lang));
 
             return url;
 

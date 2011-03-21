@@ -9,17 +9,7 @@ using System.Collections.Specialized;
 namespace HatCMS.Placeholders.NewsDatabase
 {
     public class NewsArticleAggregator : BaseCmsPlaceholder
-    {
-        /// <summary>
-        /// If the CmsPage contains a "NewsArticleAggregator", then it is a NewsArticleAggregator page
-        /// </summary>
-        /// <param name="page"></param>
-        /// <returns></returns>
-        public static bool isNewsArticleAggregator(CmsPage page)
-        {
-            return (StringUtils.IndexOf(page.getAllPlaceholderNames(), "NewsArticleAggregator", StringComparison.CurrentCultureIgnoreCase) > -1);
-        }
-
+    {        
         /// <summary>
         /// 
         /// </summary>
@@ -132,8 +122,7 @@ namespace HatCMS.Placeholders.NewsDatabase
         }
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] param)
-        {
-            // CmsContext.setCurrentCultureInfo(langToRenderFor);
+        {            
             NewsArticleDb db = new NewsArticleDb();
             NewsArticleDb.NewsArticleAggregatorData entity = db.fetchNewsAggregator(page, identifier, langToRenderFor, true);
 
@@ -161,10 +150,10 @@ namespace HatCMS.Placeholders.NewsDatabase
             html.Append("<p><strong>News Aggregator Display Settings:</strong></p>");
 
             html.Append("<table>");
-            string s = PageUtils.getInputTextHtml("defaultYear_" + ProjectSummaryId, "defaultYear_" + ProjectSummaryId, entity.YearToDisplay.ToString(), 7, 4);
+            string dropDownHtml = PageUtils.getInputTextHtml("defaultYear_" + ProjectSummaryId, "defaultYear_" + ProjectSummaryId, entity.YearToDisplay.ToString(), 7, 4);
 
             html.Append("<tr><td>Default Year to display summaries for: (-1 = all years)</td>");
-            html.Append("<td>" + s + "</td></tr>");
+            html.Append("<td>" + dropDownHtml + "</td></tr>");
 
             html.Append("</table>");
 
@@ -172,45 +161,218 @@ namespace HatCMS.Placeholders.NewsDatabase
             html.Append("<input type=\"hidden\" name=\"" + ProjectSummaryId + "_ProjectSummaryId\" value=\"" + page.ID.ToString() + "\">");
 
             writer.WriteLine(html.ToString());
-        }        
+        }
+
+        public class RenderParameters
+        {
+            public static RenderParameters fromParamList(string[] paramList, NewsArticleDb.NewsArticleAggregatorData aggData)
+            {
+                return new RenderParameters(paramList, aggData);
+            }
+
+            /// <summary>
+            /// {0} = News Date in format "MMM d, yyyy"
+            /// {1} = News Title
+            /// {2} = Full news article view URL
+            /// {3} = Article Snippet
+            /// </summary>
+            public string ArticleDisplayFormat = "<strong>{1}</strong> ({0}) &#160;<a class=\"readNewsArticle\" href=\"{2}\">{3}</a><br /><br />";
+
+            public int NumCharactersToShowInSnippet = 100;
+
+            public NewsArticleDb.NewsArticleAggregatorData AggregatorData;
+                        
+
+            /// <summary>
+            /// Set to Int32.MinValue for the current page.
+            /// </summary>
+            public int PageIdToGatherNewsFrom = Int32.MinValue;
+
+            /// <summary>
+            /// if set to false, only gathers files from child pages. If true, gathers from all 
+            /// </summary>
+            public bool RecursiveGatherNews = false;                          
+
+            public RenderParameters(string[] paramList, NewsArticleDb.NewsArticleAggregatorData aggData)
+            {
+                if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+                {
+                    ArticleDisplayFormat = PlaceholderUtils.getParameterValue("displayformat", ArticleDisplayFormat, paramList);
+                    NumCharactersToShowInSnippet = PlaceholderUtils.getParameterValue("snippetchars", NumCharactersToShowInSnippet, paramList);
+                    AggregatorData = aggData;
+                    PageIdToGatherNewsFrom = PlaceholderUtils.getParameterValue("gatherfrompageid", Int32.MinValue, paramList);
+                    RecursiveGatherNews = PlaceholderUtils.getParameterValue("gatherrecusive", RecursiveGatherNews, paramList);                    
+                }
+                else
+                    throw new ArgumentException("Invalid CmsTemplateEngineVersion");
+
+            } // constructor
+
+        } // RenderParameters 
+
+        private class NewsAggItem
+        {
+            public DateTime NewsDate;
+            public string PageDisplayURL;            
+            public string Title;
+            public string NewsArticleHtml;
+
+            public NewsAggItem(DateTime newsdate, string pageDisplayURL, string title, string newsarticlehtml)
+            {
+                NewsDate = newsdate;
+                PageDisplayURL = pageDisplayURL;                
+                Title = title;
+                NewsArticleHtml = newsarticlehtml;                
+            } // constructor
+
+            public string GetContentHash()
+            {
+                StringBuilder ret = new StringBuilder();
+                ret.Append(NewsDate.Ticks.ToString());
+                ret.Append(PageDisplayURL);                
+                ret.Append(Title);
+                ret.Append(NewsArticleHtml);                
+                return ret.ToString();
+            }
+
+            private string getReadArticleText(CmsLanguage lang)
+            {
+                return CmsConfig.getConfigValue("NewsArticle.ReadArticleText", "read article", lang);
+            }
+
+
+            public string getHtmlDisplay(RenderParameters renderParams, CmsLanguage lang)
+            {
+                StringBuilder html = new StringBuilder();
+
+                string dateDisplay = this.NewsDate.ToString("MMM d yyyy");
+                string detailsUrl = this.PageDisplayURL;
+                string newsTitle = this.Title;
+                string readArticle = getReadArticleText(lang);
+                string snippet = StringUtils.StripHTMLTags(this.NewsArticleHtml);
+                snippet = snippet.Trim();
+                int snippetLen = Math.Min(renderParams.NumCharactersToShowInSnippet, snippet.Length);
+                snippet = snippet.Substring(0, snippetLen);
+
+                string FormattedDisplay = String.Format(renderParams.ArticleDisplayFormat, dateDisplay, newsTitle, detailsUrl, readArticle, snippet);
+
+                return FormattedDisplay;
+            }
+
+            public static NewsAggItem[] SortByNewsDate(NewsAggItem[] toSort)
+            {
+                List<NewsAggItem> ret = new List<NewsAggItem>(toSort);
+                ret.Sort(CompareNewsByDate);
+                ret.Reverse(); // the most recent at the top
+                return ret.ToArray();
+            }
+
+            private static int CompareNewsByDate(NewsAggItem x, NewsAggItem y)
+            {
+                return DateTime.Compare(x.NewsDate, y.NewsDate);
+            }
+
+            public static bool ArrayContainsNews(NewsAggItem[] haystack, NewsAggItem newsToFind)
+            {
+                Dictionary<string, NewsAggItem> hash = new Dictionary<string, NewsAggItem>();
+                foreach (NewsAggItem f in haystack)
+                {
+                    hash.Add(f.GetContentHash(), f);
+                }
+
+                return hash.ContainsKey(newsToFind.GetContentHash());
+            }
+
+            public static NewsAggItem FromNewsArticleDetailsData(NewsArticleDb.NewsArticleDetailsData sourceDetails)
+            {                 
+                CmsPage detailsPage = CmsContext.getPageById(sourceDetails.DetailsPageId);
+                DateTime dateOfNews = sourceDetails.DateOfNews;
+                string PageDisplayURL = detailsPage.getUrl(sourceDetails.Lang);                
+                string Title = detailsPage.getTitle(sourceDetails.Lang);
+                string NewsArticleHtml = detailsPage.renderPlaceholdersToString("HtmlContent", sourceDetails.Lang);
+
+                return new NewsAggItem(dateOfNews, PageDisplayURL, Title, NewsArticleHtml);
+            }
+
+            public static NewsAggItem[] FromNewsArticleDetailsData(NewsArticleDb.NewsArticleDetailsData[] sourceDetails)
+            {
+                List<NewsAggItem> ret = new List<NewsAggItem>();
+                foreach (NewsArticleDb.NewsArticleDetailsData news in sourceDetails)
+                {
+                    ret.Add(FromNewsArticleDetailsData(news));
+                }
+                return ret.ToArray();
+            }
+
+            public static NewsAggItem[] RemoveDuplicates(List<NewsAggItem> list)
+            {
+                Dictionary<string, NewsAggItem> ret = new Dictionary<string, NewsAggItem>();
+                foreach (NewsAggItem item in list)
+                {
+                    string key = item.GetContentHash();
+                    if (!ret.ContainsKey(key))
+                        ret.Add(key, item);
+                } // foreach
+
+                return new List<NewsAggItem>(ret.Values).ToArray();
+
+            } // RemoveDuplicates
+
+
+        } // NewsAggItem class
+
+        private NewsAggItem[] FetchAutoAggregatedNewsArticleDetails(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams)
+        {
+            CmsPage rootPageToGatherFrom = aggregatorPage;
+            if (renderParams.PageIdToGatherNewsFrom >= 0)
+                rootPageToGatherFrom = CmsContext.getPageById(renderParams.PageIdToGatherNewsFrom);
+
+            CmsContext.PageGatheringMode gatherMode = CmsContext.PageGatheringMode.ChildPagesOnly;
+            if (renderParams.RecursiveGatherNews)
+                gatherMode = CmsContext.PageGatheringMode.FullRecursion;
+            
+            CmsPage[] fileDetailsPages = CmsContext.getAllPagesWithPlaceholder("NewsArticleDetails", rootPageToGatherFrom, gatherMode);
+            NewsArticleDb.NewsArticleDetailsData[] newsToShow = new NewsArticleDb().getNewsDetailsByYear(renderParams.AggregatorData.YearToDisplay, aggLang);
+
+            return NewsAggItem.FromNewsArticleDetailsData(newsToShow);
+        }
+
+        private NewsAggItem[] FetchAllNewsAggItems(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams)
+        {
+            List<NewsAggItem> ret = new List<NewsAggItem>();
+            ret.AddRange(FetchAutoAggregatedNewsArticleDetails(aggregatorPage, aggIdentifier, aggLang, renderParams));            
+
+            // -- fetch all manually added news items here
+
+            return ret.ToArray();
+        }
 
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] param)
         {
             AddNewsArticleCommandToEditMenu(page, page);
-            // CmsContext.setCurrentCultureInfo(langToRenderFor);
+            
+            
             CmsPage currentPage = CmsContext.currentPage;
             StringBuilder html = new StringBuilder();
 
             NewsArticleDb db = new NewsArticleDb();
-            NewsArticleDb.NewsArticleAggregatorData newsAggregator = db.fetchNewsAggregator(page, identifier, langToRenderFor ,true);
+            NewsArticleDb.NewsArticleAggregatorData newsAggregator = db.fetchNewsAggregator(page, identifier, langToRenderFor ,true);            
 
-            int currYear = PageUtils.getFromForm("yr", Int32.MinValue);
-            if (currYear == Int32.MinValue)
-                currYear = newsAggregator.YearToDisplay;
+            RenderParameters renderParams = RenderParameters.fromParamList(param, newsAggregator);
 
-            List<NewsArticleDb.NewsArticleDetailsData> articleList = new List<NewsArticleDb.NewsArticleDetailsData>();
-            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childPages = CmsContext.getAllPlaceholderDefinitions("NewsArticleDetails", page, CmsContext.PageGatheringMode.ChildPagesOnly);
-            foreach (CmsPage childPage in childPages.Keys)
-            {
-                CmsPlaceholderDefinition[] def = childPages[childPage];
-                NewsArticleDb.NewsArticleDetailsData entity = db.fetchNewsDetails(childPage, def[0].Identifier, langToRenderFor, true);
-                articleList.Add(entity);
-            }
+            NewsAggItem[] newsToShow = FetchAllNewsAggItems(page, identifier, langToRenderFor, renderParams);            
 
             // -- display results
-            html.Append(getHtmlForSummaryView(articleList.ToArray(), currYear, langToRenderFor));
+            html.Append(getHtmlForSummaryView(newsToShow, renderParams, langToRenderFor));
             writer.Write(html.ToString());
         }
 
-        private string getReadArticleText(CmsLanguage lang)
-        {
-            return CmsConfig.getConfigValue("NewsArticle.ReadArticleText", "read article", lang);
-        }
 
-        private string getHtmlForSummaryView(NewsArticleDb.NewsArticleDetailsData[] newsDetails, int displayYear, CmsLanguage lang)
-        {
-            sortByDateOfNews(newsDetails);
+        private string getHtmlForSummaryView(NewsAggItem[] newsDetails, RenderParameters renderParams, CmsLanguage lang)
+        {            
             StringBuilder html = new StringBuilder();
+
+            int displayYear = renderParams.AggregatorData.YearToDisplay;
 
             if (newsDetails.Length == 0)
             {
@@ -221,6 +383,8 @@ namespace HatCMS.Placeholders.NewsDatabase
             }
             else
             {
+                newsDetails = NewsAggItem.SortByNewsDate(newsDetails);
+                
                 bool showYearTitles = false;
                 if (displayYear == -1)
                     showYearTitles = true;
@@ -229,23 +393,23 @@ namespace HatCMS.Placeholders.NewsDatabase
                 int previousMonthTitle = -1;
                 bool monthULStarted = false;
 
-                foreach (NewsArticleDb.NewsArticleDetailsData news in newsDetails)
+                foreach (NewsAggItem news in newsDetails)
                 {
-                    if (displayYear >= 0 && news.DateOfNews.Year != displayYear)
+                    if (displayYear >= 0 && news.NewsDate.Year != displayYear)
                         continue; // skip this item.
 
-                    if (showYearTitles && (previousYearTitle == -1 || news.DateOfNews.Year != previousYearTitle))
+                    if (showYearTitles && (previousYearTitle == -1 || news.NewsDate.Year != previousYearTitle))
                     {
                         if (monthULStarted)
                             html.Append("</ul>");
 
                         html.Append("<h2>");
-                        html.Append(news.DateOfNews.Year);
+                        html.Append(news.NewsDate.Year);
                         html.Append("</h2>");
-                        previousYearTitle = news.DateOfNews.Year;
+                        previousYearTitle = news.NewsDate.Year;
                     }
 
-                    if (previousMonthTitle == -1 || news.DateOfNews.Month != previousMonthTitle)
+                    if (previousMonthTitle == -1 || news.NewsDate.Month != previousMonthTitle)
                     {
                         if (monthULStarted)
                             html.Append("</ul>");
@@ -253,26 +417,17 @@ namespace HatCMS.Placeholders.NewsDatabase
                             html.Append("<strong>");
                         else
                             html.Append("<h2>");
-                        html.Append(news.DateOfNews.ToString("MMMM"));
+                        html.Append(news.NewsDate.ToString("MMMM"));
                         if (showYearTitles)
                             html.Append("</strong>");
                         else
                             html.Append("</h2>");
                         html.Append("<ul>");
                         monthULStarted = true;
-                        previousMonthTitle = news.DateOfNews.Month;
+                        previousMonthTitle = news.NewsDate.Month;
                     }
 
-                    // -- create the details url
-                    NameValueCollection paramList = new NameValueCollection();
-                    //paramList.Add(NewsDetails.CurrentNewsIdFormName, news.PageId.ToString());
-
-                    CmsPage childPage = CmsContext.getPageById(news.PageId);
-                    string detailsUrl = CmsContext.getUrlByPagePath(childPage.Path, paramList);
-                    string newsTitle = childPage.getTitle(news.Lang);
-                    string readArticle = getReadArticleText(news.Lang);
-
-                    string FormattedDisplay = String.Format(NewsArticleDb.NewsArticleAggregatorData.DisplayFormat, news.DateOfNews.ToString("MMM d yyyy"), newsTitle, detailsUrl, readArticle);
+                    string FormattedDisplay = news.getHtmlDisplay(renderParams, lang);
                     html.Append(FormattedDisplay);
                 } // foreach
                 if (monthULStarted)
@@ -292,51 +447,38 @@ namespace HatCMS.Placeholders.NewsDatabase
             string defaultTxt = "No news postings are currently available.";
             return CmsConfig.getConfigValue("NewsArticle.NoNewsTextForText", defaultTxt, lang);
         }
-
-        /// <summary>
-        /// Sort the news article array by the Date Of News in descending order.
-        /// </summary>
-        /// <param name="newsArray"></param>
-        protected void sortByDateOfNews(NewsArticleDb.NewsArticleDetailsData[] newsArray)
-        {
-            NewsArticleDb.NewsArticleDetailsDataComparer comparer = new NewsArticleDb.NewsArticleDetailsDataComparer();
-            comparer.Field = NewsArticleDb.NewsArticleDetailsDataComparer.CompareType.DateOfNews;
-            Array.Sort(newsArray, comparer);
-            Array.Reverse(newsArray);
-        }
+        
 
         public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
         {
             List<Rss.RssItem> ret = new List<Rss.RssItem>();
 
-            // -- get the
-            NewsArticleDb db = new NewsArticleDb();
-            NewsArticleDb.NewsArticleAggregatorData newsAggregator = db.fetchNewsAggregator(page, placeholderDefinition.Identifier, langToRenderFor, true);
+            // -- get the news
+            NewsArticleDb.NewsArticleAggregatorData aggData = (new NewsArticleDb()).fetchNewsAggregator(page, placeholderDefinition.Identifier, langToRenderFor, true);
+            RenderParameters renderParams = RenderParameters.fromParamList(placeholderDefinition.ParamList, aggData);
+            NewsAggItem[] newsItems = FetchAllNewsAggItems(page, placeholderDefinition.Identifier, langToRenderFor, renderParams);
 
-            
-            int currYear = newsAggregator.YearToDisplay;
+            int currYear = renderParams.AggregatorData.YearToDisplay;
 
-            List<NewsArticleDb.NewsArticleDetailsData> articleList = new List<NewsArticleDb.NewsArticleDetailsData>();
-            
-            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childPages = CmsContext.getAllPlaceholderDefinitions("NewsArticleDetails", page, CmsContext.PageGatheringMode.ChildPagesOnly);
-            foreach (CmsPage childPage in childPages.Keys)
+            foreach (NewsAggItem newsItem in newsItems)
             {
-                CmsPlaceholderDefinition[] def = childPages[childPage];
-                NewsArticleDb.NewsArticleDetailsData entity = db.fetchNewsDetails(childPage, def[0].Identifier, langToRenderFor, true);
-                if (currYear < 0 || entity.DateOfNews.Year == currYear)
-                {
+                if (currYear < 0 || newsItem.NewsDate.Year == currYear)
+                {                    
                     Rss.RssItem rssItem = new Rss.RssItem();
-                    rssItem = InitRssItem(rssItem, childPage, entity.Lang);
-                    rssItem.PubDate = entity.DateOfNews;
+                    rssItem = InitRssItem(rssItem, page, langToRenderFor);
 
-                    rssItem.Description = childPage.renderAllPlaceholdersToString(langToRenderFor);
+                    rssItem.Link = new Uri(newsItem.PageDisplayURL, UriKind.RelativeOrAbsolute);
+                    rssItem.PubDate = newsItem.NewsDate;
+
+                    rssItem.Description = newsItem.NewsArticleHtml;
+
                     ret.Add(rssItem);
                 }
             }
 
 
             return ret.ToArray();
-        }
+        } // GetRssFeedItems
 
     }
 }

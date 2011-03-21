@@ -119,7 +119,7 @@ namespace HatCMS.Controls._system
             
             foreach (NewsArticleDb.NewsArticleDetailsData article in articleArray)
             {
-                CmsPage newsArticleDetailsPage = CmsContext.getPageById(article.PageId);
+                CmsPage newsArticleDetailsPage = CmsContext.getPageById(article.DetailsPageId);
                 if (newsArticleDetailsPage.ID < 0)
                     continue;
 

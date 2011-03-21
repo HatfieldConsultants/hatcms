@@ -5,10 +5,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head runat="server">
     <title>Browse for Page</title>
-   <link rel="STYLESHEET" type="text/css" href="../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.css" />
+   <link rel="STYLESHEET" type="text/css" href="../../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.css" />
 	
-	<script  src="../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxcommon.js"></script>
-	<script  src="../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.js"></script>	
+	<script  src="../../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxcommon.js"></script>
+	<script  src="../../../js/_system/dhtmlx/dhtmlxTree/codebase/dhtmlxtree.js"></script>	
     
 </head>
 <body>    
@@ -18,7 +18,7 @@
 			tree=new dhtmlXTreeObject({
 				skin:"dhx_skyblue",
 				parent:"treeboxbox_tree",
-				image_path:"../../js/_system/dhtmlx/dhtmlxTree/codebase/imgs/",
+				image_path:"../../../js/_system/dhtmlx/dhtmlxTree/codebase/imgs/",
 				checkbox:false
 			});
 

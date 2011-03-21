@@ -22,12 +22,6 @@ namespace HatCMS.Placeholders.NewsDatabase
 
         public class NewsArticleAggregatorData
         {
-            /// <summary>
-            /// {0} = News Date in format "MMM d, yyyy"
-            /// {1} = News Title
-            /// {2} = Full news article view URL
-            /// </summary>
-            public static string DisplayFormat = "<strong>{1}</strong> ({0}) &#160;<a class=\"readNewsArticle\" href=\"{2}\">{3}</a><br /><br />";
 
             private int yearToDisplay = -1;
             public int YearToDisplay
@@ -108,7 +102,7 @@ namespace HatCMS.Placeholders.NewsDatabase
         public class NewsArticleDetailsData
         {
             private int pageId = -1;
-            public int PageId
+            public int DetailsPageId
             {
                 get { return pageId; }
                 set { pageId = value; }
@@ -144,7 +138,7 @@ namespace HatCMS.Placeholders.NewsDatabase
 
             public NewsArticleDetailsData(int pageId, int identifier, string langCode, DateTime dateOfNews)
             {
-                this.PageId = pageId;
+                this.DetailsPageId = pageId;
                 this.Identifier = identifier;
                 this.Lang = new CmsLanguage(langCode);
                 this.DateOfNews = dateOfNews;
@@ -157,7 +151,7 @@ namespace HatCMS.Placeholders.NewsDatabase
                     case NewsArticleDetailsDataComparer.CompareType.DateOfNews:
                         return this.DateOfNews.CompareTo(d2.DateOfNews);
                     default:
-                        return this.PageId.CompareTo(d2.PageId);
+                        return this.DetailsPageId.CompareTo(d2.DetailsPageId);
                 }
             }
         }
@@ -196,7 +190,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.Append(TableNameDetails);
             sql.Append(" (PageId,Identifier,LangCode,DateOfNews) VALUES (");
-            sql.Append(entity.PageId.ToString() + ",");
+            sql.Append(entity.DetailsPageId.ToString() + ",");
             sql.Append(entity.Identifier.ToString() + ",'");
             sql.Append(dbEncode(entity.Lang.shortCode) + "',");
             sql.Append(dbEncode(entity.DateOfNews) + ");");
@@ -277,13 +271,13 @@ namespace HatCMS.Placeholders.NewsDatabase
 
         public NewsArticleDetailsData[] getNewsDetailsByYear( int yr, CmsLanguage lang )
         {
-            ArrayList where = new ArrayList();
-            if (yr != -1)
-                where.Add(" year(N.DateOfNews)=" + yr.ToString() + ") ");
+            List<string> wheres = new List<string>();
+            if (yr > 0)
+                wheres.Add(" year(N.DateOfNews)=" + yr.ToString() + ") ");
 
-            where.Add(" N.LangCode='" + lang.shortCode + "' ");
-            where.Add(" N.Deleted is null ");
-            string whereClause = String.Join(" AND ", (string[])where.ToArray(typeof(string)));
+            wheres.Add(" N.LangCode='" + lang.shortCode + "' ");
+            wheres.Add(" N.Deleted is null ");
+            string whereClause = String.Join(" AND ", wheres.ToArray());
 
             StringBuilder sql = new StringBuilder("SELECT N.PageId, N.Identifier, N.LangCode, N.DateOfNews FROM ");
             sql.Append(TableNameDetails + " N");
@@ -291,7 +285,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             sql.Append(whereClause);
             sql.Append(" ORDER BY N.DateOfNews desc;");
 
-            ArrayList arrayList = new ArrayList();
+            List<NewsArticleDetailsData> arrayList = new List<NewsArticleDetailsData>();
             DataSet ds = this.RunSelectQuery(sql.ToString());
             if (this.hasRows(ds))
             {
@@ -299,7 +293,7 @@ namespace HatCMS.Placeholders.NewsDatabase
                     arrayList.Add(NewsDetailsDataFromDataRow(dr));
             }
 
-            return (NewsArticleDetailsData[])arrayList.ToArray(typeof(NewsArticleDetailsData));
+            return arrayList.ToArray();
         }
 
         protected NewsArticleDetailsData NewsDetailsDataFromDataRow(DataRow dr)
