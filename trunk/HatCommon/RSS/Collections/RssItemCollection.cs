@@ -125,14 +125,14 @@ namespace Rss
 				oldestPubDate = DateTime.MaxValue;
 
 				foreach(RssItem item in List)
-					if ((item.PubDate != RssDefault.DateTime) & (item.PubDate > latestPubDate))
-						latestPubDate = item.PubDate;
+                    if ((item.PubDate_GMT != RssDefault.DateTime) & (item.PubDate_GMT > latestPubDate))
+                        latestPubDate = item.PubDate_GMT;
 				if (latestPubDate == DateTime.MinValue)
 					latestPubDate = RssDefault.DateTime;
 				
 				foreach(RssItem item in List)
-					if ((item.PubDate != RssDefault.DateTime) & (item.PubDate < oldestPubDate))
-						oldestPubDate = item.PubDate;
+                    if ((item.PubDate_GMT != RssDefault.DateTime) & (item.PubDate_GMT < oldestPubDate))
+                        oldestPubDate = item.PubDate_GMT;
 				if (oldestPubDate == DateTime.MaxValue)
 					oldestPubDate = RssDefault.DateTime;
 			}

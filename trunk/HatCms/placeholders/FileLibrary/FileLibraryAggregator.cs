@@ -1066,7 +1066,7 @@ namespace HatCMS.Placeholders
                     Rss.RssItem rssItem = CreateAndInitRssItem(childPage, langToRenderFor);
                     rssItem.Link = new Uri(FileLibraryDetailsData.getDownloadUrl(page, file.Identifier, langToRenderFor, file.FileName), UriKind.RelativeOrAbsolute);
 
-                    rssItem.Description = childPage.renderPlaceholdersToString("FileLibraryDetails", langToRenderFor);
+                    rssItem.Description = childPage.renderPlaceholdersToString("FileLibraryDetails", langToRenderFor, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
 
                     ret.Add(rssItem);
                 }

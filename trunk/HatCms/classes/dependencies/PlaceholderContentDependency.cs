@@ -69,7 +69,7 @@ namespace HatCMS
                 {
                     foreach (CmsLanguage lang in CmsConfig.Languages)
                     {
-                        string allPhContent = page.renderAllPlaceholdersToString(lang);
+                        string allPhContent = page.renderAllPlaceholdersToString(lang, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
                         ret.AddRange(contentMatches(allPhContent, page, lang));
                     } // foreach lang
                 } // foreach page
@@ -84,7 +84,7 @@ namespace HatCMS
                     {
                         foreach (CmsLanguage lang in CmsConfig.Languages)
                         {
-                            string phContent = page.renderPlaceholderToString(phDef, lang);
+                            string phContent = page.renderPlaceholderToString(phDef, lang, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
                             ret.AddRange(contentMatches(phContent, page, lang));
                         }
                     } // foreach phDef

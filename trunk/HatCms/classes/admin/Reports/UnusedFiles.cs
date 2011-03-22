@@ -59,7 +59,7 @@ namespace HatCMS.Admin
         private List<string> removeUrlsUsedOnPage(CmsPage pageToScan, CmsLanguage pageLanguageToScan, List<string> allUrlsToVerify)
         {
             string[] linksToFind = allUrlsToVerify.ToArray();
-            string pageHtml = pageToScan.renderAllPlaceholdersToString(pageLanguageToScan);
+            string pageHtml = pageToScan.renderAllPlaceholdersToString(pageLanguageToScan, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
 
             string[] foundLinks = ContentUtils.FindFileLinksInHtml(pageHtml, linksToFind);
 

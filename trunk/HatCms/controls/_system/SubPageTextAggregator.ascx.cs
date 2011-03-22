@@ -32,7 +32,7 @@ namespace HatCMS.Controls
 
                     html.Append("<li>");
 
-                    string val = subPage.renderAllPlaceholdersToString(CmsContext.currentLanguage);
+                    string val = subPage.renderAllPlaceholdersToString(CmsContext.currentLanguage, CmsPage.RenderPlaceholderFilterAction.ReturnUnfiltered);
                     val = PageUtils.StripTags(val);
                     if (val.Length > 100)
                         val = val.Substring(0, 100) + " ...<br>";

@@ -170,6 +170,8 @@ namespace HatCMS.Admin
             }
 
             html.Append(PageUtils.getHiddenInputHtml("AdminTool", Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolClass), CmsBaseAdminTool.CmsAdminToolClass.SearchAndReplace)));
+            html.Append(PageUtils.getHiddenInputHtml("tab", "Tools") + EOL);
+
             html.Append(CmsContext.currentPage.getFormCloseHtml("SearchReplaceForm"));
             // -- do the search
             if (searchFor.Trim() != "" && replaceWith.Trim() != "" && _errorMessage == "")

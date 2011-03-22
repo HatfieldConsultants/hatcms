@@ -116,8 +116,8 @@ namespace Rss
 			get { return guid; }
 			set { guid = value; }
 		}
-		/// <summary>Indicates when the item was published</summary>
-		public DateTime PubDate
+		/// <summary>Indicates when the item was published, in Greenwich Mean Time</summary>
+		public DateTime PubDate_GMT
 		{
 			get { return pubDate; }
 			set { pubDate = value; }

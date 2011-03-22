@@ -374,7 +374,7 @@ namespace Rss
 					writer.WriteString(item.Guid.Name);
 					writer.WriteEndElement();
 				}
-				WriteElement("pubDate", item.PubDate, false);
+				WriteElement("pubDate", item.PubDate_GMT, false);
 
 				foreach(RssModule rssModule in this._rssModules)
 				{

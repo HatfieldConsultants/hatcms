@@ -498,6 +498,8 @@ namespace HatCMS.Placeholders
 
         public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
         {
+            base.categoryList = db.fetchCategoryList(langToRenderFor);
+
             RenderParameters renderParams = new RenderParameters(placeholderDefinition.ParamList);
 
             FileAggItem[] filesToShow = FetchAllFilesToShow(page, placeholderDefinition.Identifier, langToRenderFor, renderParams);                        

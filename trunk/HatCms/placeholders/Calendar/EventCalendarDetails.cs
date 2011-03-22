@@ -334,7 +334,7 @@ namespace HatCMS.Placeholders.Calendar
         public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
         {
             Rss.RssItem rssItem = base.CreateAndInitRssItem(page, langToRenderFor);
-            rssItem.Description = page.renderPlaceholderToString(placeholderDefinition, langToRenderFor);
+            rssItem.Description = page.renderPlaceholderToString(placeholderDefinition, langToRenderFor, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
 
             return new Rss.RssItem[] { rssItem };
         }

@@ -124,7 +124,7 @@ namespace HatCMS.Controls._system
                     continue;
 
                 string url = newsArticleDetailsPage.getUrl(lang);
-                string articleContent = newsArticleDetailsPage.renderPlaceholdersToString("HtmlContent", lang);
+                string articleContent = newsArticleDetailsPage.renderPlaceholdersToString("HtmlContent", lang, CmsPage.RenderPlaceholderFilterAction.ReturnUnfiltered);
                 string summary = StringUtils.StripHTMLTags(articleContent).Trim();
                 string summaryOutput = summary;
                 if (maxLengthOfSummary > 0 && summary.Length > maxLengthOfSummary)

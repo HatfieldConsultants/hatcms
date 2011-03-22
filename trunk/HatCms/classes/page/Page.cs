@@ -929,7 +929,23 @@ namespace HatCMS
             _startedFormId = "";
 			return html;						
 		}
-                
+
+        /// <summary>
+        /// This enum specifies whether filters should be run for 
+        /// CmsPage.render* functions (including renderPlaceholderToString(), renderAllPlaceholdersToString() and renderPlaceholdersToString())
+        /// </summary>
+        public enum RenderPlaceholderFilterAction { 
+            /// <summary>
+            /// Do not run any filters on the returned value
+            /// </summary>
+            ReturnUnfiltered, 
+            /// <summary>
+            /// Run both Page and Placeholder filters on the returned value.
+            /// This should only be specified if the return value is being directly displayed to the client.
+            /// Otherwise, filters will be run multiple times resulting in slower performance.
+            /// Note: Placeholder filters are run first, then page placeholders.
+            /// </summary>
+            RunAllPageAndPlaceholderFilters };
 
 		/// <summary>
 		/// Gets the value stored in a placeholder on this page.
@@ -940,33 +956,48 @@ namespace HatCMS
 		/// <param name="placeholderType">the placeholder type to get values for</param>
 		/// <param name="identifier">the placeholder identifier to get the value for. Use <see cref="getPlaceholderIdentifiers">getPlaceholderIdentifiers()</see> to get the valid identifiers.</param>
 		/// <returns>the value found for the given placeholderType and identifier. Returns an empty string (string.empty) if the identifier was not found in the system.</returns>
-        public string renderPlaceholderToString(CmsPlaceholderDefinition phDef, CmsLanguage language)
+        public string renderPlaceholderToString(CmsPlaceholderDefinition phDef, CmsLanguage language, RenderPlaceholderFilterAction filterAction)
 		{			
-            return PlaceholderUtils.renderPlaceholderToString(this, language, phDef);
+            string ret = PlaceholderUtils.renderPlaceholderToString(this, language, phDef);
+            switch (filterAction)
+            {
+                case RenderPlaceholderFilterAction.ReturnUnfiltered:
+                    return ret;
+                    break;
+                case RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters:
+                    // -- 1: placeholder Filters
+                    ret = CmsOutputFilterUtils.RunPlaceholderFilters(phDef.PlaceholderType, this, ret);
+                    // -- 2: page filters
+                    ret = CmsOutputFilterUtils.RunPageOutputFilters(this, ret);
+                    return ret;
+                    break;
+                default:
+                    throw new ArgumentException("Error: invalid RenderPlaceholderFilterAction");
+            }
 						
 		}
 
-        public string renderAllPlaceholdersToString(CmsLanguage forLanguage)
+        public string renderAllPlaceholdersToString(CmsLanguage forLanguage, RenderPlaceholderFilterAction filterAction)
         {
             CmsPlaceholderDefinition[] phDefs = getAllPlaceholderDefinitions();
             StringBuilder ret = new StringBuilder();
 
             foreach (CmsPlaceholderDefinition phDef in phDefs)
             {
-                ret.Append(renderPlaceholderToString(phDef, forLanguage));
+                ret.Append(renderPlaceholderToString(phDef, forLanguage, filterAction));
             }
 
             return ret.ToString();
         }
 
-        public string renderPlaceholdersToString(string placeholderTypeToRender, CmsLanguage forLanguage)
+        public string renderPlaceholdersToString(string placeholderTypeToRender, CmsLanguage forLanguage, RenderPlaceholderFilterAction filterAction)
         {
             CmsPlaceholderDefinition[] phDefs = getPlaceholderDefinitions(placeholderTypeToRender);
             StringBuilder ret = new StringBuilder();
 
             foreach (CmsPlaceholderDefinition phDef in phDefs)
             {
-                ret.Append(renderPlaceholderToString(phDef, forLanguage));
+                ret.Append(renderPlaceholderToString(phDef, forLanguage, filterAction));
             }
 
             return ret.ToString();

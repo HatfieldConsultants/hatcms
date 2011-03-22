@@ -46,7 +46,10 @@ namespace HatCMS
 
                 
                 // -- setup the RSS channel
-                string rssTitle = pageToRenderRSSFor.getTitle(pageLang);
+                string titlePrefix = CmsConfig.getConfigValue("pageTitlePrefix", "");
+                string titlePostfix = CmsConfig.getConfigValue("pageTitlePostfix", "");
+
+                string rssTitle = titlePrefix + pageToRenderRSSFor.getTitle(pageLang) + titlePostfix;
                 string rssDescription = pageToRenderRSSFor.getSearchEngineDescription(pageLang);
                 Uri rssLink = new Uri(pageToRenderRSSFor.getUrl(CmsUrlFormat.FullIncludingProtocolAndDomainName, pageLang), UriKind.RelativeOrAbsolute);
                 RssChannel rssChannel = new RssChannel(rssTitle, rssDescription, rssLink);

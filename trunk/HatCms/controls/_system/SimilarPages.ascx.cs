@@ -23,7 +23,7 @@ namespace HatCMS.Controls
 
         private string getPageBodyText(CmsPage page, CmsLanguage language)
         {
-            string content = page.renderAllPlaceholdersToString(language);
+            string content = page.renderAllPlaceholdersToString(language, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
 
             content = PageUtils.StripTags(content.ToString());
             return content;

@@ -34,6 +34,7 @@ namespace HatCMS.Admin
             html.Append(currentPage.getFormStartHtml(formId));
             html.Append("<strong>Search Image Captions: </strong> ");
             html.Append(PageUtils.getInputTextHtml("AuditSearch", "AuditSearch", searchText, 40, 1024));
+            html.Append(PageUtils.getHiddenInputHtml("tab", "Tools") + EOL);
             html.Append("<input type=\"submit\" value=\"search\">");
             html.Append(PageUtils.getHiddenInputHtml("AdminTool", Enum.GetName(typeof(CmsBaseAdminTool.CmsAdminToolClass), CmsBaseAdminTool.CmsAdminToolClass.SearchSingleImagesByCaption)));
             html.Append(currentPage.getFormCloseHtml(formId));

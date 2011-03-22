@@ -289,7 +289,7 @@ namespace HatCMS.Placeholders.NewsDatabase
                 DateTime dateOfNews = sourceDetails.DateOfNews;
                 string PageDisplayURL = detailsPage.getUrl(sourceDetails.Lang);                
                 string Title = detailsPage.getTitle(sourceDetails.Lang);
-                string NewsArticleHtml = detailsPage.renderPlaceholdersToString("HtmlContent", sourceDetails.Lang);
+                string NewsArticleHtml = detailsPage.renderPlaceholdersToString("HtmlContent", sourceDetails.Lang, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
 
                 return new NewsAggItem(dateOfNews, PageDisplayURL, Title, NewsArticleHtml);
             }
@@ -468,7 +468,7 @@ namespace HatCMS.Placeholders.NewsDatabase
                     rssItem = InitRssItem(rssItem, page, langToRenderFor);
 
                     rssItem.Link = new Uri(newsItem.PageDisplayURL, UriKind.RelativeOrAbsolute);
-                    rssItem.PubDate = newsItem.NewsDate;
+                    rssItem.PubDate_GMT = newsItem.NewsDate.ToUniversalTime();
 
                     rssItem.Description = newsItem.NewsArticleHtml;
 

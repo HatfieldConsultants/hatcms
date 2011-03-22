@@ -617,7 +617,7 @@ namespace HatCMS.Placeholders
         {
             Rss.RssItem rssItem = base.CreateAndInitRssItem(page, langToRenderFor);
             
-            string content = page.renderPlaceholderToString(placeholderDefinition, langToRenderFor);
+            string content = page.renderPlaceholderToString(placeholderDefinition, langToRenderFor, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
             if (content.Trim() != "")
             {
                 rssItem.Description = content;

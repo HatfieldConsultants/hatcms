@@ -286,7 +286,7 @@ namespace HatCMS.Placeholders
                     if (!dataObj.IsExpired && (aggregatorData.LocationId < 0 || aggregatorData.LocationId == theAllLocationsLocation.JobLocationId || dataObj.LocationId == aggregatorData.LocationId))
                     {
                         Rss.RssItem rssItem = CreateAndInitRssItem(childPage, langToRenderFor);
-                        rssItem.Description = childPage.renderAllPlaceholdersToString(langToRenderFor);
+                        rssItem.Description = childPage.renderAllPlaceholdersToString(langToRenderFor, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
                         ret.Add(rssItem);
                     }                    
                 }

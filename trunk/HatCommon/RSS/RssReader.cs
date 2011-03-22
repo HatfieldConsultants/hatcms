@@ -466,7 +466,7 @@ namespace Rss
 									case "pubdate":
 										try
 										{
-											item.PubDate = DateTime.Parse(elementText.ToString());
+                                            item.PubDate_GMT = DateTime.Parse(elementText.ToString());
 										}				
 										catch (Exception e)
 										{
@@ -474,7 +474,7 @@ namespace Rss
 											string tmp = elementText.ToString ();
 											tmp = tmp.Substring (0, tmp.Length - 5);
 											tmp += "GMT";
-											item.PubDate = DateTime.Parse (tmp);
+                                            item.PubDate_GMT = DateTime.Parse(tmp);
 											}
 											catch 
 											{

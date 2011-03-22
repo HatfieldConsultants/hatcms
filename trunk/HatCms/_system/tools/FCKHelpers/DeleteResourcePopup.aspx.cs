@@ -106,7 +106,7 @@ namespace HatCMS.FCKHelpers
                     foreach (CmsLanguage lang  in CmsConfig.Languages)
                     {                        
                         string[] linksToFind = new string[] { FileUrl };
-                        string phContent = pageToSearch.renderAllPlaceholdersToString(lang);
+                        string phContent = pageToSearch.renderAllPlaceholdersToString(lang, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
                         string[] linksInPage = ContentUtils.FindFileLinksInHtml(phContent, linksToFind);
 
                         if (linksInPage.Length > 0)

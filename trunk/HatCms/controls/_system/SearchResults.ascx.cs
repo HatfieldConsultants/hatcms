@@ -70,7 +70,7 @@ namespace HatCMS.Controls
                 }
                 else
                 {                    
-                    string content = PageUtils.StripTags(page.renderAllPlaceholdersToString(lang));
+                    string content = PageUtils.StripTags(page.renderAllPlaceholdersToString(lang, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters));
                     IndexableFileInfo fInfo = new IndexableFileInfo(getPageFilenameForIndex(page), "", page.Title, content, lang.shortCode, page.LastUpdatedDateTime, false);
                     ret.Add(fInfo);
                  

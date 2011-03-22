@@ -419,9 +419,9 @@ namespace HatCMS.Placeholders.Calendar
             {
                 CmsPage detailPage = CmsContext.getPageById(e.PageId);
                 Rss.RssItem rssItem = CreateAndInitRssItem(detailPage, langToRenderFor);
-                rssItem.PubDate = e.StartDateTime;
+                rssItem.PubDate_GMT = e.StartDateTime;
                 rssItem.Author = e.CreatedBy;
-                rssItem.Description = detailPage.renderPlaceholdersToString("EventCalendarDetails", langToRenderFor);
+                rssItem.Description = detailPage.renderPlaceholdersToString("EventCalendarDetails", langToRenderFor, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
                 ret.Add(rssItem);
             }
             return ret.ToArray();

@@ -68,10 +68,15 @@ namespace HatCMS.Placeholders
 
         public Rss.RssItem InitRssItem(Rss.RssItem newRssItem, CmsPage page, CmsLanguage langToRenderFor)
         {
-            newRssItem.Title = page.getTitle(langToRenderFor);
+            string titlePrefix = CmsConfig.getConfigValue("pageTitlePrefix", "");
+            string titlePostfix = CmsConfig.getConfigValue("pageTitlePostfix", "");
+
+
+            newRssItem.Title = titlePrefix + page.getTitle(langToRenderFor) + titlePostfix;
             newRssItem.Link = new Uri(page.getUrl(CmsUrlFormat.FullIncludingProtocolAndDomainName, langToRenderFor));
             newRssItem.Guid = new Rss.RssGuid(newRssItem.Link);
             newRssItem.Author = page.LastModifiedBy;
+            newRssItem.PubDate_GMT = page.LastUpdatedDateTime.ToUniversalTime();
 
             return newRssItem;
         }
