@@ -3,6 +3,6 @@
 					
 	##PlaceHolder(PageTitle id="1")## 
 	##PlaceHolder(HtmlContent id="1" width="500px" height="400px")##				
-	##PlaceHolder(FileLibraryAggregator2 id="1" displaymode="list" gatherrecusive="true")##	
+	##PlaceHolder(PageFiles id="1")##	
 
 ##EndPlaceholderRegion("MainContent")##

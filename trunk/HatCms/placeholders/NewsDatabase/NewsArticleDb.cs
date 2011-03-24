@@ -18,7 +18,7 @@ namespace HatCMS.Placeholders.NewsDatabase
     {
         #region aggregator
 
-        protected static string TableNameAggregator = "NewsArticleAggregator";
+        protected static string TableNameAggregator = "newsarticleaggregator";
 
         public class NewsArticleAggregatorData
         {
@@ -97,7 +97,7 @@ namespace HatCMS.Placeholders.NewsDatabase
 
         #region details
         
-        protected static string TableNameDetails = "NewsArticleDetails";
+        protected static string TableNameDetails = "newsarticledetails";
 
         public class NewsArticleDetailsData
         {
@@ -238,7 +238,7 @@ namespace HatCMS.Placeholders.NewsDatabase
         public List<NewsArticleDetailsData> fetchNewsDetailsByCount(CmsLanguage lang, int sequence, int count)
         {
             StringBuilder sql = new StringBuilder("SELECT N.PageId,N.Identifier,N.LangCode,N.DateOfNews FROM ");
-            sql.Append(TableNameDetails + " N, Pages P");
+            sql.Append(TableNameDetails + " N, pages P");
             sql.Append(" WHERE N.Deleted IS NULL");
             sql.Append(" AND P.Deleted IS NULL");
             sql.Append(" AND N.PageId=P.PageId");

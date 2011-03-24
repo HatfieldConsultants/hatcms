@@ -18,7 +18,7 @@ namespace HatCMS.Placeholders.Procurement
     {
         #region aggregator
 
-        protected static string TableNameAggregator = "ProcurementAggregator";
+        protected static string TableNameAggregator = "procurementaggregator";
 
         public class ProcurementAggregatorData
         {
@@ -103,7 +103,7 @@ namespace HatCMS.Placeholders.Procurement
 
         #region details
         
-        protected static string TableNameDetails = "ProcurementDetails";
+        protected static string TableNameDetails = "procurementdetails";
 
         public class ProcurementDetailsData
         {
@@ -244,7 +244,7 @@ namespace HatCMS.Placeholders.Procurement
         public List<ProcurementDetailsData> fetchProcurementDetailsByCount(CmsLanguage lang, int sequence, int count)
         {
             StringBuilder sql = new StringBuilder("SELECT N.PageId,N.Identifier,N.LangCode,N.DateOfProcurement FROM ");
-            sql.Append(TableNameDetails + " N, Pages P");
+            sql.Append(TableNameDetails + " N, pages P");
             sql.Append(" WHERE N.Deleted IS NULL");
             sql.Append(" AND P.Deleted IS NULL");
             sql.Append(" AND N.PageId=P.PageId");

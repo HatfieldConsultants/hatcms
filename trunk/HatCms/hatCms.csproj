@@ -73,6 +73,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="antlr.runtime, Version=2.7.6.2, Culture=neutral, PublicKeyToken=1790ba318ebc5d56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>classes\iCal\antlr.runtime.dll</HintPath>
+    </Reference>
     <Reference Include="DDay.iCal, Version=1.0.1.490, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>classes\iCal\DDay.iCal.dll</HintPath>
@@ -135,8 +139,10 @@
     <Compile Include="classes\dependencies\DependencyMessage.cs" />
     <Compile Include="classes\dependencies\DirectoryDoesNotExistDependency.cs" />
     <Compile Include="classes\dependencies\FileDependency.cs" />
+    <Compile Include="classes\dependencies\MessageDependency.cs" />
     <Compile Include="classes\dependencies\PageDependency.cs" />
     <Compile Include="classes\dependencies\PlaceholderContentDependency.cs" />
+    <Compile Include="classes\dependencies\PlaceholderDependency.cs" />
     <Compile Include="classes\dependencies\TemplateDependency.cs" />
     <Compile Include="classes\dependencies\WritableDirectoryDependency.cs" />
     <Compile Include="classes\EditMode.cs" />
@@ -1313,6 +1319,7 @@
     <Content Include="templates\internal\_DeleteFileLibraryPopup.template" />
     <Content Include="templates\internal\_FileLibraryCategoryPopup.template" />
     <Content Include="templates\Glossary.template" />
+    <Content Include="templates\_RSSGlossary.template" />
     <None Include="templates\PageFiles.template" />
     <None Include="templates\EventCalendarAggregator.template" />
     <None Include="templates\EventCalendarDetails.template" />

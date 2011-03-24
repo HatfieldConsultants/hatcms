@@ -8,9 +8,7 @@ namespace HatCMS.Controls
 	using System.Drawing;
 	using System.Web;
 	using System.Web.UI.WebControls;
-	using System.Web.UI.HtmlControls;
-    
-
+	using System.Web.UI.HtmlControls;  
     using Hatfield.Web.Portal;    
 
 	/// <summary>
@@ -19,6 +17,12 @@ namespace HatCMS.Controls
 	public partial class RenamePagePopup : System.Web.UI.UserControl
 	{
         protected string _errorMessage = "";
+        
+        /// <summary>
+        /// Characters that must not be found in a page's name (ie a page's filename that is used to construct the page's url).
+        /// Refer to "Reserved Characters" in RFC3986: http://www.ietf.org/rfc/rfc3986.txt
+        /// </summary>
+        public static string[] InvalidPageNameChars = new string[] { "\\", ":", "/", "?", "#", "[",  "]", "@", "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "=", "~", "%", "." };
 
 		protected void Page_Load(object sender, System.EventArgs e)
 		{
@@ -59,6 +63,12 @@ namespace HatCMS.Controls
                         writer.WriteLine(html.ToString());
                         return;
                     }
+                    if (pageToRename.ID == CmsContext.HomePage.ID)
+                    {
+                        html.Append("<span style=\"color: red\">Error: you can not rename the home page!</span>");
+                        writer.WriteLine(html.ToString());
+                        return;
+                    }
 
                     
                     // -- process the action
@@ -70,41 +80,39 @@ namespace HatCMS.Controls
                         if (newPageName == "")
                         {
                             _errorMessage = "Please specify a new name for the page";
-                        }
-                        else if (newPageName.IndexOf("\\") > 0)
-                            _errorMessage = "The name can not contain the \"\\\" character!";
-                        else if (newPageName.IndexOf("/") > 0)
-                            _errorMessage = "The name can not contain the \"/\" character!";
-                        else if (newPageName.IndexOf("#") > 0)
-                            _errorMessage = "The name can not contain the \"#\" character!";
-                        else if (newPageName.IndexOf("+") > 0)
-                            _errorMessage = "The name can not contain the \"+\" character!";
-                        else if (newPageName.IndexOf(":") > 0)
-                            _errorMessage = "The name can not contain the \":\" character!";
+                        }                        
                         else
-                        {                            
-
-                            if (pageToRename.ID == CmsContext.HomePage.ID)
+                        {
+                            // -- check for invalid characters.
+                            foreach (string invalidChar in InvalidPageNameChars)
                             {
-                                html.Append("<span style=\"color: red\">Error: you can not rename the home page!</span>");
-                                writer.WriteLine(html.ToString());
-                                return;
+                                if (newPageName.IndexOf(invalidChar) >= 0)
+                                    _errorMessage = "The page name can not include the \"" + invalidChar + "\" character.";
                             }
-                            else
-                            {                                
-                                bool success = RenamePage(pageToRename, newPageName);
-                                if (success)
+
+                            if (_errorMessage == "")
+                            {
+                                bool nameAlreadyExists = CmsContext.childPageWithNameExists(pageToRename.ParentID, newPageName);
+                                if (nameAlreadyExists)
                                 {
-                                    string script = "<script>"+Environment.NewLine;
-                                    script = script + "function go(url){"+Environment.NewLine;
-                                    script = script + "opener.location.href = url;"+Environment.NewLine;
-                                    script = script + "window.close();\n}";
-                                    script = script + "</script>"+Environment.NewLine;
-                                    script = script + "<span style=\"color: green; font-weight: bold;\">The Page has successfully been renamed.</span>";
-                                    script = script + "<p><input type=\"button\" onclick=\"go('" + pageToRename.Url + "');\" value=\"close this window\">";
-                                    // script = script + "<p>" + htmlOutput + "</p>";
-                                    writer.WriteLine(script);
-                                    return;
+                                    _errorMessage = "A page named \"" + newPageName + "\" already exists.";
+                                }
+                                else
+                                {
+                                    bool success = RenamePage(pageToRename, newPageName);
+                                    if (success)
+                                    {
+                                        string script = "<script>" + Environment.NewLine;
+                                        script = script + "function go(url){" + Environment.NewLine;
+                                        script = script + "opener.location.href = url;" + Environment.NewLine;
+                                        script = script + "window.close();\n}";
+                                        script = script + "</script>" + Environment.NewLine;
+                                        script = script + "<span style=\"color: green; font-weight: bold;\">The Page has successfully been renamed.</span>";
+                                        script = script + "<p><input type=\"button\" onclick=\"go('" + pageToRename.Url + "');\" value=\"close this window\">";
+                                        // script = script + "<p>" + htmlOutput + "</p>";
+                                        writer.WriteLine(script);
+                                        return;
+                                    }
                                 }
                             }
                         } // else
@@ -189,7 +197,7 @@ namespace HatCMS.Controls
             }
             else
             {
-                _errorMessage = "Page did NOT move successfully.";                
+                _errorMessage = "Page did NOT rename successfully. There was a database error.";                
                 return false;
             }
 

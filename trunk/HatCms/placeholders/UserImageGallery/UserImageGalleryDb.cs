@@ -59,7 +59,7 @@ namespace HatCMS.Placeholders
 
         public UserImageGalleryPlaceholderData[] getAllUserImageGalleryPlaceholderDatas()
         {
-            string sql = "select u.NumThumbsPerPage, u.NumThumbsPerRow, u.ThumbnailDisplayBoxWidth, u.ThumbnailDisplayBoxHeight, u.FullSizeDisplayBoxWidth, u.FullSizeDisplayBoxHeight, u.FullSizeLinkMode, u.CaptionDisplayLocation ";
+            string sql = "select u.pageid, u.identifier, u.langcode, u.NumThumbsPerPage, u.NumThumbsPerRow, u.ThumbnailDisplayBoxWidth, u.ThumbnailDisplayBoxHeight, u.FullSizeDisplayBoxWidth, u.FullSizeDisplayBoxHeight, u.FullSizeLinkMode, u.CaptionDisplayLocation ";
             sql += " FROM userimagegallery u left join pages p on (p.pageid = u.pageid) ";
             sql += " where p.deleted is null ";
 

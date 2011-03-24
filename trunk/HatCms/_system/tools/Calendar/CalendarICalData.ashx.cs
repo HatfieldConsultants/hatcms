@@ -26,8 +26,20 @@ namespace HatCMS._system.tools.Calendar
             DateTime end = DateTime.MinValue;
             try
             {
-                start = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(PageUtils.getFromForm("start", 0));
-                end = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(PageUtils.getFromForm("end", 0));
+                int startAddSeconds = PageUtils.getFromForm("start", Int32.MinValue);
+                int endAddSeconds = PageUtils.getFromForm("end", Int32.MinValue);
+                if (startAddSeconds < 0)
+                    start = new DateTime(DateTime.Now.Year, 1, 1);
+                else
+                    start = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(startAddSeconds);
+
+                if (endAddSeconds < 0)
+                    end = new DateTime(DateTime.Now.Year, 1, 1).AddYears(1);
+                else
+                    end = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(endAddSeconds);
+
+                if (end < start)
+                    end = start.AddYears(1);
             }
             catch
             {

@@ -124,14 +124,16 @@ namespace HatCMS.Placeholders
             public string Title;
             public string Description;
             public string CategoryName;
+            public DateTime LastModified;
 
-            public FileAggItem(string pageDisplayURL, string fileDownloadURL, string title, string description, string categoryName)
+            public FileAggItem(string pageDisplayURL, string fileDownloadURL, string title, string description, string categoryName, DateTime lastModified)
             {
                 PageDisplayURL = pageDisplayURL;
                 FileDownloadURL = fileDownloadURL;
                 Title = title;
                 Description = description;
                 CategoryName = categoryName;
+                LastModified = lastModified;
             } // constructor
 
             public string GetContentHash()
@@ -142,6 +144,7 @@ namespace HatCMS.Placeholders
                 ret.Append(Title);
                 ret.Append(Description);
                 ret.Append(CategoryName);
+                ret.Append(LastModified.Ticks.ToString());
                 return ret.ToString();
             }
 
@@ -194,14 +197,15 @@ namespace HatCMS.Placeholders
             }
 
             public static FileAggItem FromFileLibraryDetailsData(FileLibraryDetailsData sourceDetails, List<FileLibraryCategoryData> categoryList)
-            {
+            {                
                 CmsPage detailsPage = CmsContext.getPageById(sourceDetails.DetailsPageId);
                 string PageDisplayURL = detailsPage.getUrl(sourceDetails.Lang);
                 string FileDownloadURL = FileLibraryDetailsData.getDownloadUrl(detailsPage, sourceDetails.Identifier, sourceDetails.Lang, sourceDetails.FileName);
                 string Title = detailsPage.getTitle(sourceDetails.Lang);
                 string Description = sourceDetails.Description;
                 string CategoryName = FileLibraryCategoryData.getCategoryFromList(categoryList, sourceDetails.CategoryId).CategoryName;
-                return new FileAggItem(PageDisplayURL, FileDownloadURL, Title, Description, CategoryName);
+                DateTime lastModified = detailsPage.LastUpdatedDateTime;
+                return new FileAggItem(PageDisplayURL, FileDownloadURL, Title, Description, CategoryName, lastModified);
             }
 
             public static FileAggItem[] FromFileLibraryDetailsData(FileLibraryDetailsData[] sourceDetails, List<FileLibraryCategoryData> categoryList)
@@ -215,7 +219,7 @@ namespace HatCMS.Placeholders
             }
 
             public static FileAggItem FromPageFilesItemData(PageFilesItemData sourceDetails)
-            {
+            {                
                 CmsPage detailsPage = CmsContext.getPageById(sourceDetails.DetailsPageId);
                 Dictionary<string, string> pageUrlParams = new Dictionary<string, string>();
                 pageUrlParams.Add(PageFiles.CurrentFileIdFormName, sourceDetails.Id.ToString());
@@ -224,7 +228,8 @@ namespace HatCMS.Placeholders
                 string Title = sourceDetails.Title;
                 string Description = sourceDetails.Abstract;
                 string CategoryName = detailsPage.getTitle(sourceDetails.Lang); // use the page title as the category
-                return new FileAggItem(PageDisplayURL, FileDownloadURL, Title, Description, CategoryName);
+                DateTime lastModified = sourceDetails.lastModified;
+                return new FileAggItem(PageDisplayURL, FileDownloadURL, Title, Description, CategoryName, lastModified);
             }
 
             public static FileAggItem[] FromPageFilesItemData(PageFilesItemData[] sourceDetails)
@@ -515,6 +520,7 @@ namespace HatCMS.Placeholders
 
                 rssItem.Title = file.Title;
                 rssItem.Description = file.Description;
+                rssItem.PubDate_GMT = file.LastModified.ToUniversalTime();
 
                 ret.Add(rssItem);
 

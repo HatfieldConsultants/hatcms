@@ -90,14 +90,14 @@ namespace HatCMS
             set { mimetype = value; }
         }
 
-        protected string modifiedby;
+        protected int modifiedby;
         /// <summary>
         /// the username that last modified this record
         /// </summary>
         public int ModifiedByUserId
         {
-            get { return Convert.ToInt32(modifiedby); }
-            set { modifiedby = value.ToString(); }
+            get { return modifiedby; }
+            set { modifiedby = value; }
         }
 
         protected DateTime modificationdate;
@@ -128,7 +128,7 @@ namespace HatCMS
             filesize = -1;
             filetimestamp = DateTime.MinValue;
             mimetype = "";
-            modifiedby = "-1";
+            modifiedby = -1;
             modificationdate = DateTime.MinValue;
             metaData = new List<CmsLocalFileOnDiskMetaItem>();
         } // constructor
@@ -489,9 +489,9 @@ namespace HatCMS
         /// </summary>
         /// <param name="metaDataNamesAndValuesToMatch"></param>
         /// <returns></returns>
-        public static CmsLocalFileOnDisk[] FetchAllFilesWithMetaData(Dictionary<string, string> metaDataNamesAndValuesToMatch)
+        public static CmsLocalFileOnDisk[] FetchAllFilesByMetaData(Dictionary<string, string> metaDataNamesAndValuesToMatch)
         {
-            return (new CmsResourceDB()).FetchAllFilesWithMetaData(metaDataNamesAndValuesToMatch);
+            return (new CmsResourceDB()).FetchAllFilesByMetaData(metaDataNamesAndValuesToMatch);
         }
 
         /// <summary>
@@ -499,9 +499,9 @@ namespace HatCMS
         /// </summary>
         /// <param name="metaDataNamesAndValuesToPossiblyMatch"></param>
         /// <returns></returns>
-        public static CmsLocalFileOnDisk[] FetchAllFilesWithAnyMetaData(Dictionary<string, string> metaDataNamesAndValuesToPossiblyMatch)
+        public static CmsLocalFileOnDisk[] FetchAllFilesByAnyMetaData(Dictionary<string, string> metaDataNamesAndValuesToPossiblyMatch)
         {
-            return (new CmsResourceDB()).FetchAllFilesWithAnyMetaData(metaDataNamesAndValuesToPossiblyMatch);
+            return (new CmsResourceDB()).FetchAllFilesByAnyMetaData(metaDataNamesAndValuesToPossiblyMatch);
         }
 
         public static CmsLocalFileOnDisk[] FetchAllFilesInDirectory(string directoryPath, string[] fileExtensions)
@@ -618,9 +618,9 @@ namespace HatCMS
                 if (item.revisionnumber < 0)
                     item.revisionnumber = 1;
 
-                string lastModifiedBy = "";
+                int lastModifiedBy = -1;
                 if (CmsContext.currentUserIsLoggedIn)
-                    lastModifiedBy = CmsContext.currentWebPortalUser.UserName;
+                    lastModifiedBy = CmsContext.currentWebPortalUser.uid;
 
                 
                 string sql = "INSERT INTO resourceitems ";
@@ -634,7 +634,7 @@ namespace HatCMS
                 sql += item.filesize.ToString() + ", ";
                 sql += "" + dbEncode(item.filetimestamp) + " " + ", "; 
                 sql += "'" + dbEncode(item.mimetype) + "'" + ", ";
-                sql += "'" + dbEncode(lastModifiedBy) + "'" + ", ";
+                sql += "'" + dbEncode(lastModifiedBy.ToString()) + "'" + ", ";
                 sql += "" + dbEncode(DateTime.Now) + " " + " ";                
 
                 sql += " ); ";
@@ -750,7 +750,7 @@ namespace HatCMS
 
                 item.mimetype = (dr["MimeType"]).ToString();
 
-                item.modifiedby = dr["ModifiedBy"].ToString();
+                item.modifiedby = Convert.ToInt32(dr["ModifiedBy"]);
 
                 item.modificationdate = Convert.ToDateTime(dr["ModificationDate"]);
 
@@ -804,7 +804,7 @@ namespace HatCMS
             }
 
 
-            public CmsLocalFileOnDisk[] FetchAllFilesWithAnyMetaData(Dictionary<string, string> metaDataNamesAndValuesToMatch)
+            public CmsLocalFileOnDisk[] FetchAllFilesByAnyMetaData(Dictionary<string, string> metaDataNamesAndValuesToMatch)
             {
                 if (metaDataNamesAndValuesToMatch.Keys.Count == 0)
                     return new CmsLocalFileOnDisk[0];
@@ -841,7 +841,7 @@ namespace HatCMS
             }
 
 
-            public CmsLocalFileOnDisk[] FetchAllFilesWithMetaData(Dictionary<string, string> metaDataNamesAndValuesToMatch)
+            public CmsLocalFileOnDisk[] FetchAllFilesByMetaData(Dictionary<string, string> metaDataNamesAndValuesToMatch)
             {
                 if (metaDataNamesAndValuesToMatch.Keys.Count == 0)
                     return new CmsLocalFileOnDisk[0];
@@ -904,7 +904,8 @@ namespace HatCMS
 
                         item.mimetype = (dr["MimeType"]).ToString();
 
-                        item.modifiedby = dr["ModifiedBy"].ToString();
+                        // -- note: if ModifiedBy is not an integer, flush the entire resourceitems table.
+                        item.modifiedby = Convert.ToInt32(dr["ModifiedBy"]);
 
                         item.modificationdate = Convert.ToDateTime(dr["ModificationDate"]);
                     }
@@ -931,6 +932,7 @@ namespace HatCMS
 
             public CmsLocalFileOnDisk[] FetchFilesInDirectory(string directoryPath, string[] fileExtensions)
             {
+                // -- directoryPath should not have a trailing slash.
                 string dir = directoryPath;
                 if (dir.EndsWith(Path.DirectorySeparatorChar.ToString()))
                     dir = dir.Substring(0, dir.Length - 1);
@@ -942,12 +944,12 @@ namespace HatCMS
                 sql += " where ";
                 sql += " RevisionNumber = (select max(RevisionNumber) from resourceitems r2 where r2.resourceid = r.resourceid) ";
                 sql += " AND (m.ResourceRevisionNumber = r.RevisionNumber OR m.ResourceRevisionNumber is null) ";
-                sql += " AND FileDirectory like '" + dbEncode(dir) + "' AND r.deleted is null and m.deleted is null ";
+                sql += " AND FileDirectory = '" + dbEncode(dir) + "' AND r.deleted is null and m.deleted is null ";
                 if (fileExtensions.Length > 0)
                 {
                     sql += " AND ("+ StringUtils.Join(" OR ", fileExtensions, " r.Filename like '%", "'") + ") ";
                 }
-                sql += " order by ResourceId; ";
+                sql += " order by ResourceId; ";                
 
                 DataSet ds = this.RunSelectQuery(sql);
 

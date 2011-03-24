@@ -321,7 +321,20 @@ namespace HatCMS.setup
         private static ConfigValidationMessage[] testAllDependencies()
         {
             List<CmsDependencyMessage> dMsgs = new List<CmsDependencyMessage>();
-            CmsDependency[] dependencies = CmsDependencies.GatherAllDependencies();
+            CmsDependency[] dependencies;
+            try
+            {
+                dependencies = CmsDependencies.GatherAllDependencies();
+            }
+            catch (Exception ex)
+            {
+                string innerMsg = "";
+                if (ex.InnerException != null)
+                    innerMsg = "# "+ex.InnerException.Message+" Source:"+ex.InnerException.Source;
+
+                dMsgs.Add(CmsDependencyMessage.Error("Exception when Gathering Dependencies: " + ex.Message + " " + innerMsg));
+                dependencies = new CmsDependency[0];
+            }
             foreach (CmsDependency d in dependencies)
             {
                 try
@@ -330,7 +343,7 @@ namespace HatCMS.setup
                 }
                 catch (Exception ex)
                 {
-                    dMsgs.Add(CmsDependencyMessage.Error(ex));
+                    dMsgs.Add(CmsDependencyMessage.Error("Exception in "+d.GetType().FullName+".ValidateDependency(): "+ex.Message));
                 }
             }
                         

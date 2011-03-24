@@ -28,9 +28,9 @@ namespace HatCMS.Placeholders.Calendar
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/calendarIcon_16x16.png"));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/DatePicker.js"));
 
-            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery.fullcalendar/fullcalendar.css", new DateTime(2011,2,22)));
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery.fullcalendar/fullcalendar.css", new DateTime(2011,3,19)));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery/jquery-1.4.1.min.js"));
-            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery.fullcalendar/fullcalendar.min.js", new DateTime(2011,2,22)));
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery.fullcalendar/fullcalendar.min.js", new DateTime(2011,3,19)));
 
 
             ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("EditCalendarCategoryPagePath", "/_admin/EventCalendarCategory"), CmsConfig.Languages));
@@ -84,6 +84,8 @@ namespace HatCMS.Placeholders.Calendar
                   PRIMARY KEY (`CategoryId`,`LangCode`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
             "));
+
+            // note: calendareventcategory table is deprecated.
 
             // -- REQUIRED config entries
             ret.Add(new CmsConfigItemDependency("EventCalendar.DefaultEventStartHour"));
@@ -231,11 +233,9 @@ namespace HatCMS.Placeholders.Calendar
         /// <param name="page"></param>
         protected void addCssForEventCategory(CmsPage page, CmsLanguage lang)
         {
-            EventCalendarDb db = new EventCalendarDb();
-            List<EventCalendarDb.EventCalendarCategoryData> categoryList = db.fetchCategoryList(lang);
-            foreach (EventCalendarDb.EventCalendarCategoryData c in categoryList)
-                page.HeadSection.AddCSSStyleStatements(".EventCategory_" + c.CategoryId + " a { background-color: " + c.ColorHex + ";  }");
+            // -- note: the colour of events is now assigned in the JSON feed
 
+            // -- add CSS for icons.
             string appPath = CmsContext.ApplicationPath;
             Set iconSet = IconUtils.getIconSet(CmsContext.ApplicationPath, false);
             foreach (string i in iconSet)

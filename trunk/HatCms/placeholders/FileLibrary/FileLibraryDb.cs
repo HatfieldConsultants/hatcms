@@ -123,7 +123,7 @@ namespace HatCMS.Placeholders
         #endregion
 
         #region details
-        protected static string DETAILS_TABLE = "FileLibraryDetails";
+        protected static string DETAILS_TABLE = "filelibrarydetails";
 
         /// <summary>
         /// Delete file library details data (set DELETED flag with NOW())
@@ -452,7 +452,7 @@ namespace HatCMS.Placeholders
         #endregion
 
         #region category
-        protected static string CATEGORY_TABLE = "FileLibraryCategory";
+        protected static string CATEGORY_TABLE = "filelibrarycategory";
 
         /// <summary>
         /// Insert into `FileLibraryCategory`

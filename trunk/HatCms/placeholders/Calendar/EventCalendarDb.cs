@@ -18,7 +18,7 @@ namespace HatCMS.Placeholders.Calendar
     public class EventCalendarDb : PlaceholderDb
     {
         #region aggregator
-        protected static string TableNameAggregator = "EventCalendarAggregator";
+        protected static string TableNameAggregator = "eventcalendaraggregator";
 
         public class EventCalendarAggregatorData
         {
@@ -128,7 +128,7 @@ namespace HatCMS.Placeholders.Calendar
         #endregion
 
         #region details
-        protected static string TableNameDetails = "EventCalendarDetails";
+        protected static string TableNameDetails = "eventcalendardetails";
 
         public class EventCalendarDetailsData
         {
@@ -274,7 +274,7 @@ namespace HatCMS.Placeholders.Calendar
         public List<EventCalendarDetailsData> fetchAllDetailsData(CmsLanguage lang, int attachedEventId, int count)
         {
             StringBuilder sql = new StringBuilder("(SELECT E.PageId,E.Identifier,E.LangCode,E.Description,E.CategoryId,E.StartDateTime,E.EndDateTime,E.CreatedBy FROM ");
-            sql.Append(TableNameDetails + " E, Pages P");
+            sql.Append(TableNameDetails + " E, pages P");
             sql.Append(" WHERE E.Deleted IS NULL");
             sql.Append(" AND E.LangCode='" + dbEncode(lang.shortCode) + "'");
             sql.Append(" AND P.Deleted IS NULL");
@@ -285,7 +285,7 @@ namespace HatCMS.Placeholders.Calendar
             {
                 sql.Append(" LIMIT 0, " + count.ToString() + ")");
                 sql.Append(" UNION (SELECT E.PageId,E.Identifier,E.LangCode,E.Description,E.CategoryId,E.StartDateTime,E.EndDateTime,E.CreatedBy FROM ");
-                sql.Append(TableNameDetails + " E, Pages P");
+                sql.Append(TableNameDetails + " E, pages P");
                 sql.Append(" WHERE E.Deleted IS NULL");
                 sql.Append(" AND E.LangCode='" + dbEncode(lang.shortCode) + "'");
                 sql.Append(" AND P.Deleted IS NULL");
@@ -359,7 +359,7 @@ namespace HatCMS.Placeholders.Calendar
         public List<EventCalendarDetailsData> fetchDetailsDataByRange(DateTime strDateTime, DateTime endDateTime, CmsLanguage lang)
         {
             StringBuilder sql = new StringBuilder("SELECT E.PageId,E.Identifier,E.LangCode,E.Description,E.CategoryId,E.StartDateTime,E.EndDateTime,E.CreatedBy FROM ");
-            sql.Append(TableNameDetails + " E, Pages P");
+            sql.Append(TableNameDetails + " E, pages P");
             sql.Append(" WHERE ((E.EndDateTime>=" + dbEncode(strDateTime));
             sql.Append(" AND E.EndDateTime<=" + dbEncode(endDateTime) + ")");
             sql.Append(" OR (E.StartDateTime>=" + dbEncode(strDateTime));
@@ -408,7 +408,7 @@ namespace HatCMS.Placeholders.Calendar
         public List<EventCalendarDetailsData> fetchUpcomingEventDetails(DateTime dt, CmsLanguage lang, int count)
         {
             StringBuilder sql = new StringBuilder("SELECT E.PageId,E.Identifier,E.LangCode,E.Description,E.CategoryId,E.StartDateTime,E.EndDateTime,E.CreatedBy FROM ");
-            sql.Append(TableNameDetails + " E, Pages P");
+            sql.Append(TableNameDetails + " E, pages P");
             sql.Append(" WHERE E.EndDateTime >= " + dbEncode(dt));
             sql.Append(" AND E.LangCode='" + dbEncode(lang.shortCode) + "'");
             sql.Append(" AND E.Deleted IS NULL");
@@ -471,7 +471,7 @@ namespace HatCMS.Placeholders.Calendar
         #endregion
 
         #region category
-        protected static string TableNameCategory = "EventCalendarCategory";
+        protected static string TableNameCategory = "eventcalendarcategory";
 
         public class EventCalendarCategoryData
         {
@@ -490,6 +490,9 @@ namespace HatCMS.Placeholders.Calendar
             }
 
             private string colorHex = "";
+            /// <summary>
+            /// The colour hex code, including the "#" character (ie: #000066)
+            /// </summary>
             public string ColorHex
             {
                 get { return colorHex; }
@@ -533,6 +536,22 @@ namespace HatCMS.Placeholders.Calendar
                 }
                 catch { }
                 return sb.ToString();
+            }
+
+            /// <summary>
+            /// returns a blank category object if not found.
+            /// </summary>
+            /// <param name="haystack"></param>
+            /// <param name="categoryIdToFind"></param>
+            /// <returns></returns>
+            public static EventCalendarCategoryData GetFromHaystack(List<EventCalendarDb.EventCalendarCategoryData> haystack, int categoryIdToFind)
+            {
+                foreach (EventCalendarCategoryData cat in haystack)
+                {                    
+                    if (cat.CategoryId == categoryIdToFind)
+                        return cat;
+                } // foreach
+                return new EventCalendarCategoryData();
             }
         }
 

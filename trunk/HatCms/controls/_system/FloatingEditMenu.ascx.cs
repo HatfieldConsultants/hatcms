@@ -28,6 +28,7 @@ namespace HatCMS.Controls
         {
             List<CmsDependency> ret = new List<CmsDependency>();
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/FloatingEditMenu.js", new DateTime(2010, 5, 13)));
+            ret.Add(CmsFileDependency.UnderAppPath("images/_system/hatCms_logo.png"));
             ret.AddRange(new CmsPageEditMenu.DefaultStandardActionRenderers().getDependencies());
             return ret.ToArray();
         }

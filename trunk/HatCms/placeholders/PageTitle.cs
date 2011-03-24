@@ -34,7 +34,38 @@ namespace HatCMS.Placeholders
 
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-             // nothing to render in View Mode. rendering only happens in Edit mode.
+            // Nothing to render in View Mode. rendering only happens in Edit mode.
+            // To view the title of the page, use the _system/PageTitle control.
+            // View mode rendering is not done in this placeholder so that the template can precisely control where the
+            // Title is edited, and where it is displayed.
+        }
+
+        private string getPageNameFromTitle(string newTitle, CmsPage oldPageWithValidName)
+        {
+            string returnTitle = newTitle;
+            // -- remove invalid characters            
+            foreach (string invalidChar in HatCMS.Controls.RenamePagePopup.InvalidPageNameChars)
+            {
+                returnTitle = returnTitle.Replace(invalidChar, " ");
+            }
+
+            // -- remove whitespace and multiple spaces. Source: http://www.dotnetperls.com/remove-whitespace
+            System.Text.RegularExpressions.Regex r = new System.Text.RegularExpressions.Regex(@"\s+");
+
+            returnTitle = r.Replace(returnTitle, @" ");
+
+            returnTitle = returnTitle.Trim();
+
+            if (returnTitle.Length > 0)
+            {
+                bool pageNameAlreadyExists = CmsContext.childPageWithNameExists(oldPageWithValidName.ParentID, returnTitle);
+                if (!pageNameAlreadyExists)
+                    return returnTitle;
+            }
+
+            // -- there was a problem, so use the old name.
+            return oldPageWithValidName.Name;
+
         }
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
@@ -43,16 +74,18 @@ namespace HatCMS.Placeholders
 			
             // -- get the placeholder width and height parameters
             string width = "100%";
+            string height = "1.5em";
+            bool renamePageBasedOnTitle = false;
             if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
+            {
                 width = PlaceholderUtils.getParameterValue("width", width, paramList);
-            else            
+                height = PlaceholderUtils.getParameterValue("height", height, paramList);
+                renamePageBasedOnTitle = PlaceholderUtils.getParameterValue("RenamePageBasedOnTitle", renamePageBasedOnTitle, paramList);
+            }
+            else
                 throw new ArgumentException("Invalid CmsTemplateEngineVersion");            
 
-			string height = "1.5em";
-            if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
-                height = PlaceholderUtils.getParameterValue("height", height, paramList);
-            else            
-                throw new ArgumentException("Invalid CmsTemplateEngineVersion");            
+			            
 			
 			string pageTitle = "";
 			string menuTitle = "";
@@ -62,17 +95,31 @@ namespace HatCMS.Placeholders
 			// ------- CHECK THE FORM FOR ACTIONS
             string action = Hatfield.Web.Portal.PageUtils.getFromForm(formName + "_PageTitleAction", "");
 			if (action.Trim().ToLower() == "savetitle")
-			{
+			{                
+                // -- save the page title
                 pageTitle = PageUtils.getFromForm(formName + "_value", "");
-                if (page.setTitle(pageTitle, langToRenderFor))
-				{
-					Message = "Page Title Updated";
+                if (pageTitle.CompareTo(page.Title) != 0 && page.setTitle(pageTitle, langToRenderFor))
+				{                    
+                    Message = "Page Title Updated";
+                    // -- save the name based on the page title
+                    if (renamePageBasedOnTitle && page.ID != CmsContext.HomePage.ID)
+                    {
+                        string newPageName = getPageNameFromTitle(pageTitle, page);
+                        // -- rename the page to its new name
+                        bool renameSuccess = page.setName(newPageName, langToRenderFor);
+                        if (!renameSuccess)                        
+                        {
+                            Message = "Page did NOT rename successfully.";                         
+                        }
+                    }
 				}
 				else
 				{
 					Message = "Problem with database: could not set page title";
                     pageTitle = page.Title;
 				}
+
+                // -- save the menu title
 
                 menuTitle = PageUtils.getFromForm(formName + "_menutitlevalue", "");
                 if (page.setMenuTitle(menuTitle, langToRenderFor))

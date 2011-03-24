@@ -203,7 +203,7 @@ namespace HatCMS
 
                 try
                 {
-                    string sql = "DESCRIBE `"+TableName+"`;";
+                    string sql = "DESCRIBE `"+TableName+"`;";                    
                     DataSet ds = this.RunSelectQuery(sql);
                     if (hasRows(ds))
                     {

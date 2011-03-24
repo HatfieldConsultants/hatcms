@@ -110,7 +110,7 @@ namespace HatCMS.Placeholders
                 if (categoryId < 0)
                     return new ContactDataCategory();
 
-                string sql = "select * from ContactDataCategory where categoryId = " + categoryId.ToString() + " ";
+                string sql = "select * from contactdatacategory where categoryId = " + categoryId.ToString() + " ";
                 DataSet ds = this.RunSelectQuery(sql);
                 if (this.hasSingleRow(ds))
                 {
@@ -124,7 +124,7 @@ namespace HatCMS.Placeholders
             public ContactDataCategory[] getAllContactCategories()
             {
                 List<ContactDataCategory> tempList = new List<ContactDataCategory>();
-                string sql = "select * from ContactDataCategory where " + DBDialect.isNull("Deleted") + " ";
+                string sql = "select * from contactdatacategory where " + DBDialect.isNull("Deleted") + " ";
                 // sql += " ORDER BY title ";
                 DataSet ds = this.RunSelectQuery(sql);
                 if (this.hasRows(ds))

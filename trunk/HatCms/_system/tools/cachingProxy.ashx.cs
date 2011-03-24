@@ -101,7 +101,7 @@ namespace HatCMS.Tools
                 byte[] data = client.DownloadData(url);
 
                 // -- add the data to the cache
-                if (CacheDuration_Minutes >= 0)
+                if (CacheDuration_Minutes > 0)
                 {
                     context.Cache.Insert(url, data, null,
                                 Cache.NoAbsoluteExpiration,

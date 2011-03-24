@@ -43,7 +43,7 @@ namespace HatCMS.Controls._system
             ret.Add(new CmsConfigItemDependency("MostRecentNews.Count"));
             ret.Add(new CmsConfigItemDependency("MostRecentNews.Image"));
             ret.Add(new CmsConfigItemDependency("MostRecentNews.TitleText"));
-            ret.Add(new CmsConfigItemDependency("MostRecentNews.NoNewsText"));
+            ret.Add(new CmsConfigItemDependency("MostRecentNews.NoNewsText"));            
 
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowRight.jpg", new DateTime(2011, 3, 1)));
 
@@ -57,7 +57,7 @@ namespace HatCMS.Controls._system
         /// <returns></returns>
         protected string getTitleText(CmsLanguage lang)
         {
-            return CmsConfig.getConfigValue("MostRecentNews.TitleText", "News", lang);
+            return CmsConfig.getConfigValue("MostRecentNews.TitleText", "", lang);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace HatCMS.Controls._system
         /// <returns></returns>
         protected string getNoNewsText(CmsLanguage lang)
         {
-            return CmsConfig.getConfigValue("MostRecentNews.NoNewsText", "(No article available)", lang);
+            return CmsConfig.getConfigValue("MostRecentNews.NoNewsText", "(No news articles are available)", lang);
         }
 
         /// <summary>
@@ -92,9 +92,14 @@ namespace HatCMS.Controls._system
             html.Append((imgUrl == "") ? "" : "<img src=\"" + imgUrl + "\" />");
             html.Append("</td>");
             html.Append("<td width=\"50%\" valign=\"middle\">");
-            html.Append("<div class=\"MostRecentNewsTitle\">");
-            html.Append(getTitleText(lang));
-            html.Append("</div>");
+
+            string titleText = getTitleText(lang);
+            if (titleText.Trim() != "")
+            {
+                html.Append("<div class=\"MostRecentNewsTitle\">");
+                html.Append(getTitleText(lang));
+                html.Append("</div>");
+            }
             html.Append("</td>");
             html.Append("</tr></table>");
             return html.ToString();
@@ -106,14 +111,13 @@ namespace HatCMS.Controls._system
         /// <param name="articleArray"></param>
         /// <param name="lang"></param>
         /// <returns></returns>
-        protected string renderContent(List<NewsArticleDb.NewsArticleDetailsData> articleArray, CmsLanguage lang, string template, int maxLengthOfSummary)
+        protected string renderContent(List<NewsArticleDb.NewsArticleDetailsData> articleArray, CmsLanguage lang, string template, int maxLengthOfSummary, string dateOfNewsToStringFormat)
         {
             StringBuilder html = new StringBuilder();
             int count = CmsConfig.getConfigValue("MostRecentNews.Count", 1);
             if (articleArray.Count == 0)
             {
-                html.Append(String.Format(template, new string[] { "", getNoNewsText(lang) }));
-                return html.ToString();
+                return getNoNewsText(lang);
             }
 
             
@@ -140,11 +144,17 @@ namespace HatCMS.Controls._system
                     summaryOutput = sb.ToString() + "...";
                 }
 
-                string output = String.Format(template, new string[] { url, summaryOutput });
+                string dateOfNews = article.DateOfNews.ToString(dateOfNewsToStringFormat);
+
+                string output = String.Format(template, new string[] { url, summaryOutput, newsArticleDetailsPage.Title, dateOfNews });
                 html.Append(output);
 
-                string extraAnchor = "<div style=\"text-align: right; padding-right: 3px; margin-top: -10px; margin-bottom: 5px;\"><a href=\"{0}\" class=\"readNewsArticle\">{1}</a></div>";
-                html.Append(string.Format(extraAnchor, new string[]{url, getReadArticleText(lang)}));
+                string readArticleText = getReadArticleText(lang);
+                if (readArticleText.Trim() != "")
+                {
+                    string extraAnchor = "<div style=\"text-align: right; padding-right: 3px; margin-top: -10px; margin-bottom: 5px;\"><a href=\"{0}\" class=\"readNewsArticle\">{1}</a></div>";
+                    html.Append(string.Format(extraAnchor, new string[] { url, readArticleText }));
+                }
             }
 
             return html.ToString();
@@ -159,45 +169,43 @@ namespace HatCMS.Controls._system
         /// <param name="paramList"></param>
         protected override void Render(HtmlTextWriter writer)
         {
-            /// Parameters:
-            /// [0]: newsIndexToDisplay (integer, 0 based)
-            /// [1]: Output Template
-            /// [2]: dateOutputFormat
-            /// [3]: maxLengthOfSummary (integer)
+            /// Parameters:            
+            /// [newsIndex] index to display (integer)
+            /// [template]: Output Template
+            ///     template parameters: url, summaryOutput, newsArticleDetailsPage.Title, dateOfNews
+            ///     {0} = url
+            ///     {1} = snippet
+            ///     {2} = title    
+            ///     {3} = date
+            /// [dateFormat]: dateOutputFormat
+            /// [summaryLength]: maxLengthOfSummary (integer)
 
-            int newsIndexToDisplay = 0;
-            Dictionary<string, string> urlTemplateParam = new Dictionary<string, string>();
-            urlTemplateParam.Add("nid", "{1}");
-            string urlTemplate = CmsContext.currentPage.getUrl(urlTemplateParam);
-            string template = "{0}<br><a href=\"" + urlTemplate + "\">{2}</a><br>{3}";
+            int indexToDisplay = 0;
+            string template = "{3}: <a href=\"{0}\">{2}</a><br>{1}";
             string dateOutputFormat = "MMMM d, yyyy";
             int maxLengthOfSummary = 115;
 
             if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
-                newsIndexToDisplay = CmsControlUtils.getControlParameterKeyValue(this, "newsIndex", newsIndexToDisplay);
+                indexToDisplay = CmsControlUtils.getControlParameterKeyValue(this, "newsIndex", indexToDisplay);
                 template = CmsControlUtils.getControlParameterKeyValue(this, "template", template);
                 dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(this, "dateFormat", dateOutputFormat);
                 maxLengthOfSummary = CmsControlUtils.getControlParameterKeyValue(this, "summaryLength", maxLengthOfSummary);
+                dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(this, "dateOutputFormat", dateOutputFormat);
             }
             else
             {
                 throw new ArgumentException("Invalid CmsTemplateEngineVersion");
             }
 
-            if (newsIndexToDisplay < 0)
-            {
-                writer.Write("Template Error: 'newsIndexToDisplay' placeholder parameter can not be less than zero");
-                return;
-            }
 
             CmsLanguage lang = CmsContext.currentLanguage;
             int count = CmsConfig.getConfigValue("MostRecentNews.Count", 1);
-            List<NewsArticleDb.NewsArticleDetailsData> articleArray = new NewsArticleDb().fetchNewsDetailsByCount(lang, newsIndexToDisplay, count);
+            List<NewsArticleDb.NewsArticleDetailsData> articleArray = new NewsArticleDb().fetchNewsDetailsByCount(lang, indexToDisplay, count);
 
             StringBuilder html = new StringBuilder();
             html.Append(renderHeader(lang));
-            html.Append(renderContent(articleArray, lang, template, maxLengthOfSummary));
+            html.Append(renderContent(articleArray, lang, template, maxLengthOfSummary, dateOutputFormat));
 
             writer.Write(html.ToString());
         } // Render

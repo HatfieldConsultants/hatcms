@@ -1,6 +1,6 @@
 ##TemplateLayout(PageLayout)##
 ##StartPlaceholderRegion("MainContent")## 						
-						##PlaceHolder(PageTitle id="1")## 
+						##PlaceHolder(PageTitle RenamePageBasedOnTitle="true" id="1")## 
 						
 						##PlaceHolder(JobPostingDetails id="1")## 
 						

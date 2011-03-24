@@ -13,7 +13,7 @@ namespace HatCMS
     /// </summary>
     public class CmsZoneUserRoleDb : MySqlDbObject 
     {
-        protected static string TABLE_NAME = "ZoneUserRole";
+        protected static string TABLE_NAME = "zoneuserrole";
 
         public CmsZoneUserRoleDb()
             : base(ConfigurationManager.AppSettings["ConnectionString"])

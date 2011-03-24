@@ -15,7 +15,7 @@ namespace HatCMS.Placeholders.RegisterProject
 {
     public class RegisterProjectDb : PlaceholderDb
     {
-        protected string TableNameRegisterProject = "RegisterProject";
+        protected string TableNameRegisterProject = "registerproject";
 
         public static string GetSqlColumns()
         {

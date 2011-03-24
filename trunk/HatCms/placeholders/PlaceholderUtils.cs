@@ -22,21 +22,12 @@ namespace HatCMS.Placeholders
         /// </summary>
         private static Dictionary<string, Assembly> assemblyPlaceholderCache = new Dictionary<string, Assembly>();
 
-        /// <summary>
-        /// Invokes a method on a placeholder. The placeholder's assembly must be in the bin directory to be found, and must
-        /// inherit from the <see cref="BaseCmsPlaceholder"/> type.
-        /// </summary>
-        /// <param name="PlaceholderType"></param>
-        /// <param name="MethodName"></param>
-        /// <param name="MethodParams"></param>
-        /// <returns></returns>
-        public static object InvokePlaceholderFunction(string PlaceholderType, string MethodName, object[] MethodParams)
+        private static List<Assembly> getAssembliesToSearch(string PlaceholderType, string cacheKey)
         {
             // -- get a list of assemblies to search through
             List<Assembly> assembliesToSearch = new List<Assembly>();
 
-            // -- if the placeholderType was previously found in a particular assembly, get that assembly from the cache
-            string cacheKey = PlaceholderType.ToLower();
+            // -- if the placeholderType was previously found in a particular assembly, get that assembly from the cache            
             if (assemblyPlaceholderCache.ContainsKey(cacheKey))
             {
                 assembliesToSearch.Add(assemblyPlaceholderCache[cacheKey]);
@@ -56,6 +47,25 @@ namespace HatCMS.Placeholders
 
                 assembliesToSearch.AddRange(AppDomain.CurrentDomain.GetAssemblies());
             }
+            return assembliesToSearch;
+        }
+        
+        /// <summary>
+        /// Invokes a method on a placeholder. The placeholder's assembly must be in the bin directory to be found, and must
+        /// inherit from the <see cref="BaseCmsPlaceholder"/> type.
+        /// </summary>
+        /// <param name="PlaceholderType"></param>
+        /// <param name="MethodName"></param>
+        /// <param name="MethodParams"></param>
+        /// <returns></returns>
+        private static object InvokePlaceholderFunction(string PlaceholderType, string MethodName, object[] MethodParams)
+        {
+            if (!PlaceholderExists(PlaceholderType))
+                throw new Exception("Could not invoke method " + MethodName + " in placeholder " + PlaceholderType + " - the placeholder could not be found");
+
+            // -- get a list of assemblies to search through
+            string cacheKey = PlaceholderType.ToLower();
+            List<Assembly> assembliesToSearch = getAssembliesToSearch(PlaceholderType, cacheKey);
 
             // -- go through each assembly looking for the specified type
             foreach (Assembly assembly in assembliesToSearch)
@@ -97,6 +107,34 @@ namespace HatCMS.Placeholders
             throw new Exception("Could not invoke method " + MethodName + " in placeholder " + PlaceholderType + " - the placeholder could not be found");
         }
 
+        public static bool PlaceholderExists(string PlaceholderType)
+        {
+            try
+            {
+                string cacheKey = PlaceholderType.ToLower();
+                List<Assembly> assembliesToSearch = getAssembliesToSearch(PlaceholderType, cacheKey);
+                foreach (Assembly assembly in assembliesToSearch)
+                {
+                    // Walk through each type in the assembly looking for our class
+                    foreach (Type type in assembly.GetTypes())
+                    {
+                        if (type.IsClass == true &&
+                            type.IsSubclassOf(typeof(BaseCmsPlaceholder)) &&
+                            type.FullName.ToLower().EndsWith("." + PlaceholderType.ToLower()))
+                        {
+                            // -- cache the found assembly for next time around
+                            assemblyPlaceholderCache[cacheKey] = assembly;
+                            return true;
+                        }
+                    }
+                }
+
+            }
+            catch
+            { }
+            return false;
+        }
+
         /// <summary>
         /// returns string.empty on error, or when there's nothing to display
         /// </summary>
@@ -128,12 +166,16 @@ namespace HatCMS.Placeholders
         {
             try
             {
+                // public abstract CmsDependency[] getDependencies();
                 object ret = InvokePlaceholderFunction(PlaceholderType, "getDependencies", new object[0]);
 
                 if (ret is CmsDependency[])
                     return (ret as CmsDependency[]);
             }
-            catch { }
+            catch (Exception ex){
+                return new CmsDependency[] { new CmsMessageDependency("Could not call getDependencies() for placeholder \"" + PlaceholderType + "\". Exception: " + ex.Message) };
+            
+            }
             return new CmsDependency[0];
 
         }

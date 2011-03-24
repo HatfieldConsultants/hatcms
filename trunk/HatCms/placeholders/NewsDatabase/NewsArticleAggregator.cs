@@ -47,6 +47,9 @@ namespace HatCMS.Placeholders.NewsDatabase
             ret.Add(new CmsConfigItemDependency("NewsArticle.NoNewsText"));
             ret.Add(new CmsConfigItemDependency("NewsArticle.NoNewsTextForText"));
 
+            // -- template dependency
+            ret.Add(new CmsTemplateDependency(CmsConfig.getConfigValue("NewsArticle.DetailsTemplateName", "NewsArticleDetails")));
+
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowRight.jpg", new DateTime(2011, 3, 1)));
 
             return ret.ToArray();
@@ -466,6 +469,8 @@ namespace HatCMS.Placeholders.NewsDatabase
                 {                    
                     Rss.RssItem rssItem = new Rss.RssItem();
                     rssItem = InitRssItem(rssItem, page, langToRenderFor);
+
+                    rssItem.Title = newsItem.Title;
 
                     rssItem.Link = new Uri(newsItem.PageDisplayURL, UriKind.RelativeOrAbsolute);
                     rssItem.PubDate_GMT = newsItem.NewsDate.ToUniversalTime();

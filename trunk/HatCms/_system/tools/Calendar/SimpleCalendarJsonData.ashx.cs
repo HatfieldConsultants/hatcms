@@ -1,6 +1,7 @@
 using System;
 using System.Data;
 using System.Web;
+using System.Web.Caching;
 using System.Collections;
 using System.Web.Services;
 using System.Web.Services.Protocols;
@@ -10,38 +11,126 @@ using JsonFx.Json;
 using Hatfield.Web.Portal;
 using HatCMS.Placeholders;
 using Hatfield.Web.Portal.Imaging;
+using DDay.iCal;
 
 namespace HatCMS._system.Calendar
 {
     public class SimpleCalendarJsonData : IHttpHandler
-    {        
-        /// <summary>
-        /// AJAX handler to reply a JSON containing the events for
-        /// EventCalendarAggregator placeholder and SimpleCalendar control
-        /// </summary>
-        /// <param name="context"></param>
+    {
         public void ProcessRequest(HttpContext context)
         {
+            // -- get the start and end dates.
             DateTime start = DateTime.MinValue;
             DateTime end = DateTime.MinValue;
             try
             {
-                start = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(PageUtils.getFromForm("start", 0));
-                end = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(PageUtils.getFromForm("end", 0));
+                int startAddSeconds = PageUtils.getFromForm("start", Int32.MinValue);
+                int endAddSeconds = PageUtils.getFromForm("end", Int32.MinValue);
+                if (startAddSeconds < 0)
+                    start = new DateTime(DateTime.Now.Year, 1, 1);
+                else
+                    start = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(startAddSeconds);
+
+                if (endAddSeconds < 0)
+                    end = new DateTime(DateTime.Now.Year, 1, 1).AddYears(1);
+                else
+                    end = new DateTime(1970, 1, 1, 0, 0, 0).AddSeconds(endAddSeconds);
+
+                if (end < start)
+                    end = start.AddYears(1);
             }
             catch
             {
                 return;
             }
 
+            // -- if we are requesting an icalURL, go get it. Otherwise it's an internal request
+            
+            // -- note: iCal support currently doesn't work due to timezone parsing bugs in the DDay.iCal library. 
+            //          It is currently disabled until these bugs are fixed.
+            bool enableIcalSupport = false;
+            string iCalUrl = PageUtils.getFromForm("icalUrl", "");
+            if (enableIcalSupport && iCalUrl != "")
+            {
+                // -- check if the host name is in the approved list.
+                //    if it's not approved, handle it as an internal request.
+                Uri icalUri = new Uri(iCalUrl, UriKind.RelativeOrAbsolute);
+                int index = HatCMS.Tools.cachingProxy.IndexOfHost(icalUri.Host);
+                if (index >= 0)
+                {
+                    ProcessICalRequest(icalUri, start, end, context);
+                }
+                else
+                {
+                    ProcessInternalRequest(start, end, context);
+                }
+            }
+            else
+            {
+                ProcessInternalRequest(start, end, context);
+            }
+        }
+
+        public void ProcessICalRequest(Uri iCalUri, DateTime start, DateTime end, HttpContext context)
+        {
+            string backColor = PageUtils.getFromForm("backColour","white");
+            string textColor = PageUtils.getFromForm("textColor","black");
+
+            int cacheMinutes = HatCMS.Tools.cachingProxy.CacheDuration_Minutes;
+            string cacheKey = iCalUri.ToString();
+            DDay.iCal.IICalendarCollection calCollection;
+            if (cacheMinutes > 0 && context.Cache[cacheKey] != null)
+                calCollection = (DDay.iCal.IICalendarCollection) context.Cache[cacheKey];
+            else
+            {                
+                calCollection = DDay.iCal.iCalendar.LoadFromUri(iCalUri);                
+
+                // -- add the data to the cache
+                if (cacheMinutes > 0)
+                {
+                    context.Cache.Insert(cacheKey, calCollection, null,
+                                Cache.NoAbsoluteExpiration,
+                                TimeSpan.FromMinutes(cacheMinutes),
+                                CacheItemPriority.Normal, null);
+                }
+            }
+
+            List<FullCalendarEvent> eventsToOutput = new List<FullCalendarEvent>();
+            IList<DDay.iCal.Occurrence> occurrences = calCollection.GetOccurrences<DDay.iCal.IEvent>(start, end);
+            foreach (DDay.iCal.Occurrence occurrence in occurrences)
+            {                                
+                if (occurrence.Source is DDay.iCal.IEvent)
+                {
+                    DDay.iCal.IEvent ievent = occurrence.Source as DDay.iCal.IEvent;
+                    if (ievent.IsActive()) // make sure the event hasn't been cancelled.
+                    {
+                        FullCalendarEvent e = new FullCalendarEvent(ievent, backColor, textColor);
+                        eventsToOutput.Add(e);
+                    }
+                }
+            } // foreach
+
+            string json = JsonWriter.Serialize(eventsToOutput.ToArray());
+            context.Response.Write(json);
+        }
+        
+        /// <summary>
+        /// AJAX handler to reply a JSON containing the events for
+        /// EventCalendarAggregator placeholder and SimpleCalendar control
+        /// </summary>
+        /// <param name="context"></param>
+        public void ProcessInternalRequest(DateTime start, DateTime end, HttpContext context)
+        {
+
             bool showFile = PageUtils.getFromForm("showFile", false); // Basic rule: event calendar shows files, simple calendar does not
 
             CmsLanguage lang = CmsLanguage.GetFromHaystack(PageUtils.getFromForm("lang", "en"), CmsConfig.Languages);
             List<EventCalendarDb.EventCalendarDetailsData> list = new EventCalendarDb().fetchDetailsDataByRange(start, end, lang);
-            List<FullCalendarEvent> events = new List<FullCalendarEvent>();
+            List<EventCalendarDb.EventCalendarCategoryData> eventCategories = new EventCalendarDb().fetchCategoryList();
+            List<FullCalendarEvent> eventsToOutput = new List<FullCalendarEvent>();
             foreach (EventCalendarDb.EventCalendarDetailsData c in list)
             {
-                events.Add(new FullCalendarEvent(c));
+                eventsToOutput.Add(new FullCalendarEvent(c, eventCategories));
                 if (!showFile)
                     continue;
 
@@ -50,11 +139,11 @@ namespace HatCMS._system.Calendar
                 foreach (FileLibraryDetailsData f in fileList)
                 {
                     if (userHasAuthority(f))
-                        events.Add(new FullCalendarEvent(c, f));
+                        eventsToOutput.Add(new FullCalendarEvent(c, f, eventCategories));
                 }
             }
 
-            string json = JsonWriter.Serialize(events.ToArray());
+            string json = JsonWriter.Serialize(eventsToOutput.ToArray());
             context.Response.Write(json);
         }
 
@@ -68,12 +157,9 @@ namespace HatCMS._system.Calendar
         protected bool userHasAuthority(FileLibraryDetailsData f)
         {
             CmsPage filePage = CmsContext.getPageById(f.DetailsPageId);
-            
-            WebPortalUser u = CmsContext.currentWebPortalUser;
-            if (filePage.Zone.canRead(u) || filePage.Zone.canWrite(u))
-                return true;
-            else
-                return false;
+
+            return filePage.currentUserCanRead;
+
         }
 
         /// <summary>
@@ -81,26 +167,47 @@ namespace HatCMS._system.Calendar
         /// </summary>
         private class FullCalendarEvent
         {
+            [JsonFx.Json.JsonName("id")]
             public string id;
+            
+            [JsonFx.Json.JsonName("title")]
             public string title;
-            public bool allDay;
-            public DateTime start;
-            public DateTime end;
-            public string url;
-            public string className;
 
-            public FullCalendarEvent()
+            [JsonFx.Json.JsonName("allDay")]
+            public bool allDay;
+
+            [JsonFx.Json.JsonName("start")]
+            public DateTime start;
+            
+            [JsonFx.Json.JsonName("end")]     
+            public DateTime end;
+
+            [JsonFx.Json.JsonName("url")]     
+            public string url;
+
+            [JsonFx.Json.JsonName("backgroundColor")]          
+            public string backgroundColor;
+            
+            [JsonFx.Json.JsonName("borderColor")]          
+            public string borderColor;
+
+            [JsonFx.Json.JsonName("textColor")]          
+            public string textColor;
+
+            public FullCalendarEvent(DDay.iCal.IEvent ev, string backColour, string textColour)
             {
-                id = "";
-                title = "";
-                allDay = false;
-                start = DateTime.MinValue;
-                end = DateTime.MaxValue;
-                url = "";
-                className = "";
+                id = ev.UID;
+                title = ev.Name;
+                allDay = ev.IsAllDay; ;
+                start = ev.Start.UTC;
+                end = ev.End.UTC;
+                url = ev.Url.ToString();
+                backgroundColor = backColour;
+                borderColor = backColour;
+                textColor = textColour;
             }
 
-            public FullCalendarEvent(EventCalendarDb.EventCalendarDetailsData c)
+            public FullCalendarEvent(EventCalendarDb.EventCalendarDetailsData c, List<EventCalendarDb.EventCalendarCategoryData> categoryHaystack)
             {
                 CmsPage page = CmsContext.getPageById(c.PageId);
                 id = c.PageId.ToString();
@@ -108,24 +215,33 @@ namespace HatCMS._system.Calendar
                 start = c.StartDateTime;
                 end = c.EndDateTime;
                 url = page.getUrl(c.Lang);
-                className = "EventCategory_" + c.CategoryId;
+
+                EventCalendarDb.EventCalendarCategoryData category = EventCalendarDb.EventCalendarCategoryData.GetFromHaystack(categoryHaystack, c.CategoryId);
+                backgroundColor = category.ColorHex;
+                borderColor = "black";
+                textColor = "white";
+
             }
 
             /// <summary>
-            /// Create the jQuery FullCalendar event object (render the file attached)
+            /// Create the jQuery FullCalendar event object for an event with a file attached.
             /// </summary>
             /// <param name="c"></param>
             /// <param name="f"></param>
-            public FullCalendarEvent(EventCalendarDb.EventCalendarDetailsData c, FileLibraryDetailsData f)
+            public FullCalendarEvent(EventCalendarDb.EventCalendarDetailsData c, FileLibraryDetailsData attachedFile, List<EventCalendarDb.EventCalendarCategoryData> categoryHaystack)
             {
-                CmsPage page = CmsContext.getPageById(f.DetailsPageId);
-                id = "EventFile_" + f.DetailsPageId.ToString();
-                title = f.FileName;
+                CmsPage page = CmsContext.getPageById(attachedFile.DetailsPageId);
+                id = "EventFile_" + attachedFile.DetailsPageId.ToString();
+                title = attachedFile.FileName;
                 start = c.StartDateTime.AddSeconds(1);  // show below the event
                 end = c.EndDateTime.AddSeconds(1);      // show below the event
                 allDay = true;
-                url = page.getUrl(f.Lang);
-                className = "EventCategory_file_" + System.IO.Path.GetExtension(f.FileName).Substring(1) + "_gif";
+                url = page.getUrl(attachedFile.Lang);
+                
+                EventCalendarDb.EventCalendarCategoryData category = EventCalendarDb.EventCalendarCategoryData.GetFromHaystack(categoryHaystack, c.CategoryId);
+                backgroundColor = category.ColorHex;
+                borderColor = "black";
+                textColor = "white";
             }
         }
 

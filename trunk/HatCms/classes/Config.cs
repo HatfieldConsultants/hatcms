@@ -56,7 +56,7 @@ namespace HatCMS
             int x = CmsLanguage.IndexOf(lang.shortCode, langArray);
 
             if (msgArray.Length < langArray.Length || x < 0)
-                throw new Exception("Missing entry for " + key + "!");
+                return defaultValue;
 
             return msgArray[x];
         }
@@ -89,7 +89,7 @@ namespace HatCMS
             int x = CmsLanguage.IndexOf(lang.shortCode, langArray);
 
             if (msgArray.Length < langArray.Length || x < 0)
-                throw new Exception("Missing entry for " + key + "!");
+                return defaultValue;
 
             try
             {
@@ -128,7 +128,7 @@ namespace HatCMS
             int x = CmsLanguage.IndexOf(lang.shortCode, langArray);
 
             if (msgArray.Length < langArray.Length || x < 0)
-                throw new Exception("Missing entry for " + key + "!");
+                return defaultValue;
 
             try
             {

@@ -140,7 +140,9 @@ namespace HatCMS
             
             // -- ensure that the HtmlContent placeholders do not have the old link to the showThumb.aspx page (note: this validation is slow!!)
             ret.Add(new CmsPlaceholderContentDependency("HtmlContent", "_system/showthumb.aspx", CmsDependency.ExistsMode.MustNotExist, StringComparison.CurrentCultureIgnoreCase));
-          
+
+            ret.Add(new CmsControlDependency("_system/internal/EditCalendarCategoriesPopup", CmsDependency.ExistsMode.MustNotExist)); // deprecated. now "_system/internal/EventCalendarCategoryPopup"
+
             // -- all pages should have valid templates, placeholders and controls
             Dictionary<int, CmsPage> allPages = CmsContext.HomePage.getLinearizedPages();
             foreach (int pageId in allPages.Keys)
@@ -156,12 +158,14 @@ namespace HatCMS
                 }
                 catch(Exception ex)
                 {
-                    Console.Write("Could not get page placeholder names: " + ex.Message);
+                    ret.Add(new CmsConfigItemDependency("GatherAllDependencies: Could not get page (pageid:" + pageId + ") placeholder names: " + ex.Message));
                 }
                 
                 foreach (string phName in placeholderNames)
                 {
-                    ret.AddRange(PlaceholderUtils.getDependencies(phName));
+                    ret.Add(new CmsPlaceholderDependency(phName, page.TemplateName));
+                    if (PlaceholderUtils.PlaceholderExists(phName))
+                        ret.AddRange(PlaceholderUtils.getDependencies(phName));
                 }
 
                 string[] controlPaths = new string[0];
@@ -171,7 +175,7 @@ namespace HatCMS
                 }
                 catch(Exception ex)
                 {
-                    Console.Write("Could not get page control paths: " + ex.Message);
+                    ret.Add(new CmsConfigItemDependency("GatherAllDependencies: Could not get page control paths (pageid:" + pageId + ") : " + ex.Message));                    
                 }
                 foreach (string controlPath in controlPaths)
                 {
@@ -191,7 +195,9 @@ namespace HatCMS
                                                 
                 foreach (string phName in placeholderNames)
                 {
-                    ret.AddRange(PlaceholderUtils.getDependencies(phName));
+                    ret.Add(new CmsPlaceholderDependency(phName, template));
+                    if (PlaceholderUtils.PlaceholderExists(phName))
+                        ret.AddRange(PlaceholderUtils.getDependencies(phName));
                 }
 
 

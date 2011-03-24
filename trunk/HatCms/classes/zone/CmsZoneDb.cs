@@ -12,7 +12,7 @@ namespace HatCMS
     /// </summary>
     public class CmsZoneDb : MySqlDbObject
     {
-        protected static string TABLE_NAME = "Zone";
+        protected static string TABLE_NAME = "zone";
 
         public CmsZoneDb() : base(ConfigurationManager.AppSettings["ConnectionString"])
         { }
@@ -51,21 +51,29 @@ namespace HatCMS
             {
                 string formattedSQL = String.Format(sql.ToString(), new string[] { id.ToString() });
                 DataSet ds = this.RunSelectQuery(formattedSQL);
-                DataRow dr = ds.Tables[0].Rows[0];
-                try {
-                    z = fromDataRow(dr);
-                    return z;
-                }
-                catch
+                if (hasSingleRow(ds))
                 {
-                    try 
+                    DataRow dr = ds.Tables[0].Rows[0];
+                    try
                     {
-                        id = Convert.ToInt32(dr["ParentPageId"]);
+                        z = fromDataRow(dr);
+                        return z;
                     }
-                    catch 
+                    catch
                     {
-                        break;
-                    }
+                        try
+                        {
+                            id = Convert.ToInt32(dr["ParentPageId"]);
+                        }
+                        catch
+                        {
+                            break;
+                        }
+                    } // catch
+                } // if hasRows
+                else
+                {
+                    throw new Exception("Error: can not execute Zone SQL: " + formattedSQL);
                 }
             }
             return z;

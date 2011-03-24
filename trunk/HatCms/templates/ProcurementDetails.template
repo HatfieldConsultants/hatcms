@@ -1,6 +1,6 @@
 ##TemplateLayout(PageLayout)##
 ##StartPlaceholderRegion("MainContent")##
-	##PlaceHolder(PageTitle id="1" width="100%" height="1.3em")## 
+	##PlaceHolder(PageTitle RenamePageBasedOnTitle="true" id="1" width="100%" height="1.3em")## 
 	##PlaceHolder(ProcurementDetails id="1" width="100%" height="500px")##
 	##PlaceHolder(HtmlContent id="1" width="500px" height="400px")##
 	##PlaceHolder(PageFiles id="1" width="500px" height="400px" emptyMessage="false" compact="true")##

@@ -8,7 +8,7 @@ using Hatfield.Web.Portal;
 
 namespace HatCMS.Placeholders
 {
-    public class UserImageGallery : BaseCmsMasterDetailsPlaceholder
+    public class UserImageGallery : BaseCmsPlaceholder
     {
         public static string UrlParamName = "image";
 
@@ -16,7 +16,9 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency(@"
+            try
+            {                
+                ret.Add(new CmsDatabaseTableDependency(@"
                 CREATE TABLE  `userimagegallery` (
                   `PageId` int(10) unsigned NOT NULL,
                   `Identifier` int(10) unsigned NOT NULL,
@@ -33,33 +35,39 @@ namespace HatCMS.Placeholders
                 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
             "));
 
-            ret.AddRange(SWFUploadHelpers.SWFUploadDependencies);            
+                ret.AddRange(SWFUploadHelpers.SWFUploadDependencies);
 
-            // -- writable directories
-            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("UserFiles/ImageGalleries"));
-            
-            UserImageGalleryDb db = (new UserImageGalleryDb());
-            UserImageGalleryPlaceholderData[] phs = db.getAllUserImageGalleryPlaceholderDatas();
-            foreach (UserImageGalleryPlaceholderData ph in phs)
-            {
-                CmsPage p = CmsContext.getPageById(ph.PageId);
-                string dir = ph.getImageStorageDirectory(p);
-                if (dir != String.Empty)
-                    ret.Add(new CmsWritableDirectoryDependency(dir));
+                // -- writable directories
+                ret.Add(CmsWritableDirectoryDependency.UnderAppPath("UserFiles/ImageGalleries"));
+
+                // -- each placeholder directory should be writable.
+                UserImageGalleryDb db = (new UserImageGalleryDb());
+                UserImageGalleryPlaceholderData[] phs = db.getAllUserImageGalleryPlaceholderDatas();
+                foreach (UserImageGalleryPlaceholderData ph in phs)
+                {
+                    CmsPage p = CmsContext.getPageById(ph.PageId);
+                    string dir = ph.getImageStorageDirectory(p);
+                    if (dir != String.Empty)
+                        ret.Add(new CmsWritableDirectoryDependency(dir));
+                }
+
+                // -- REQUIRED config entries
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.PageXofYText"));
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.PrevLinkText"));
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.NextLinkText"));
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.ReturnToGalleryText"));
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.NoImageText"));
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.ImageRemovedText"));
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.SetCaptionButtonText"));
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.RemoveImageButtonText"));
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.SetCaptionButtonText"));
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.RemoveImageButtonText"));
+                ret.Add(new CmsConfigItemDependency("UserImageGallery.UploadImageButtonText"));
             }
-
-            // -- REQUIRED config entries
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.PageXofYText"));
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.PrevLinkText"));
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.NextLinkText"));
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.ReturnToGalleryText"));
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.NoImageText"));
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.ImageRemovedText"));
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.SetCaptionButtonText"));
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.RemoveImageButtonText"));
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.SetCaptionButtonText"));
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.RemoveImageButtonText"));
-            ret.Add(new CmsConfigItemDependency("UserImageGallery.UploadImageButtonText"));
+            catch (Exception ex)
+            {
+                ret.Add(new CmsMessageDependency("Error gathering UserImageGallery dependencies: "+ex.Message));
+            }
 
             return ret.ToArray();
         }
@@ -114,6 +122,33 @@ namespace HatCMS.Placeholders
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
 
+        public enum PlaceholderDisplay { MultipleItems, SelectedItem }        
+
+        public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        {
+            PlaceholderDisplay display = getCurrentDisplayMode();
+            if (display == PlaceholderDisplay.MultipleItems)
+            {
+                RenderMultipleItems_InViewMode(writer, page, identifier, langToRenderFor, paramList);
+            }
+            else if (display == PlaceholderDisplay.SelectedItem)
+            {
+                RenderSelectedItem_InViewMode(writer, page, identifier, langToRenderFor, paramList);
+            }
+        }
+
+        public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        {
+            PlaceholderDisplay display = getCurrentDisplayMode();
+            if (display == PlaceholderDisplay.MultipleItems)
+            {
+                RenderMultipleItems_InEditMode(writer, page, identifier, langToRenderFor, paramList);
+            }
+            else if (display == PlaceholderDisplay.SelectedItem)
+            {
+                RenderSelectedItem_InEditMode(writer, page, identifier, langToRenderFor, paramList);
+            }
+        }
 
         /// <summary>
         /// returns a value < 0 if no imageid has been specified
@@ -133,13 +168,13 @@ namespace HatCMS.Placeholders
             int resId = getCurrentImageResourceId();
             if (resId >= 0)
             {
-                return (CmsLocalImageOnDisk)CmsLocalImageOnDisk.FetchLastRevision(resId);
+                return CmsLocalImageOnDisk.FetchLastRevision(resId);
             }
             return new CmsLocalImageOnDisk();
         }
 
 
-        public override BaseCmsMasterDetailsPlaceholder.PlaceholderDisplay getCurrentDisplayMode()
+        public PlaceholderDisplay getCurrentDisplayMode()
         {
             CmsLocalImageOnDisk r = getCurrentImageResource();
             if (r.ResourceId < 0)
@@ -148,7 +183,7 @@ namespace HatCMS.Placeholders
                 return PlaceholderDisplay.SelectedItem;            
         }
 
-        public override void RenderSelectedItem_InEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        public void RenderSelectedItem_InEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
             UserImageGalleryDb db = (new UserImageGalleryDb());
             StringBuilder html = new StringBuilder();
@@ -163,7 +198,7 @@ namespace HatCMS.Placeholders
             writer.Write(html.ToString());
         }
 
-        public override void RenderSelectedItem_InViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        public void RenderSelectedItem_InViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
             UserImageGalleryDb db = (new UserImageGalleryDb());
             StringBuilder html = new StringBuilder();
@@ -236,7 +271,7 @@ namespace HatCMS.Placeholders
         }
 
 
-        public override void RenderMultipleItems_InEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        public void RenderMultipleItems_InEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
             UserImageGalleryDb db = (new UserImageGalleryDb());
             StringBuilder html = new StringBuilder();
@@ -277,7 +312,7 @@ namespace HatCMS.Placeholders
             writer.Write(html.ToString());
         }
 
-        public override void RenderMultipleItems_InViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        public void RenderMultipleItems_InViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
             UserImageGalleryDb db = (new UserImageGalleryDb());
             StringBuilder html = new StringBuilder();

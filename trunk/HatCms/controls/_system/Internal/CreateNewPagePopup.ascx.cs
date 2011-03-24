@@ -55,22 +55,24 @@ namespace HatCMS.Controls
                 {
                     _errorMessage = "a page with the specified filename already exists!";
                 }
+                else if (StringUtils.IndexOf(RenamePagePopup.InvalidPageNameChars, pageToCreate.Name, StringComparison.CurrentCulture) >= 0)
+                {
+                    _errorMessage = "The page's filename contains invalid characters. Invalid charactes include: " + StringUtils.Join("', '", "' and '", RenamePagePopup.InvalidPageNameChars) + ". ";
+                }
                 else
                 {
                     // -- page does not already exist, so create it                    
                     bool success = CmsPage.InsertNewPage(pageToCreate);
                     if (!success)
                     {
-                        _errorMessage = "database error: could not create new page.";
+                        _errorMessage = "Database error: could not create new page.";
                     }
                     else
                     {
                         CmsContext.setEditModeAndRedirect(CmsEditMode.Edit, pageToCreate);
                     }
                 }
-            }
-
-            
+            }            
 			
 			// -- get the form variables
             string name = PageUtils.getFromForm("_name", ""); name = name.Trim();
@@ -89,23 +91,14 @@ namespace HatCMS.Controls
 					(!options.PromptUserForParentPage || isNotEmpty(parent, "Please enter in the page's parent")) &&
                     (!options.PromptUserForTitle || isNotEmpty(title, "Please enter in the page's title")) &&
                     (!options.PromptUserForMenuTitle || isNotEmpty(menuTitle, "Please enter in the page's navigation menu text")) &&
-                    doesNotContain(name, @"\", "the filename can not contain a \"\\\" character.") &&
-                    doesNotContain(name,"/", "the filename can not contain a \"/\" character.") &&
-                    doesNotContain(name, "#", "the filename can not contain a \"#\" character.") &&
-                    doesNotContain(name, "+", "the filename can not contain a \"+\" character.") &&
-                    doesNotContain(name, ":", "the filename can not contain a \":\" character.") &&
+                    nameDoesNotContainInvalidCharacters(name) &&                    
                     doesNotStartWithUnderscoreForNonSuperAdmin(name, "the filename can not start with an \"_\" character.")
-                    ) // note when adding new restrictions for the filename, add them also to the RenamePagePopup control!
+                    ) // note when adding new restrictions for the filename, add them also to the RenamePagePopup control, and to the PageTitle placeholder getPageNameFromTitle() function!
 				{					
 					int parentId = Convert.ToInt32(parent);
 					CmsPage newPage = new CmsPage();
 
-                    // -- setup the page's language info
-                    /*
-                     newPage.Name = name;
-					 newPage.MenuTitle = menuTitle;
-                     newPage.Title = title;
-                     */
+                    // -- setup the page's language info                    
                     List<CmsPageLanguageInfo> langInfos= new List<CmsPageLanguageInfo>();
                     foreach (CmsLanguage lang in CmsConfig.Languages)
                     {
@@ -143,8 +136,7 @@ namespace HatCMS.Controls
 					}
 					else
 					{
-						// -- page does not already exist, so create it
-						
+						// -- page does not already exist, so create it						
 						bool success = CmsPage.InsertNewPage(newPage);
 						if (!success)
 						{
@@ -355,13 +347,17 @@ namespace HatCMS.Controls
             return true;
         }
 
-        private bool doesNotContain(string valToSearch, string toFind, string onContainsMessage)
+        private bool nameDoesNotContainInvalidCharacters(string nameToSearch)
         {
-            if (valToSearch.IndexOf(toFind, StringComparison.CurrentCultureIgnoreCase) > -1)
+            foreach (string invalidChar in RenamePagePopup.InvalidPageNameChars)
             {
-                _errorMessage = onContainsMessage;
-                return false;
+                if (nameToSearch.IndexOf(invalidChar) >= 0)
+                {
+                    _errorMessage = "The filename can not contain the \"" + invalidChar + "\" character.";
+                    return false;
+                }
             }
+            
             return true;
         }
 

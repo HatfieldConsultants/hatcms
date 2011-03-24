@@ -18,6 +18,7 @@ namespace HatCMS
     public class CmsControlDependency: CmsDependency
     {
         private string controlPath = "";
+        private ExistsMode existsMode;
         /// <summary>
         /// set to DateTime.MinValue if no Last Modified date check is done.
         /// </summary>
@@ -26,6 +27,19 @@ namespace HatCMS
         public CmsControlDependency(CmsControlDefinition controlDefinition)
         {
             controlPath = controlDefinition.ControlPath;
+            existsMode = ExistsMode.MustExist;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ControlPathUnderControlsDirWithoutFileExtension">        
+        /// The control path never has a filename extension (ie "_system/login" is a valid control path, while "_system/login.ascx" is invalid).
+        /// </param>
+        public CmsControlDependency(string ControlPathUnderControlsDirWithoutFileExtension, ExistsMode existsMode)
+        {
+            controlPath = ControlPathUnderControlsDirWithoutFileExtension;
+            this.existsMode = existsMode;
         }
 
         /// <summary>
@@ -69,12 +83,16 @@ namespace HatCMS
                 string controlPathWithoutOption = controlPath.Split(new char[] { ' ' })[0];
                 if (CmsContext.currentPage.TemplateEngine.controlExists(controlPathWithoutOption))
                 {
-                    ret.Add(CmsDependencyMessage.Status("CMS Control was found: '" + controlPathWithoutOption + "'"));
-                    DateTime lastModified = CmsContext.currentPage.TemplateEngine.getControlLastModifiedDate(controlPathWithoutOption);
-                    if (lastModified != DateTime.MinValue && lastModified.Ticks < FileShouldBeLastModifiedAfter.Ticks)
-                        ret.Add(CmsDependencyMessage.Error("CMS Control \"" + controlPathWithoutOption + "\" should have a last modified date after " + FileShouldBeLastModifiedAfter.ToString("d MMM yyyy hh:mm")));
+                    if (existsMode == ExistsMode.MustNotExist)
+                        ret.Add(CmsDependencyMessage.Error("CMS Control should not exist: '" + controlPathWithoutOption + "'"));
+                    else if (existsMode == ExistsMode.MustExist)
+                    {
+                        DateTime lastModified = CmsContext.currentPage.TemplateEngine.getControlLastModifiedDate(controlPathWithoutOption);
+                        if (lastModified != DateTime.MinValue && lastModified.Ticks < FileShouldBeLastModifiedAfter.Ticks)
+                            ret.Add(CmsDependencyMessage.Error("CMS Control \"" + controlPathWithoutOption + "\" should have a last modified date after " + FileShouldBeLastModifiedAfter.ToString("d MMM yyyy hh:mm")));
+                    }
                 }
-                else
+                else if (existsMode == ExistsMode.MustExist)
                     ret.Add(CmsDependencyMessage.Error("CMS Control was not found: '" + controlPath + "'"));
 
             }

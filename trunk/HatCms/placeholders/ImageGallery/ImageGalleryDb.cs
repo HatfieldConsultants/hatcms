@@ -17,7 +17,7 @@ namespace HatCMS.Placeholders
 				return new ImageGalleryData();
 			
 			string sql = "";
-			sql = "select g.ImageGalleryId, g.subDir, g.thumbSize, g.largeSize, g.numThumbsPerRow, i.ImageGalleryImageId, i.Caption, I.Filename from imagegallery g left join ImageGalleryImages i on i.ImageGalleryId = g.ImageGalleryId";			
+			sql = "select g.ImageGalleryId, g.subDir, g.thumbSize, g.largeSize, g.numThumbsPerRow, i.ImageGalleryImageId, i.Caption, I.Filename from imagegallery g left join imagegalleryimages i on i.ImageGalleryId = g.ImageGalleryId";			
 			sql += " where g.pageid = "+page.ID.ToString()+" and g.identifier = "+identifier.ToString()+" and g.deleted is null;";
 			
 			DataSet ds = this.RunSelectQuery(sql);

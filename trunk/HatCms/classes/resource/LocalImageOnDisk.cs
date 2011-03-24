@@ -29,7 +29,7 @@ namespace HatCMS
             filesize = baseFile.FileSize;
             filetimestamp = baseFile.FileTimestamp;
             mimetype = baseFile.MimeType;
-            modifiedby = baseFile.ModifiedByUserId.ToString();
+            modifiedby = baseFile.ModifiedByUserId;
             modificationdate = baseFile.ModificationDate;
             MetaData = baseFile.MetaData;
         }
@@ -229,9 +229,20 @@ namespace HatCMS
             return ret;
         } // CreateFromImageFile
 
+        public static CmsLocalImageOnDisk[] FetchAllImagesInDirectory(DirectoryInfo di, string[] fileExtensions)
+        {
+            return FromFileArray(CmsLocalFileOnDisk.FetchAllFilesInDirectory(di.FullName, fileExtensions));
+        }
+
+
         public static CmsLocalImageOnDisk[] FetchAllImagesInDirectory(string directoryPath, string[] fileExtensions)
         {
             return FromFileArray(CmsLocalFileOnDisk.FetchAllFilesInDirectory(directoryPath, fileExtensions));
+        }
+
+        public static CmsLocalImageOnDisk[] FetchAllImagesInDirectory(DirectoryInfo di)
+        {
+            return FromFileArray(CmsLocalFileOnDisk.FetchAllFilesInDirectory(di.FullName));
         }
 
         public static CmsLocalImageOnDisk[] FetchAllImagesInDirectory(string directoryPath)
@@ -244,6 +255,21 @@ namespace HatCMS
         {
             return (new CmsImageResourceDB()).DeleteAllCachedThumbnailUrls();
         }
+
+        /// <summary>
+        /// returns a blank (newly created) CmsLocalImageOnDisk if not found
+        /// </summary>
+        /// <param name="ResourceId"></param>
+        /// <returns></returns>
+        public static CmsLocalImageOnDisk FetchLastRevision(int ResourceId)
+        {
+            CmsLocalFileOnDisk file = CmsLocalFileOnDisk.FetchLastRevision(ResourceId);
+            CmsLocalImageOnDisk[] imgArr = FromFileArray(new CmsLocalFileOnDisk[] { file });
+            if (imgArr.Length == 1)
+                return imgArr[0];
+            else return new CmsLocalImageOnDisk();
+            
+        } // get
 
         public static CmsLocalImageOnDisk[] FromFileArray(CmsLocalFileOnDisk[] fileArray)
         {

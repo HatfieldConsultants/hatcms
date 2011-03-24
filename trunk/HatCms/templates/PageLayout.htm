@@ -6,7 +6,7 @@
 
 <body>
 ##StartPageBody##		 
-	##RenderControl(site/header)##
+	
 	##RenderControl(_system/Navigation/TopMultiLevelDropDownMenu UseMenuTitles="true")##
     ##RenderControl(_system/breadcrumb)##
 	<table width="100%" border="0" cellpadding="5" cellspacing="5">			
@@ -19,9 +19,7 @@
 			</td>
 			<td valign="top" class="sideBar">
 				##RenderControl(_system/LanguageSwitcherLarge)##
-				<p>
-                    ##RenderControl(site/LinkToRAK)##
-				</p>
+				
 				<p>
 					<div class="MostRecentNews">
 						##RenderControl(_system/MostRecentNewsItem id="1" newsIndex="0" summaryLength="115" template="<div class='MostRecentNewsText'><a href='{0}'>{1}</a></div>")##

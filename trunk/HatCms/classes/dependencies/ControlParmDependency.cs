@@ -19,11 +19,13 @@ namespace HatCMS
     {
         private string ControlName;
         private string[] keys;
+        private ExistsMode existsMode;
 
         public CmsControlParameterDependency(System.Web.UI.UserControl control, string[] requiredParameterKeys)
         {
             ControlName = control.GetType().Name;
             keys = requiredParameterKeys;
+            existsMode = ExistsMode.MustExist;
         }
         
         /// <summary>
@@ -35,6 +37,21 @@ namespace HatCMS
         {
             ControlName = controlName;
             keys = requiredParameterKeys;
+            existsMode = ExistsMode.MustExist;
+        }
+
+        public CmsControlParameterDependency(System.Web.UI.UserControl control, string[] parameterKeys, ExistsMode parameterKeysExistsMode)
+        {
+            ControlName = control.GetType().Name;
+            keys = parameterKeys;
+            existsMode = parameterKeysExistsMode;
+        }
+
+        public CmsControlParameterDependency(string controlName, string[] parameterKeys, ExistsMode parameterKeysExistsMode)
+        {
+            ControlName = controlName;
+            keys = parameterKeys;
+            existsMode = parameterKeysExistsMode;
         }
 
         /// <summary>
@@ -58,11 +75,16 @@ namespace HatCMS
                 controlDefs = CmsControlDefinition.GetByControlName(controlDefs, ControlName);
                 foreach (CmsControlDefinition controlDef in controlDefs)
                 {
-                    foreach (string keyToHave in keys)
+                    foreach (string keyToTest in keys)
                     {
-                        if (!CmsControlUtils.hasControlParameterKey(controlDef, keyToHave))
+                        bool keyExists = CmsControlUtils.hasControlParameterKey(controlDef, keyToTest);
+                        if (!keyExists && existsMode == ExistsMode.MustExist)
                         {
-                            ret.Add(CmsDependencyMessage.Error("CMS Control parameter '" + keyToHave + "' for control '" + controlDef.ControlPath + "' in template '" + dummyPage.TemplateName + "' is required, but was not found."));
+                            ret.Add(CmsDependencyMessage.Error("CMS Control parameter '" + keyToTest + "' for control '" + controlDef.ControlPath + "' in template '" + dummyPage.TemplateName + "' is required, but was not found."));
+                        }
+                        else if (keyExists && existsMode == ExistsMode.MustNotExist)
+                        {
+                            ret.Add(CmsDependencyMessage.Error("CMS Control parameter '" + keyToTest + "' for control '" + controlDef.ControlPath + "' in template '" + dummyPage.TemplateName + "' was found, and must be removed."));
                         }
                     }
                 } // foreach controlDef
