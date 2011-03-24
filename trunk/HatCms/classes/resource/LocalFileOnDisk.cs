@@ -904,7 +904,9 @@ namespace HatCMS
 
                         item.mimetype = (dr["MimeType"]).ToString();
 
-                        // -- note: if ModifiedBy is not an integer, flush the entire resourceitems table.
+                        // -- note: if the following line causes an exception, flush the resourceitems and resourceitemmetadata tables.
+                        //          ie: run the following SQL: "truncate table resourceitems; truncate table resourceitemmetadata;"
+                        //          all captions will be lost and will need to be re-created.
                         item.modifiedby = Convert.ToInt32(dr["ModifiedBy"]);
 
                         item.modificationdate = Convert.ToDateTime(dr["ModificationDate"]);

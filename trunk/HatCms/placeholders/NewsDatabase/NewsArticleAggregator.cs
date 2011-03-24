@@ -334,8 +334,8 @@ namespace HatCMS.Placeholders.NewsDatabase
             if (renderParams.RecursiveGatherNews)
                 gatherMode = CmsContext.PageGatheringMode.FullRecursion;
             
-            CmsPage[] fileDetailsPages = CmsContext.getAllPagesWithPlaceholder("NewsArticleDetails", rootPageToGatherFrom, gatherMode);
-            NewsArticleDb.NewsArticleDetailsData[] newsToShow = new NewsArticleDb().getNewsDetailsByYear(renderParams.AggregatorData.YearToDisplay, aggLang);
+            CmsPage[] newsDetailsPages = CmsContext.getAllPagesWithPlaceholder("NewsArticleDetails", rootPageToGatherFrom, gatherMode);
+            NewsArticleDb.NewsArticleDetailsData[] newsToShow = new NewsArticleDb().getNewsDetailsByYear(newsDetailsPages, renderParams.AggregatorData.YearToDisplay, aggLang);
 
             return NewsAggItem.FromNewsArticleDetailsData(newsToShow);
         }

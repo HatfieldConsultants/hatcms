@@ -269,9 +269,16 @@ namespace HatCMS.Placeholders.NewsDatabase
             return (affected > 0);
         }
 
-        public NewsArticleDetailsData[] getNewsDetailsByYear( int yr, CmsLanguage lang )
+        public NewsArticleDetailsData[] getNewsDetailsByYear(CmsPage[] detailsPages, int yr, CmsLanguage lang )
         {
             List<string> wheres = new List<string>();
+            List<int> pageIds = new List<int>();
+            foreach (CmsPage p in detailsPages)
+                pageIds.Add(p.ID);
+
+            if (pageIds.Count > 0)
+                wheres.Add(" PageId in (" + Hatfield.Web.Portal.StringUtils.Join(",", pageIds.ToArray()) + ") ");
+
             if (yr > 0)
                 wheres.Add(" year(N.DateOfNews)=" + yr.ToString() + ") ");
 
