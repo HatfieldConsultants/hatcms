@@ -25,7 +25,7 @@
 
             if (Directory.Exists(dirOnDiskToView))
             {
-                DirectoryInfo di = new DirectoryInfo(dir);
+                DirectoryInfo di = new DirectoryInfo(dirOnDiskToView);
 
                 int update = Hatfield.Web.Portal.PageUtils.getFromForm("update", 0);
                 if (update == 1 && g.currentUserCanWrite)
