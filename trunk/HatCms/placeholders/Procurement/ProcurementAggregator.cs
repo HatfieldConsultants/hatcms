@@ -49,6 +49,9 @@ namespace HatCMS.Placeholders.Procurement
             ret.Add(new CmsConfigItemDependency("Procurement.NoProcurementText"));
             ret.Add(new CmsConfigItemDependency("Procurement.NoProcurementForText"));
 
+            string newPageTemplate = CmsConfig.getConfigValue("Procurement.DetailsTemplateName", "_ProcurementDetails");
+            ret.Add(new CmsTemplateDependency(newPageTemplate));
+
             return ret.ToArray();
         }
 
@@ -105,7 +108,7 @@ namespace HatCMS.Placeholders.Procurement
             string newPageMenuTitle = "";
             string newPageSearchEngineDescription = "";
             bool newPageShowInMenu = false;
-            string newPageTemplate = CmsConfig.getConfigValue("Procurement.DetailsTemplateName", "ProcurementDetails");
+            string newPageTemplate = CmsConfig.getConfigValue("Procurement.DetailsTemplateName", "_ProcurementDetails");
 
             newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, ProcurementAggregatorPage.ID);
 

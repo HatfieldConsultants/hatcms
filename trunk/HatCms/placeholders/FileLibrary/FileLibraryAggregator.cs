@@ -169,6 +169,9 @@ namespace HatCMS.Placeholders
 
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowRight.jpg", new DateTime(2011, 3, 1)));
 
+            string newPageTemplateName = CmsConfig.getConfigValue("FileLibrary.DetailsTemplateName", "_FileLibraryDetails");
+            ret.Add(new CmsTemplateDependency(newPageTemplateName));
+
             return ret.ToArray();
         }
 
@@ -238,7 +241,7 @@ namespace HatCMS.Placeholders
             CmsPage childPage = new CmsPage();
             childPage.ParentID = parentPage.ID;
             childPage.ShowInMenu = false;
-            childPage.TemplateName = CmsConfig.getConfigValue("FileLibrary.DetailsTemplateName", "FileLibraryDetails");
+            childPage.TemplateName = CmsConfig.getConfigValue("FileLibrary.DetailsTemplateName", "_FileLibraryDetails");
             if (CmsContext.currentWebPortalUser != null)
                 childPage.LastModifiedBy = CmsContext.currentWebPortalUser.UserName;
 

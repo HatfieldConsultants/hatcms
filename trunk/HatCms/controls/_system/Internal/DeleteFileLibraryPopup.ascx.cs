@@ -71,7 +71,7 @@ namespace HatCMS.Controls._system.Internal
                 return "Delete failed because the page is located at the zone boundary.";
 
             string template = p.TemplateName;
-            if (String.Compare(template, "FileLibraryAggregator", true) != 0 && String.Compare(template, "FileLibraryDetails", true) != 0)
+            if (!p.hasPlaceholder("FileLibraryAggregator") || !p.hasPlaceholder("FileLibraryDetails") || !p.hasPlaceholder("FileLibraryAggregator2"))
                 return "Not a FileLibraryAggregator or FileLibraryDetails page.";
 
             return "";
@@ -246,10 +246,11 @@ namespace HatCMS.Controls._system.Internal
             }
 
             CmsPage p = getCmsPage();
-            if (String.Compare(p.TemplateName.ToLower(), "FileLibraryAggregator", true) == 0)
-                msg = handleFileLibraryAggregatorDelete(p);
-            else if (String.Compare(p.TemplateName.ToLower(), "FileLibraryDetails", true) == 0)
-                msg = handleFileLibraryDetailsDelete(p);
+            if (p.hasPlaceholder("FileLibraryAggregator"))
+                msg += handleFileLibraryAggregatorDelete(p);
+            
+            if (p.hasPlaceholder("FileLibraryDetails"))
+                msg += handleFileLibraryDetailsDelete(p);
 
             if (msg != "")
             {

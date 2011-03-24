@@ -158,7 +158,7 @@ namespace HatCMS.Placeholders.Calendar
             string newPageMenuTitle = "";
             string newPageSearchEngineDescription = "";
             bool newPageShowInMenu = false;
-            string newPageTemplate = CmsConfig.getConfigValue("EventCalendar.DetailsTemplateName", "EventCalendarDetails");
+            string newPageTemplate = CmsConfig.getConfigValue("EventCalendar.DetailsTemplateName", "_EventCalendarDetails");
 
             newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, eventCalendarAggregator.ID);
 

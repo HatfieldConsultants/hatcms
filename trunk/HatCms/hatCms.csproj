@@ -571,7 +571,6 @@
     <Compile Include="controls\_system\UserImageGalleryAggregator.ascx.designer.cs">
       <DependentUpon>UserImageGalleryAggregator.ascx</DependentUpon>
     </Compile>
-    <Compile Include="placeholders\BaseCmsMasterDetailsPlaceholder.cs" />
     <Compile Include="placeholders\Calendar\EventCalendarAggregator.cs" />
     <Compile Include="placeholders\Calendar\EventCalendarDb.cs" />
     <Compile Include="placeholders\Calendar\EventCalendarDetails.cs" />
@@ -1314,7 +1313,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Content Include="templates\JobPosting.template" />
     <None Include="templates\ContactUs.template" />
     <Content Include="templates\internal\_DeleteFileLibraryPopup.template" />
     <Content Include="templates\internal\_FileLibraryCategoryPopup.template" />
@@ -1322,9 +1320,7 @@
     <Content Include="templates\_RSSGlossary.template" />
     <None Include="templates\PageFiles.template" />
     <None Include="templates\EventCalendarAggregator.template" />
-    <None Include="templates\EventCalendarDetails.template" />
     <None Include="templates\ProcurementAggregator.template" />
-    <None Include="templates\ProcurementDetails.template" />
     <None Include="templates\internal\_JobLocationPopup.template" />
     <Content Include="templates\internal\_MenuVisibilityPopup.template" />
     <Content Include="templates\internal\_EventCalendarCategoryPopup.template" />
@@ -1333,7 +1329,6 @@
     <None Include="templates\Publications.template" />
     <None Include="templates\RegisterProject.template" />
     <None Include="templates\FileLibraryAggregator.template" />
-    <None Include="templates\FileLibraryDetails.template" />
     <None Include="templates\UserImageGallery.template" />
     <None Include="templates\UserImageGalleryAggregator.template" />
     <None Include="templates\_SingleImageDisplay.template" />

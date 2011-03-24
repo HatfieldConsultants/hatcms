@@ -48,7 +48,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             ret.Add(new CmsConfigItemDependency("NewsArticle.NoNewsTextForText"));
 
             // -- template dependency
-            ret.Add(new CmsTemplateDependency(CmsConfig.getConfigValue("NewsArticle.DetailsTemplateName", "NewsArticleDetails")));
+            ret.Add(new CmsTemplateDependency(CmsConfig.getConfigValue("NewsArticle.DetailsTemplateName", "_NewsArticleDetails")));
 
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowRight.jpg", new DateTime(2011, 3, 1)));
 
@@ -108,7 +108,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             string newPageMenuTitle = "";
             string newPageSearchEngineDescription = "";
             bool newPageShowInMenu = false;
-            string newPageTemplate = CmsConfig.getConfigValue("NewsArticle.DetailsTemplateName", "NewsArticleDetails");
+            string newPageTemplate = CmsConfig.getConfigValue("NewsArticle.DetailsTemplateName", "_NewsArticleDetails");
 
             newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, newsArticleAggregatorPage.ID);
 

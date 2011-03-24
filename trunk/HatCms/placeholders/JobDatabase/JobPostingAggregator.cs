@@ -48,7 +48,7 @@ namespace HatCMS.Placeholders
 
             ret.Add(new CmsConfigItemDependency("JobPosting.DetailsTemplateName", CmsDependency.ExistsMode.MustExist));
             ret.Add(new CmsConfigItemDependency("JobPosting.FullJobDescriptionText", CmsDependency.ExistsMode.MustExist));
-            ret.Add(new CmsTemplateDependency(CmsConfig.getConfigValue("JobPosting.DetailsTemplateName", "JobPosting")));
+            ret.Add(new CmsTemplateDependency(CmsConfig.getConfigValue("JobPosting.DetailsTemplateName", "_JobPosting")));
 
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowRight.jpg", new DateTime(2011, 3, 1)));
 
@@ -117,7 +117,7 @@ namespace HatCMS.Placeholders
             string newPageMenuTitle = "";
             string newPageSearchEngineDescription = "";
             bool newPageShowInMenu = false;
-            string newPageTemplate = CmsConfig.getConfigValue("JobPosting.DetailsTemplateName", "JobPosting");
+            string newPageTemplate = CmsConfig.getConfigValue("JobPosting.DetailsTemplateName", "_JobPosting");
 
             CreateNewJobMenuAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, jobAggregatorPage.ID);            
 
