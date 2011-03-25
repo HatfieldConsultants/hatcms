@@ -173,11 +173,33 @@ namespace HatCMS.Placeholders
         /// <param name="identifier"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static string getDownloadUrl(CmsPage fileDetailsPage, int identifier, CmsLanguage language, string fileName)
+        public static string getDownloadUrl(CmsPage fileDetailsPage, int identifier, CmsLanguage language, string fileName, CmsUrlFormat urlFormat)
         {
             
             string baseUrl = getFileStorageFolderUrl(fileDetailsPage, identifier, language);
             string url = baseUrl + fileName;
+
+            switch (urlFormat)
+            {
+                case CmsUrlFormat.RelativeToRoot:
+                    break;
+                case CmsUrlFormat.FullIncludingProtocolAndDomainName:
+                    if (System.Web.HttpContext.Current == null || System.Web.HttpContext.Current.Request == null || System.Web.HttpContext.Current.Server == null)
+                        throw new Exception("getDownloadUrl() requires a running web request!");
+
+                    System.Web.HttpRequest r = System.Web.HttpContext.Current.Request;
+
+                    string rootUrl = r.Url.Scheme + "://" + r.Url.Host;
+                    if (!r.Url.IsDefaultPort)
+                        rootUrl += ":" + r.Url.Port.ToString();
+                    url = rootUrl + url;
+                    break;
+                default:
+                    throw new ArgumentException("unknown CmsUrlFormat specified!!");
+            }
+
+
+
             return url;
         }
 
@@ -188,9 +210,9 @@ namespace HatCMS.Placeholders
         /// <param name="identifier"></param>
         /// <param name="fileName"></param>
         /// <returns></returns>
-        public static string getDownloadAnchorHtml(CmsPage fileDetailsPage, int identifier, CmsLanguage lang, string fileName)
+        public static string getDownloadAnchorHtml(CmsPage fileDetailsPage, int identifier, CmsLanguage lang, string fileName, CmsUrlFormat fileUrlFormat)
         {
-            return getDownloadAnchorHtml(fileDetailsPage, identifier, lang, fileName, fileName, "_blank", "");
+            return getDownloadAnchorHtml(fileDetailsPage, identifier, lang, fileName, fileName, "_blank", "", fileUrlFormat);
         }
 
         /// <summary>
@@ -203,10 +225,10 @@ namespace HatCMS.Placeholders
         /// <param name="target"></param>
         /// <param name="cssClass"></param>
         /// <returns></returns>
-        public static string getDownloadAnchorHtml(CmsPage fileDetailsPage, int identifier, CmsLanguage lang, string fileName, string displayHtml, string target, string cssClass)
+        public static string getDownloadAnchorHtml(CmsPage fileDetailsPage, int identifier, CmsLanguage lang, string fileName, string displayHtml, string target, string cssClass, CmsUrlFormat fileUrlFormat)
         {
             StringBuilder html = new StringBuilder("<a href=\"");
-            html.Append(getDownloadUrl(fileDetailsPage, identifier, lang, fileName));
+            html.Append(getDownloadUrl(fileDetailsPage, identifier, lang, fileName, fileUrlFormat));
             html.Append("\"");
             if (target != "")
                 html.Append(" target=\"" + target + "\" ");

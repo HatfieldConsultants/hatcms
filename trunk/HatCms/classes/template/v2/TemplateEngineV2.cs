@@ -69,7 +69,20 @@ namespace HatCMS.TemplateEngine
         /// </summary>
         private const string CONTROLS_SUBDIR = "controls/";
 
-        private const string COMMAND_DELIMITER = "##";        
+        private const string COMMAND_DELIMITER = "##";      
+  
+        /// <summary>
+        /// If a placeholder or a control has this parameter name, and it's value is set to "false", and CmsContext.currentUserIsRequestingPrintFriendlyVersion,
+        /// the control or placeholder will NOT be output.
+        /// </summary>
+        private const string PRINTER_FRIENDLY_VERSION_OUTPUT_CONTROL_PARAMETERNAME = "includeinprintfriendlyversion"; // note: must be all lower-case
+
+        /// <summary>
+        /// If a placeholder or a control has this parameter name, and it's value is set to "false", and CmsContext.currentUserIsMakingOfflineVersion,
+        /// the control or placeholder will NOT be output.
+        /// </summary>
+        private const string OFFLINE_VERSION_OUTPUT_CONTROL_PARAMETERNAME = "includeinofflineversion"; // note: must be all lower-case
+        
 
 
         public TemplateEngineV2(string templateName, CmsPage page)
@@ -79,7 +92,7 @@ namespace HatCMS.TemplateEngine
         } // constructor
 
         private string getTemplateFilenameOnDisk()
-        {
+        {            
             System.Web.HttpContext context = System.Web.HttpContext.Current;
             // get the templateFilename
             string templateUrl = CmsContext.ApplicationPath + TEMPLATE_SUBDIR + templateName + TEMPLATE_EXTENSION;
@@ -237,7 +250,7 @@ namespace HatCMS.TemplateEngine
 
         private void renderCommand(string command)
         {
-            // command is the full command, such as ##Placeholder(HtmlContent id="1")##
+            // command is the full command, such as ##Placeholder(HtmlContent id="1")## or ##RenderContro(_system/PageTitle)##.
 
             int parseFrom = command.IndexOf("(", StringComparison.CurrentCultureIgnoreCase);
             int parseTo = command.Length - ")".Length - COMMAND_DELIMITER.Length;
@@ -329,32 +342,50 @@ namespace HatCMS.TemplateEngine
                     throw new TemplateExecutionException(templateName, "The placeholder statement must have an integer id attribute (\"" + command + "\").");
                 }
 
-                // params[0] contains the rawParameters
-                string[] subParamsArray = new string[] { rawParameters };
 
-                System.Text.StringBuilder sb = new System.Text.StringBuilder();
-                HtmlTextWriter writer = new HtmlTextWriter(new StringWriter(sb));
+                // do not output if: 
+                //  1) we are making a printer friendly version, and the placeholder has its printer friendly parameter name set to false.
+                //  2) we are making an offline version, and the placeholder has its offline version parameter name set to false.
+                bool doNotOutput = (
+                    /* print friendly version: */
+                                (CmsContext.currentUserIsRequestingPrintFriendlyVersion &&
+                                parameters.ContainsKey(PRINTER_FRIENDLY_VERSION_OUTPUT_CONTROL_PARAMETERNAME) &&
+                                String.Compare(parameters[PRINTER_FRIENDLY_VERSION_OUTPUT_CONTROL_PARAMETERNAME], "false", true) == 0) ||
+                    /* offline version: */
+                                (CmsContext.currentUserIsRequestingPrintFriendlyVersion &&
+                                parameters.ContainsKey(OFFLINE_VERSION_OUTPUT_CONTROL_PARAMETERNAME) &&
+                                String.Compare(parameters[OFFLINE_VERSION_OUTPUT_CONTROL_PARAMETERNAME], "false", true) == 0));
 
-                CmsLanguage langToRender = CmsConfig.Languages[currentLangIndex]; // the currentLangIndex is incremented when the EndPageBody statement is found in the template 
-                // dynamically load the Placeholder class and call its Render method            
-                switch (CmsContext.currentEditMode)
+                if (!doNotOutput)
                 {
-                    case CmsEditMode.Edit:
-                        PlaceholderUtils.RenderInEditMode(placeholderName, writer, page, identifier, langToRender, subParamsArray, templateName);
-                        break;
-                    case CmsEditMode.View:
-                        PlaceholderUtils.RenderInViewMode(placeholderName, writer, page, identifier, langToRender, subParamsArray, templateName);
-                        break;
+
+                    // params[0] contains the rawParameters
+                    string[] subParamsArray = new string[] { rawParameters };
+
+                    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                    HtmlTextWriter writer = new HtmlTextWriter(new StringWriter(sb));
+
+                    CmsLanguage langToRender = CmsConfig.Languages[currentLangIndex]; // the currentLangIndex is incremented when the EndPageBody statement is found in the template 
+                    // dynamically load the Placeholder class and call its Render method            
+                    switch (CmsContext.currentEditMode)
+                    {
+                        case CmsEditMode.Edit:
+                            PlaceholderUtils.RenderInEditMode(placeholderName, writer, page, identifier, langToRender, subParamsArray, templateName);
+                            break;
+                        case CmsEditMode.View:
+                            PlaceholderUtils.RenderInViewMode(placeholderName, writer, page, identifier, langToRender, subParamsArray, templateName);
+                            break;
+                    }
+
+
+                    string txt = sb.ToString();
+
+                    // -- Run Placeholder Filters
+                    txt = CmsOutputFilterUtils.RunPlaceholderFilters(placeholderName, page, txt);
+
+                    LiteralControl literal = new LiteralControl(txt);
+                    AddControlToPage(literal);
                 }
-                
-
-                string txt = sb.ToString();
-
-                // -- Run Placeholder Filters
-                txt = CmsOutputFilterUtils.RunPlaceholderFilters(placeholderName, page, txt);
-
-                LiteralControl literal = new LiteralControl(txt);
-                AddControlToPage(literal);
 
             }
             else if (command.StartsWith(COMMAND_DELIMITER + "rendercontrol", StringComparison.CurrentCultureIgnoreCase))
@@ -369,11 +400,28 @@ namespace HatCMS.TemplateEngine
                 string Control_FilenameOnDisk = System.Web.HttpContext.Current.Server.MapPath(Control_VirtualPath);
                 if (File.Exists(Control_FilenameOnDisk))
                 {
-                    Control control = page.LoadControl(Control_VirtualPath);
-                    // set the parameters for the control. Note: use CmsContext.getControlParameters() to get the list of parameters
-                    control.ID = rawParameters;
+                    // do not output if: 
+                    //  1) we are making a printer friendly version, and the control has its printer friendly parameter name set to false.
+                    //  2) we are making an offline version, and the control has its offline version parameter name set to false.
+                    bool doNotOutput = (
+                        /* print friendly version: */
+                                    (CmsContext.currentUserIsRequestingPrintFriendlyVersion &&
+                                    parameters.ContainsKey(PRINTER_FRIENDLY_VERSION_OUTPUT_CONTROL_PARAMETERNAME) &&
+                                    String.Compare(parameters[PRINTER_FRIENDLY_VERSION_OUTPUT_CONTROL_PARAMETERNAME], "false", true) == 0) ||
+                        /* offline version: */
+                                    (CmsContext.currentUserIsRequestingPrintFriendlyVersion &&
+                                    parameters.ContainsKey(OFFLINE_VERSION_OUTPUT_CONTROL_PARAMETERNAME) &&
+                                    String.Compare(parameters[OFFLINE_VERSION_OUTPUT_CONTROL_PARAMETERNAME], "false", true) == 0));                
 
-                    AddControlToPage(control);
+
+                    if (!doNotOutput)
+                    {
+                        Control control = page.LoadControl(Control_VirtualPath);
+                        // set the parameters for the control. Note: use CmsContext.getControlParameters() to get the list of parameters
+                        control.ID = rawParameters;
+
+                        AddControlToPage(control);
+                    }
                 }
                 else
                 {

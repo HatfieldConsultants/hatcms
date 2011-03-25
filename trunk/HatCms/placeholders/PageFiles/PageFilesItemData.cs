@@ -61,10 +61,36 @@ namespace HatCMS.Placeholders
 
         public string getDownloadUrl()
         {
+            return getDownloadUrl(CmsUrlFormat.RelativeToRoot);
+        }
+
+        public string getDownloadUrl(CmsUrlFormat urlFormat)
+        {
             CmsPage page = CmsContext.getPageById(this.DetailsPageId);
             string baseUrl = GetFileStorageDirectoryUrl(page, this.Identifier, this.Lang);
 
             string url = baseUrl + System.IO.Path.GetFileName(getFilenameOnDisk(page, this.Identifier, this.Lang));
+
+            switch (urlFormat)
+            {
+                case CmsUrlFormat.RelativeToRoot:
+                    break;
+                case CmsUrlFormat.FullIncludingProtocolAndDomainName:
+                    if (System.Web.HttpContext.Current == null || System.Web.HttpContext.Current.Request == null || System.Web.HttpContext.Current.Server == null)
+                        throw new Exception("getUrlByPagePath() requires a running web request!");
+
+                    System.Web.HttpRequest r = System.Web.HttpContext.Current.Request;
+
+
+                    string rootUrl = r.Url.Scheme + "://" + r.Url.Host;
+                    if (!r.Url.IsDefaultPort)
+                        rootUrl += ":" + r.Url.Port.ToString();
+                    url = rootUrl + url;
+                    break;
+                default:
+                    throw new ArgumentException("unknown CmsUrlFormat specified!!");
+            }
+
 
             return url;
 

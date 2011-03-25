@@ -167,14 +167,14 @@ namespace HatCMS.Placeholders.Calendar
         /// <param name="f"></param>
         /// <param name="u"></param>
         /// <returns></returns>
-        protected string renderAttachedFile(CmsLanguage lang, FileLibraryDetailsData f, WebPortalUser u)
+        protected string renderAttachedFile(CmsLanguage lang, FileLibraryDetailsData f, WebPortalUser u, CmsUrlFormat fileUrlFormat)
         {
             CmsPage detailsFilePage = CmsContext.getPageById(f.DetailsPageId);
             if (detailsFilePage.Zone.canRead(u) || detailsFilePage.Zone.canWrite(u))
             {
                 
                 string iconTag = IconUtils.getIconTag(CmsContext.ApplicationPath, false, f.fileExtension);
-                string urlDownload = FileLibraryDetailsData.getDownloadAnchorHtml(detailsFilePage, f.Identifier, lang, f.FileName, f.FileName, "_blank", "");
+                string urlDownload = FileLibraryDetailsData.getDownloadAnchorHtml(detailsFilePage, f.Identifier, lang, f.FileName, f.FileName, "_blank", "", fileUrlFormat);
 
                 string urlPage = detailsFilePage.getUrl(lang);
                 urlPage = "&#160;&#160;<a href=\"" + urlPage + "\" class=\"rightArrowLink\">" + getSeeFileDetailsText(lang) + "</a>";
@@ -190,7 +190,7 @@ namespace HatCMS.Placeholders.Calendar
         /// <param name="page"></param>
         /// <param name="lang"></param>
         /// <returns></returns>
-        protected string renderAttachedFileList(CmsPage page, CmsLanguage lang)
+        protected string renderAttachedFileList(CmsPage page, CmsLanguage lang, CmsUrlFormat fileUrlFormat)
         {
             List<FileLibraryDetailsData> fileList = new FileLibraryDb().fetchDetailsData(lang, page);
             if (fileList.Count == 0)
@@ -200,7 +200,7 @@ namespace HatCMS.Placeholders.Calendar
             List<string> renderedLinks = new List<string>();
             foreach (FileLibraryDetailsData f in fileList)
             {
-                string link = renderAttachedFile(lang, f, u);
+                string link = renderAttachedFile(lang, f, u, fileUrlFormat);
                 if (link != "")
                     renderedLinks.Add(link);
             }
@@ -229,6 +229,7 @@ namespace HatCMS.Placeholders.Calendar
             // CmsContext.setCurrentCultureInfo(langToRenderFor);
             EventCalendarDb db = new EventCalendarDb();
             EventCalendarDb.EventCalendarDetailsData entity = db.fetchDetailsData(page, identifier, langToRenderFor, true);
+            CmsUrlFormat fileUrlFormat = CmsUrlFormat.RelativeToRoot;
 
             CmsPage parentPage = page.ParentPage;
             StringBuilder html = new StringBuilder();
@@ -252,7 +253,8 @@ namespace HatCMS.Placeholders.Calendar
             html.Append("<td>" + entity.EndDateTime.ToString("yyyy-MM-dd, h:mm tt") + "</td>");
             html.Append("</tr>");
 
-            html.Append(renderAttachedFileList(page, langToRenderFor));
+            html.Append(renderAttachedFileList(page, langToRenderFor, fileUrlFormat));
+
             html.Append("</table>");
 
             html.Append("<a class=\"backToPrev\" href=\"");

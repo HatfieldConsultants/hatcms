@@ -83,7 +83,7 @@ function createAnchor( url, displayHtml ) {
 /*******************************************************************
 * Add icons for printer friendly version and pdf version
 *******************************************************************/
-function addPrinterAndPdfIcon( printerVer, printerIcon, pdfVer, pdfIcon, placeAfterDom, blockDisplay, floatAlignment ) {
+function addPrinterAndPdfIcon( printerVer, printerIcon, pdfVer, pdfIcon, placeAfterDom, blockDisplay, floatAlignment, printQueryStringParam ) {
 	var targetDom = document.getElementById(placeAfterDom);
 
 	if (!targetDom || (!printerVer && ! pdfVer ))
@@ -96,7 +96,7 @@ function addPrinterAndPdfIcon( printerVer, printerIcon, pdfVer, pdfIcon, placeAf
 	}
 	
 	if (printerVer == true) {
-		var printerVerUrl = addUrlParameter( window.location.href, 'print', '1', true );
+		var printerVerUrl = addUrlParameter( window.location.href, printQueryStringParam, '1', true );
 		parentDiv.appendChild( createAnchor(printerVerUrl, '<img src="'+ printerIcon +'" border="0" />') );
 	}
 

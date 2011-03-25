@@ -33,7 +33,7 @@ namespace HatCMS.Controls
             ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.pdfIcon"));
             ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.printerIcon"));
 
-            ret.Add(CmsFileDependency.UnderAppPath("js/_system/printerAndPdfVersion.js", new DateTime(2011, 03, 03)));
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/printerAndPdfVersion.js", new DateTime(2011, 03, 25)));
             return ret.ToArray();
         }
 
@@ -108,7 +108,7 @@ namespace HatCMS.Controls
                 currentPage.HeadSection.AddJSStatements("_pdfIcon = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.pdfIcon", "").Replace("~", CmsContext.ApplicationPath) + "';" + EOL);
                 currentPage.HeadSection.AddJSStatements("_blockDisplay = " + CmsConfig.getConfigValue("PrinterAndPdfVer.blockDisplay", 1) + ";" + EOL);
                 currentPage.HeadSection.AddJSStatements("_align = '" + CmsConfig.getConfigValue("PrinterAndPdfVer.floatAlignment", "left") + "';" + EOL);
-                currentPage.HeadSection.AddJSOnReady("addPrinterAndPdfIcon( _printerVer, _printerIcon, _pdfVer, _pdfIcon, _placeAfterDom, _blockDisplay, _align ); " + EOL);
+                currentPage.HeadSection.AddJSOnReady("addPrinterAndPdfIcon( _printerVer, _printerIcon, _pdfVer, _pdfIcon, _placeAfterDom, _blockDisplay, _align, '" + CmsContext.PrintFriendlyVersionFormName + "' ); " + EOL);
             }            
             
         }

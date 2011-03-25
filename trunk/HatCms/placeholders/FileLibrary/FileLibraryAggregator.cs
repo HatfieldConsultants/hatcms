@@ -697,12 +697,12 @@ namespace HatCMS.Placeholders
         /// <param name="fileCategoryId"></param>
         /// <param name="aggregatorData"></param>
         /// <returns></returns>
-        protected string renderTabContent(CmsPage page, int identifier, CmsLanguage lang, int fileCategoryId, FileLibraryAggregatorData aggregatorData, RenderParameters renderParameters)
+        protected string renderTabContent(CmsPage page, int identifier, CmsLanguage lang, int fileCategoryId, FileLibraryAggregatorData aggregatorData, RenderParameters renderParameters, CmsUrlFormat fileUrlFormat)
         {
             if (fileCategoryId == -1)
             {
                 List<FileLibraryDetailsData> latestList = db.fetchLatestUpload(page.ChildPages, identifier, lang, aggregatorData.NumFilesForOverview);
-                return renderTabContentOverview(page, identifier, lang, fileCategoryId, latestList, renderParameters);
+                return renderTabContentOverview(page, identifier, lang, fileCategoryId, latestList, renderParameters, fileUrlFormat);
             }
 
             FileLibraryCategoryData cat = FileLibraryCategoryData.getCategoryFromList(categoryList, fileCategoryId);
@@ -717,7 +717,7 @@ namespace HatCMS.Placeholders
 
             List<FileLibraryDetailsData> fileList = getFileList(page, identifier, lang, cat, aggregatorData, renderParameters);
             html.Append(pageNum);
-            html.Append(renderTableForFileList(page, identifier, lang, fileList, false, renderParameters));
+            html.Append(renderTableForFileList(page, identifier, lang, fileList, false, renderParameters, fileUrlFormat));
             html.Append(pageNum);
             html.Append("</div>" + EOL);
             return html.ToString();
@@ -732,7 +732,7 @@ namespace HatCMS.Placeholders
         /// <param name="categoryId"></param>
         /// <param name="latestList"></param>
         /// <returns></returns>
-        protected string renderTabContentOverview(CmsPage page, int identifier, CmsLanguage lang, int categoryId, List<FileLibraryDetailsData> latestList, RenderParameters renderParameters)
+        protected string renderTabContentOverview(CmsPage page, int identifier, CmsLanguage lang, int categoryId, List<FileLibraryDetailsData> latestList, RenderParameters renderParameters, CmsUrlFormat fileUrlFormat)
         {
             StringBuilder html = new StringBuilder();
             if (categoryId == -1)
@@ -743,7 +743,7 @@ namespace HatCMS.Placeholders
             if (latestList.Count > 0)
             {
                 html.Append("<p>" + getNewUploadText(lang) + ":</p>");
-                html.Append(renderTableForFileList(page, identifier, lang, latestList, true, renderParameters));
+                html.Append(renderTableForFileList(page, identifier, lang, latestList, true, renderParameters, fileUrlFormat));
             }
             else
                 html.Append("<p>No files yet.</p>");
@@ -790,7 +790,7 @@ namespace HatCMS.Placeholders
         /// <param name="fileList"></param>
         /// <param name="showCategory"></param>
         /// <returns></returns>
-        protected string renderTableForFileList(CmsPage page, int identifier, CmsLanguage lang, List<FileLibraryDetailsData> fileList, bool showCategory, RenderParameters renderParameters)
+        protected string renderTableForFileList(CmsPage page, int identifier, CmsLanguage lang, List<FileLibraryDetailsData> fileList, bool showCategory, RenderParameters renderParameters, CmsUrlFormat fileUrlFormat)
         {
             if (fileList.Count == 0)                
                 return "<p class=\"NoResults\">There are no files in this category.</p>";
@@ -812,9 +812,9 @@ namespace HatCMS.Placeholders
                 string iconTag = IconUtils.getIconTag(CmsContext.ApplicationPath, false, d.fileExtension);
                 string urlDetails = "";
                 // -- link direct to the file only if the current user can't edit the file.
-                if (renderParameters.fileLinkMode == RenderParameters.FileLinkMode.LinkToFile && ! page.Zone.canWrite(CmsContext.currentWebPortalUser) )
+                if (renderParameters.fileLinkMode == RenderParameters.FileLinkMode.LinkToFile && ! page.currentUserCanWrite )
                 {
-                    urlDetails = FileLibraryDetailsData.getDownloadUrl(page, identifier, lang, d.FileName);
+                    urlDetails = FileLibraryDetailsData.getDownloadUrl(page, identifier, lang, d.FileName, fileUrlFormat);
                 }
                 else
                 {
@@ -823,7 +823,7 @@ namespace HatCMS.Placeholders
 
                 html.Append("<td>" + EOL);
                 html.Append(iconTag + EOL);
-                html.Append(FileLibraryDetailsData.getDownloadAnchorHtml(page, identifier,lang, d.FileName) + EOL);
+                html.Append(FileLibraryDetailsData.getDownloadAnchorHtml(page, identifier,lang, d.FileName, fileUrlFormat) + EOL);
                 html.Append("</td>" + EOL);
 
                 string eventHtml = "(n/a)";
@@ -888,7 +888,7 @@ namespace HatCMS.Placeholders
             return html.ToString();
         }
 
-        private string renderAsList(CmsPage page, int identifier, CmsLanguage lang,FileLibraryAggregatorData aggregatorData, RenderParameters renderParameters)
+        private string renderAsList(CmsPage page, int identifier, CmsLanguage lang, FileLibraryAggregatorData aggregatorData, RenderParameters renderParameters, CmsUrlFormat fileUrlFormat)
         {
             
             CmsPage rootPageToGatherFrom = page;
@@ -924,7 +924,7 @@ namespace HatCMS.Placeholders
                             // -- link direct to the file only if the current user can't edit the file.
                             if (renderParameters.fileLinkMode == RenderParameters.FileLinkMode.LinkToFile && !page.Zone.canWrite(CmsContext.currentWebPortalUser))
                             {
-                                urlDetails = FileLibraryDetailsData.getDownloadUrl(CmsContext.getPageById(file.DetailsPageId), identifier, lang, file.FileName);
+                                urlDetails = FileLibraryDetailsData.getDownloadUrl(CmsContext.getPageById(file.DetailsPageId), identifier, lang, file.FileName, fileUrlFormat);
                             }
                             else
                             {
@@ -960,6 +960,7 @@ namespace HatCMS.Placeholders
             UpdateFileLibraryCommandsInEditMenu(page);
 
             RenderParameters renderParameters = RenderParameters.fromParamList(paramList);
+            CmsUrlFormat fileUrlFormat = CmsUrlFormat.RelativeToRoot;
 
             addCssAndScript(page, renderParameters);
 
@@ -976,12 +977,12 @@ namespace HatCMS.Placeholders
                 int fileCategoryId = getFileCategoryId();
                 html.Append("<div class=\"tab\">" + EOL);
                 html.Append(renderTabHeader(langToRenderFor, fileCategoryId));
-                html.Append(renderTabContent(page, identifier, langToRenderFor, fileCategoryId, aggregatorData, renderParameters));
+                html.Append(renderTabContent(page, identifier, langToRenderFor, fileCategoryId, aggregatorData, renderParameters, fileUrlFormat));
                 html.Append("</div>" + EOL);
             }
             else if (renderParameters.displayMode == RenderParameters.DisplayMode.List)
             {
-                html.Append(renderAsList(page, identifier, langToRenderFor, aggregatorData, renderParameters));
+                html.Append(renderAsList(page, identifier, langToRenderFor, aggregatorData, renderParameters, fileUrlFormat));
             }
 
             if (canWrite)
@@ -1058,6 +1059,7 @@ namespace HatCMS.Placeholders
             CmsPage[] pagesToGetDetailsFrom = CmsContext.getAllPagesWithPlaceholder("FileLibraryDetails", rootPageToGatherFrom, gatherMode);
 
             List<FileLibraryDetailsData> fileDetails = db.fetchDetailsData(pagesToGetDetailsFrom, placeholderDefinition.Identifier, langToRenderFor);
+            CmsUrlFormat fileUrlFormat = CmsUrlFormat.FullIncludingProtocolAndDomainName;
 
             List<Rss.RssItem> ret = new List<Rss.RssItem>();
 
@@ -1067,7 +1069,7 @@ namespace HatCMS.Placeholders
                 if (childPage.isVisibleForCurrentUser)
                 {
                     Rss.RssItem rssItem = CreateAndInitRssItem(childPage, langToRenderFor);
-                    rssItem.Link = new Uri(FileLibraryDetailsData.getDownloadUrl(page, file.Identifier, langToRenderFor, file.FileName), UriKind.RelativeOrAbsolute);
+                    rssItem.Link = new Uri(FileLibraryDetailsData.getDownloadUrl(page, file.Identifier, langToRenderFor, file.FileName, fileUrlFormat), UriKind.RelativeOrAbsolute);
 
                     rssItem.Description = childPage.renderPlaceholdersToString("FileLibraryDetails", langToRenderFor, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
 

@@ -1,4 +1,5 @@
 using System;
+using System.Xml;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using Hatfield.Web.Portal;
+using HatCMS.Placeholders;
 
 namespace HatCMS.Placeholders
 {
@@ -19,12 +21,7 @@ namespace HatCMS.Placeholders
         private string EOL = Environment.NewLine;
 
         public class RenderParameters
-        {
-            public static RenderParameters fromParamList(string[] paramList)
-            {
-                return new RenderParameters(paramList);
-            }
-
+        {            
             public string ListingTitle = "Files:";
 
             public enum FileLinkMode { LinkToPage, LinkToFile }
@@ -49,7 +46,18 @@ namespace HatCMS.Placeholders
             /// </summary>
             public bool IncludePageFiles = false;
 
-            public RenderParameters(string[] paramList)
+            public RenderParameters()
+            {
+            }
+
+            public static RenderParameters FromPlaceholderParamList(string[] paramList)
+            {
+                RenderParameters ret = new RenderParameters();
+                ret.InitFromPlaceholderParamList(paramList);
+                return ret;
+            }
+
+            public void InitFromPlaceholderParamList(string[] paramList)
             {
                 if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
                 {
@@ -117,7 +125,7 @@ namespace HatCMS.Placeholders
             return RevertToRevisionResult.NotImplemented;
         }
 
-        private class FileAggItem
+        public class FileAggItem
         {
             public string PageDisplayURL;
             public string FileDownloadURL;
@@ -195,12 +203,101 @@ namespace HatCMS.Placeholders
                 } // foreach
                 return ret.ToArray();
             }
+            public static FileAggItem FromRSSItems(Rss.RssItem sourceDetails)
+            {
+                string PageDisplayURL = sourceDetails.Link.ToString();
+                string Title = sourceDetails.Title;
+                string FileDownloadURL = PageDisplayURL; // parse it out                
+                string Description = sourceDetails.Description; // parse it out
+                string CategoryName = ""; // parse it out
+                if (sourceDetails.Categories.Count > 0)
+                    CategoryName = sourceDetails.Categories[0].Name;
 
-            public static FileAggItem FromFileLibraryDetailsData(FileLibraryDetailsData sourceDetails, List<FileLibraryCategoryData> categoryList)
+                DateTime lastModified = sourceDetails.PubDate_GMT; // parse it out
+
+                bool isSWISHFeed = false;
+                int entryStartIndex = Description.IndexOf("&lt;entry&gt;");
+                int entryEndIndex = Description.LastIndexOf("&lt;/entry&gt;");                
+                
+                if (entryStartIndex >= 0 && entryEndIndex > entryStartIndex )
+                    isSWISHFeed = true;
+
+                if (isSWISHFeed)
+                {
+                    try
+                    {
+                        // parse the FileDownloadURL, Description, CategoryName and lastModified from the description
+                        int parseLength = (entryEndIndex + "&lt;/entry&gt;".Length) - entryStartIndex;
+                        string encodedXml = Description.Substring(entryStartIndex, parseLength).Trim();
+                        string decodedXml = HttpUtility.HtmlDecode(encodedXml);
+                        System.IO.StringReader xmlStream = new System.IO.StringReader(decodedXml);
+
+                        /*
+                        XmlReaderSettings settings = new XmlReaderSettings();
+                        settings.ConformanceLevel = ConformanceLevel.Auto;
+                        settings.IgnoreComments = true;
+                        settings.IgnoreProcessingInstructions = true;
+                        */
+                        XmlTextReader xmlReader = new XmlTextReader(xmlStream);
+                        
+                        xmlReader.Namespaces = false; // critical: ignore namespaces. Otherwise parts of the document will not be parsed.
+                        xmlReader.WhitespaceHandling = WhitespaceHandling.None;
+
+                        while (xmlReader.Read())
+                        {
+                            if (xmlReader.NodeType == XmlNodeType.Element || xmlReader.NodeType == XmlNodeType.EndElement)
+                            {
+                                if (xmlReader.Name == "summary")
+                                {
+                                    Description = xmlReader.ReadElementContentAsString();
+                                }
+                                else if (xmlReader.Name == "dc:subject")
+                                {
+                                    CategoryName = xmlReader.ReadElementContentAsString();
+                                }
+                                else if (xmlReader.Name == "updated")
+                                {
+                                    try
+                                    {
+                                        lastModified = xmlReader.ReadElementContentAsDateTime();
+                                    }
+                                    catch (FormatException fe)
+                                    { }
+                                }
+                            }
+
+                            // -- for some reason the link tag is parsed right-after the summary tag
+                            if (xmlReader.Name == "link")
+                            {
+                                xmlReader.MoveToAttribute("href");
+                                if (xmlReader.Value != "")
+                                    FileDownloadURL = xmlReader.Value;
+                            }
+
+                        } // while                        
+                    }
+                    catch (Exception ex)
+                    { }
+                }
+                
+                return new FileAggItem(PageDisplayURL, FileDownloadURL, Title, Description, CategoryName, lastModified);    
+            }
+
+            public static FileAggItem[] FromRSSItems(Rss.RssItemCollection sourceDetails)
+            {
+                List<FileAggItem> ret = new List<FileAggItem>();
+                foreach (Rss.RssItem file in sourceDetails)
+                {
+                    ret.Add(FromRSSItems(file));
+                }
+                return ret.ToArray();
+            }
+
+            public static FileAggItem FromFileLibraryDetailsData(FileLibraryDetailsData sourceDetails, List<FileLibraryCategoryData> categoryList, CmsUrlFormat pageLinkUrlFormat, CmsUrlFormat fileLinkUrlFormat)
             {                
                 CmsPage detailsPage = CmsContext.getPageById(sourceDetails.DetailsPageId);
-                string PageDisplayURL = detailsPage.getUrl(sourceDetails.Lang);
-                string FileDownloadURL = FileLibraryDetailsData.getDownloadUrl(detailsPage, sourceDetails.Identifier, sourceDetails.Lang, sourceDetails.FileName);
+                string PageDisplayURL = detailsPage.getUrl(sourceDetails.Lang, pageLinkUrlFormat);
+                string FileDownloadURL = FileLibraryDetailsData.getDownloadUrl(detailsPage, sourceDetails.Identifier, sourceDetails.Lang, sourceDetails.FileName, fileLinkUrlFormat);
                 string Title = detailsPage.getTitle(sourceDetails.Lang);
                 string Description = sourceDetails.Description;
                 string CategoryName = FileLibraryCategoryData.getCategoryFromList(categoryList, sourceDetails.CategoryId).CategoryName;
@@ -208,23 +305,23 @@ namespace HatCMS.Placeholders
                 return new FileAggItem(PageDisplayURL, FileDownloadURL, Title, Description, CategoryName, lastModified);
             }
 
-            public static FileAggItem[] FromFileLibraryDetailsData(FileLibraryDetailsData[] sourceDetails, List<FileLibraryCategoryData> categoryList)
+            public static FileAggItem[] FromFileLibraryDetailsData(FileLibraryDetailsData[] sourceDetails, List<FileLibraryCategoryData> categoryList, CmsUrlFormat pageLinkUrlFormat, CmsUrlFormat fileLinkUrlFormat)
             {
                 List<FileAggItem> ret = new List<FileAggItem>();
                 foreach (FileLibraryDetailsData file in sourceDetails)
                 {
-                    ret.Add(FromFileLibraryDetailsData(file, categoryList));
+                    ret.Add(FromFileLibraryDetailsData(file, categoryList, pageLinkUrlFormat, fileLinkUrlFormat));
                 }
                 return ret.ToArray();
             }
 
-            public static FileAggItem FromPageFilesItemData(PageFilesItemData sourceDetails)
+            public static FileAggItem FromPageFilesItemData(PageFilesItemData sourceDetails, CmsUrlFormat pageLinkUrlFormat, CmsUrlFormat fileLinkUrlFormat)
             {                
                 CmsPage detailsPage = CmsContext.getPageById(sourceDetails.DetailsPageId);
                 Dictionary<string, string> pageUrlParams = new Dictionary<string, string>();
                 pageUrlParams.Add(PageFiles.CurrentFileIdFormName, sourceDetails.Id.ToString());
-                string PageDisplayURL = detailsPage.getUrl(pageUrlParams, sourceDetails.Lang);
-                string FileDownloadURL = sourceDetails.getDownloadUrl();
+                string PageDisplayURL = detailsPage.getUrl(pageUrlParams, sourceDetails.Lang, pageLinkUrlFormat);
+                string FileDownloadURL = sourceDetails.getDownloadUrl(fileLinkUrlFormat);
                 string Title = sourceDetails.Title;
                 string Description = sourceDetails.Abstract;
                 string CategoryName = detailsPage.getTitle(sourceDetails.Lang); // use the page title as the category
@@ -232,12 +329,12 @@ namespace HatCMS.Placeholders
                 return new FileAggItem(PageDisplayURL, FileDownloadURL, Title, Description, CategoryName, lastModified);
             }
 
-            public static FileAggItem[] FromPageFilesItemData(PageFilesItemData[] sourceDetails)
+            public static FileAggItem[] FromPageFilesItemData(PageFilesItemData[] sourceDetails, CmsUrlFormat pageLinkUrlFormat, CmsUrlFormat fileLinkUrlFormat)
             {
                 List<FileAggItem> ret = new List<FileAggItem>();
                 foreach (PageFilesItemData file in sourceDetails)
                 {
-                    ret.Add(FromPageFilesItemData(file));
+                    ret.Add(FromPageFilesItemData(file, pageLinkUrlFormat, fileLinkUrlFormat));
                 }
                 return ret.ToArray();
             }
@@ -269,7 +366,7 @@ namespace HatCMS.Placeholders
             }
         }
 
-        private FileAggItem[] FetchAutoAggregatedFileLibraryDetails(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams)
+        private FileAggItem[] FetchAutoAggregatedFileLibraryDetails(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams, CmsUrlFormat pageLinkUrlFormat, CmsUrlFormat fileLinkUrlFormat)
         {
             CmsPage rootPageToGatherFrom = aggregatorPage;
             if (renderParams.PageIdToGatherFilesFrom >= 0)
@@ -284,10 +381,10 @@ namespace HatCMS.Placeholders
             CmsPage[] fileDetailsPages = CmsContext.getAllPagesWithPlaceholder("FileLibraryDetails", rootPageToGatherFrom, gatherMode);
             List<FileLibraryDetailsData> filesToShow = db.fetchDetailsData(fileDetailsPages, aggLang);
 
-            return FileAggItem.FromFileLibraryDetailsData(filesToShow.ToArray(), base.categoryList);
+            return FileAggItem.FromFileLibraryDetailsData(filesToShow.ToArray(), base.categoryList, pageLinkUrlFormat, fileLinkUrlFormat);
         }
 
-        private FileAggItem[] FetchManuallyLinkedFileLibraryDetails(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams)
+        private FileAggItem[] FetchManuallyLinkedFileLibraryDetails(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams, CmsUrlFormat pageLinkUrlFormat, CmsUrlFormat fileLinkUrlFormat)
         {
             List<CmsPage> pages = new List<CmsPage>();
             int[] linkedPageIds = new filelibraryaggregator2Db().FetchPageIdsAssociatedWithPage(aggregatorPage, aggIdentifier, aggLang);
@@ -299,10 +396,10 @@ namespace HatCMS.Placeholders
 
             List<FileLibraryDetailsData> filesToShow = db.fetchDetailsData(pages.ToArray(), aggLang);
 
-            return FileAggItem.FromFileLibraryDetailsData(filesToShow.ToArray(), base.categoryList);
+            return FileAggItem.FromFileLibraryDetailsData(filesToShow.ToArray(), base.categoryList, pageLinkUrlFormat, fileLinkUrlFormat);
         }
 
-        private FileAggItem[] FetchAutoAggregatedPageFiles(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams)
+        private FileAggItem[] FetchAutoAggregatedPageFiles(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams, CmsUrlFormat pageLinkUrlFormat, CmsUrlFormat fileLinkUrlFormat)
         {
             CmsPage rootPageToGatherFrom = aggregatorPage;
             if (renderParams.PageIdToGatherFilesFrom >= 0)
@@ -318,7 +415,7 @@ namespace HatCMS.Placeholders
             PageFilesDb pageFilesDb = new PageFilesDb();
             PageFilesItemData[] fileItems = pageFilesDb.getPageFilesItemDatas(pageFilePages, aggLang);
 
-            return FileAggItem.FromPageFilesItemData(fileItems);
+            return FileAggItem.FromPageFilesItemData(fileItems, pageLinkUrlFormat, fileLinkUrlFormat);
         }
 
         /// <summary>
@@ -327,23 +424,23 @@ namespace HatCMS.Placeholders
         /// <param name="aggregatorPage"></param>
         /// <param name="renderParams"></param>
         /// <returns></returns>
-        private FileAggItem[] FetchAllFilesToShow(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams)
+        private FileAggItem[] FetchAllFilesToShow(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams, CmsUrlFormat pageLinkUrlFormat, CmsUrlFormat fileLinkUrlFormat)
         {
             List<FileAggItem> ret = new List<FileAggItem>();
             // -- auto aggregated FileLibraryDetail
-            ret.AddRange(FetchAutoAggregatedFileLibraryDetails(aggregatorPage, aggIdentifier, aggLang, renderParams));
+            ret.AddRange(FetchAutoAggregatedFileLibraryDetails(aggregatorPage, aggIdentifier, aggLang, renderParams, pageLinkUrlFormat, fileLinkUrlFormat));
             // -- manually linked FileLibraryDetail
-            ret.AddRange(FetchManuallyLinkedFileLibraryDetails(aggregatorPage, aggIdentifier, aggLang, renderParams));
+            ret.AddRange(FetchManuallyLinkedFileLibraryDetails(aggregatorPage, aggIdentifier, aggLang, renderParams, pageLinkUrlFormat, fileLinkUrlFormat));
             // -- auto aggregated PageFiles
             if (renderParams.IncludePageFiles)
             {
-                ret.AddRange(FetchAutoAggregatedPageFiles(aggregatorPage, aggIdentifier, aggLang, renderParams));
+                ret.AddRange(FetchAutoAggregatedPageFiles(aggregatorPage, aggIdentifier, aggLang, renderParams, pageLinkUrlFormat, fileLinkUrlFormat));
             }
             
             return ret.ToArray();
         } // FetchAllFilesToShow
 
-        private string renderAssociateExistingForm(CmsPage page, string controlId, CmsLanguage lang, FileAggItem[] filesAlreadyShown)
+        private string renderAssociateExistingForm(CmsPage page, string controlId, CmsLanguage lang, FileAggItem[] filesAlreadyShown, CmsUrlFormat pageLinkUrlFormat, CmsUrlFormat fileLinkUrlFormat)
         {
             // -- find files to show.
             CmsPage[] allFilePages = CmsContext.getAllPagesWithPlaceholder("FileLibraryDetails", CmsContext.HomePage, CmsContext.PageGatheringMode.FullRecursion);
@@ -354,7 +451,7 @@ namespace HatCMS.Placeholders
 
             foreach (FileLibraryDetailsData file in allFileDetailsData)
             {
-                if (!FileAggItem.ArrayContainsFile(filesAlreadyShown, FileAggItem.FromFileLibraryDetailsData(file, base.categoryList)))
+                if (!FileAggItem.ArrayContainsFile(filesAlreadyShown, FileAggItem.FromFileLibraryDetailsData(file, base.categoryList, pageLinkUrlFormat, fileLinkUrlFormat)))
                 {
                     CmsPage p = CmsContext.getPageById(file.DetailsPageId);
                     // this page is not already shown, so add it to the drop down
@@ -386,7 +483,7 @@ namespace HatCMS.Placeholders
 
         }
 
-        private string handleAssociateExistingSubmit(CmsPage aggPage, int aggIdentifier, CmsLanguage aggLang, string controlId, List<FileAggItem> filesToShow)
+        private string handleAssociateExistingSubmit(CmsPage aggPage, int aggIdentifier, CmsLanguage aggLang, string controlId, List<FileAggItem> filesToShow, CmsUrlFormat pageLinkUrlFormat, CmsUrlFormat fileLinkUrlFormat)
         {
             if (PageUtils.getFromForm(controlId + "action", "") != "associateFile")
                 return "";
@@ -405,55 +502,29 @@ namespace HatCMS.Placeholders
 
                 List<FileLibraryDetailsData> arr = db.fetchDetailsData(pageToAssociate);
 
-                filesToShow.AddRange(FileAggItem.FromFileLibraryDetailsData(arr.ToArray(), base.categoryList));
+                filesToShow.AddRange(FileAggItem.FromFileLibraryDetailsData(arr.ToArray(), base.categoryList, pageLinkUrlFormat, fileLinkUrlFormat));
                 
             }
             return "";
         }
 
-        private bool renderFromEditMode = false;
-
-        /// <summary>
-        /// Render the placeholder in ViewMode
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="page"></param>
-        /// <param name="identifier"></param>
-        /// <param name="langToRenderFor"></param>
-        /// <param name="paramList"></param>
-        public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        public static string RenderToHtmlList(FileAggItem[] uniqueFilesToShow, RenderParameters renderParams, bool canWrite)
         {
-            base.categoryList = db.fetchCategoryList(langToRenderFor);
-            
-            string controlId = "simplefileaggregator_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
-            RenderParameters renderParams = new RenderParameters(paramList);
-
-            List<FileAggItem> filesToShow = new List<FileAggItem>(FetchAllFilesToShow(page, identifier, langToRenderFor, renderParams));
-
             StringBuilder html = new StringBuilder();
-            bool canWrite = page.currentUserCanWrite;
-            if (renderFromEditMode) // don't render forms if we are in Edit Mode.
-                canWrite = false;
-
-            if (canWrite)
-            {
-                html.Append("<p>" + handleAssociateExistingSubmit(page, identifier, langToRenderFor, controlId, filesToShow) + "</p>" + EOL);
-                html.Append("<p>" + base.handleUploadSubmit(page, identifier, langToRenderFor, controlId) + "</p>" + EOL);
-            }
-
-            FileAggItem[] uniqueFilesToShow = FileAggItem.RemoveDuplicates(filesToShow);
-
             if (uniqueFilesToShow.Length > 0)
-            {                
-                html.Append("<div class=\"SimpleFileAggregatorHeader\">" + renderParams.ListingTitle + "</div>");
-                
+            {
+                if (renderParams.ListingTitle != "")
+                {
+                    html.Append("<div class=\"SimpleFileAggregatorHeader\">" + renderParams.ListingTitle + "</div>");
+                }
+
                 if (renderParams.ShowByCategory)
                 {
                     string[] categories = FileAggItem.GetAllCategoryNames(uniqueFilesToShow);
 
                     foreach (string fileCat in categories)
                     {
-                        FileAggItem[] filesInCat = FileAggItem.GetAllInCategory(uniqueFilesToShow, fileCat);                        
+                        FileAggItem[] filesInCat = FileAggItem.GetAllInCategory(uniqueFilesToShow, fileCat);
                         if (filesInCat.Length > 0)
                         {
                             html.Append("<div class=\"SimpleFileAggregatorCategoryHeader\">" + fileCat + "</div>");
@@ -463,7 +534,7 @@ namespace HatCMS.Placeholders
                             {
                                 string htmlLink = fileToShow.getHtmlLink(renderParams, canWrite);
                                 html.Append("<li>" + htmlLink + "</li>");
-                                
+
                             } // foreach
                             html.Append("</ul>");
                         }
@@ -481,12 +552,53 @@ namespace HatCMS.Placeholders
                     } // foreach
                     html.Append("</ul>");
                 } // if not show by category
-                
+
             }
+
+            return html.ToString();
+        }
+
+
+        private bool renderFromEditMode = false;
+
+        /// <summary>
+        /// Render the placeholder in ViewMode
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="page"></param>
+        /// <param name="identifier"></param>
+        /// <param name="langToRenderFor"></param>
+        /// <param name="paramList"></param>
+        public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
+        {
+            base.categoryList = db.fetchCategoryList(langToRenderFor);
+            
+            string controlId = "simplefileaggregator_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
+            RenderParameters renderParams = RenderParameters.FromPlaceholderParamList(paramList);
+
+            CmsUrlFormat pageLinkFormat = CmsUrlFormat.RelativeToRoot;
+            CmsUrlFormat fileLinkFormat = CmsUrlFormat.RelativeToRoot;
+
+            List<FileAggItem> filesToShow = new List<FileAggItem>(FetchAllFilesToShow(page, identifier, langToRenderFor, renderParams, pageLinkFormat, fileLinkFormat));
+
+            StringBuilder html = new StringBuilder();
+            bool canWrite = page.currentUserCanWrite;
+            if (renderFromEditMode) // don't render forms if we are in Edit Mode.
+                canWrite = false;
 
             if (canWrite)
             {
-                html.Append(renderAssociateExistingForm(page, controlId, langToRenderFor, uniqueFilesToShow));
+                html.Append("<p>" + handleAssociateExistingSubmit(page, identifier, langToRenderFor, controlId, filesToShow, pageLinkFormat, fileLinkFormat) + "</p>" + EOL);
+                html.Append("<p>" + base.handleUploadSubmit(page, identifier, langToRenderFor, controlId) + "</p>" + EOL);
+            }
+
+            FileAggItem[] uniqueFilesToShow = FileAggItem.RemoveDuplicates(filesToShow);
+
+            html.Append(RenderToHtmlList(uniqueFilesToShow, renderParams, canWrite));
+
+            if (canWrite)
+            {
+                html.Append(renderAssociateExistingForm(page, controlId, langToRenderFor, uniqueFilesToShow, pageLinkFormat, fileLinkFormat));
                 html.Append(base.renderUploadForm(page, langToRenderFor, controlId));
             }
 
@@ -505,9 +617,12 @@ namespace HatCMS.Placeholders
         {
             base.categoryList = db.fetchCategoryList(langToRenderFor);
 
-            RenderParameters renderParams = new RenderParameters(placeholderDefinition.ParamList);
+            RenderParameters renderParams = RenderParameters.FromPlaceholderParamList(placeholderDefinition.ParamList);
 
-            FileAggItem[] filesToShow = FetchAllFilesToShow(page, placeholderDefinition.Identifier, langToRenderFor, renderParams);                        
+            CmsUrlFormat pageLinkFormat = CmsUrlFormat.FullIncludingProtocolAndDomainName;
+            CmsUrlFormat fileLinkFormat = CmsUrlFormat.FullIncludingProtocolAndDomainName;
+
+            FileAggItem[] filesToShow = FetchAllFilesToShow(page, placeholderDefinition.Identifier, langToRenderFor, renderParams, pageLinkFormat, fileLinkFormat);
 
             List<Rss.RssItem> ret = new List<Rss.RssItem>();
             foreach (FileAggItem file in filesToShow)

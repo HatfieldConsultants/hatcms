@@ -1,4 +1,5 @@
 using System;
+using System.Web;
 using System.Web.UI;
 using HatCMS.Placeholders;
 using System.Collections.Generic;
@@ -286,23 +287,23 @@ namespace HatCMS.Placeholders.NewsDatabase
                 return hash.ContainsKey(newsToFind.GetContentHash());
             }
 
-            public static NewsAggItem FromNewsArticleDetailsData(NewsArticleDb.NewsArticleDetailsData sourceDetails)
+            public static NewsAggItem FromNewsArticleDetailsData(NewsArticleDb.NewsArticleDetailsData sourceDetails, CmsUrlFormat linkUrlFormat)
             {                 
                 CmsPage detailsPage = CmsContext.getPageById(sourceDetails.DetailsPageId);
                 DateTime dateOfNews = sourceDetails.DateOfNews;
-                string PageDisplayURL = detailsPage.getUrl(sourceDetails.Lang);                
+                string PageDisplayURL = detailsPage.getUrl(sourceDetails.Lang, linkUrlFormat); 
                 string Title = detailsPage.getTitle(sourceDetails.Lang);
                 string NewsArticleHtml = detailsPage.renderPlaceholdersToString("HtmlContent", sourceDetails.Lang, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
 
                 return new NewsAggItem(dateOfNews, PageDisplayURL, Title, NewsArticleHtml);
             }
 
-            public static NewsAggItem[] FromNewsArticleDetailsData(NewsArticleDb.NewsArticleDetailsData[] sourceDetails)
+            public static NewsAggItem[] FromNewsArticleDetailsData(NewsArticleDb.NewsArticleDetailsData[] sourceDetails, CmsUrlFormat linkUrlFormat)
             {
                 List<NewsAggItem> ret = new List<NewsAggItem>();
                 foreach (NewsArticleDb.NewsArticleDetailsData news in sourceDetails)
                 {
-                    ret.Add(FromNewsArticleDetailsData(news));
+                    ret.Add(FromNewsArticleDetailsData(news, linkUrlFormat));
                 }
                 return ret.ToArray();
             }
@@ -324,7 +325,7 @@ namespace HatCMS.Placeholders.NewsDatabase
 
         } // NewsAggItem class
 
-        private NewsAggItem[] FetchAutoAggregatedNewsArticleDetails(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams)
+        private NewsAggItem[] FetchAutoAggregatedNewsArticleDetails(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams, CmsUrlFormat linkUrlFormat)
         {
             CmsPage rootPageToGatherFrom = aggregatorPage;
             if (renderParams.PageIdToGatherNewsFrom >= 0)
@@ -337,13 +338,13 @@ namespace HatCMS.Placeholders.NewsDatabase
             CmsPage[] newsDetailsPages = CmsContext.getAllPagesWithPlaceholder("NewsArticleDetails", rootPageToGatherFrom, gatherMode);
             NewsArticleDb.NewsArticleDetailsData[] newsToShow = new NewsArticleDb().getNewsDetailsByYear(newsDetailsPages, renderParams.AggregatorData.YearToDisplay, aggLang);
 
-            return NewsAggItem.FromNewsArticleDetailsData(newsToShow);
+            return NewsAggItem.FromNewsArticleDetailsData(newsToShow, linkUrlFormat);
         }
 
-        private NewsAggItem[] FetchAllNewsAggItems(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams)
+        private NewsAggItem[] FetchAllNewsAggItems(CmsPage aggregatorPage, int aggIdentifier, CmsLanguage aggLang, RenderParameters renderParams, CmsUrlFormat linkUrlFormat)
         {
             List<NewsAggItem> ret = new List<NewsAggItem>();
-            ret.AddRange(FetchAutoAggregatedNewsArticleDetails(aggregatorPage, aggIdentifier, aggLang, renderParams));            
+            ret.AddRange(FetchAutoAggregatedNewsArticleDetails(aggregatorPage, aggIdentifier, aggLang, renderParams, linkUrlFormat));            
 
             // -- fetch all manually added news items here
 
@@ -363,7 +364,7 @@ namespace HatCMS.Placeholders.NewsDatabase
 
             RenderParameters renderParams = RenderParameters.fromParamList(param, newsAggregator);
 
-            NewsAggItem[] newsToShow = FetchAllNewsAggItems(page, identifier, langToRenderFor, renderParams);            
+            NewsAggItem[] newsToShow = FetchAllNewsAggItems(page, identifier, langToRenderFor, renderParams, CmsUrlFormat.RelativeToRoot);            
 
             // -- display results
             html.Append(getHtmlForSummaryView(newsToShow, renderParams, langToRenderFor));
@@ -459,7 +460,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             // -- get the news
             NewsArticleDb.NewsArticleAggregatorData aggData = (new NewsArticleDb()).fetchNewsAggregator(page, placeholderDefinition.Identifier, langToRenderFor, true);
             RenderParameters renderParams = RenderParameters.fromParamList(placeholderDefinition.ParamList, aggData);
-            NewsAggItem[] newsItems = FetchAllNewsAggItems(page, placeholderDefinition.Identifier, langToRenderFor, renderParams);
+            NewsAggItem[] newsItems = FetchAllNewsAggItems(page, placeholderDefinition.Identifier, langToRenderFor, renderParams, CmsUrlFormat.FullIncludingProtocolAndDomainName);
 
             int currYear = renderParams.AggregatorData.YearToDisplay;
 
@@ -473,6 +474,7 @@ namespace HatCMS.Placeholders.NewsDatabase
                     rssItem.Title = newsItem.Title;
 
                     rssItem.Link = new Uri(newsItem.PageDisplayURL, UriKind.RelativeOrAbsolute);
+                    
                     rssItem.PubDate_GMT = newsItem.NewsDate.ToUniversalTime();
 
                     rssItem.Description = newsItem.NewsArticleHtml;

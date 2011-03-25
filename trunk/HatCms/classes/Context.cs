@@ -326,6 +326,37 @@ namespace HatCMS
                 return false;
             }
         }
+
+        /// <summary>
+        /// Checks to see if the current user is making an offline (CD/DVD/memory stick) version
+        /// </summary>
+        public static bool currentUserIsMakingOfflineVersion
+        {
+            get
+            {
+                return Hatfield.Web.Portal.PageUtils.ClientIsMakingOfflineVersion;
+            }
+        }
+
+        /// <summary>
+        /// The Form name that tracks the <see cref="currentUserIsRequestingPrintFriendlyVersion"/> currentUserIsRequestingPrintFriendlyVersion
+        /// </summary>
+        public static string PrintFriendlyVersionFormName = "print";
+
+        /// <summary>
+        /// Checks if the current user is requesting a print-friendly version of the page.
+        /// </summary>
+        public static bool currentUserIsRequestingPrintFriendlyVersion
+        {
+            get
+            {
+                int formVal = PageUtils.getFromForm(PrintFriendlyVersionFormName, 0);
+                if (formVal == 1)
+                    return true;
+                else
+                    return false;
+            }
+        }
        
         /// <summary>
         /// The Form name that tracks the <see cref="currentEditMode"/> currentEditMode
@@ -686,9 +717,7 @@ namespace HatCMS
         /// <param name="pagePath"></param>
         /// <returns></returns>
         public static string getUrlByPagePath(string pagePath, CmsUrlFormat urlFormat, CmsLanguage pageLanguage)
-        {                        
-            
-
+        {                                    
             // -- replace spaces in the path
             string spaceReplacementChar = "+";
             if (spaceReplacementChar != "")

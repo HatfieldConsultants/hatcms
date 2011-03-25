@@ -594,6 +594,11 @@ namespace HatCMS
 			}
 		}
 
+        public string getUrl(CmsLanguage pageLanguage, CmsUrlFormat urlFormat)
+        {
+            return CmsContext.getUrlByPagePath(this.getPath(pageLanguage), urlFormat, pageLanguage);
+        }
+
         public string getUrl(CmsLanguage pageLanguage)
         {
             return CmsContext.getUrlByPagePath(this.getPath(pageLanguage), pageLanguage);
@@ -638,6 +643,16 @@ namespace HatCMS
                 paramList.Add(key, pageParams[key]);
             }
             return CmsContext.getUrlByPagePath(this.getPath(pageLanguage), paramList, pageLanguage);            
+        }
+
+        public string getUrl(Dictionary<string, string> pageParams, CmsLanguage pageLanguage, CmsUrlFormat urlFormat)
+        {
+            NameValueCollection paramList = new NameValueCollection();
+            foreach (string key in pageParams.Keys)
+            {
+                paramList.Add(key, pageParams[key]);
+            }
+            return CmsContext.getUrlByPagePath(this.getPath(pageLanguage), paramList, urlFormat, pageLanguage);
         }
 
         public string getUrl(Dictionary<string, string> pageParams, CmsUrlFormat urlFormat)
