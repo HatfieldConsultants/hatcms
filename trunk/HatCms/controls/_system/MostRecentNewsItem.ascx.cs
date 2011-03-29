@@ -177,7 +177,7 @@ namespace HatCMS.Controls._system
             ///     {1} = snippet
             ///     {2} = title    
             ///     {3} = date
-            /// [dateFormat]: dateOutputFormat
+            /// [dateOutputFormat]: dateOutputFormat
             /// [summaryLength]: maxLengthOfSummary (integer)
 
             int indexToDisplay = 0;

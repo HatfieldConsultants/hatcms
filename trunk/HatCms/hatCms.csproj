@@ -151,6 +151,7 @@
     <Compile Include="classes\filtering\HtmlLinkFilter.cs" />
     <Compile Include="classes\filtering\OutputFilter.cs" />
     <Compile Include="classes\filtering\OutputFilterUtils.cs" />
+    <Compile Include="classes\iCal\iCalOutputStream.cs" />
     <Compile Include="classes\language\Language.cs" />
     <Compile Include="classes\page\CreateNewPageOptions.cs" />
     <Compile Include="classes\page\Page.cs">
@@ -186,6 +187,13 @@
     <Compile Include="classes\zone\CmsZone.cs" />
     <Compile Include="classes\zone\CmsZoneUserRole.cs" />
     <Compile Include="classes\zone\CmsZoneUserRoleDb.cs" />
+    <Compile Include="controls\_system\RSSNews.ascx.cs">
+      <DependentUpon>RSSNews.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="controls\_system\RSSNews.ascx.designer.cs">
+      <DependentUpon>RSSNews.ascx</DependentUpon>
+    </Compile>
     <Compile Include="controls\_system\RSSDocuments.ascx.cs">
       <DependentUpon>RSSDocuments.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -772,6 +780,7 @@
     <Compile Include="_system\tools\swfUpload\SwfUploadTarget.aspx.designer.cs">
       <DependentUpon>SwfUploadTarget.aspx</DependentUpon>
     </Compile>
+    <Content Include="controls\_system\RSSNews.ascx" />
     <Content Include="controls\_system\RSSDocuments.ascx" />
     <Content Include="controls\_system\RSSGlossary.ascx" />
     <Content Include="controls\_system\Admin\Audit.ascx" />
@@ -1327,6 +1336,7 @@
     <Content Include="templates\Glossary.template" />
     <Content Include="templates\_RSSGlossary.template" />
     <Content Include="templates\_RSSDocuments.template" />
+    <Content Include="templates\_RSSNews.template" />
     <None Include="templates\PageFiles.template" />
     <None Include="templates\EventCalendarAggregator.template" />
     <None Include="templates\ProcurementAggregator.template" />

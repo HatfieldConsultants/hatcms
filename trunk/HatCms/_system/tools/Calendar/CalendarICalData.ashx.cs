@@ -76,7 +76,8 @@ namespace HatCMS._system.tools.Calendar
             }
 
             // Serialize (save) the iCalendar
-            System.Text.Encoding outputEncoding = System.Text.Encoding.UTF8;
+            System.Text.Encoding outputEncoding = iCalOutputEncoding.Instance;
+            context.Response.Clear();
             context.Response.ContentEncoding = outputEncoding;
             context.Response.ContentType = "text/calendar";
             iCalendarSerializer serializer = new iCalendarSerializer();

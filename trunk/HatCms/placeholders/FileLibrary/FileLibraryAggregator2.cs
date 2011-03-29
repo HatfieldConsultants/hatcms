@@ -207,11 +207,11 @@ namespace HatCMS.Placeholders
             {
                 string PageDisplayURL = sourceDetails.Link.ToString();
                 string Title = sourceDetails.Title;
-                string FileDownloadURL = PageDisplayURL; // parse it out                
+                string FileDownloadURL = PageDisplayURL; // parse it out                                
                 string Description = sourceDetails.Description; // parse it out
                 string CategoryName = ""; // parse it out
                 if (sourceDetails.Categories.Count > 0)
-                    CategoryName = sourceDetails.Categories[0].Name;
+                    CategoryName = sourceDetails.Categories[(sourceDetails.Categories.Count-1)].Name; // use the last category
 
                 DateTime lastModified = sourceDetails.PubDate_GMT; // parse it out
 

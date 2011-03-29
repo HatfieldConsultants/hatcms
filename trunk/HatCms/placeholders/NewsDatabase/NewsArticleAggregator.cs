@@ -474,6 +474,7 @@ namespace HatCMS.Placeholders.NewsDatabase
                     rssItem.Title = newsItem.Title;
 
                     rssItem.Link = new Uri(newsItem.PageDisplayURL, UriKind.RelativeOrAbsolute);
+                    rssItem.Guid = new Rss.RssGuid(rssItem.Link);
                     
                     rssItem.PubDate_GMT = newsItem.NewsDate.ToUniversalTime();
 
