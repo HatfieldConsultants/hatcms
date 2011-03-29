@@ -223,6 +223,10 @@ namespace HatCMS
                     return true;
                 if (CmsContext.currentWebPortalUser != null && CmsContext.currentWebPortalUser.inRole(CmsConfig.getConfigValue("LoginUserRole", Guid.NewGuid().ToString())))
                     return true;
+                if (CmsContext.currentWebPortalUser != null && CmsContext.currentWebPortalUser.inRole(CmsConfig.getConfigValue("AuthorAccessUserRole", Guid.NewGuid().ToString())))
+                    return true;
+                if (CmsContext.currentWebPortalUser != null && CmsContext.currentWebPortalUser.inRole(CmsConfig.getConfigValue("AdminUserRole", Guid.NewGuid().ToString())))
+                    return true;
                 return false;
             }
         }
