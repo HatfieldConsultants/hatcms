@@ -76,11 +76,13 @@ namespace HatCMS.Placeholders
             string width = "100%";
             string height = "1.5em";
             bool renamePageBasedOnTitle = false;
+            bool hideNavigationMenuText = false;
             if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
                 width = PlaceholderUtils.getParameterValue("width", width, paramList);
                 height = PlaceholderUtils.getParameterValue("height", height, paramList);
                 renamePageBasedOnTitle = PlaceholderUtils.getParameterValue("RenamePageBasedOnTitle", renamePageBasedOnTitle, paramList);
+                hideNavigationMenuText = PlaceholderUtils.getParameterValue("HideNavigationMenuText", hideNavigationMenuText, paramList);
             }
             else
                 throw new ArgumentException("Invalid CmsTemplateEngineVersion");            
@@ -164,7 +166,13 @@ namespace HatCMS.Placeholders
             html.Append("</div>" + Environment.NewLine);
 
             html.Append("<div class=\"PageMenuTextEdit\" style=\"background: #CCC; padding: 0.2em;\">");
-            html.Append("Navigation Menu Text: <input style=\"font-size: " + height + "; font-weight: bold; width: " + width + "; height:" + height + " \" type=\"text\" name=\"" + formName + "_menutitlevalue\" value=\"" + menuTitle + "\"><br>");
+            html.Append("Navigation Menu Text: ");
+            string onclickMenuText = "if ( $('#{0}').css('display') == 'none' ) { this.innerHTML = '(hide)'; $('#{0}').css('display','block'); } else { this.innerHTML = '(edit)'; $('#{0}').css('display','none'); } return false;";
+            onclickMenuText = onclickMenuText.Replace("{0}", formName + "_menutitlevalue");
+            string htmlLink = "<a href=\"#\" onclick=\"{0}\">({1})</a>";
+            htmlLink = String.Format(htmlLink, new string[] { onclickMenuText, (hideNavigationMenuText) ? "edit" : "hide" });
+            html.Append(htmlLink);
+            html.Append("<input style=\"display: " + (hideNavigationMenuText ? "none" : "block") + "; font-size: " + height + "; font-weight: bold; width: " + width + "; height:" + height + " \" type=\"text\" id=\"" + formName + "_menutitlevalue\" name=\"" + formName + "_menutitlevalue\" value=\"" + menuTitle + "\"><br>");
             html.Append("</div>" + Environment.NewLine);
 
             // -- the area that allows the search engine description to be edited can be shown or hidden
