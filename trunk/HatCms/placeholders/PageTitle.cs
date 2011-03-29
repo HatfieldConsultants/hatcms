@@ -175,43 +175,17 @@ namespace HatCMS.Placeholders
             html.Append("<input style=\"display: " + (hideNavigationMenuText ? "none" : "block") + "; font-size: " + height + "; font-weight: bold; width: " + width + "; height:" + height + " \" type=\"text\" id=\"" + formName + "_menutitlevalue\" name=\"" + formName + "_menutitlevalue\" value=\"" + menuTitle + "\"><br>");
             html.Append("</div>" + Environment.NewLine);
 
-            // -- the area that allows the search engine description to be edited can be shown or hidden
-            string divId = formName + "seDescDiv";
-            string linkId = formName + "seDescShowHideLink";
-            string showHideFuncName = formName + "toggle";
-
-            StringBuilder js = new StringBuilder();            
-            js.Append("function " + showHideFuncName + "() {" + EOL);
-            js.Append("var divEl = document.getElementById('" + divId + "');" + EOL);
-            js.Append("var linkEl = document.getElementById('" + linkId + "');" + EOL);
-            js.Append("var showing = (divEl.style.display == 'block');" + EOL);
-            js.Append("if (showing) { " + EOL);
-            js.Append("   divEl.style.display = 'none';" + EOL);
-            js.Append("   linkEl.innerHTML = '(edit)';" + EOL);
-            js.Append("} else { " + EOL);
-            js.Append("   divEl.style.display = 'block';");
-            js.Append("   linkEl.innerHTML = '(hide)';" + EOL);
-            js.Append("} // if showing" + EOL);
-            js.Append("}" + EOL);
-
-            page.HeadSection.AddJSStatements(js.ToString());
-
             html.Append("<div style=\"background: #CCC; padding: 0.2em;\">");
-            html.Append("Search Engine Description:");            
-            string onclick = showHideFuncName + "(); return false; ";
-            html.Append(" <a id=\"" + linkId + "\" href=\"#\" onclick=\"" + onclick + "\">(edit)</a>" + Environment.NewLine);
-
-            html.Append("<div id=\"" + divId + "\" style=\"display:none;\">"+EOL);            
-            html.Append("<textarea name=\"" + formName + "_searchEngineDescriptionvalue\" id=\"" + formName + "_searchEngineDescriptionvalue\" style=\"width: " + width + ";\" rows=\"3\">");
+            html.Append("Search Engine Description: ");
+            string onclickSearchEngine = "if ( $('#{0}').css('display') == 'none' ) { this.innerHTML = '(hide)'; $('#{0}').css('display','block'); } else { this.innerHTML = '(edit)'; $('#{0}').css('display','none'); } return false;";
+            onclickSearchEngine = onclickSearchEngine.Replace("{0}", formName + "_searchEngineDescriptionvalue");
+            string htmlLink2 = "<a href=\"#\" onclick=\"{0}\">({1})</a>";
+            htmlLink2 = String.Format(htmlLink2, new string[] { onclickSearchEngine, (searchEngineDescription == "") ? "edit" : "hide" });
+            html.Append(htmlLink2);
+            html.Append("<textarea name=\"" + formName + "_searchEngineDescriptionvalue\" id=\"" + formName + "_searchEngineDescriptionvalue\" style=\"display: " + ((searchEngineDescription == "") ? "none" : "block") + "; width: " + width + ";\" rows=\"3\">");
             html.Append(searchEngineDescription);
             html.Append("</textarea>");
-            html.Append("</div>" + Environment.NewLine);
-            html.Append("</div>" + Environment.NewLine);
-
-
-            html.Append("<input type=\"hidden\" name=\"" + formName + "_PageTitleAction\" value=\"saveTitle\">");
-            html.Append("</div>" + Environment.NewLine);
-			
+            html.Append("</div>" + Environment.NewLine);			
 			
 			writer.WriteLine(html.ToString());
 
