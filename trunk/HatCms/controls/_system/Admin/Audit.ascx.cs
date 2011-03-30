@@ -125,8 +125,8 @@ namespace HatCMS.Controls.Admin
 
             if (selectedToolToRun != CmsBaseAdminTool.CmsAdminToolClass.AdminMenu)
             {
-                CmsBaseAdminTool c = CmsBaseAdminTool.getAdminTool(selectedToolToRun);
-                html.Append(c.Render()); // execute the admin tool
+                string toolHtml = CmsBaseAdminTool.renderAdminTool(selectedToolToRun); // execute the admin tool
+                html.Append(toolHtml); 
             }
 
             writer.Write(html.ToString());

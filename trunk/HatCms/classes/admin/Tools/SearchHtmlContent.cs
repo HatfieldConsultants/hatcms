@@ -21,6 +21,13 @@ namespace HatCMS.Admin
             return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Search, CmsAdminToolClass.SearchHtmlContent, "Search in editable HTML");
         }
 
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            ret.AddRange(PlaceholderUtils.getDependencies("HtmlContent"));
+            return ret.ToArray();
+        }
+
         public override string Render()
         {
             CmsPage currentPage = CmsContext.currentPage;

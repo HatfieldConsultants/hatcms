@@ -50,10 +50,16 @@ namespace HatCMS.Admin
         /// </summary>
         /// <param name="tool"></param>
         /// <returns></returns>
-        public static CmsBaseAdminTool getAdminTool(CmsBaseAdminTool.CmsAdminToolClass tool)
+        private static CmsBaseAdminTool createAdminToolInstance(CmsBaseAdminTool.CmsAdminToolClass tool)
         {
             string className = "HatCMS.Admin." + tool.ToString();
             return (CmsBaseAdminTool)Assembly.GetExecutingAssembly().CreateInstance(className); 
+        }
+
+        public static string renderAdminTool(CmsBaseAdminTool.CmsAdminToolClass tool)
+        {
+            CmsBaseAdminTool instance = createAdminToolInstance(tool);
+            return instance.Render();
         }
 
         public static CmsAdminToolInfo[] getAllAdminToolInfos()
@@ -63,8 +69,22 @@ namespace HatCMS.Admin
             {
                 if (toolClass != CmsAdminToolClass.AdminMenu)
                 {
-                    CmsBaseAdminTool tool = getAdminTool(toolClass);
+                    CmsBaseAdminTool tool = createAdminToolInstance(toolClass);
                     ret.Add(tool.GetToolInfo());
+                }
+            }
+            return ret.ToArray();
+        }
+
+        public static CmsDependency[] getAllAdminToolDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            foreach (CmsBaseAdminTool.CmsAdminToolClass toolClass in Enum.GetValues(typeof(CmsBaseAdminTool.CmsAdminToolClass)))
+            {
+                if (toolClass != CmsAdminToolClass.AdminMenu)
+                {
+                    CmsBaseAdminTool tool = createAdminToolInstance(toolClass);
+                    ret.AddRange(tool.getDependencies());
                 }
             }
             return ret.ToArray();
@@ -122,5 +142,12 @@ namespace HatCMS.Admin
         /// </summary>
         /// <returns></returns>
         public abstract CmsAdminToolInfo GetToolInfo();
+
+        /// <summary>
+        /// gets all dependencies for the admin tool.
+        /// </summary>
+        /// <returns></returns>
+        public abstract CmsDependency[] getDependencies();
+
     }
 }

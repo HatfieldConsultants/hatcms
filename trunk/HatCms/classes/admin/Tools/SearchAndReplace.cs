@@ -22,6 +22,13 @@ namespace HatCMS.Admin
             return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Search, CmsAdminToolClass.SearchAndReplace, "Global Search &amp; Replace");
         }
 
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery/jquery-1.4.1.min.js"));
+            return ret.ToArray();
+        }
+
         #region SearchAndReplace
         public override string Render()
         {

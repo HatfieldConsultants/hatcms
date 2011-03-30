@@ -20,6 +20,13 @@ namespace HatCMS.Admin
             return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Image, CmsAdminToolClass.DuplicateSingleImages, "Duplicate Images");
         }
 
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            ret.AddRange(PlaceholderUtils.getDependencies("SingleImage"));
+            return ret.ToArray();
+        }
+
         public override string Render()
         {
 

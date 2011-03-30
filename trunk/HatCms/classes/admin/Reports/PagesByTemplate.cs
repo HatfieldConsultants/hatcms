@@ -19,6 +19,12 @@ namespace HatCMS.Admin
             return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Page, CmsAdminToolClass.PagesByTemplate, "Pages by template");
         }
 
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            return ret.ToArray();
+        }
+
         public override string Render()
         {
             Dictionary<string, List<CmsPage>> reportStorage = new Dictionary<string, List<CmsPage>>();

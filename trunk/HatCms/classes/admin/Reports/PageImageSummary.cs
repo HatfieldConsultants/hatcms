@@ -18,7 +18,14 @@ namespace HatCMS.Admin
         public override CmsAdminToolInfo GetToolInfo()
         {
             return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Image, CmsAdminToolClass.PageImageSummary, "Images by Page");
-        } 
+        }
+
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            ret.AddRange(PlaceholderUtils.getDependencies("SingleImage"));
+            return ret.ToArray();
+        }
 
         public override string Render()       
         {

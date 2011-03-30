@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Web;
 using System.Web.Security;
@@ -17,6 +18,12 @@ namespace HatCMS.Admin
         public override CmsAdminToolInfo GetToolInfo()
         {
             return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Other, CmsAdminToolClass.ValidateConfig, "Validate CMS Config");
+        }
+
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            return ret.ToArray();
         }
 
         public override string Render()

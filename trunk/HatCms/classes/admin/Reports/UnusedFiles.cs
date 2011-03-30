@@ -22,6 +22,12 @@ namespace HatCMS.Admin
             return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Other, CmsAdminToolClass.UnusedFiles, "Unused files");
         }
 
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            return ret.ToArray();
+        }
+
         public override string Render()
         {
             string rootDirName = HttpContext.Current.Server.MapPath(InlineImageBrowser2.UserFilesPath);

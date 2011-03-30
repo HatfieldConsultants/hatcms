@@ -143,6 +143,9 @@ namespace HatCMS
 
             ret.Add(new CmsControlDependency("_system/internal/EditCalendarCategoriesPopup", CmsDependency.ExistsMode.MustNotExist)); // deprecated. now "_system/internal/EventCalendarCategoryPopup"
 
+            // -- gather all admin tool dependencies
+            ret.AddRange(HatCMS.Admin.CmsBaseAdminTool.getAllAdminToolDependencies());
+            
             // -- all pages should have valid templates, placeholders and controls
             Dictionary<int, CmsPage> allPages = CmsContext.HomePage.getLinearizedPages();
             foreach (int pageId in allPages.Keys)

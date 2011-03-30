@@ -14,6 +14,15 @@ namespace HatCMS.Admin
             return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Security, CmsAdminToolClass.ZoneManagement, "Create/Edit Zones");
         }
 
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery/jquery-1.4.1.min.js"));
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/Zone/ZoneManagement.js"));
+
+            return ret.ToArray();
+        }
+
         
         protected CmsZoneDb zoneDb = new CmsZoneDb();
 

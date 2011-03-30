@@ -13,6 +13,12 @@ namespace HatCMS.Admin
             return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Security, CmsAdminToolClass.ZoneAuthority, "User access permissions");
         }
 
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            return ret.ToArray();
+        }
+
         protected CmsZoneDb db = new CmsZoneDb();
         protected CmsZoneUserRoleDb roleDb = new CmsZoneUserRoleDb();
 

@@ -20,17 +20,23 @@ namespace HatCMS.Admin
             return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Page, CmsAdminToolClass.PageUrlsById, "Page Urls by Id");
         }
 
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            return ret.ToArray();
+        }
+
         public override string Render()
         {
             StringBuilder html = new StringBuilder();
             Dictionary<int, CmsPage> allPages = CmsContext.HomePage.getLinearizedPages();
             html.Append(TABLE_START_HTML);
-            html.Append("<tr><th>Page Id</th><th>URL Macro</th><th>Urls</th></tr>");
+            html.Append("<tr><th>Page Id</th><th>Urls</th></tr>");
             foreach (int pageId in allPages.Keys)
             {
                 html.Append("<tr>");
                 html.Append("<td>" + pageId.ToString() + "</td>");
-
+                /*
                 html.Append("<td>");
                 List<string> outputMacros = new List<string>();
                 foreach (CmsLanguage lang in CmsConfig.Languages)
@@ -43,6 +49,7 @@ namespace HatCMS.Admin
                 html.Append(string.Join("<br />", outputMacros.ToArray()));
 
                 html.Append("</td>");
+                 */
 
                 html.Append("<td>");
                 List<string> outputUrls = new List<string>();
@@ -55,6 +62,7 @@ namespace HatCMS.Admin
 
                 html.Append("</td>");
 
+                /*
                 html.Append("<td>");
 
                 NameValueCollection srParams = new NameValueCollection();
@@ -72,6 +80,7 @@ namespace HatCMS.Admin
                 html.Append("<input type=\"text\" value=\"" + srUrl + "\">");
 
                 html.Append("</td>");
+                 */
 
                 html.Append("</tr>");
             } // foreach

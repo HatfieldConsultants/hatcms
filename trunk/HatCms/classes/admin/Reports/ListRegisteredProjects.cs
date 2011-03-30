@@ -21,6 +21,13 @@ namespace HatCMS.Admin
             return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Projects, CmsAdminToolClass.ListRegisteredProjects, "List Registered Projects");
         }
 
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            ret.AddRange(PlaceholderUtils.getDependencies("RegisterProject"));
+            return ret.ToArray();
+        }
+
         /// <summary>
         /// List the registered projects in descending order;
         /// Provide a download link.

@@ -20,6 +20,12 @@ namespace HatCMS.Admin
             return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Page, CmsAdminToolClass.LastModifiedTable, "Pages by last modified date");
         }
 
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            return ret.ToArray();
+        }
+
         public override string Render()
         {
             StringBuilder html = new StringBuilder();

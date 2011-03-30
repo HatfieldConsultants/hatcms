@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Configuration;
 using System.Web;
@@ -17,7 +18,13 @@ namespace HatCMS.Admin
         public override CmsAdminToolInfo GetToolInfo()
         {
             return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Utility, CmsAdminToolClass.EmptyThumbnailCache, "Empty Image Cache");
-        } 
+        }
+
+        public override CmsDependency[] getDependencies()
+        {
+            List<CmsDependency> ret = new List<CmsDependency>();
+            return ret.ToArray();
+        }
 
         public override string Render()
         {
