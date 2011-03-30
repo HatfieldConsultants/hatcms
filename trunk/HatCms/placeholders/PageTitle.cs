@@ -185,10 +185,12 @@ namespace HatCMS.Placeholders
             html.Append("<textarea name=\"" + formName + "_searchEngineDescriptionvalue\" id=\"" + formName + "_searchEngineDescriptionvalue\" style=\"display: " + ((searchEngineDescription == "") ? "none" : "block") + "; width: " + width + ";\" rows=\"3\">");
             html.Append(searchEngineDescription);
             html.Append("</textarea>");
-            html.Append("</div>" + Environment.NewLine);			
-			
-			writer.WriteLine(html.ToString());
+            html.Append("</div>" + Environment.NewLine);
 
+            html.Append("<input type=\"hidden\" name=\"" + formName + "_PageTitleAction\" value=\"saveTitle\">");
+            html.Append("</div>" + Environment.NewLine);
+            
+            writer.WriteLine(html.ToString());
 		}
 
         public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
