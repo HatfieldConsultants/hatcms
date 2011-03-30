@@ -78,7 +78,8 @@ namespace HatCMS.Controls._system
             js.Append(EOL);
             js.Append("$('.sc-day-number').click( function() {" + EOL);
             js.Append("  var d = $(this).attr('title');" + EOL);
-            js.Append("  var url = '" + getCalendarPageUrl() + "';" + EOL);
+            string calendarPageUrl = getCalendarPageUrl();
+            js.Append("  var url = '" + calendarPageUrl + "';" + EOL);
             js.Append("  if (url == '') {" + EOL);
             js.Append("    alert('##RenderControl(_system/SimpleCalendar calendarpage=...)## is not a EventCalendarAggregator.');" + EOL);
             js.Append("  }" + EOL);
@@ -86,6 +87,9 @@ namespace HatCMS.Controls._system
             js.Append("    window.location = url + d.replace(/\\//gi, '-');" + EOL);
             js.Append("  }" + EOL);
             js.Append("});" + EOL);
+
+            if (calendarPageUrl == "")
+                js.Append("alert('##RenderControl(_system/SimpleCalendar calendarpage=...)## is not a EventCalendarAggregator.');" + EOL);
 
             page.HeadSection.AddJSOnReady(js.ToString());
         }
