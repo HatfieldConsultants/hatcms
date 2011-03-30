@@ -88,8 +88,9 @@ namespace HatCMS.Controls._system
             js.Append("  }" + EOL);
             js.Append("});" + EOL);
 
-            if (calendarPageUrl == "")
-                js.Append("alert('##RenderControl(_system/SimpleCalendar calendarpage=...)## is not a EventCalendarAggregator.');" + EOL);
+            CmsPage[] calendarAggregator = getAllCalendarPage();
+            if (calendarPageUrl == "" && calendarAggregator != null && calendarAggregator.Length > 0)
+                js.Append("$('.SimpleCalendar').parent().append('<p style=\"font-size: x-small;\">ERROR: ##RenderControl( _system/SimpleCalendar calendarpage=... )## is not a EventCalendarAggregator.</p>');" + EOL);
 
             page.HeadSection.AddJSOnReady(js.ToString());
         }
@@ -201,6 +202,15 @@ namespace HatCMS.Controls._system
                 throw new Exception("##RenderControl(_system/SimpleCalendar calendarpage=\"...\")## is not a EventCalendarAggregator.");
 
             return page;
+        }
+
+        /// <summary>
+        /// Get all calendar aggregator
+        /// </summary>
+        /// <returns></returns>
+        protected CmsPage[] getAllCalendarPage()
+        {
+            return CmsPage.FetchPageByTemplate("EventCalendarAggregator");
         }
 
         /// <summary>
