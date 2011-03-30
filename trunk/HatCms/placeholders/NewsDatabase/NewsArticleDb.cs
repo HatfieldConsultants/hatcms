@@ -271,6 +271,9 @@ namespace HatCMS.Placeholders.NewsDatabase
 
         public NewsArticleDetailsData[] getNewsDetailsByYear(CmsPage[] detailsPages, int yr, CmsLanguage lang )
         {
+            if (detailsPages.Length == 0)
+                return new NewsArticleDetailsData[0];
+            
             List<string> wheres = new List<string>();
             List<int> pageIds = new List<int>();
             foreach (CmsPage p in detailsPages)
