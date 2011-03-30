@@ -79,7 +79,7 @@ namespace HatCMS.Controls._system
             js.Append("$('.sc-day-number').click( function() {" + EOL);
             js.Append("  var d = $(this).attr('title');" + EOL);
             string calendarPageUrl = getCalendarPageUrl();
-            js.Append("  var url = '" + calendarPageUrl + "';" + EOL);
+            js.Append("  var url = '" + ((calendarPageUrl == "") ? "#" : calendarPageUrl) + "';" + EOL);
             js.Append("  if (url == '') {" + EOL);
             js.Append("    alert('##RenderControl(_system/SimpleCalendar calendarpage=...)## is not a EventCalendarAggregator.');" + EOL);
             js.Append("  }" + EOL);
@@ -87,11 +87,11 @@ namespace HatCMS.Controls._system
             js.Append("    window.location = url + d.replace(/\\//gi, '-');" + EOL);
             js.Append("  }" + EOL);
             js.Append("});" + EOL);
-
-            CmsPage[] calendarAggregator = getAllCalendarPage();
-            if (calendarPageUrl == "" && calendarAggregator != null && calendarAggregator.Length > 0)
-                js.Append("$('.SimpleCalendar').parent().append('<p style=\"font-size: x-small;\">ERROR: ##RenderControl( _system/SimpleCalendar calendarpage=... )## is not a EventCalendarAggregator.</p>');" + EOL);
-
+            
+            //CmsPage[] calendarAggregator = getAllCalendarPage();
+            //if (calendarPageUrl == "" && calendarAggregator != null && calendarAggregator.Length > 0)
+            //    js.Append("$('.SimpleCalendar').parent().append('<p style=\"font-size: x-small;\">ERROR: ##RenderControl( _system/SimpleCalendar calendarpage=... )## is not a EventCalendarAggregator.</p>');" + EOL);
+            
             page.HeadSection.AddJSOnReady(js.ToString());
         }
 
