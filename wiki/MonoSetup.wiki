@@ -1,0 +1,103 @@
+#summary Setting up Mono for HatCMS
+#labels HatCMS,Mono
+
+= Introduction =
+
+To get HatCMS running on Linux, you need:
+  * Apache 2.0/2.2 installed and running
+  * [http://www.mono-project.com/Mod_mono Mod_Mono] installed and running
+  * MySQL 5.x with InnoDB
+
+
+= mod_mono base installation and configuration =
+
+  # Follow the installation instructions on mono-project.com : http://www.mono-project.com/Mod_mono 
+  # Ensure that .NET 2 version of mod-mono-server is used (in your mod_mono.conf or virtual host configuration, add the command `MonoServerPath /usr/bin/mod-mono-server2`)
+  # Ensure that [http://www.mono-project.com/IOMap IOMap] is enabled. To do this, add the command `MonoSetEnv mydomaincom MONO_IOMAP=all` to your mod_mono.conf or virtual host configuration file.
+  # add `default.aspx` to the `DirectoryIndex` statement
+
+== Example virtual host configuration file ==
+Here is an example apache virtual host configuration file with two mono applications. The first application is HatCMS, and the child application could be a custom-build application.
+{{{
+<VirtualHost *:80>
+  ServerName www.domain.com
+  ServerAlias dev.domain.com domain.com
+  ServerAdmin adminemail@hatcms.com
+  DocumentRoot /var/www/localhost/htdocs/hatcms
+  # MonoServerPath can be changed to specify which version of ASP.NET is hosted
+  # mod-mono-server1 = ASP.NET 1.1 / mod-mono-server2 = ASP.NET 2.0
+  MonoServerPath www.domain.com "/usr/bin/mod-mono-server2"
+
+  # To obtain line numbers in stack traces you need to do two things: 
+  # 1) Enable Debug code generation in your page by using the Debug="true" 
+  #    page directive, or by setting <compilation debug="true" /> in the 
+  #    application's Web.config
+  # 2) Comment the MonoDebug true directive below to disable mod_mono debugging
+  MonoDebug www.domain.com true
+  
+  # The MONO_IOMAP environment variable can be configured to provide platform abstraction
+  # for file access in Linux.  Valid values for MONO_IOMAP are:
+  #    case
+  #    drive
+  #    all
+  # Uncomment the line below to alter file access behavior for the configured application
+  MonoSetEnv www.domain.com MONO_IOMAP=all
+
+  MonoApplications www.domain.com "/:/var/www/localhost/htdocs/hatcms"
+  MonoApplications hatcms.childapplication "/ChildApp:/var/www/localhost/htdocs/hatcms/ChildApp"
+ <Location "/">
+    Allow from all
+    Order allow,deny
+    MonoSetServerAlias www.domain.com
+    SetHandler mono
+    SetOutputFilter DEFLATE
+    SetEnvIfNoCase Request_URI "\.(?:gif|jpe?g|png|zip)$" no-gzip dont-vary
+  </Location>
+
+  <Location "/ChildApp">
+    SetHandler mono
+    MonoSetServerAlias hatcms.childapplication
+  </Location>
+
+  <IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/javascript text/css
+  </IfModule>
+
+ # ensure that default.aspx is used for the root URL's directory index. 
+ DirectoryIndex default.aspx index.html index.htm default.htm
+
+ # mod_mono control panel that can only be accessed from the local host
+ <Location /mono>
+   SetHandler mono-ctrl
+   Order deny,allow
+   Deny from all
+   Allow from 127.0.0.1
+</Location>
+
+</VirtualHost>
+
+}}}
+
+== mod_security configuration ==
+If you are using mod_security with your Apache setup, add the following to your virtual host configuration file:
+{{{
+<IfModule mod_security.c>
+    # mod_security doesn't play well with swfUpload (or any flash file-upload systems).
+    #	info: http://code.google.com/p/swfupload/issues/detail?id=178
+    #   solution: http://permalink.gmane.org/gmane.comp.web.wordpress.testers/6706
+    SetEnvIfNoCase Content-Type "^multipart/form-data;" "MODSEC_NOPOSTBUFFERING=Do not buffer file uploads"
+    SecRuleRemoveById 960912
+
+ SecRuleRemoveById 970904
+ # rule 960912 needs to be removed for swfUpload to work with mod_security
+ SecRuleRemoveById 960912
+ 
+ # rule 960903 & 960035 blocks .axd files which is a valid asp.net filename
+ SecRuleRemoveById 960903
+ SecRuleRemoveById 960035
+ # https://www.owasp.org/index.php/ModSecurity_CRS_RuleID-960911
+ SecRuleRemoveById 960911
+</IfModule>
+
+
+}}}
