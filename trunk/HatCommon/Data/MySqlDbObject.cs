@@ -75,6 +75,11 @@ namespace Hatfield.Web.Portal.Data
             return DBHelpers.dbEncode(str);
         }
 
+        public string dbEncodeNullableValue(string str, string nullSymbol)
+        {
+            return DBHelpers.dbEncodeNullableValue(str, nullSymbol);
+        }
+
         public string dbEncode(DateTime dateTime)
         {
             return DBHelpers.dbEncode(dateTime);

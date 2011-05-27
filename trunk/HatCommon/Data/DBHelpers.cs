@@ -130,6 +130,16 @@ namespace Hatfield.Web.Portal.Data
             }
         }
 
+        //encloses strings in quotes except if they should be entere as true database null values
+        public static string dbEncodeNullableValue(string str, string nullSymbol)
+        {
+            if (str == nullSymbol)
+                return "null";
+            else
+                return "'" + dbEncode(str) + "'";
+
+        }
+
         public static string dbDecode(string str)
         {
             return str.Replace(@"\'", "'");
