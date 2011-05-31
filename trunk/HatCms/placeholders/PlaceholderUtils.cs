@@ -17,38 +17,7 @@ namespace HatCMS.Placeholders
 {
     public class PlaceholderUtils
     {
-        /// <summary>
-        /// the assemblies are staticly cached so that they are held as long as the assemblies are
-        /// </summary>
-        private static Dictionary<string, Assembly> assemblyPlaceholderCache = new Dictionary<string, Assembly>();
-
-        private static List<Assembly> getAssembliesToSearch(string PlaceholderType, string cacheKey)
-        {
-            // -- get a list of assemblies to search through
-            List<Assembly> assembliesToSearch = new List<Assembly>();
-
-            // -- if the placeholderType was previously found in a particular assembly, get that assembly from the cache            
-            if (assemblyPlaceholderCache.ContainsKey(cacheKey))
-            {
-                assembliesToSearch.Add(assemblyPlaceholderCache[cacheKey]);
-            }
-            else
-            {
-                Assembly exAssembly = Assembly.GetExecutingAssembly();
-                Assembly callAssembly = Assembly.GetCallingAssembly();
-                Assembly entryAssembly = Assembly.GetEntryAssembly();
-
-                assembliesToSearch.Add(exAssembly);
-                if (callAssembly != null && callAssembly.FullName != exAssembly.FullName)
-                    assembliesToSearch.Add(callAssembly);
-
-                if (entryAssembly != null && entryAssembly.FullName != exAssembly.FullName && exAssembly.FullName != callAssembly.FullName)
-                    assembliesToSearch.Add(entryAssembly);
-
-                assembliesToSearch.AddRange(AppDomain.CurrentDomain.GetAssemblies());
-            }
-            return assembliesToSearch;
-        }
+        private static Dictionary<string, Type> placeholderTypeCache = new Dictionary<string, Type>();
         
         /// <summary>
         /// Invokes a method on a placeholder. The placeholder's assembly must be in the bin directory to be found, and must
@@ -63,71 +32,94 @@ namespace HatCMS.Placeholders
             if (!PlaceholderExists(PlaceholderType))
                 throw new Exception("Could not invoke method " + MethodName + " in placeholder " + PlaceholderType + " - the placeholder could not be found");
 
-            // -- get a list of assemblies to search through
+            // -- load all assemblies and get all sub-classes of BaseCmsPlaceholder
+            List<Type> typesToSearch = new List<Type>();
             string cacheKey = PlaceholderType.ToLower();
-            List<Assembly> assembliesToSearch = getAssembliesToSearch(PlaceholderType, cacheKey);
-
-            // -- go through each assembly looking for the specified type
-            foreach (Assembly assembly in assembliesToSearch)
+            if (placeholderTypeCache.ContainsKey(cacheKey))
             {
-                // Walk through each type in the assembly looking for our class
-                foreach (Type type in assembly.GetTypes())
+                typesToSearch.Add(placeholderTypeCache[cacheKey]);
+            }
+            else
+            {
+                Type[] allPlaceholderTypes = GetAllCachedBaseCmsPlaceholderDerivedClasses();
+                typesToSearch.AddRange(allPlaceholderTypes);
+            }
+            
+                                    
+            // Walk through each possible type looking for the one we want
+            foreach (Type type in typesToSearch)
+            {
+                if (type.FullName.EndsWith("." + PlaceholderType, StringComparison.CurrentCultureIgnoreCase))
                 {
-                    if (type.IsClass == true &&
-                        type.IsSubclassOf(typeof(BaseCmsPlaceholder)) &&                        
-                        type.FullName.ToLower().EndsWith("." + PlaceholderType.ToLower()))
+                    placeholderTypeCache[cacheKey] = type;
+
+                    foreach (MethodInfo method in type.GetMethods())
                     {
-                        // -- cache the found assembly for next time around
-                        assemblyPlaceholderCache[cacheKey] = assembly;
+                        if (String.Compare(method.Name, MethodName) == 0)
+                        {                            
 
-                        foreach (MethodInfo method in type.GetMethods())
-                        {
-                            if (String.Compare(method.Name, MethodName) == 0)
-                            {
-                                // create an instance of the object
-                                object ClassObj = Activator.CreateInstance(type);
+                            // create an instance of the object
+                            object ClassObj = Activator.CreateInstance(type);
 
-                                // Dynamically Invoke the method
-                                object Result = type.InvokeMember(MethodName,
-                                    BindingFlags.Default | BindingFlags.InvokeMethod,
-                                    null,
-                                    ClassObj,
-                                    MethodParams);
-                                return (Result);
-                            }
+                            // Dynamically Invoke the method
+                            object Result = type.InvokeMember(MethodName,
+                                BindingFlags.Default | BindingFlags.InvokeMethod,
+                                null,
+                                ClassObj,
+                                MethodParams);                                                        
+
+                            return (Result);
                         }
+                    } // foreach method
 
-                        throw new Exception("Could not invoke method " + MethodName + " in placeholder " + PlaceholderType + " - the method could not be found");
+                    throw new Exception("Could not invoke method " + MethodName + " in placeholder " + PlaceholderType + " - the method could not be found");
 
-                    } // if
-                } // foreach type
-            } // foreach
+                } // if
+            } // foreach type
+            
 
 
             throw new Exception("Could not invoke method " + MethodName + " in placeholder " + PlaceholderType + " - the placeholder could not be found");
         }
 
+        public static Type[] GetAllCachedBaseCmsPlaceholderDerivedClasses()
+        {
+            string cacheKey = "GetAllCachedBaseCmsPlaceholderDerivedClasses";
+            if (PerRequestCache.CacheContains(cacheKey))
+                return (Type[])PerRequestCache.GetFromCache(cacheKey, new Type[0]);
+
+            Type[] ret = AssemblyHelpers.LoadAllAssembliesAndGetAllSubclassesOf(typeof(BaseCmsPlaceholder));
+            PerRequestCache.AddToCache(cacheKey, ret);
+            return ret;
+        }
+
+
         public static bool PlaceholderExists(string PlaceholderType)
         {
             try
             {
+                // -- load all assemblies and get all sub-classes of BaseCmsPlaceholder
+                List<Type> typesToSearch = new List<Type>();
                 string cacheKey = PlaceholderType.ToLower();
-                List<Assembly> assembliesToSearch = getAssembliesToSearch(PlaceholderType, cacheKey);
-                foreach (Assembly assembly in assembliesToSearch)
+                if (placeholderTypeCache.ContainsKey(cacheKey))
                 {
-                    // Walk through each type in the assembly looking for our class
-                    foreach (Type type in assembly.GetTypes())
-                    {
-                        if (type.IsClass == true &&
-                            type.IsSubclassOf(typeof(BaseCmsPlaceholder)) &&
-                            type.FullName.ToLower().EndsWith("." + PlaceholderType.ToLower()))
-                        {
-                            // -- cache the found assembly for next time around
-                            assemblyPlaceholderCache[cacheKey] = assembly;
-                            return true;
-                        }
-                    }
+                    typesToSearch.Add(placeholderTypeCache[cacheKey]);
                 }
+                else
+                {
+                    Type[] allPlaceholderTypes = GetAllCachedBaseCmsPlaceholderDerivedClasses();
+                    typesToSearch.AddRange(allPlaceholderTypes);
+                }
+
+                // Walk through each possible type looking for the one we want
+                foreach (Type type in typesToSearch)
+                {
+                    if (type.FullName.EndsWith("." + PlaceholderType, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        placeholderTypeCache[cacheKey] = type;
+                        return true;
+                    }
+                } // foreach type
 
             }
             catch

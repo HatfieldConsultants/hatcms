@@ -34,7 +34,7 @@ namespace HatCMS.Controls
         {
             get 
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "UseMenuTitle", false);
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "UseMenuTitle", false);
             }
         }
 
@@ -45,7 +45,7 @@ namespace HatCMS.Controls
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "OuterDivCSSClassName", "SecondLevelSectionTitle");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "OuterDivCSSClassName", "SecondLevelSectionTitle");
             } // get
         }
 

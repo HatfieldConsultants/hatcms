@@ -40,7 +40,7 @@ namespace HatCMS
 
                 CmsContext.StartNewRequest();
                 // fires the CmsPage.CreateChildControls function
-                this.Controls.Add(CmsContext.currentPage);
+                this.Controls.Add(CmsContext.currentPage.ToWebControl());
                 // (do not use CmsContext.currentPage.Render)										                                
 
             }

@@ -34,21 +34,21 @@ namespace HatCMS.Controls._system
         {
             List<CmsDependency> ret = new List<CmsDependency>();
 
-            // check if calendarpage param ##RenderControl(_system/SimpleCalendar calendarPage="...")## is defined            
+            // check if calendarpage param ##RenderControl(_system/SimpleCalendar calendarPage="...")## is defined      
+
+            //@@TODO: check to ensure that the target calendarPage is actually a good page.
+
             ret.Add(new CmsControlParameterDependency(this, new string[] { "calendarpage" }));
             ret.Add(CmsFileDependency.UnderAppPath("css/_system/simpleCalendar.css"));
-            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery.simpleCalendar/simpleCalendar.min.js"));
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery.simpleCalendar/simpleCalendar.min.js"));            
 
             return ret.ToArray();
         }
 
         protected void addJsOnReady(CmsPage page)
         {
-            if (CmsContext.currentEditMode == CmsEditMode.Edit)
-            {
-                page.HeadSection.AddJSOnReady("$('.SimpleCalendar').html('<div style=\"font-size: small; padding: 5px;\">Small Calendar unavailable during page edit mode.</div>');");
-                return;
-            }
+
+            string calendarPageUrl = getCalendarPageUrl();
 
             StringBuilder js = new StringBuilder();
             js.Append("$('.SimpleCalendar').simpleCalendar({" + EOL);
@@ -78,10 +78,10 @@ namespace HatCMS.Controls._system
             js.Append(EOL);
             js.Append("$('.sc-day-number').click( function() {" + EOL);
             js.Append("  var d = $(this).attr('title');" + EOL);
-            string calendarPageUrl = getCalendarPageUrl();
+            
             js.Append("  var url = '" + ((calendarPageUrl == "") ? "#" : calendarPageUrl) + "';" + EOL);
             js.Append("  if (url == '') {" + EOL);
-            js.Append("    alert('##RenderControl(_system/SimpleCalendar calendarpage=...)## is not a EventCalendarAggregator.');" + EOL);
+            // js.Append("    alert('##RenderControl(_system/SimpleCalendar calendarpage=...)## is not a EventCalendarAggregator.');" + EOL);
             js.Append("  }" + EOL);
             js.Append("  else {" + EOL);
             js.Append("    window.location = url + d.replace(/\\//gi, '-');" + EOL);
@@ -92,6 +92,7 @@ namespace HatCMS.Controls._system
             //if (calendarPageUrl == "" && calendarAggregator != null && calendarAggregator.Length > 0)
             //    js.Append("$('.SimpleCalendar').parent().append('<p style=\"font-size: x-small;\">ERROR: ##RenderControl( _system/SimpleCalendar calendarpage=... )## is not a EventCalendarAggregator.</p>');" + EOL);
             
+
             page.HeadSection.AddJSOnReady(js.ToString());
         }
 
@@ -101,7 +102,7 @@ namespace HatCMS.Controls._system
         /// </summary>
         protected int CalendarPage
         {
-            get { return CmsControlUtils.getControlParameterKeyValue(this, "calendarpage", 0); }
+            get { return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "calendarpage", 0); }
         }
 
         /// <summary>
@@ -193,25 +194,17 @@ namespace HatCMS.Controls._system
         /// <returns></returns>
         protected CmsPage getCalendarPage()
         {
-            int calendarPageId = CmsControlUtils.getControlParameterKeyValue(this, "calendarpage", -1);
+            int calendarPageId = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "calendarpage", -1);
             if (calendarPageId == -1)
                 throw new Exception("CMS Control parameter for 'SimpleCalendar' not found: 'calendarpage'");
 
             CmsPage page = CmsContext.getPageById(calendarPageId);
-            if (page == null || page.TemplateName == null || page.TemplateName != "EventCalendarAggregator")
+            if (page == null || page.TemplateName == null || ! page.hasPlaceholder("EventCalendarAggregator"))
                 throw new Exception("##RenderControl(_system/SimpleCalendar calendarpage=\"...\")## is not a EventCalendarAggregator.");
 
             return page;
         }
-
-        /// <summary>
-        /// Get all calendar aggregator
-        /// </summary>
-        /// <returns></returns>
-        protected CmsPage[] getAllCalendarPage()
-        {
-            return CmsPage.FetchPageByTemplate("EventCalendarAggregator");
-        }
+        
 
         /// <summary>
         /// Get the URL with query string parameter.  Once the calendar page detected a query

@@ -109,22 +109,7 @@
     </Compile>
     <Compile Include="classes\admin\AdminToolInfo.cs" />
     <Compile Include="classes\admin\BaseAdminTool.cs" />
-    <Compile Include="classes\admin\Reports\DuplicateSingleImages.cs" />
-    <Compile Include="classes\admin\Reports\LastModifiedTable.cs" />
-    <Compile Include="classes\admin\Reports\ListRegisteredProjects.cs" />
-    <Compile Include="classes\admin\Reports\ListUserFeedback.cs" />
-    <Compile Include="classes\admin\Reports\PageImageSummary.cs" />
-    <Compile Include="classes\admin\Reports\PagesByTemplate.cs" />
-    <Compile Include="classes\admin\Reports\PageUrlsById.cs" />
-    <Compile Include="classes\admin\Reports\SingleImageMissingCaptions.cs" />
-    <Compile Include="classes\admin\Reports\UnusedFiles.cs" />
-    <Compile Include="classes\admin\Tools\EmptyThumbnailCache.cs" />
-    <Compile Include="classes\admin\Tools\SearchAndReplace.cs" />
-    <Compile Include="classes\admin\Tools\SearchHtmlContent.cs" />
-    <Compile Include="classes\admin\Tools\SearchSingleImagesByCaption.cs" />
-    <Compile Include="classes\admin\Tools\ValidateConfig.cs" />
-    <Compile Include="classes\admin\Tools\ZoneAuthority.cs" />
-    <Compile Include="classes\admin\Tools\ZoneManagement.cs" />
+    <Compile Include="classes\BaseCmsControl.cs" />
     <Compile Include="classes\Config.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -146,6 +131,7 @@
     <Compile Include="classes\dependencies\TemplateDependency.cs" />
     <Compile Include="classes\dependencies\WritableDirectoryDependency.cs" />
     <Compile Include="classes\EditMode.cs" />
+    <Compile Include="classes\filtering\BaseCmsOutputFilter.cs" />
     <Compile Include="classes\filtering\FilterScope.cs" />
     <Compile Include="classes\filtering\GlossaryHighlightingFilter.cs" />
     <Compile Include="classes\filtering\HtmlLinkFilter.cs" />
@@ -155,7 +141,6 @@
     <Compile Include="classes\language\Language.cs" />
     <Compile Include="classes\page\CreateNewPageOptions.cs" />
     <Compile Include="classes\page\Page.cs">
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="classes\page\PageCache.cs" />
     <Compile Include="classes\page\PageDb.cs" />
@@ -207,13 +192,6 @@
     </Compile>
     <Compile Include="controls\_system\RSSGlossary.ascx.designer.cs">
       <DependentUpon>RSSGlossary.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Admin\Audit.ascx.cs">
-      <DependentUpon>Audit.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Admin\Audit.ascx.designer.cs">
-      <DependentUpon>Audit.ascx</DependentUpon>
     </Compile>
     <Compile Include="controls\_system\Breadcrumb.ascx.cs">
       <DependentUpon>Breadcrumb.ascx</DependentUpon>
@@ -298,118 +276,6 @@
     </Compile>
     <Compile Include="controls\_system\IncludeFileByParentPagePath.ascx.designer.cs">
       <DependentUpon>IncludeFileByParentPagePath.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\ChangePageTemplatePopup.ascx.cs">
-      <DependentUpon>ChangePageTemplatePopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\ChangePageTemplatePopup.ascx.designer.cs">
-      <DependentUpon>ChangePageTemplatePopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\DeleteFileLibraryPopup.ascx.cs">
-      <DependentUpon>DeleteFileLibraryPopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\DeleteFileLibraryPopup.ascx.designer.cs">
-      <DependentUpon>DeleteFileLibraryPopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\JobLocationPopup.ascx.cs">
-      <DependentUpon>JobLocationPopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\JobLocationPopup.ascx.designer.cs">
-      <DependentUpon>JobLocationPopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\MenuVisibilityPopup.ascx.cs">
-      <DependentUpon>MenuVisibilityPopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\MenuVisibilityPopup.ascx.designer.cs">
-      <DependentUpon>MenuVisibilityPopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\CreateNewPagePopup.ascx.cs">
-      <DependentUpon>CreateNewPagePopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\CreateNewPagePopup.ascx.designer.cs">
-      <DependentUpon>CreateNewPagePopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\DeletePagePopup.ascx.cs">
-      <DependentUpon>DeletePagePopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\DeletePagePopup.ascx.designer.cs">
-      <DependentUpon>DeletePagePopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\EventCalendarCategoryPopup.ascx.cs">
-      <DependentUpon>EventCalendarCategoryPopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\EventCalendarCategoryPopup.ascx.designer.cs">
-      <DependentUpon>EventCalendarCategoryPopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\EditUsersPopup.ascx.cs">
-      <DependentUpon>EditUsersPopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\EditUsersPopup.ascx.designer.cs">
-      <DependentUpon>EditUsersPopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\GotoEditModeAction.ascx.cs">
-      <DependentUpon>GotoEditModeAction.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\GotoEditModeAction.ascx.designer.cs">
-      <DependentUpon>GotoEditModeAction.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\GotoViewModeAction.ascx.cs">
-      <DependentUpon>GotoViewModeAction.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\GotoViewModeAction.ascx.designer.cs">
-      <DependentUpon>GotoViewModeAction.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\MovePagePopup.ascx.cs">
-      <DependentUpon>MovePagePopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\MovePagePopup.ascx.designer.cs">
-      <DependentUpon>MovePagePopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\RemovePageLockPopup.ascx.cs">
-      <DependentUpon>RemovePageLockPopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\RemovePageLockPopup.ascx.designer.cs">
-      <DependentUpon>RemovePageLockPopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\RenamePagePopup.ascx.cs">
-      <DependentUpon>RenamePagePopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\RenamePagePopup.ascx.designer.cs">
-      <DependentUpon>RenamePagePopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\FileLibraryCategoryPopup.ascx.cs">
-      <DependentUpon>FileLibraryCategoryPopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\FileLibraryCategoryPopup.ascx.designer.cs">
-      <DependentUpon>FileLibraryCategoryPopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\SortSubPagesPopup.ascx.cs">
-      <DependentUpon>SortSubPagesPopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\SortSubPagesPopup.ascx.designer.cs">
-      <DependentUpon>SortSubPagesPopup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\Internal\ViewRevisionHistoryPopup.ascx.cs">
-      <DependentUpon>ViewRevisionHistoryPopup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\Internal\ViewRevisionHistoryPopup.ascx.designer.cs">
-      <DependentUpon>ViewRevisionHistoryPopup.ascx</DependentUpon>
     </Compile>
     <Compile Include="controls\_system\LanguageSwitcherLarge.ascx.cs">
       <DependentUpon>LanguageSwitcherLarge.ascx</DependentUpon>
@@ -783,7 +649,6 @@
     <Content Include="controls\_system\RSSNews.ascx" />
     <Content Include="controls\_system\RSSDocuments.ascx" />
     <Content Include="controls\_system\RSSGlossary.ascx" />
-    <Content Include="controls\_system\Admin\Audit.ascx" />
     <Content Include="controls\_system\Breadcrumb.ascx" />
     <Content Include="controls\_system\BreadcrumbList.ascx" />
     <Content Include="controls\_system\CopyrightStatement.ascx" />
@@ -796,22 +661,6 @@
     <Content Include="controls\_system\ImageBySelectedParentPagePath.ascx" />
     <Content Include="controls\_system\Image\SingleImageDisplay.ascx" />
     <Content Include="controls\_system\IncludeFileByParentPagePath.ascx" />
-    <Content Include="controls\_system\Internal\ChangePageTemplatePopup.ascx" />
-    <Content Include="controls\_system\Internal\DeleteFileLibraryPopup.ascx" />
-    <Content Include="controls\_system\Internal\JobLocationPopup.ascx" />
-    <Content Include="controls\_system\Internal\MenuVisibilityPopup.ascx" />
-    <Content Include="controls\_system\Internal\CreateNewPagePopup.ascx" />
-    <Content Include="controls\_system\Internal\DeletePagePopup.ascx" />
-    <Content Include="controls\_system\Internal\EventCalendarCategoryPopup.ascx" />
-    <Content Include="controls\_system\Internal\EditUsersPopup.ascx" />
-    <Content Include="controls\_system\Internal\GotoEditModeAction.ascx" />
-    <Content Include="controls\_system\Internal\GotoViewModeAction.ascx" />
-    <Content Include="controls\_system\Internal\MovePagePopup.ascx" />
-    <Content Include="controls\_system\Internal\RemovePageLockPopup.ascx" />
-    <Content Include="controls\_system\Internal\RenamePagePopup.ascx" />
-    <Content Include="controls\_system\Internal\FileLibraryCategoryPopup.ascx" />
-    <Content Include="controls\_system\Internal\SortSubPagesPopup.ascx" />
-    <Content Include="controls\_system\Internal\ViewRevisionHistoryPopup.ascx" />
     <Content Include="controls\_system\LanguageSwitcherLarge.ascx" />
     <Content Include="controls\_system\Login.ascx" />
     <Content Include="controls\_system\LoginStatus.ascx" />
@@ -1190,7 +1039,6 @@
     <Content Include="setup\HatCMS_TableCreation.sql" />
     <Content Include="setup\HatPortal_TableCreation.txt" />
     <Content Include="templates\HomePageLayout.htm" />
-    <Content Include="templates\internal\InternalPopup.htm" />
     <Content Include="templates\PageLayout.htm" />
     <Content Include="templates\SingleImageDisplay.htm" />
     <Content Include="Web.config" />
@@ -1220,46 +1068,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="controls\_system\HeadSection.ascx.resx">
       <DependentUpon>HeadSection.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\Internal\ChangePageTemplatePopup.ascx.resx">
-      <DependentUpon>ChangePageTemplatePopup.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\Internal\CreateNewPagePopup.ascx.resx">
-      <DependentUpon>CreateNewPagePopup.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\Internal\DeletePagePopup.ascx.resx">
-      <DependentUpon>DeletePagePopup.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\Internal\EditUsersPopup.ascx.resx">
-      <DependentUpon>EditUsersPopup.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\Internal\GotoEditModeAction.ascx.resx">
-      <DependentUpon>GotoEditModeAction.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\Internal\GotoViewModeAction.ascx.resx">
-      <DependentUpon>GotoViewModeAction.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\Internal\MovePagePopup.ascx.resx">
-      <DependentUpon>MovePagePopup.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\Internal\RenamePagePopup.ascx.resx">
-      <DependentUpon>RenamePagePopup.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\Internal\SortSubPagesPopup.ascx.resx">
-      <DependentUpon>SortSubPagesPopup.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\Internal\ViewRevisionHistoryPopup.ascx.resx">
-      <DependentUpon>ViewRevisionHistoryPopup.ascx.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="controls\_system\Login.ascx.resx">
@@ -1326,13 +1134,14 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="xmlSiteMap.ashx" />
+    <Content Include="css\web.config" />
+    <Content Include="js\web.config" />
+    <Content Include="images\web.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="templates\ContactUs.template" />
-    <Content Include="templates\internal\_DeleteFileLibraryPopup.template" />
-    <Content Include="templates\internal\_FileLibraryCategoryPopup.template" />
     <Content Include="templates\Glossary.template" />
     <Content Include="templates\_RSSGlossary.template" />
     <Content Include="templates\_RSSDocuments.template" />
@@ -1340,9 +1149,6 @@
     <None Include="templates\PageFiles.template" />
     <None Include="templates\EventCalendarAggregator.template" />
     <None Include="templates\ProcurementAggregator.template" />
-    <None Include="templates\internal\_JobLocationPopup.template" />
-    <Content Include="templates\internal\_MenuVisibilityPopup.template" />
-    <Content Include="templates\internal\_EventCalendarCategoryPopup.template" />
     <None Include="templates\NewsArticleAggregator.template" />
     <None Include="templates\Publications.template" />
     <None Include="templates\RegisterProject.template" />
@@ -1355,6 +1161,8 @@
     <None Include="templates\_NewsArticleDetails.template" />
     <None Include="templates\_ProcurementDetails.template" />
     <None Include="templates\_SingleImageDisplay.template" />
+    <Content Include="_system\writable\web.config" />
+    <Content Include="UserFiles\web.config" />
     <Content Include="_system\tools\cachingProxy.ashx" />
     <Content Include="_system\tools\Calendar\CalendarICalData.ashx" />
     <Content Include="_system\tools\rss.ashx" />
@@ -1367,18 +1175,6 @@
     </Content>
     <Content Include="templates\ImageGallery.template">
     </Content>
-    <Content Include="templates\internal\_AuditPopup.template" />
-    <Content Include="templates\internal\_ChangePageTemplatePopup.template" />
-    <Content Include="templates\internal\_CreateNewPagePopup.template" />
-    <Content Include="templates\internal\_DeletePagePopup.template" />
-    <Content Include="templates\internal\_EditUsersPopup.template" />
-    <Content Include="templates\internal\_GotoEditMode.template" />
-    <Content Include="templates\internal\_GotoViewMode.template" />
-    <Content Include="templates\internal\_KillLockPopup.template" />
-    <Content Include="templates\internal\_MovePagePopup.template" />
-    <Content Include="templates\internal\_PageRevisionsPopup.template" />
-    <Content Include="templates\internal\_RenamePagePopup.template" />
-    <Content Include="templates\internal\_SortSubPagesPopup.template" />
     <Content Include="templates\JobDatabase.template">
     </Content>
     <Content Include="templates\OfficeLocation.template">

@@ -26,7 +26,7 @@ namespace HatCMS
 
         public CmsControlDependency(CmsControlDefinition controlDefinition)
         {
-            controlPath = controlDefinition.ControlPath;
+            controlPath = controlDefinition.ControlNameOrPath;
             existsMode = ExistsMode.MustExist;
         }
 

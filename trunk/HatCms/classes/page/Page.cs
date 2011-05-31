@@ -20,7 +20,7 @@ namespace HatCMS
     /// As such, single-language pages are not allowed when more than one language is used.
     /// </para>
 	/// </summary>
-	public class CmsPage: System.Web.UI.UserControl
+	public class CmsPage 
 	{
 		/// <summary>
 		/// the unique identifier for this page. 
@@ -144,7 +144,15 @@ namespace HatCMS
 		/// </summary>
 		public bool ShowInMenu;
 
-        
+
+
+        /// <summary>
+        /// Characters that must not be found in a page's name (ie a page's filename that is used to construct the page's url).
+        /// Refer to "Reserved Characters" in RFC3986: http://www.ietf.org/rfc/rfc3986.txt
+        /// </summary>
+        public static string[] InvalidPageNameChars = new string[] { "\\", ":", "/", "?", "#", "[", "]", "@", "!", "$", "&", "'", "(", ")", "*", "+", ",", ";", "=", "~", "%", ".", "|" };
+
+
         /// <summary>
 		/// The filename of this page. Forms this page's part of the URL. For the home page, the Name is String.Empty
         /// Note: changes based on CmsContext.currentLanguage.
@@ -841,33 +849,47 @@ namespace HatCMS
             }
             return false;
         }
-		
-        /// <summary>
-        /// Renders the page through the creation of child controls. The TemplateEngine creates and adds these controls.
-        /// </summary>
-		protected override void CreateChildControls()
-		{
-            if (this.ID < 0)
-                throw new Exception("this page could not be rendered because it has not been initialized from the database.");
 
-            // -- checks if the current user can read the current page. If not authorized, redirect to the Login page.
-            bool canRead = this.Zone.canRead(CmsContext.currentWebPortalUser);
-            if ( canRead == false && this.Path != CmsConfig.getConfigValue("LoginPath","/_login"))
+        public System.Web.UI.UserControl ToWebControl()
+        {
+            return new CmsPageWebControl(this);
+        }
+
+        // -- use a private class so that all the functions in System.Web.UI are hidden from the user.
+        private class CmsPageWebControl : System.Web.UI.UserControl
+        {
+            private CmsPage OwningPage;
+            public CmsPageWebControl(CmsPage owningPage)
             {
-                NameValueCollection loginParams = new NameValueCollection();
-                loginParams.Add("target", this.ID.ToString());
-                CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath", "/_login")), loginParams);
-            }	
-			
-            // -- create all placeholders and controls based on the page's template.
-			TemplateEngine.CreateChildControls();
+                OwningPage = owningPage;
+            }
 
-            // -- Run the page output filters
-            this.Response.Filter = new CmsOutputFilterUtils.PageResponseOutputFilter(Response.Filter, this);
-            
-		}
+            /// <summary>
+            /// Renders the page through the creation of child controls. The TemplateEngine creates and adds these controls.
+            /// </summary>
+            protected override void CreateChildControls()
+            {
+                if (OwningPage.ID < 0)
+                    throw new Exception("this page could not be rendered because it has not been initialized from the database.");
 
-        
+                // -- checks if the current user can read the current page. If not authorized, redirect to the Login page.
+                bool canRead = OwningPage.Zone.canRead(CmsContext.currentWebPortalUser);
+                if (canRead == false && OwningPage.Path != CmsConfig.getConfigValue("LoginPath", "/_login"))
+                {
+                    NameValueCollection loginParams = new NameValueCollection();
+                    loginParams.Add("target", this.ID.ToString());
+                    CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath", "/_login")), loginParams);
+                }
+
+                // -- create all placeholders and controls based on the page's template.
+                OwningPage.TemplateEngine.CreateChildControls(this);
+
+                // -- Run the page output filters
+                this.Response.Filter = new CmsOutputFilterUtils.PageResponseOutputFilter(Response.Filter, OwningPage);
+
+            }
+
+        } // WebUIPage                
 
         private string _startedFormId = "";
 			
@@ -919,11 +941,24 @@ namespace HatCMS
             return html.ToString();
         }
 
+        /// <summary>
+        /// gets the Html to start a form. 
+        /// Note: IE has an issue that you can not have nested form tags (&ltform&gt &ltform&gt &lt/form&gt  &lt/form&gt is invalid and won't work!!!)
+        /// </summary>
+        /// <param name="formId"></param>
+        /// <param name="onSubmit"></param>
+        /// <returns></returns>
         public string getFormStartHtml(string formId, string onSubmit)
         {
             return getFormStartHtml(formId, onSubmit, "", "", "post");
         }
 
+        /// <summary>
+        /// gets the Html to start a form. 
+        /// Note: IE has an issue that you can not have nested form tags (&ltform&gt &ltform&gt &lt/form&gt  &lt/form&gt is invalid and won't work!!!)
+        /// </summary>
+        /// <param name="formId"></param>
+        /// <returns></returns>
         public string getFormStartHtml(string formId)
         {
             return getFormStartHtml(formId, "", "", "", "post");            
@@ -1090,7 +1125,7 @@ namespace HatCMS
             CmsControlDefinition[] controlDefs = getAllControlDefinitions(); // use getAllControlDefinitions because it's cached.
             foreach (CmsControlDefinition controlDef in controlDefs)
             {
-                ret.Add(controlDef.ControlPath);
+                ret.Add(controlDef.ControlNameOrPath);
             } // foreach
             return ret.ToArray();
         }
@@ -1183,13 +1218,15 @@ namespace HatCMS
             }            
         }
         		
-
+        /// <summary>
+        /// The current page's template engine. This parameter is cached in-memory so that it can be called multiple times.
+        /// </summary>
         public CmsTemplateEngine TemplateEngine
         {
             get
             {
                 CmsTemplateEngineVersion templateVersion = CmsConfig.TemplateEngineVersion;
-                string cacheKey = "templateEngine_" + Enum.GetName(typeof(CmsTemplateEngineVersion), templateVersion) + this.TemplateName + this.ID.ToString();
+                string cacheKey = "templateEngine_" + templateVersion.ToString() + this.TemplateName + this.ID.ToString(); // Template engine uses the name and page as constructors, so use those for the cache as well.
 
                 if (PerRequestCache.CacheContains(cacheKey))
                     return (CmsTemplateEngine)PerRequestCache.GetFromCache(cacheKey, null);

@@ -72,19 +72,19 @@ namespace HatCMS
                 dummyPage.TemplateName = template;
 
                 CmsControlDefinition[] controlDefs = dummyPage.getAllControlDefinitions();
-                controlDefs = CmsControlDefinition.GetByControlName(controlDefs, ControlName);
+                controlDefs = CmsControlDefinition.GetByControlNameOrPath(controlDefs, ControlName);
                 foreach (CmsControlDefinition controlDef in controlDefs)
                 {
                     foreach (string keyToTest in keys)
                     {
-                        bool keyExists = CmsControlUtils.hasControlParameterKey(controlDef, keyToTest);
+                        bool keyExists = CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, controlDef, keyToTest);
                         if (!keyExists && existsMode == ExistsMode.MustExist)
                         {
-                            ret.Add(CmsDependencyMessage.Error("CMS Control parameter '" + keyToTest + "' for control '" + controlDef.ControlPath + "' in template '" + dummyPage.TemplateName + "' is required, but was not found."));
+                            ret.Add(CmsDependencyMessage.Error("CMS Control parameter '" + keyToTest + "' for control '" + controlDef.ControlNameOrPath + "' in template '" + dummyPage.TemplateName + "' is required, but was not found."));
                         }
                         else if (keyExists && existsMode == ExistsMode.MustNotExist)
                         {
-                            ret.Add(CmsDependencyMessage.Error("CMS Control parameter '" + keyToTest + "' for control '" + controlDef.ControlPath + "' in template '" + dummyPage.TemplateName + "' was found, and must be removed."));
+                            ret.Add(CmsDependencyMessage.Error("CMS Control parameter '" + keyToTest + "' for control '" + controlDef.ControlNameOrPath + "' in template '" + dummyPage.TemplateName + "' was found, and must be removed."));
                         }
                     }
                 } // foreach controlDef

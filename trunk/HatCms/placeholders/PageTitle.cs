@@ -44,7 +44,7 @@ namespace HatCMS.Placeholders
         {
             string returnTitle = newTitle;
             // -- remove invalid characters            
-            foreach (string invalidChar in HatCMS.Controls.RenamePagePopup.InvalidPageNameChars)
+            foreach (string invalidChar in CmsPage.InvalidPageNameChars)
             {
                 returnTitle = returnTitle.Replace(invalidChar, " ");
             }

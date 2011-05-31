@@ -176,7 +176,7 @@ namespace HatCMS.Controls
              * 
              */            
             string defaultItemTemplate = "<div class=\"SearchResultItem {5}\"><a class=\"SearchResultItemLink\" href=\"{2}\">{0}</a><br/><blockquote class=\"SearchResultInfo\"><div class=\"Snippet\">{3}</div><div class=\"SearchResultItemBreadcrumb\">{4}</div></blockquote></div>";
-            string itemOutputTemplate = CmsControlUtils.getControlParameterKeyValue(this, "ItemTemplate", defaultItemTemplate);                        
+            string itemOutputTemplate = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "ItemTemplate", defaultItemTemplate);                        
 
 			string action = PageUtils.getFromForm("action","");
 			StringBuilder html = new StringBuilder();
@@ -380,7 +380,7 @@ namespace HatCMS.Controls
             CmsPage targetPage = getPageFromIndex(fileInfo);
 
             // allow per-template ItemTemplates
-            string itemOutputTemplate = CmsControlUtils.getControlParameterKeyValue(this, "ItemTemplate_" + targetPage.TemplateName, defaultOutputTemplate);
+            string itemOutputTemplate = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "ItemTemplate_" + targetPage.TemplateName, defaultOutputTemplate);
             
             string url = targetPage.Url;
             if (fileInfo.FilenameParameters != "")

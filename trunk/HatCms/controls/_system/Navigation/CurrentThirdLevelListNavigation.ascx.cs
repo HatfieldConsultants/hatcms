@@ -23,13 +23,13 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "MaxLevels", 100);
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "MaxLevels", 100);
             } // get
         }
 
         private bool RenderOnlyPagesInCurrentPath
         {
-            get { return (CmsControlUtils.hasControlParameterKey(this, "RenderOnlyPagesInCurrentPath")); }
+            get { return (CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, this, "RenderOnlyPagesInCurrentPath")); }
         }
 
         private bool RenderAllChildren
@@ -41,7 +41,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "SelectedLinkClassName", "Level{0}_Selected");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "SelectedLinkClassName", "Level{0}_Selected");
             } // get
         }
 
@@ -49,7 +49,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "ChildIsSelectedLinkClassName", "Level{0}_ChildSelected");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "ChildIsSelectedLinkClassName", "Level{0}_ChildSelected");
             } // get
         }
 
@@ -57,7 +57,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "UnSelectedLinkClassName", "Level{0}");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "UnSelectedLinkClassName", "Level{0}");
             } // get
         }
 

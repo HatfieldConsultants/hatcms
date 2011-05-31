@@ -1,4 +1,0 @@
-##TemplateLayout(internal/InternalPopup)##
-##StartPlaceholderRegion("MainContent")##
-	##RenderControl(_system/Internal\SortSubPagesPopup)##
-##EndPlaceholderRegion("MainContent")##

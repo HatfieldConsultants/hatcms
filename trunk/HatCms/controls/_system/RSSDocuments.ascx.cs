@@ -45,9 +45,9 @@ namespace HatCMS.Controls
 
             /// ORASECOM river basin SWISH documents:  http://www.sadcwaterhub.org/documents/feed?source_tid_op=or&type_tid_op=or&icp_tid_op=or&rbo_tid_op=or&river_basin_tid_op=or&river_basin_tid[0]=68&title=
             string swh = "http://www.sadcwaterhub.org/documents/feed"; //all documents feed
-            string url = CmsControlUtils.getControlParameterKeyValue(this, "rssurl", swh);
+            string url = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "rssurl", swh);
 
-            int cacheDuration_hours = CmsControlUtils.getControlParameterKeyValue(this, "cacheduration_hours", 12);
+            int cacheDuration_hours = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "cacheduration_hours", 12);
 
             Rss.RssFeed documentsRss;
             // the RSS feed is cached to improve performance.
@@ -78,8 +78,8 @@ namespace HatCMS.Controls
                 
                 FileLibraryAggregator2.RenderParameters renderParameters = new FileLibraryAggregator2.RenderParameters();
                 renderParameters.fileLinkMode = FileLibraryAggregator2.RenderParameters.FileLinkMode.LinkToFile;
-                renderParameters.ListingTitle = CmsControlUtils.getControlParameterKeyValue(this, "listingtitle", renderParameters.ListingTitle);
-                renderParameters.ShowByCategory = CmsControlUtils.getControlParameterKeyValue(this, "showbycategory", renderParameters.ShowByCategory);
+                renderParameters.ListingTitle = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "listingtitle", renderParameters.ListingTitle);
+                renderParameters.ShowByCategory = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "showbycategory", renderParameters.ShowByCategory);
 
 
                 html.Append(FileLibraryAggregator2.RenderToHtmlList(files, renderParameters, false));

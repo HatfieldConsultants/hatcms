@@ -17,37 +17,28 @@ namespace HatCMS
     public class CmsControlDefinition
     {
         /// <summary>
-        /// The lower-case Control Path.
-        /// The control path never has a filename extension (ie "_system/login" is a valid control path, while "_system/login.ascx" is invalid).
+        /// The lower-case Control Name or Path.
+        /// <para>If the control is purely a class, this parameter is the name of the class. The class must be a sub-class of BaseCmsControl.</para>
+        /// <para>If the control is a file, it must be located in the "~/controls" directory.</para>
+        /// <para>Note that the control path never has a filename extension (ie "_system/login" is a valid control path, while "_system/login.ascx" is invalid).</para>
         /// </summary>
-        public string ControlPath;
+        public string ControlNameOrPath;
+
+        public string RawTemplateParameters;
+
+        public CmsControlDefinition(string controlNameOrPath, string rawTemplateParameters)
+        {
+            ControlNameOrPath = controlNameOrPath.ToLower();
+            RawTemplateParameters = rawTemplateParameters;
+        }
                 
-        public string[] ParamList;
 
-        public CmsControlDefinition(string controlPath, string[] paramList)
-        {
-            ControlPath = controlPath.ToLower();            
-            ParamList = paramList;
-        }
-        
-
-        public static CmsControlDefinition[] GetByControlPath(CmsControlDefinition[] haystack, string ControlPathToFind)
+        public static CmsControlDefinition[] GetByControlNameOrPath(CmsControlDefinition[] haystack, string ControlNameOrPathToFind)
         {
             List<CmsControlDefinition> ret = new List<CmsControlDefinition>();
             foreach (CmsControlDefinition controlDef in haystack)
             {
-                if (String.Compare(controlDef.ControlPath, ControlPathToFind, true) == 0)
-                    ret.Add(controlDef);
-            } // foreach
-            return ret.ToArray();
-        }
-
-        public static CmsControlDefinition[] GetByControlName(CmsControlDefinition[] haystack, string ControlNameToFind)
-        {
-            List<CmsControlDefinition> ret = new List<CmsControlDefinition>();
-            foreach (CmsControlDefinition controlDef in haystack)
-            {
-                if (controlDef.ControlPath.EndsWith(ControlNameToFind, StringComparison.CurrentCultureIgnoreCase))                
+                if (controlDef.ControlNameOrPath.EndsWith(ControlNameOrPathToFind, StringComparison.CurrentCultureIgnoreCase))                
                     ret.Add(controlDef);
             } // foreach
             return ret.ToArray();

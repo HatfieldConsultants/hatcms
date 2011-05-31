@@ -11,13 +11,16 @@ using System.Web.UI.HtmlControls;
 
 namespace HatCMS
 {
-    public class HtmlLinkMacroFilter
+    public class HtmlLinkMacroFilter : BaseCmsOutputFilter
     {
-        public CmsOutputFilter[] getOutputFilters()
+        
+        /// <summary>
+        /// Registers the HtmlLinkMacroFilter as a page-level filter.
+        /// </summary>
+        /// <returns></returns>
+        public override CmsOutputFilterInfo getOutputFilterInfo()
         {
-            return new CmsOutputFilter[] {
-                new CmsOutputFilter( CmsOutputFilterScope.PageHtmlOutput, RunHtmlLinkMacroFilter)
-            };
+            return new CmsOutputFilterInfo(CmsOutputFilterScope.PageHtmlOutput, RunHtmlLinkMacroFilter);
         }
 
         

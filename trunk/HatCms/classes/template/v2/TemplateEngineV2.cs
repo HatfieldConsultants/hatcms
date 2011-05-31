@@ -47,12 +47,12 @@ namespace HatCMS.TemplateEngine
         /// <summary>
         /// the template extension (with a beginning period ('.')))
         /// </summary>
-        private const string TEMPLATE_EXTENSION = ".template";
+        public const string TEMPLATE_EXTENSION = ".template";
 
         /// <summary>
         /// the template layout file extension (with a beginning period ('.')))
         /// </summary>
-        private const string TEMPLATE_LAYOUT_EXTENSION = ".htm";
+        public const string TEMPLATE_LAYOUT_EXTENSION = ".htm";
 
         /// <summary>
         /// the template sub directory (no beginning slash; must have trailing slash ('/'))
@@ -67,7 +67,7 @@ namespace HatCMS.TemplateEngine
         /// <summary>
         /// the controls sub directory (no beginning slash; must have trailing slash ('/'))
         /// </summary>
-        private const string CONTROLS_SUBDIR = "controls/";
+        public const string CONTROLS_SUBDIR = "controls/";
 
         private const string COMMAND_DELIMITER = "##";      
   
@@ -82,8 +82,7 @@ namespace HatCMS.TemplateEngine
         /// the control or placeholder will NOT be output.
         /// </summary>
         private const string OFFLINE_VERSION_OUTPUT_CONTROL_PARAMETERNAME = "includeinofflineversion"; // note: must be all lower-case
-        
-
+                
 
         public TemplateEngineV2(string templateName, CmsPage page)
         {
@@ -91,7 +90,113 @@ namespace HatCMS.TemplateEngine
             this.page = page;
         } // constructor
 
-        private string getTemplateFilenameOnDisk()
+
+        private Dictionary<string, System.Reflection.Assembly> getAllTemplatesInAssemblies()
+        {
+            string cacheKey = "getTemplatesInAssemblies" + TEMPLATE_EXTENSION + TEMPLATE_LAYOUT_EXTENSION;
+
+            if (Hatfield.Web.Portal.PerRequestCache.CacheContains(cacheKey))
+            {
+                return (Dictionary<string, System.Reflection.Assembly>)Hatfield.Web.Portal.PerRequestCache.GetFromCache(cacheKey, new Dictionary<string, System.Reflection.Assembly>());
+            }
+
+            string[] extensions = new string[] { TEMPLATE_EXTENSION, TEMPLATE_LAYOUT_EXTENSION };
+
+            Dictionary<string, System.Reflection.Assembly> ret = Hatfield.Web.Portal.AssemblyHelpers.LoadAllAssembliesAndGetAllEmbeddedResourcesWithExtensions(extensions);
+            Hatfield.Web.Portal.PerRequestCache.AddToCache(cacheKey, ret);
+
+            return ret;
+            
+        }
+
+        private string cleanTemplateNameStoredInAssembly(string rawTemplateName)
+        {
+            string ret = rawTemplateName;
+            // -- templates should be stored in a directory called "template" or "templates", so the name should come after that
+            int index1 = ret.IndexOf(".templates.", StringComparison.CurrentCultureIgnoreCase);
+            int index2 = ret.IndexOf(".template.", StringComparison.CurrentCultureIgnoreCase);
+            if (index1 >= 0)
+            {
+                ret = ret.Substring(index1 + ".templates.".Length);
+            }
+            else if (index2 >= 0)
+            {
+                ret = ret.Substring(index2 + ".template.".Length);
+            }
+
+            // -- remove the template_extension
+            if (String.Compare(Path.GetExtension(ret), TEMPLATE_EXTENSION, true) == 0)
+                ret = Path.GetFileNameWithoutExtension(ret);
+
+            return ret;
+        }
+
+        private string getTemplateFileContents()
+        {
+            // -- try to get the template on disk
+            string fn = _getTemplateFilenameOnDisk();
+            if (File.Exists(fn))
+            {
+                return _getCachedFileContents(fn);
+            }
+            else
+            {
+                // try to get the template from assemblies
+                string toFind = templateName + TEMPLATE_EXTENSION;
+                Dictionary<string, System.Reflection.Assembly> templatesInAssemblies = getAllTemplatesInAssemblies();
+                foreach (string templateFn in templatesInAssemblies.Keys)
+                {
+                    if (templateFn.EndsWith(toFind, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        using (Stream stream = Hatfield.Web.Portal.AssemblyHelpers.GetEmbeddedResourceStream(templatesInAssemblies[templateFn], templateFn))
+                        {
+                            using (StreamReader sr = new StreamReader(stream))
+                            {
+                                return sr.ReadToEnd();
+                            }
+                        }
+                    }
+
+                } // foreach
+            }
+
+            throw new TemplateExecutionException(new Exception(), templateName, "Could not read or find the template '" + templateName + "' for page '" + this.page.Path + "' was not found.");
+        }
+
+        private string getTemplateLayoutFileContents(string layoutPath)
+        {
+            // -- try to get the template on disk
+            string fn = _getTemplateLayoutFilenameOnDisk(layoutPath);
+            if (File.Exists(fn))
+            {
+                return _getCachedFileContents(fn);
+            }
+            else
+            {
+                // try to get the template from assemblies
+                string toFind = layoutPath + TEMPLATE_LAYOUT_EXTENSION;
+                Dictionary<string, System.Reflection.Assembly> templatesInAssemblies = getAllTemplatesInAssemblies();
+                foreach (string templateFn in templatesInAssemblies.Keys)
+                {
+                    if (templateFn.EndsWith(toFind, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        using (Stream stream = Hatfield.Web.Portal.AssemblyHelpers.GetEmbeddedResourceStream(templatesInAssemblies[templateFn], templateFn))
+                        {
+                            using (StreamReader sr = new StreamReader(stream))
+                            {
+                                return sr.ReadToEnd();
+                            }
+                        }
+                    }
+
+                } // foreach
+            }
+
+            throw new TemplateExecutionException(new Exception(), templateName, "Could not read or find the template layout '" + layoutPath + "' in template '" + templateName + "' for page '" + this.page.Path + "' was not found.");
+        }
+
+
+        private string _getTemplateFilenameOnDisk()
         {            
             System.Web.HttpContext context = System.Web.HttpContext.Current;
             // get the templateFilename
@@ -101,7 +206,7 @@ namespace HatCMS.TemplateEngine
             return templateFN_ondisk;
         }
 
-        private string getTemplateLayoutFilenameOnDisk(string layoutPath)
+        private string _getTemplateLayoutFilenameOnDisk(string layoutPath)
         {
             System.Web.HttpContext context = System.Web.HttpContext.Current;
             // get the template Layout Filename
@@ -111,7 +216,7 @@ namespace HatCMS.TemplateEngine
             return templateFN_ondisk;
         }
 
-        private string getCachedFileContents(string filenameOnDisk)
+        private string _getCachedFileContents(string filenameOnDisk)
         {
             System.Web.HttpContext context = System.Web.HttpContext.Current;
 
@@ -146,13 +251,13 @@ namespace HatCMS.TemplateEngine
         }
 
         /// <summary>
-        /// Renders a template with all its controls and placeholders, and add these controls and placeholders to the CmsPage.
+        /// Renders a template with all its controls and placeholders, and add these controls and placeholders to the parentUserControl.
         /// Note: do not use Render to HtmlWriter - Control events are not called properly.
         /// </summary>
-        public override void CreateChildControls()
+        public override void CreateChildControls(System.Web.UI.UserControl parentUserControl)
         {                        
             // -- get the template file contents
-            string templateText = getCachedFileContents(getTemplateFilenameOnDisk());
+            string templateText = getTemplateFileContents();
 
             // -- get the TemplateLayout statement
             string[] layouts = getCommandStatementParameters("TemplateLayout", templateText);
@@ -162,7 +267,7 @@ namespace HatCMS.TemplateEngine
                 throw new TemplateExecutionException(templateName, "Template has more than one TemplateLayout statement - only one is allowed.");
 
             // -- read the template layout file
-            string layoutText = getCachedFileContents(getTemplateLayoutFilenameOnDisk(layouts[0]));
+            string layoutText = getTemplateLayoutFileContents(layouts[0]);
 
             // -- start with the first language if we are editing a page.
             currentLangIndex = 0;
@@ -199,11 +304,11 @@ namespace HatCMS.TemplateEngine
             templateFileContents = templateText;
 
             // -- render the output
-            RenderTextToPage(templateLayoutFileContents);
+            RenderTextToPage(parentUserControl, templateLayoutFileContents);
 
         } // CreateChildControls
 
-        private void RenderTextToPage(string textToRender)
+        private void RenderTextToPage(System.Web.UI.UserControl parentUserControl, string textToRender)
         {
             // -- parse the template layout file line-by-line
             foreach (string line in textToRender.Split(new char[] { '\n' }))
@@ -218,11 +323,11 @@ namespace HatCMS.TemplateEngine
 
                         string preCommand = tmpLine.Substring(0, commandStart);
                         System.Web.UI.LiteralControl literal = new LiteralControl(preCommand);
-                        page.Controls.Add(literal);
+                        parentUserControl.Controls.Add(literal);
 
                         string command = tmpLine.Substring(commandStart, commandEnd - commandStart);
 
-                        renderCommand(command);
+                        renderCommand(parentUserControl, command);
 
                         tmpLine = tmpLine.Substring(preCommand.Length + command.Length); // get whatever is left
 
@@ -230,25 +335,20 @@ namespace HatCMS.TemplateEngine
                     if (tmpLine != "")
                     {
                         // -- render what's left over after the command statements
-                        AddControlToPage(new LiteralControl(tmpLine));
+                        parentUserControl.Controls.Add(new LiteralControl(tmpLine));
                     }
                 }
                 else
                 {
                     System.Web.UI.LiteralControl literal = new LiteralControl(line);
-                    AddControlToPage(literal);
+                    parentUserControl.Controls.Add(literal);
                 }
 
             } // foreach line
         }
-
-        private void AddControlToPage(Control controlToAdd)
-        {
-            page.Controls.Add(controlToAdd);            
-        }
         
 
-        private void renderCommand(string command)
+        private void renderCommand(System.Web.UI.UserControl parentUserControl, string command)
         {
             // command is the full command, such as ##Placeholder(HtmlContent id="1")## or ##RenderContro(_system/PageTitle)##.
 
@@ -281,7 +381,7 @@ namespace HatCMS.TemplateEngine
                 // -- if the first StartPageBody, start the form - the same as in StartEditForm.ascx
                 if (currentLangIndex == 0)
                 {
-                    RenderTextToPage(COMMAND_DELIMITER + "RenderControl(_system/StartEditForm)" + COMMAND_DELIMITER);                    
+                    RenderTextToPage(parentUserControl, COMMAND_DELIMITER + "RenderControl(_system/StartEditForm)" + COMMAND_DELIMITER);                    
                 }
                 
                 string cssStyle = "display: none;";
@@ -292,23 +392,23 @@ namespace HatCMS.TemplateEngine
                     cssStyle = "display: block;";
                 }
 
-                AddControlToPage(new LiteralControl("<!-- Start Language " + langDivId + " --> "));
-                AddControlToPage(new LiteralControl("<div id=\"" + langDivId + "\" class=\"" + langDivId + " PageLanguageBody\" style=\"" + cssStyle + "\">"));
+                parentUserControl.Controls.Add(new LiteralControl("<!-- Start Language " + langDivId + " --> "));
+                parentUserControl.Controls.Add(new LiteralControl("<div id=\"" + langDivId + "\" class=\"" + langDivId + " PageLanguageBody\" style=\"" + cssStyle + "\">"));
             }
             else if (outputMultipleLanguages && command.StartsWith(COMMAND_DELIMITER + "EndPageBody", StringComparison.CurrentCultureIgnoreCase))
             {
-                AddControlToPage(new LiteralControl("</div>"));
-                AddControlToPage(new LiteralControl("<!-- End Language " + langDivId + " --> "));
+                parentUserControl.Controls.Add(new LiteralControl("</div>"));
+                parentUserControl.Controls.Add(new LiteralControl("<!-- End Language " + langDivId + " --> "));
                 currentLangIndex++; // increment to the next language
                 if (currentLangIndex < CmsConfig.Languages.Length)
                 {
                     string pageBody = getPageBodyText();
-                    RenderTextToPage(pageBody);
+                    RenderTextToPage(parentUserControl, pageBody);
                 }
                 else
                 {
                     // -- the last EndPageBody, so close the edit form using the EndEditForm control
-                    RenderTextToPage(COMMAND_DELIMITER + "RenderControl(_system/EndEditForm)" + COMMAND_DELIMITER);
+                    RenderTextToPage(parentUserControl, COMMAND_DELIMITER + "RenderControl(_system/EndEditForm)" + COMMAND_DELIMITER);
                 }
             }
             else if (command.StartsWith(COMMAND_DELIMITER + "PlaceholderRegion", StringComparison.CurrentCultureIgnoreCase))
@@ -319,7 +419,7 @@ namespace HatCMS.TemplateEngine
                 string regionName = parameters["##commandname##"];
 
                 string regionCommands = getTemplatePlaceholderRegionText(regionName);
-                RenderTextToPage(regionCommands);
+                RenderTextToPage(parentUserControl, regionCommands);
             }
             else if (command.StartsWith(COMMAND_DELIMITER + "placeholder", StringComparison.CurrentCultureIgnoreCase))
             {
@@ -384,7 +484,7 @@ namespace HatCMS.TemplateEngine
                     txt = CmsOutputFilterUtils.RunPlaceholderFilters(placeholderName, page, txt);
 
                     LiteralControl literal = new LiteralControl(txt);
-                    AddControlToPage(literal);
+                    parentUserControl.Controls.Add(literal);
                 }
 
             }
@@ -393,12 +493,11 @@ namespace HatCMS.TemplateEngine
                 if (!parameters.ContainsKey("##commandname##"))
                     throw new TemplateExecutionException(templateName, "Template statement \"" + command + "\" must have at least one parameter!");
                 
-                string controlPath = parameters["##commandname##"];
+                string controlNameOrPath = parameters["##commandname##"];
                 // -- try to dynamically load the control onto the page from the ASCX file.
-                //    if the ASCX file is not found, throw an Exception
-                string Control_VirtualPath = CmsContext.ApplicationPath + CONTROLS_SUBDIR + controlPath + ".ascx";
-                string Control_FilenameOnDisk = System.Web.HttpContext.Current.Server.MapPath(Control_VirtualPath);
-                if (File.Exists(Control_FilenameOnDisk))
+                //    if the ASCX file is not found, we try to load the control as a class. If that fails, throw an Exception
+                                
+                if (CmsControlUtils.ControlExists(controlNameOrPath))
                 {
                     // do not output if: 
                     //  1) we are making a printer friendly version, and the control has its printer friendly parameter name set to false.
@@ -416,16 +515,17 @@ namespace HatCMS.TemplateEngine
 
                     if (!doNotOutput)
                     {
-                        Control control = page.LoadControl(Control_VirtualPath);
-                        // set the parameters for the control. Note: use CmsContext.getControlParameters() to get the list of parameters
-                        control.ID = rawParameters;
-
-                        AddControlToPage(control);
+                        int langIndex = currentLangIndex;
+                        if (langIndex >= CmsConfig.Languages.Length)
+                            langIndex = 0;
+                        CmsLanguage langToRender = CmsConfig.Languages[langIndex]; // the currentLangIndex is incremented when the EndPageBody statement is found in the template 
+                        CmsControlDefinition controlDef = new CmsControlDefinition(controlNameOrPath, rawParameters );
+                        CmsControlUtils.AddControlToPage(controlNameOrPath, controlDef,parentUserControl , langToRender);                                               
                     }
                 }
                 else
-                {
-                    string ControlNotFoundMessage = "Could not load UserControl: ASCX file not found: " + Control_VirtualPath + "";
+                {                    
+                    string ControlNotFoundMessage = "Could not find or load Control: \"" + controlNameOrPath + "\"";
                     throw new TemplateExecutionException(templateName, ControlNotFoundMessage);
                 }
             } // renderRonctol
@@ -493,11 +593,8 @@ namespace HatCMS.TemplateEngine
 
         public static Dictionary<string, string> tokenizeCommandParameters(CmsControlDefinition controlDefinition)
         {
-            // note: see getAllControlDefinitions(): the whole command is stored in ParamList[0].
-            if (controlDefinition.ParamList.Length >= 1)
-                return tokenizeCommandParameters(controlDefinition.ParamList[0]);
-            else
-                return new Dictionary<string, string>();
+            // note: see getAllControlDefinitions(): the whole command is stored in RawTemplateParameters.            
+            return tokenizeCommandParameters(controlDefinition.RawTemplateParameters);
         }
 
         public static Dictionary<string, string> tokenizeCommandParameters(string rawParameters)
@@ -629,16 +726,15 @@ namespace HatCMS.TemplateEngine
             List<CmsControlDefinition> ret = new List<CmsControlDefinition>();
             
             // -- get the template file contents
-            string templateText = getCachedFileContents(getTemplateFilenameOnDisk());
+            string templateText = getTemplateFileContents();
 
             string[] CommandParams = getCommandStatementParameters("rendercontrol", templateText);
-            foreach (string c in CommandParams)
+            foreach (string rawStatement in CommandParams)
             {
-                Dictionary<string, string> tokens = tokenizeCommandParameters(c);
-                string controlPath = tokens["##commandname##"].ToLower();
-
-                string[] subParamsArray = new string[] { c };
-                CmsControlDefinition def = new CmsControlDefinition(controlPath, subParamsArray);
+                Dictionary<string, string> tokens = tokenizeCommandParameters(rawStatement);
+                string controlNameOrPath = tokens["##commandname##"].ToLower();
+                
+                CmsControlDefinition def = new CmsControlDefinition(controlNameOrPath, rawStatement);
                 ret.Add(def);
 
             }
@@ -648,15 +744,14 @@ namespace HatCMS.TemplateEngine
 
             if (layouts.Length > 0)
             {
-                string layoutText = getCachedFileContents(getTemplateLayoutFilenameOnDisk(layouts[0]));
+                string layoutText = getTemplateLayoutFileContents(layouts[0]);
                 CommandParams = getCommandStatementParameters("rendercontrol", layoutText);
-                foreach (string c in CommandParams)
+                foreach (string rawStatement in CommandParams)
                 {
-                    Dictionary<string, string> tokens = tokenizeCommandParameters(c);
-                    string controlPath = tokens["##commandname##"].ToLower();
-                 
-                    string[] subParamsArray = new string[] { c };
-                    CmsControlDefinition def = new CmsControlDefinition(controlPath, subParamsArray);
+                    Dictionary<string, string> tokens = tokenizeCommandParameters(rawStatement);
+                    string controlNameOrPath = tokens["##commandname##"].ToLower();
+
+                    CmsControlDefinition def = new CmsControlDefinition(controlNameOrPath, rawStatement);
                     ret.Add(def);
 
                 } // foreach
@@ -677,7 +772,7 @@ namespace HatCMS.TemplateEngine
             List<CmsPlaceholderDefinition> ret = new List<CmsPlaceholderDefinition>();
 
             // -- get the template file contents
-            string templateText = getCachedFileContents(getTemplateFilenameOnDisk());
+            string templateText = getTemplateFileContents();
 
             string[] CommandParams = getCommandStatementParameters("placeholder", templateText);
             foreach (string c in CommandParams)
@@ -698,7 +793,7 @@ namespace HatCMS.TemplateEngine
 
             if (layouts.Length > 0)
             {
-                string layoutText = getCachedFileContents(getTemplateLayoutFilenameOnDisk(layouts[0]));
+                string layoutText = getTemplateLayoutFileContents(layouts[0]);
                 CommandParams = getCommandStatementParameters("placeholder", layoutText);
                 foreach (string c in CommandParams)
                 {
@@ -721,23 +816,21 @@ namespace HatCMS.TemplateEngine
 
         public override bool templateExists(string templatePath)
         {
-            string templateUrl = CmsContext.ApplicationPath + TEMPLATE_SUBDIR + templatePath + TEMPLATE_EXTENSION;
-            string templateFN_ondisk = System.Web.HttpContext.Current.Server.MapPath(templateUrl);
-            return File.Exists(templateFN_ondisk);
+            string[] templates = getTemplateNamesForCurrentUser();
+            if (Hatfield.Web.Portal.StringUtils.IndexOf(templates, templatePath, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                return true;
+            else
+                return false;
         }
 
-        public override bool controlExists(string controlPath)
+        public override bool controlExists(string controlNameOrPath)
         {
-            string Control_VirtualPath = CmsContext.ApplicationPath + CONTROLS_SUBDIR + controlPath + ".ascx";
-            string fnOnDisk = System.Web.HttpContext.Current.Server.MapPath(Control_VirtualPath);
-            return File.Exists(fnOnDisk);
+            return CmsControlUtils.ControlExists(controlNameOrPath);
         }
 
-        public override DateTime getControlLastModifiedDate(string controlPath)
+        public override DateTime getControlLastModifiedDate(string controlNameOrPath)
         {
-            string Control_VirtualPath = CmsContext.ApplicationPath + CONTROLS_SUBDIR + controlPath + ".ascx";
-            string fnOnDisk = System.Web.HttpContext.Current.Server.MapPath(Control_VirtualPath);
-            return new FileInfo(fnOnDisk).LastWriteTime;
+            return CmsControlUtils.getControlLastModifiedDate(controlNameOrPath);
         }
 
         public override string[] getControlParameterKeys(System.Web.UI.UserControl control)
@@ -834,14 +927,34 @@ namespace HatCMS.TemplateEngine
         /// </summary>
         public override string[] getTemplateNamesForCurrentUser()
         {
+            List<string> ret = new List<string>();
+            
+            // -- 1: add templates on disk
             System.Web.HttpContext context = System.Web.HttpContext.Current;
             string path = context.Server.MapPath(CmsContext.ApplicationPath + TEMPLATE_SUBDIR);
-            ArrayList ret = new ArrayList();
-            getRecursiveTemplateList(ret, path, "");
-            return (string[])ret.ToArray(typeof(string));
+            
+            getRecursiveTemplatesOnDisk(ret, path, "");
+
+            // -- 2: add templates in embedded resources
+            Dictionary<string, System.Reflection.Assembly> embeddedTemplates = getAllTemplatesInAssemblies();
+            foreach (string templateName in embeddedTemplates.Keys)
+            {
+                // embeddedTemplates contains both templates and layout files. We only want template files (not layout ones).
+                if (templateName.EndsWith(TEMPLATE_EXTENSION, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    string cleanName = cleanTemplateNameStoredInAssembly(templateName);
+
+                    if (ret.IndexOf(cleanName) >= 0)
+                        throw new TemplateExecutionException(templateName, "There are multiple templates named '"+cleanName+"'");
+                    ret.Add(cleanName);
+                }
+            } // foreach
+
+            ret.Sort();
+            return ret.ToArray();
         }
 
-        private void getRecursiveTemplateList(ArrayList fileList, string FullDirectoryPath, string appendToTemplateName)
+        private void getRecursiveTemplatesOnDisk(List<string> fileList, string FullDirectoryPath, string appendToTemplateName)
         {
             string[] files = System.IO.Directory.GetFiles(FullDirectoryPath, "*" + TEMPLATE_EXTENSION);
             foreach (string f in files)
@@ -851,12 +964,18 @@ namespace HatCMS.TemplateEngine
                 // -- hide templates that start with "_" from non-admin users
                 if (CmsContext.currentUserIsSuperAdmin)
                 {
+                    if (fileList.IndexOf(templateName) >= 0)
+                        throw new TemplateExecutionException(templateName, "There are multiple templates named '" + templateName + "'");
+
                     fileList.Add(templateName);
                 }
                 else
                 {
                     if (!templateName.StartsWith("_") && !System.IO.Path.GetFileName(f).StartsWith("_"))
                     {
+                        if (fileList.IndexOf(templateName) >= 0)
+                            throw new TemplateExecutionException(templateName, "There are multiple templates named '" + templateName + "'");
+
                         fileList.Add(templateName);
                     }
                 }
@@ -870,7 +989,7 @@ namespace HatCMS.TemplateEngine
                 append += System.IO.Path.GetFileName(dir);
                 append += "/";
 
-                getRecursiveTemplateList(fileList, dir, append);
+                getRecursiveTemplatesOnDisk(fileList, dir, append);
             }
 
         } // getRecursiveTemplateList

@@ -130,7 +130,7 @@ namespace HatCMS.Controls._system
         protected override void Render(HtmlTextWriter writer)
         {
             DateTime currDateTime = DateTime.Now;
-            int count = CmsControlUtils.getControlParameterKeyValue(this, "count", 3);
+            int count = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "count", 3);
 
             CmsLanguage lang = CmsContext.currentLanguage;
             List<EventCalendarDb.EventCalendarDetailsData> list = new EventCalendarDb().fetchUpcomingEventDetails(currDateTime, lang, count);

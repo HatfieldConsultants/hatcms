@@ -187,11 +187,11 @@ namespace HatCMS.Controls._system
 
             if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
-                indexToDisplay = CmsControlUtils.getControlParameterKeyValue(this, "newsIndex", indexToDisplay);
-                template = CmsControlUtils.getControlParameterKeyValue(this, "template", template);
-                dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(this, "dateFormat", dateOutputFormat);
-                maxLengthOfSummary = CmsControlUtils.getControlParameterKeyValue(this, "summaryLength", maxLengthOfSummary);
-                dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(this, "dateOutputFormat", dateOutputFormat);
+                indexToDisplay = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "newsIndex", indexToDisplay);
+                template = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "template", template);
+                dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "dateFormat", dateOutputFormat);
+                maxLengthOfSummary = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "summaryLength", maxLengthOfSummary);
+                dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "dateOutputFormat", dateOutputFormat);
             }
             else
             {

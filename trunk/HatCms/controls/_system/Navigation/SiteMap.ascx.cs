@@ -22,12 +22,12 @@ namespace HatCMS.Controls.Navigation
 
         private bool IncludeHomepage
         {
-            get { return (CmsControlUtils.hasControlParameterKey(this, "IncludeHomepage")); }
+            get { return (CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, this, "IncludeHomepage")); }
         }
 
         private bool UsePageTitles
         {
-            get { return (CmsControlUtils.hasControlParameterKey(this, "UsePageTitles")); }
+            get { return (CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, this, "UsePageTitles")); }
         }
 
         private bool UseMenuTitles
@@ -39,7 +39,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "CellIDFormat", "SiteMapItem_{1}");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "CellIDFormat", "SiteMapItem_{1}");
             } // get
         }
 
@@ -47,7 +47,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "OuterDivCSSClassName", "SiteMap");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "OuterDivCSSClassName", "SiteMap");
             } // get
         }
 
@@ -55,7 +55,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "ListItemClassName", "SiteMapItem");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "ListItemClassName", "SiteMapItem");
             } // get
         }
 
@@ -64,7 +64,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "ListItemClassName", "SiteMapGroup_{0}");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "ListItemClassName", "SiteMapGroup_{0}");
             } // get
         }
 
@@ -72,7 +72,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "MaxLevels", 100);
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "MaxLevels", 100);
             } // get
         }
 

@@ -13,28 +13,21 @@ namespace HatCMS.Controls
 {
     public partial class ImageBySelectedParentPagePath : System.Web.UI.UserControl
     {
-        private string SelectedParentPagePath
+        private string getSelectedParentPagePath(CmsPage controlsPage)
         {
-            get
-            {
-                return CmsControlUtils.getControlParameterKeyValue(this, "SelectedParentPagePath", "");
-            }
+
+            return CmsControlUtils.getControlParameterKeyValue(controlsPage, this, "SelectedParentPagePath", "");
+            
         }
 
-        private string SelectedImage
+        private string getSelectedImage(CmsPage controlsPage)
         {
-            get
-            {
-                return CmsControlUtils.getControlParameterKeyValue(this, "SelectedImage", "");
-            }
+            return CmsControlUtils.getControlParameterKeyValue(controlsPage, this, "SelectedImage", "");
         }
 
-        private string UnSelectedImage
-        {
-            get
-            {
-                return CmsControlUtils.getControlParameterKeyValue(this, "UnSelectedImage", "");
-            }
+        private string getUnSelectedImage(CmsPage controlsPage)
+        {            
+                return CmsControlUtils.getControlParameterKeyValue(controlsPage, this, "UnSelectedImage", "");         
         }
 
         private bool parentOrSelfHasPath(CmsPage page, string path)
@@ -51,13 +44,14 @@ namespace HatCMS.Controls
 
         protected override void Render(HtmlTextWriter writer)
         {
-            if (SelectedParentPagePath != "" && SelectedImage != "" && parentOrSelfHasPath(CmsContext.currentPage, SelectedParentPagePath))
+            CmsPage currentPage = CmsContext.currentPage;
+            if (getSelectedParentPagePath(currentPage) != "" && getSelectedImage(currentPage) != "" && parentOrSelfHasPath(currentPage, getSelectedParentPagePath(currentPage)))
             {
-                Response.Write("<img src=\"" + SelectedImage + "\">");
+                Response.Write("<img src=\"" + getSelectedImage(currentPage) + "\">");
             }
-            else if (UnSelectedImage != "")
+            else if (getUnSelectedImage(currentPage) != "")
             {
-                Response.Write("<img src=\"" + UnSelectedImage + "\">");
+                Response.Write("<img src=\"" + getUnSelectedImage(currentPage) + "\">");
             }
         } // render
     }

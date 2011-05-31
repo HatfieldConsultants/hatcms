@@ -13,7 +13,7 @@ namespace HatCMS
     /// <summary>
     /// To define an output filter in a class, placeholder or control, create a public function <c>public CmsOutputFilter[] getOutputFilters(){};</c> That function will be magically called whenever filters are needed!
     /// </summary>
-    public class CmsOutputFilter
+    public class CmsOutputFilterInfo
     {
         public CmsOutputFilterScope Scope;
         public string[] SpecificPlaceholderNamesOrControlPathsToFilter;
@@ -21,7 +21,7 @@ namespace HatCMS
 
         public delegate string RunFilterDelegate(CmsPage pageBeingFiltered, string htmlToFilter);
 
-        public CmsOutputFilter(CmsOutputFilterScope scope, RunFilterDelegate filterDelegate)
+        public CmsOutputFilterInfo(CmsOutputFilterScope scope, RunFilterDelegate filterDelegate)
         {
             Scope = scope;
             _runFilterDelegate = filterDelegate;
@@ -30,7 +30,7 @@ namespace HatCMS
                 throw new ArgumentException("When specified controls or placeholders are needed, use another constructor");
         }
 
-        public CmsOutputFilter(CmsOutputFilterScope scope, string[] specificPlaceholdersOrControlsToFilter, RunFilterDelegate filterDelegate)
+        public CmsOutputFilterInfo(CmsOutputFilterScope scope, string[] specificPlaceholdersOrControlsToFilter, RunFilterDelegate filterDelegate)
         {
             Scope = scope;
             _runFilterDelegate = filterDelegate;

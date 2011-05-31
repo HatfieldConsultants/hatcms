@@ -21,7 +21,7 @@ namespace HatCMS.Controls.Navigation
 
         private bool RenderVertical
         {
-            get { return CmsControlUtils.hasControlParameterKey(this, "RenderVertical"); }
+            get { return CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, this, "RenderVertical"); }
         }
 
         private bool RenderHorizontal
@@ -31,7 +31,7 @@ namespace HatCMS.Controls.Navigation
 
         private bool IncludeHomepage
         {
-            get { return (CmsControlUtils.hasControlParameterKey(this, "IncludeHomepage")); }
+            get { return (CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, this, "IncludeHomepage")); }
         }
 
   
@@ -40,7 +40,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "MaxLevels", 100);
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "MaxLevels", 100);
             } // get
         }
 
@@ -53,7 +53,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "StartRenderAtPagePath", CmsContext.currentPage.Path);
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "StartRenderAtPagePath", CmsContext.currentPage.Path);
             } // get
         }
 
@@ -61,7 +61,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "CellIDFormat", "TabularNavigationCell_{1}");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "CellIDFormat", "TabularNavigationCell_{1}");
             } // get
         }
 
@@ -69,7 +69,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "TableCSSClassName", "TabularNavigation");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "TableCSSClassName", "TabularNavigation");
             } // get
         }
 
@@ -79,7 +79,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "UnSelectedCellOnMouseOverJS", "");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "UnSelectedCellOnMouseOverJS", "");
             } // get
         }
 
@@ -87,7 +87,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "UnSelectedCellOnMouseOutJS", "");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "UnSelectedCellOnMouseOutJS", "");
             } // get
         }
 
@@ -95,7 +95,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "SelectedCellClassName", "Level{0}_Selected");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "SelectedCellClassName", "Level{0}_Selected");
             } // get
         }
 
@@ -103,7 +103,7 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "UnSelectedCellClassName", "Level{0}");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "UnSelectedCellClassName", "Level{0}");
             } // get
         }
 
@@ -111,13 +111,13 @@ namespace HatCMS.Controls.Navigation
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "ChildIsSelectedCellClassName", "Level{0}_ChildSelected");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "ChildIsSelectedCellClassName", "Level{0}_ChildSelected");
             } // get
         }
 
         private bool RenderOnlyChildrenUnderCurrentPage
         {
-            get { return (CmsControlUtils.hasControlParameterKey(this, "RenderOnlyChildrenUnderCurrentPage")); }
+            get { return (CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, this, "RenderOnlyChildrenUnderCurrentPage")); }
         }
 
         private bool RenderAllChildren

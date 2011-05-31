@@ -29,7 +29,7 @@ namespace HatCMS.Controls
             while (currPage.ID != -1)
             {
                 string PagePath = currPage.Path;
-                string keyVal = CmsControlUtils.getControlParameterKeyValue(this, PagePath, notFoundValue);
+                string keyVal = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, PagePath, notFoundValue);
                 if (keyVal != notFoundValue)
                 {
                     return keyVal;
@@ -48,12 +48,12 @@ namespace HatCMS.Controls
         private string getRandomImage()
         {
             // -- get all the configured image vals
-            string[] configKeys = CmsControlUtils.getControlParameterKeys(this);
+            string[] configKeys = CmsControlUtils.getControlParameterKeys(CmsContext.currentPage, this);
             ArrayList imgUrls = new ArrayList();
             string notFoundValue = Guid.NewGuid().ToString(); 
             foreach (string key in configKeys)
             {
-                string val = CmsControlUtils.getControlParameterKeyValue(this, key, notFoundValue);
+                string val = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, key, notFoundValue);
                 if (val != "" && val != notFoundValue && String.Compare(val, RandomImageKeyValue, true) != 0)
                     imgUrls.Add(val);
             } // foreach
@@ -71,6 +71,8 @@ namespace HatCMS.Controls
 
         protected override void Render(HtmlTextWriter writer)
         {
+            throw new Exception("Error: the ImageByParentPagePath control needs to be updated to use updated HatCMS code!");
+
             string img = getImageByPagePath(CmsContext.currentPage);
             if (img != String.Empty)
             {

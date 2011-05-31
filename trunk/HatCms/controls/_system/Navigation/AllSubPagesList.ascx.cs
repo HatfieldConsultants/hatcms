@@ -17,12 +17,12 @@ namespace HatCMS.Controls._system
 
         private bool IncludeHomepage
         {
-            get { return (CmsControlUtils.hasControlParameterKey(this, "IncludeHomepage")); }
+            get { return (CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, this, "IncludeHomepage")); }
         }
 
         private bool UseMenuTitles
         {
-            get { return (CmsControlUtils.hasControlParameterKey(this, "UseMenuTitles")); }
+            get { return (CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, this, "UseMenuTitles")); }
         }
 
         private bool UsePageTitles
@@ -34,7 +34,7 @@ namespace HatCMS.Controls._system
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "CellIDFormat", "AllSubPagesListItem_{1}");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "CellIDFormat", "AllSubPagesListItem_{1}");
             } // get
         }
 
@@ -42,7 +42,7 @@ namespace HatCMS.Controls._system
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "OuterDivCSSClassName", "AllSubPagesList");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "OuterDivCSSClassName", "AllSubPagesList");
             } // get
         }
 
@@ -50,7 +50,7 @@ namespace HatCMS.Controls._system
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "ListItemClassName", "AllSubPagesListItem");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "ListItemClassName", "AllSubPagesListItem");
             } // get
         }
 
@@ -59,7 +59,7 @@ namespace HatCMS.Controls._system
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "ListItemClassName", "AllSubPagesListGroup_{0}");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "ListItemClassName", "AllSubPagesListGroup_{0}");
             } // get
         }
 
@@ -67,7 +67,7 @@ namespace HatCMS.Controls._system
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "MaxLevels", 100);
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "MaxLevels", 100);
             } // get
         }
 

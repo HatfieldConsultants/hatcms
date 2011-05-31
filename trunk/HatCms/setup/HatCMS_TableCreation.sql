@@ -266,7 +266,8 @@ CREATE TABLE  `pages` (
   PRIMARY KEY (`pageId`),
   KEY `pages_secondary` (`pageId`,`Deleted`),
   KEY `pages_tertiary` (`parentPageId`,`Deleted`),
-  KEY `pages_quartinary` (`parentPageId`,`Deleted`) USING BTREE
+  KEY `pages_quartinary` (`parentPageId`,`Deleted`) USING BTREE,
+  KEY `pages_deleted` (`Deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE  `plaintextcontent` (
@@ -328,9 +329,12 @@ CREATE TABLE  `singleimage` (
   `Tags` varchar(255) NOT NULL DEFAULT '',
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`SingleImageId`),
-  KEY `singleimage_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`) USING BTREE
+  KEY `singleimage_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`) USING BTREE,
+  KEY `singleimage_tertiary` (`RevisionNumber`,`PageId`,`langShortCode`,`ImagePath`,`Deleted`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
+
+# ALTER TABLE `singleimage` ADD INDEX `singleimage_tertiary`(`RevisionNumber`, `PageId`, `langShortCode`, `ImagePath`, `Deleted`);
 
 CREATE TABLE  `singleimagegallery` (
   `SingleImageGalleryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -360,8 +364,11 @@ CREATE TABLE  `userfeedbackform` (
   `ThankyouMessage` text NOT NULL,
   `FormFieldDisplayWidth` int(10) unsigned NOT NULL,
   `TextAreaQuestion` varchar(255) NOT NULL,
-  PRIMARY KEY (`pageid`,`identifier`,`LangCode`)
+  PRIMARY KEY (`pageid`,`identifier`,`LangCode`),
+  KEY `userfeedbackform_1` (`pageid`,`identifier`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+# ALTER TABLE `userfeedbackform` ADD INDEX `userfeedbackform_1`(`pageid`, `identifier`);
 
 
 CREATE TABLE  `userfeedbacksubmitteddata` (

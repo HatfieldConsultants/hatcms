@@ -13,21 +13,21 @@ namespace HatCMS.Admin
 {
     public class CmsAdminToolInfo
     {
-        public CmsBaseAdminTool.CmsAdminToolCategory Category;        
-        public CmsBaseAdminTool.CmsAdminToolClass Class;
+        public BaseCmsAdminTool.CmsAdminToolCategory Category;        
+        public BaseCmsAdminTool.AdminMenuTab MenuTab;
         public Dictionary<CmsLanguage, string> MenuDisplayText;
 
-        public CmsAdminToolInfo(CmsBaseAdminTool.CmsAdminToolCategory category, CmsBaseAdminTool.CmsAdminToolClass toolClass, Dictionary<CmsLanguage, string> menuDisplayText)
+        public CmsAdminToolInfo(BaseCmsAdminTool.CmsAdminToolCategory category, BaseCmsAdminTool.AdminMenuTab menuTab, Dictionary<CmsLanguage, string> menuDisplayText)
         {
             Category = category;
-            Class = toolClass;
+            MenuTab = menuTab;
             MenuDisplayText = menuDisplayText;
         } // constructor
 
-        public CmsAdminToolInfo(CmsBaseAdminTool.CmsAdminToolCategory category, CmsBaseAdminTool.CmsAdminToolClass toolClass, string menuDisplayTextForAllLanguages)
+        public CmsAdminToolInfo(BaseCmsAdminTool.CmsAdminToolCategory category, BaseCmsAdminTool.AdminMenuTab menuTab, string menuDisplayTextForAllLanguages)
         {
             Category = category;
-            Class = toolClass;
+            MenuTab = menuTab;
             MenuDisplayText = new Dictionary<CmsLanguage, string>();
             foreach (CmsLanguage lang in CmsConfig.Languages)
             {
@@ -35,15 +35,28 @@ namespace HatCMS.Admin
             }
         } // constructor
 
-        public static Dictionary<CmsBaseAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>> ToCategoryKeyedDictionary(CmsAdminToolInfo[] arr)
+        public static Dictionary<BaseCmsAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>> ToCategoryKeyedDictionary(CmsAdminToolInfo[] arr)
         {
-            Dictionary<CmsBaseAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>> ret = new Dictionary<CmsBaseAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>>();
+            Dictionary<BaseCmsAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>> ret = new Dictionary<BaseCmsAdminTool.CmsAdminToolCategory, List<CmsAdminToolInfo>>();
             foreach (CmsAdminToolInfo toolInfo in arr)
             {
                 if (!ret.ContainsKey(toolInfo.Category))
                     ret[toolInfo.Category] = new List<CmsAdminToolInfo>();
 
                 ret[toolInfo.Category].Add(toolInfo);
+            } // foreach
+            return ret;
+        }
+
+        public static Dictionary<BaseCmsAdminTool.AdminMenuTab, List<CmsAdminToolInfo>> ToTabKeyedDictionary(CmsAdminToolInfo[] arr)
+        {
+            Dictionary<BaseCmsAdminTool.AdminMenuTab, List<CmsAdminToolInfo>> ret = new Dictionary<BaseCmsAdminTool.AdminMenuTab, List<CmsAdminToolInfo>>();
+            foreach (CmsAdminToolInfo toolInfo in arr)
+            {
+                if (!ret.ContainsKey(toolInfo.MenuTab))
+                    ret[toolInfo.MenuTab] = new List<CmsAdminToolInfo>();
+
+                ret[toolInfo.MenuTab].Add(toolInfo);
             } // foreach
             return ret;
         }

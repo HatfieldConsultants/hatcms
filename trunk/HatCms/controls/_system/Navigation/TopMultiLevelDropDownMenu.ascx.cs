@@ -18,12 +18,12 @@ namespace HatCMS.Controls._system
 
         private bool IncludeHomepage
         {
-            get { return (CmsControlUtils.hasControlParameterKey(this, "IncludeHomepage")); }
+            get { return (CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, this, "IncludeHomepage")); }
         }
 
         private bool UseMenuTitles
         {
-            get { return (CmsControlUtils.hasControlParameterKey(this, "UseMenuTitles")); }
+            get { return (CmsControlUtils.hasControlParameterKey(CmsContext.currentPage, this, "UseMenuTitles")); }
         }
 
         private bool UsePageTitles
@@ -35,7 +35,7 @@ namespace HatCMS.Controls._system
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "CellIDFormat", "TopMultiLevelDropDownMenuItem_{1}");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "CellIDFormat", "TopMultiLevelDropDownMenuItem_{1}");
             } // get
         }
 
@@ -43,7 +43,7 @@ namespace HatCMS.Controls._system
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "OuterDivCSSClassName", "TopMultiLevelDropDownMenu");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "OuterDivCSSClassName", "TopMultiLevelDropDownMenu");
             } // get
         }
 
@@ -51,7 +51,7 @@ namespace HatCMS.Controls._system
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "ListItemClassName", "TopMultiLevelDropDownMenuItem");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "ListItemClassName", "TopMultiLevelDropDownMenuItem");
             } // get
         }
 
@@ -60,7 +60,7 @@ namespace HatCMS.Controls._system
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "ListItemClassName", "TopMultiLevelDropDownMenuGroup_{0}");
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "ListItemClassName", "TopMultiLevelDropDownMenuGroup_{0}");
             } // get
         }
 
@@ -68,7 +68,7 @@ namespace HatCMS.Controls._system
         {
             get
             {
-                return CmsControlUtils.getControlParameterKeyValue(this, "MaxLevels", 100);
+                return CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "MaxLevels", 100);
             } // get
         }
 

@@ -46,12 +46,12 @@ namespace HatCMS.controls
 
             if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
-                rssurl = CmsControlUtils.getControlParameterKeyValue(this, "rssurl", rssurl);
-                cacheDuration_hours = CmsControlUtils.getControlParameterKeyValue(this, "cacheduration_hours", cacheDuration_hours);            
-                itemTemplate = CmsControlUtils.getControlParameterKeyValue(this, "template", itemTemplate);
-                dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(this, "dateFormat", dateOutputFormat);
-                maxLengthOfSummary = CmsControlUtils.getControlParameterKeyValue(this, "summaryLength", maxLengthOfSummary);
-                dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(this, "dateOutputFormat", dateOutputFormat);
+                rssurl = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "rssurl", rssurl);
+                cacheDuration_hours = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "cacheduration_hours", cacheDuration_hours);
+                itemTemplate = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "template", itemTemplate);
+                dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "dateFormat", dateOutputFormat);
+                maxLengthOfSummary = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "summaryLength", maxLengthOfSummary);
+                dateOutputFormat = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "dateOutputFormat", dateOutputFormat);
             }
             else
             {

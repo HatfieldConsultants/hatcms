@@ -24,42 +24,30 @@ namespace HatCMS
     {
         /// <summary>
         /// To define a filter in a class, create a function CmsOutputFilter[] getOutputFilters(){};
-        /// Gets all Output Filters from all objects defined in this assembly. The result is cached in HttpContext.Current.Cache
+        /// Gets all Output Filters from all objects defined in this assembly. The result is cached on a per-request basis.
         /// </summary>
         /// <returns></returns>
-        private static Dictionary<CmsOutputFilterScope, CmsOutputFilter[]> GetAllOutputFilters()
-        {            
-            Assembly callingAssembly = Assembly.GetExecutingAssembly();
-
-            // the process for fetching all filters
-            Cache cache = System.Web.HttpContext.Current.Cache;
-            string cacheKey = "AllOutputFilters" + callingAssembly.FullName;
-            if (cache[cacheKey] != null)
-                return (Dictionary<CmsOutputFilterScope, CmsOutputFilter[]>)cache[cacheKey];
+        private static Dictionary<CmsOutputFilterScope, CmsOutputFilterInfo[]> GetAllOutputFilterInfos()
+        {                        
+            string cacheKey = "GetAllOutputFilterInfos";
+            if (PerRequestCache.CacheContains(cacheKey))
+                return (Dictionary<CmsOutputFilterScope, CmsOutputFilterInfo[]>)PerRequestCache.GetFromCache(cacheKey, new Dictionary<CmsOutputFilterScope, CmsOutputFilterInfo[]>());
 
 
-            System.Type[] assemblyTypes = callingAssembly.GetTypes();
+            System.Type[] filterTypes = Hatfield.Web.Portal.AssemblyHelpers.LoadAllAssembliesAndGetAllSubclassesOf(typeof(BaseCmsOutputFilter));
 
-            List<CmsOutputFilter> allFilters = new List<CmsOutputFilter>();
+            List<CmsOutputFilterInfo> allFilters = new List<CmsOutputFilterInfo>();
 
             try
             {
-
-                foreach (Type type in assemblyTypes)
+                foreach (Type type in filterTypes)
                 {
                     try
                     {
-                        // type.IsClass == true && !type.IsAbstract &&
-                        if (type.GetMethod("getOutputFilters") != null)
-                        {
-                            CmsOutputFilter[] filters = (CmsOutputFilter[])ExecuteDynamicCode.InvokeMethod(callingAssembly.Location, type.Name, "getOutputFilters", new object[0]);
-
-                            allFilters.AddRange(filters);
-#if DEBUG
-                            if (filters.Length > 0)
-                                Console.Write(type.Name + " had " + filters.Length + " filters");
-#endif
-                        }
+                        BaseCmsOutputFilter filter = (BaseCmsOutputFilter)type.Assembly.CreateInstance(type.FullName);
+                        CmsOutputFilterInfo info = filter.getOutputFilterInfo();
+                        allFilters.Add(info);
+                        
                     }
                     catch (Exception ex)
                     {
@@ -74,9 +62,9 @@ namespace HatCMS
                 Console.Write(ex.Message);
             }
 
-            Dictionary<CmsOutputFilterScope, CmsOutputFilter[]> ret = toDictionary(allFilters);
+            Dictionary<CmsOutputFilterScope, CmsOutputFilterInfo[]> ret = toDictionary(allFilters);
 
-            cache.Insert(cacheKey, ret, new CacheDependency(callingAssembly.Location));
+            PerRequestCache.AddToCache(cacheKey, ret);            
 
             return ret;
         } // GetAlloutputFilters
@@ -86,23 +74,23 @@ namespace HatCMS
         /// </summary>
         /// <param name="allFilters"></param>
         /// <returns></returns>
-        private static Dictionary<CmsOutputFilterScope, CmsOutputFilter[]> toDictionary(List<CmsOutputFilter> allFilters)
+        private static Dictionary<CmsOutputFilterScope, CmsOutputFilterInfo[]> toDictionary(List<CmsOutputFilterInfo> allFilters)
         {
-            Dictionary<CmsOutputFilterScope, List<CmsOutputFilter>> temp = new Dictionary<CmsOutputFilterScope,List<CmsOutputFilter>>();
+            Dictionary<CmsOutputFilterScope, List<CmsOutputFilterInfo>> temp = new Dictionary<CmsOutputFilterScope,List<CmsOutputFilterInfo>>();
             
             // create the dictionary keys
             foreach (CmsOutputFilterScope scope in Enum.GetValues(typeof(CmsOutputFilterScope)))
             {
-                temp[scope] = new List<CmsOutputFilter>();                
+                temp[scope] = new List<CmsOutputFilterInfo>();                
             }
             // add the filters
-            foreach (CmsOutputFilter f in allFilters)
+            foreach (CmsOutputFilterInfo f in allFilters)
             {
                 temp[f.Scope].Add(f);
             } // foreach
             // convert the List<> to array[]
 
-            Dictionary<CmsOutputFilterScope, CmsOutputFilter[]> ret = new Dictionary<CmsOutputFilterScope, CmsOutputFilter[]>();
+            Dictionary<CmsOutputFilterScope, CmsOutputFilterInfo[]> ret = new Dictionary<CmsOutputFilterScope, CmsOutputFilterInfo[]>();
             foreach (CmsOutputFilterScope scope in temp.Keys)
             {
                 ret.Add(scope, temp[scope].ToArray());
@@ -119,17 +107,17 @@ namespace HatCMS
         /// <returns></returns>
         public static string RunPlaceholderFilters(string placeholderName, CmsPage pageBeingFiltered, string htmlToFilter)
         {
-            Dictionary<CmsOutputFilterScope, CmsOutputFilter[]> allFilters = GetAllOutputFilters();
+            Dictionary<CmsOutputFilterScope, CmsOutputFilterInfo[]> allFilters = GetAllOutputFilterInfos();
             string filteredHtml = htmlToFilter;
 
             // -- run all global placeholder filters
-            foreach (CmsOutputFilter filterToRun in allFilters[CmsOutputFilterScope.AllPlaceholders])
+            foreach (CmsOutputFilterInfo filterToRun in allFilters[CmsOutputFilterScope.AllPlaceholders])
             {
                 filteredHtml = filterToRun.RunFilter(pageBeingFiltered, filteredHtml);
             } // foreach filter
 
             // -- filter specific placeholders
-            foreach (CmsOutputFilter filterToRun in allFilters[CmsOutputFilterScope.SpecifiedPlaceholderTypes])
+            foreach (CmsOutputFilterInfo filterToRun in allFilters[CmsOutputFilterScope.SpecifiedPlaceholderTypes])
             {
                 if (StringUtils.IndexOf(filterToRun.SpecificPlaceholderNamesOrControlPathsToFilter, placeholderName, StringComparison.CurrentCultureIgnoreCase) >= 0)
                 {
@@ -148,11 +136,11 @@ namespace HatCMS
         /// <returns></returns>
         public static string RunPageOutputFilters(CmsPage pageBeingFiltered, string pageHtmlToFilter)
         {
-            Dictionary<CmsOutputFilterScope, CmsOutputFilter[]> allFilters = GetAllOutputFilters();
+            Dictionary<CmsOutputFilterScope, CmsOutputFilterInfo[]> allFilters = GetAllOutputFilterInfos();
             string filteredHtml = pageHtmlToFilter;
 
             // -- run all global placeholder filters
-            foreach (CmsOutputFilter filterToRun in allFilters[CmsOutputFilterScope.PageHtmlOutput])
+            foreach (CmsOutputFilterInfo filterToRun in allFilters[CmsOutputFilterScope.PageHtmlOutput])
             {
                 filteredHtml = filterToRun.RunFilter(pageBeingFiltered, filteredHtml);
             } // foreach filter

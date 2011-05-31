@@ -17,7 +17,7 @@ namespace HatCMS
     /// Handles the common output of a CmsPage's &gt;head&lt;&gt;/head&lt; through the use of some useful functions.
     /// <para>The items tracked in this class are output using a <see cref="CmsOutputFilter"/> at the CmsOutputFilterScope.PageHtmlOutput level.</para>
     /// </summary>
-    public class CmsPageHeadSection
+    public class CmsPageHeadSection: BaseCmsOutputFilter
     {
         // used by private jqueryIsIncluded function
         string[] JQueryLibraryFilenames = new string[] {
@@ -56,13 +56,11 @@ namespace HatCMS
         {            
         }
 
-        public CmsOutputFilter[] getOutputFilters()
+        public override CmsOutputFilterInfo getOutputFilterInfo()
         {
-            return new CmsOutputFilter[] {
-                new CmsOutputFilter( CmsOutputFilterScope.PageHtmlOutput, _runPageFilter)
-            };
+            return new CmsOutputFilterInfo(CmsOutputFilterScope.PageHtmlOutput, _runPageFilter);
         }
-
+        
 
         public string _runPageFilter(CmsPage pageBeingFiltered, string htmlToFilter)
         {

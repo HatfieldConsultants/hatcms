@@ -55,9 +55,9 @@ namespace HatCMS.Controls
             StringBuilder html = new StringBuilder();
 
             string swh = "http://www.sadcwaterhub.org/glossary/feed?lang_tid[0]=2";
-            string url = CmsControlUtils.getControlParameterKeyValue(this, "rssurl", swh);
+            string url = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "rssurl", swh);
 
-            int cacheDuration_hours = CmsControlUtils.getControlParameterKeyValue(this, "cacheduration_hours", 12);
+            int cacheDuration_hours = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "cacheduration_hours", 12);
 
             Rss.RssFeed glossaryRss;
             // the RSS feed is cached to improve performance.

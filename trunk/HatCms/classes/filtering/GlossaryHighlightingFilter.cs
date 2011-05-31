@@ -13,17 +13,18 @@ using HatCMS.Placeholders;
 
 namespace HatCMS
 {
-    public class GlossaryHighlightingFilter
+    /// <summary>
+    /// Filter the page's HTML so that glossary terms have a span tag surrounding them.
+    /// </summary>
+    public class GlossaryHighlightingFilter : BaseCmsOutputFilter
     {
         /// <summary>
-        /// Filter the page's HTML so that glossary terms have a span tag surrounding them.
+        /// Registers the GlossaryHighlightingFilter output filter. 
         /// </summary>
         /// <returns></returns>
-        public CmsOutputFilter[] getOutputFilters()
+        public override CmsOutputFilterInfo getOutputFilterInfo()
         {
-            return new CmsOutputFilter[] {
-                new CmsOutputFilter( CmsOutputFilterScope.SpecifiedPlaceholderTypes, new string[] {"HtmlContent"}, RunInlineGlossaryFilter)
-            };
+            return new CmsOutputFilterInfo(CmsOutputFilterScope.SpecifiedPlaceholderTypes, new string[] { "HtmlContent" }, RunInlineGlossaryFilter);            
         }
 
         public string RunInlineGlossaryFilter(CmsPage pageBeingFiltered, string placeholderHtml)

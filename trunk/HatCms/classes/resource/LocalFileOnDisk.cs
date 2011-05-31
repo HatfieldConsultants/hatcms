@@ -11,7 +11,8 @@ using Hatfield.Web.Portal.Data;
 
 namespace HatCMS
 {
-    public class CmsLocalFileOnDisk
+	// Note: look at the Orchard IStorageProvider interface as being a nicer way to implement this: http://orchard.codeplex.com/SourceControl/changeset/view/48ba0ed3ac80#src%2fOrchard%2fFileSystems%2fMedia%2fIStorageProvider.cs
+	public class CmsLocalFileOnDisk
     {
         public int autoincid;        
 

@@ -32,11 +32,13 @@ namespace HatCMS._system
                 return;
             }
 
-            string adminTool = PageUtils.getFromForm("adminTool", "");
+            string adminToolName = PageUtils.getFromForm("adminTool", "");
+            if (BaseCmsAdminTool.AdminToolExists(adminToolName))
             try
             {
-                CmsBaseAdminTool.CmsAdminToolClass tool = (CmsBaseAdminTool.CmsAdminToolClass)Enum.Parse(typeof(CmsBaseAdminTool.CmsAdminToolClass), adminTool);
-                downloadContent(tool, context);
+                BaseCmsAdminTool tool = BaseCmsAdminTool.getAdminToolInstanceByName(adminToolName);
+                if (tool != null)                
+                    downloadContent(tool, context);
             }
             catch { }
         }
@@ -46,22 +48,17 @@ namespace HatCMS._system
         /// </summary>
         /// <param name="tool"></param>
         /// <param name="context"></param>
-        protected void downloadContent(CmsBaseAdminTool.CmsAdminToolClass tool, HttpContext context)
+        protected void downloadContent(BaseCmsAdminTool tool, HttpContext context)
         {
             string fileName = tool.ToString() + "_" + DateTime.Now.ToString("yyyy-MM-dd") + ".xls";
             GridView gridview1 = new GridView();
             
-            switch (tool)
-            {
-                case CmsBaseAdminTool.CmsAdminToolClass.ListUserFeedback:
-                    gridview1 = new UserFeedbackDb().FetchAllUserFeedbackSubmittedDataAsGrid();
-                    break;
-                case CmsBaseAdminTool.CmsAdminToolClass.ListRegisteredProjects:
-                    gridview1 = new RegisterProjectDb().fetchAllAsGrid();
-                    break;
-                default:
-                    break;
-            }
+            if (tool.GetType().Name.EndsWith("ListUserFeedback"))
+                gridview1 = new UserFeedbackDb().FetchAllUserFeedbackSubmittedDataAsGrid();
+            else if (tool.GetType().Name.EndsWith("ListRegisteredProjects"))
+                gridview1 = new RegisterProjectDb().fetchAllAsGrid();
+
+            
             OutputDataSetToExcelFile.OutputToResponse(gridview1, fileName, "", "", context.Response);
         }
 

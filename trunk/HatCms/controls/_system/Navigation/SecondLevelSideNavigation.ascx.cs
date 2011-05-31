@@ -42,7 +42,7 @@ namespace HatCMS.Controls._system
 			int maxLevels = 100;
             maxLevels = CmsConfig.getConfigValue("SideNavMaxLevels", maxLevels);
 
-            bool outputAllChildren = CmsControlUtils.getControlParameterKeyValue(this, "OutputAllChildren", false);
+            bool outputAllChildren = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "OutputAllChildren", false);
 			
 			string html = "<div id=\"SideNav\">";
 

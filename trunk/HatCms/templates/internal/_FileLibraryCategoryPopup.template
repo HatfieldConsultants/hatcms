@@ -1,5 +1,0 @@
-##TemplateLayout(internal/InternalPopup)##
-##StartPlaceholderRegion("MainContent")##
-	<h2>##RenderControl(_system/PageTitle)##</h2>
-	##RenderControl(_system/Internal/FileLibraryCategoryPopup)##
-##EndPlaceholderRegion("MainContent")##

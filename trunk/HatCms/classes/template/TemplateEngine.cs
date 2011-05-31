@@ -17,8 +17,8 @@ namespace HatCMS
     public abstract class CmsTemplateEngine
     {
         
-        public abstract void CreateChildControls();
-        public abstract string renderControlToString(string controlPath);
+        public abstract void CreateChildControls(System.Web.UI.UserControl parentToAddControlsTo);
+        public abstract string renderControlToString(string controlPathOrName);
         public abstract CmsControlDefinition[] getAllControlDefinitions();
         public abstract CmsPlaceholderDefinition[] getAllPlaceholderDefinitions();
 

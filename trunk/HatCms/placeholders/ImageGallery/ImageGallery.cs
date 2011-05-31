@@ -209,11 +209,11 @@ namespace HatCMS.Placeholders
 					// "imgCaption"+ImageGalleryId+"_"+imgFilenameUnderAppPath;					
 					if (captionId != "")
 					{						
-						string capId = page.Server.UrlDecode(captionId);
+						string capId = System.Web.HttpContext.Current.Server.UrlDecode(captionId);
 						if (capId.StartsWith("imgCaption"+ImageGalleryId+"_"))
 						{
 							string imgFilenameUnderAppPath = capId.Substring(("imgCaption"+ImageGalleryId+"_").Length);
-							string caption = PageUtils.getFromForm(page.Server.UrlEncode(capId),"");
+                            string caption = PageUtils.getFromForm(System.Web.HttpContext.Current.Server.UrlEncode(capId), "");
 							ImageGalleryImageData img = data.getImageData(imgFilenameUnderAppPath);
 							img.Caption = caption;
 							img.Filename = imgFilenameUnderAppPath;
@@ -412,7 +412,7 @@ namespace HatCMS.Placeholders
                 html.Append("<br>");
                 if (inEditMode)
                 {
-                    string tbName = page.Server.UrlEncode("imgCaption" + ImageGalleryId + "_" + imgFilenameUnderAppPath);
+                    string tbName = System.Web.HttpContext.Current.Server.UrlEncode("imgCaption" + ImageGalleryId + "_" + imgFilenameUnderAppPath);
                     formCaptionNames.Add(tbName);
                     string tb = PageUtils.getInputTextHtml(tbName, tbName, imgData.Caption, 15, 255);
                     tb = "<nobr>caption: " + tb + "</nobr>";
