@@ -182,5 +182,50 @@ namespace Hatfield.Web.Portal
             return ret.ToArray();
         }
 
+        /// <summary>
+        /// Load All assemblies in the BIN directory, and
+        /// returns a dictionary in the format [ResourceName] => AssemblyContainingTheResource
+        /// </summary>
+        /// <param name="extensions"></param>
+        /// <returns></returns>
+        public static Dictionary<string, Assembly> LoadAllAssembliesAndGetAllEmbeddedResourcesWithExtensions(string[] extensions)
+        {
+            Assembly[] assemblies = LoadAllBinDirectoryAssemblies();
+            Dictionary<string, Assembly> ret = new Dictionary<string,Assembly>();
+            foreach (Assembly asm in assemblies)
+            {
+                try
+                {
+                    foreach (string resName in asm.GetManifestResourceNames())
+                    {
+                        if (StringUtils.IndexOf(extensions, Path.GetExtension(resName), StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        {
+                            ret[resName] = asm;
+                        }
+                    }
+                }
+                catch (System.NotSupportedException notSupEx)
+                {
+                    Console.Write("Could not read dynamic resources!");
+                }
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// Takes the full name of a resource and loads it in to a stream.
+        /// </summary>
+        /// <param name="resourceName">Assuming an embedded resource is a file
+        /// called info.png and is located in a folder called Resources, it
+        /// will be compiled in to the assembly with this fully qualified
+        /// name: Full.Assembly.Name.Resources.info.png. That is the string
+        /// that you should pass to this method.</param>
+        /// <returns></returns>
+        public static Stream GetEmbeddedResourceStream(Assembly assemblyWithTheResource, string resourceName)
+        {
+            return assemblyWithTheResource.GetManifestResourceStream(resourceName);
+        }
+
     }
 }

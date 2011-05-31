@@ -12,18 +12,19 @@ namespace Hatfield.Web.Portal
 
         private static Hashtable AssemblyCache = new Hashtable();
 
-        public static Object InvokeMethod(string AssemblyName, string ClassName, string MethodName, Object[] args)
+        public static Object InvokeMethod(string AssemblyLocation, string ClassName, string MethodName, Object[] args)
         {
             // load the assembly
             Assembly assembly = null;
-            if (AssemblyCache[AssemblyName] != null)
+            if (AssemblyCache[AssemblyLocation] != null)
             {
-                assembly = AssemblyCache[AssemblyName] as Assembly;
+                assembly = AssemblyCache[AssemblyLocation] as Assembly;
             }
             else
             {
-                assembly = Assembly.LoadFrom(AssemblyName);
-                AssemblyCache[AssemblyName] = assembly;
+                AssemblyName asmName = AssemblyName.GetAssemblyName(AssemblyLocation);
+                assembly = AppDomain.CurrentDomain.Load(asmName);
+                AssemblyCache[AssemblyLocation] = assembly;
             }
 
 
@@ -47,7 +48,7 @@ namespace Hatfield.Web.Portal
                     } // if
                 } // if
             } // foreach
-            throw (new System.Exception("could not invoke method " + MethodName + " in class " + ClassName + " in Assembly " + AssemblyName));
+            throw (new System.Exception("could not invoke method " + MethodName + " in class " + ClassName + " in Assembly " + AssemblyLocation));
         } // InvokeMethod
 
     } // class

@@ -21,9 +21,9 @@ namespace Hatfield.Web.Portal
             } // foreach
 
             StringBuilder errDisplay = new StringBuilder();
-            errDisplay.Append("<p><strong>Aw, Snap!</strong></p>");
-            errDisplay.Append("<p>Something <em>definitely</em> went wrong with this webpage. An email has been sent to our staff letting them know that you had this error.</p>");
-            errDisplay.Append("<p>To continue, please Reload, go to our <a href=\"" + HttpContext.Current.Request.ApplicationPath + "\">home page</a> or go to another page.</p>");
+            errDisplay.Append("<p><strong>Server Error.</strong></p>");
+            errDisplay.Append("<p>Something has gone wrong with this webpage. An email has been sent to our staff letting them know that you had this error.</p>");
+            errDisplay.Append("<p>To continue, please <a href=\"javascript:location.reload(true);\">Reload</a>, go to our <a href=\"" + HttpContext.Current.Request.ApplicationPath + "\">home page</a> or go to another page.</p>");
 
             Application_Error_StandardEmailSender(context, from, to.ToArray(), emailSubject, smtpHostName, errDisplay.ToString());
         }
