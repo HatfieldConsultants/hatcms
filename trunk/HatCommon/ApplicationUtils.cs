@@ -11,6 +11,10 @@ namespace Hatfield.Web.Portal
     {
         public static void Application_Error_StandardEmailSender(HttpContext context, string fromEmailAddress, string[] toEmailAddresses, string smtpHostName)
         {
+            // don't do anything if we're debugging.
+            if (context.IsDebuggingEnabled)
+                return;
+
             string emailSubject = context.Request.Url.ToString().Split('/')[2] + " has an ASP.NET error at " + DateTime.Now.ToString("MMM dd yyyy HH:mm");
 
             System.Net.Mail.MailAddress from = new MailAddress(fromEmailAddress);
