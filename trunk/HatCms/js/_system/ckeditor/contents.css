@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -16,65 +16,8 @@ body
 	background-color: #fff;
 }
 
-html
+/* preserved spaces for rtl list item bullets. (#6249)*/
+ol,ul,dl
 {
-	/* #3658: [IE6] Editor document has horizontal scrollbar on long lines
-	To prevent this misbehavior, we show the scrollbar always */
-	_overflow-y: scroll
-}
-
-img:-moz-broken
-{
-	-moz-force-broken-image-icon : 1;
-	width : 24px;
-	height : 24px;
-}
-img, input, textarea
-{
-	cursor: default;
-}
-
-div.ReferencedTextBox
-{
-	border: 1px solid #13441d;
-	padding: 5px;
-	background-color: #ede2c3;
-}
-
-h3.ReferencedTextBoxTitle
-{
-	font-size: 14px;	
-	/* background-color: #e8a86e; */
-	padding-top: 0px;
-	margin-top: 0px;
-	padding-bottom: 0px; 
-	margin-bottom: 0px;
-    font-weight: bold;
-	font-style: normal;
-}
-
-div.ReferencedTextBoxCredits
-{
-	font-size: 10px;
-	font-style: italic;
-	/* background-color: #e8a86e; */
-	text-align: right;
-	padding-right: 5px;
-}
-
-h3.TableTitle
-{
-	font-size: 10pt;	
-	background-color: #ede2c3;
-	padding: 3px;
-	margin: 0px;
-	font-weight: bold;
-}
-
-div.TableCredits
-{
-	font-size: 10px;
-	font-style: italic;
-	background-color: #ede2c3;
-	text-align: center;
+    padding-right:40px;
 }
