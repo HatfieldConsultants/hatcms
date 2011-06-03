@@ -35,6 +35,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminModuleInfo.cs" />
     <Compile Include="Authoring\controls\ChangePageTemplatePopup.cs" />
     <Compile Include="Authoring\controls\CreateNewPagePopup.cs" />
     <Compile Include="Authoring\controls\DeleteFileLibraryPopup.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="ToolsReports\admin\Reports\PageUrlsById.cs" />
     <Compile Include="ToolsReports\admin\Reports\SingleImageMissingCaptions.cs" />
     <Compile Include="ToolsReports\admin\Reports\UnusedFiles.cs" />
+    <Compile Include="ToolsReports\admin\Tools\ReindexSearchResults.cs" />
     <Compile Include="ToolsReports\admin\Tools\EmptyThumbnailCache.cs" />
     <Compile Include="ToolsReports\admin\Tools\SearchAndReplace.cs" />
     <Compile Include="ToolsReports\admin\Tools\SearchHtmlContent.cs" />

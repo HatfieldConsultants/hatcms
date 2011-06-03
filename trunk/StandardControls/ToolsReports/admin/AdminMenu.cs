@@ -110,7 +110,7 @@ namespace HatCMS.Admin
             CmsPage page = CmsContext.currentPage;
             CmsLanguage langToRenderFor = CmsContext.currentLanguage;
 
-            page.HeadSection.AddCSSFile("css/_system/AdminTools.css");
+            page.HeadSection.AddCSSFile(CSSGroup.ControlOrPlaceholder, "css/_system/AdminTools.css");
 
             BaseCmsAdminTool toolToRun = getToolToRun();
 

@@ -241,8 +241,8 @@ namespace HatCMS.Admin
         protected void RenderHtmlHead()
         {
             CmsPageHeadSection h = CmsContext.currentPage.HeadSection;
-            h.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
-            h.AddJavascriptFile("js/_system/Zone/ZoneManagement.js");
+            h.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
+            h.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/Zone/ZoneManagement.js");
         }
 
         /// <summary>

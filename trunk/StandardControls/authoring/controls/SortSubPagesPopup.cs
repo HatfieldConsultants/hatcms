@@ -67,7 +67,7 @@ namespace HatCMS.Controls
             // -- render the form
             CmsPage currentPage = CmsContext.currentPage;
 
-            currentPage.HeadSection.AddJavascriptFile("js/_system/sortSelectList.js");
+            currentPage.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/sortSelectList.js");
 
 
             string formId = "sortSubPagesForm";

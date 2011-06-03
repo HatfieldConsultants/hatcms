@@ -37,8 +37,8 @@ namespace HatCMS.Controls
             js.Append("];");
             page.HeadSection.AddJSStatements(js.ToString());
 
-            page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
-            page.HeadSection.AddJavascriptFile("js/_system/JobDatabase/JobLocation.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/JobDatabase/JobLocation.js");
         }
 
         /// <summary>

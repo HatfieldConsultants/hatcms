@@ -148,7 +148,7 @@ namespace HatCMS.Admin
 
                 CmsContext.currentPage.HeadSection.AddJSStatements(script.ToString());
 
-                CmsContext.currentPage.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
+                CmsContext.currentPage.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
             }
 
             StringBuilder html = new StringBuilder();

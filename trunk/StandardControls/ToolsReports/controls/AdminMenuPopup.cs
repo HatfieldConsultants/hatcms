@@ -9,7 +9,8 @@ namespace HatCMS.Controls
     {
         public override CmsDependency[] getDependencies()
         {
-            List<CmsDependency> ret = new List<CmsDependency>();
+            // -- add the control dependencies
+            List<CmsDependency> ret = new List<CmsDependency>();                       
 
             return ret.ToArray();
         }
