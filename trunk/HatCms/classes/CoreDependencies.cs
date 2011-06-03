@@ -16,7 +16,7 @@ namespace HatCMS
     /// <summary>
     /// This class gathers dependencies from all placeholders, controls, and core systems.
     /// </summary>
-    public class CmsDependencies
+    public class CmsDependencyUtils
     {
         /// <summary>
         /// This gathers dependencies from all placeholders, controls, and core systems.
@@ -105,7 +105,10 @@ namespace HatCMS
             ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("placeholders"));
 			ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("_system/_AdminDocs"));
 
-            ret.Add(CmsFileDependency.UnderAppPath("bin/XmpToolkit.dll")); // ensure that the XmpToolkit is being copied over
+            if (!Hatfield.Web.Portal.PageUtils.IsRunningOnMono())
+            {
+                ret.Add(CmsFileDependency.UnderAppPath("bin/XmpToolkit.dll")); // ensure that the XmpToolkit is being copied over
+            }
 
             #endif
 
@@ -138,13 +141,16 @@ namespace HatCMS
             ret.Add(new CmsConfigItemDependency("blogPostTemplate", CmsDependency.ExistsMode.MustNotExist)); // blogging is no more.
             ret.Add(new CmsConfigItemDependency("DefaultImageThumbnailSize", CmsDependency.ExistsMode.MustNotExist)); // not used any more
             
-            // -- ensure that the HtmlContent placeholders do not have the old link to the showThumb.aspx page (note: this validation is slow!!)
+            // -- ensure that the HtmlContent placeholders do not have the old link to the showThumb.aspx page (note: this validation is slow, but very useful.)
             ret.Add(new CmsPlaceholderContentDependency("HtmlContent", "_system/showthumb.aspx", CmsDependency.ExistsMode.MustNotExist, StringComparison.CurrentCultureIgnoreCase));
 
             ret.Add(new CmsControlDependency("_system/internal/EditCalendarCategoriesPopup", CmsDependency.ExistsMode.MustNotExist)); // deprecated. now "_system/internal/EventCalendarCategoryPopup"
 
             // -- gather all admin tool dependencies
             ret.AddRange(HatCMS.Admin.BaseCmsAdminTool.getAllAdminToolDependencies());
+
+            // -- gather all Module-level dependencies
+            ret.AddRange(CmsModuleUtils.getAllModuleLevelDependencies());
             
             // -- all pages should have valid templates, placeholders and controls
             Dictionary<int, CmsPage> allPages = CmsContext.HomePage.getLinearizedPages();
@@ -212,7 +218,7 @@ namespace HatCMS
                 }
             } // foreach
 
-            //
+            // remove all duplicates based on the content of each dependency.
 
             return CmsDependency.RemoveDuplicates(ret.ToArray());
         }

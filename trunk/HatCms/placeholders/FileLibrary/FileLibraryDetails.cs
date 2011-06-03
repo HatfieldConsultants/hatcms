@@ -170,7 +170,7 @@ namespace HatCMS.Placeholders
         protected void addCssAndScript(CmsPage page)
         {
             CmsPageHeadSection h = page.HeadSection;
-            h.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
+            h.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
 
             StringBuilder css = new StringBuilder();
             css.Append(".listing > div > label { margin: 5px; display: block; float: left; clear: left; text-align: right; padding-left: 1em; width: 160px; }" + EOL);

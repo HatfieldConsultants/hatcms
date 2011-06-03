@@ -195,53 +195,7 @@ namespace HatCMS
         
         protected void Application_Error(Object sender, EventArgs e)
         {
-            Exception ex = Server.GetLastError().GetBaseException();
-
-            Console.WriteLine(" == Application_Error == ");
-            Console.WriteLine("URL: " + Request.Url.ToString());
-            Console.WriteLine("MESSAGE: " + ex.Message);
-            Console.WriteLine("SOURCE: " + ex.Source);
-            Console.WriteLine("FORM: " + Request.Form.ToString());
-
-            Console.WriteLine("TARGETSITE: " + ex.TargetSite);
-            Console.WriteLine("STACKTRACE: " + ex.StackTrace);
-            try
-            {
-                if (Session != null)
-                {
-                    Console.WriteLine("SESSION: session has " + Session.Keys.Count + " keys");
-                    int num = 1;
-                    foreach (string key in Session.Keys)
-                    {
-                        Console.WriteLine(num.ToString() + "; Session[" + key + "] = " + Session[key].ToString());
-                        num++;
-                    }
-                }
-            }
-            catch { }
-
-            if (HttpRuntime.Cache != null)
-            {
-                Console.WriteLine("Cache has " + HttpRuntime.Cache.Count + " items");
-                int num2 = 1;
-
-                IDictionaryEnumerator enumerator = HttpRuntime.Cache.GetEnumerator();
-                while (enumerator.MoveNext())
-                {
-                    string key = (String)((DictionaryEntry)enumerator.Current).Key;
-                    Console.WriteLine(num2.ToString() + " Cache[" + key + "] = " + Context.Cache[key].ToString());
-                    num2++;
-                } // while
-            }
-
-            if (System.Reflection.Assembly.GetAssembly(typeof(System.Web.HttpRuntime)).GetType("System.Web.HttpRuntime").GetMember("Cache").Length > 0)
-                Console.WriteLine("HttpRuntime has a Cache member");
-            if (System.Reflection.Assembly.GetAssembly(typeof(System.Web.HttpRuntime)).GetType("System.Web.HttpRuntime").GetMember("InternalCache").Length > 0)
-                Console.WriteLine("HttpRuntime has a InternalCache member");
-            
-            
-
-            Console.WriteLine(" ==== ");
+            Hatfield.Web.Portal.ApplicationUtils.Application_Error_StandardEmailSender(HttpContext.Current, "jsuwala@hatfieldgroup.com", new string[] { "jsuwala@hatfieldgroup.com"}, "mx.hatfieldgroup.com");
         }
 
 		

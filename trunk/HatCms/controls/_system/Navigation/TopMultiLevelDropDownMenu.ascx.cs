@@ -122,10 +122,10 @@ namespace HatCMS.Controls._system
             html.Append("<br style=\"clear: left\" />");
             html.Append("</div>"+Environment.NewLine);
 
-            currentPage.HeadSection.AddCSSFile("css/_system/TopMultiLevelDropDownMenu.css");
+            currentPage.HeadSection.AddCSSFile(CSSGroup.ControlOrPlaceholder, "css/_system/TopMultiLevelDropDownMenu.css");
             currentPage.HeadSection.AddCSSStyleStatements("<!--[if lte IE 7]>html .TopMultiLevelDropDownMenu{height: 1%;} <![endif]-->");
-            currentPage.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
-            currentPage.HeadSection.AddJavascriptFile("js/_system/TopMultiLevelDropDownMenu.js");
+            currentPage.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
+            currentPage.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/TopMultiLevelDropDownMenu.js");
 
             currentPage.HeadSection.AddJSOnReady("var arrowimages={down:['downarrowclass', '" + CmsContext.ApplicationPath + "images/_system/TopMultiLevelDropDownMenu/down.gif', 23], right:['rightarrowclass', '" + CmsContext.ApplicationPath + "images/_system/TopMultiLevelDropDownMenu/right.gif']}");
             currentPage.HeadSection.AddJSOnReady("TopMultiLevelDropDownMenu.buildmenu('" + divId + "', arrowimages);");

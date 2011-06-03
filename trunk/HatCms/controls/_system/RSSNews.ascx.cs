@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 
-namespace HatCMS.controls
+namespace HatCMS.Controls
 {
     public partial class RSSNews : System.Web.UI.UserControl
     {

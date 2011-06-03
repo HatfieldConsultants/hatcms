@@ -162,7 +162,7 @@ namespace HatCMS.Placeholders
             
             if (renderMap)
             {
-                page.HeadSection.AddJavascriptFile("http://maps.google.com/maps?file=api&amp;v=2&amp;key=" + info.APIKey);
+                page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "http://maps.google.com/maps?file=api&amp;v=2&amp;key=" + info.APIKey);
 
                 string mapId = "GoogleMap_" + page.ID.ToString() + "_" + identifier.ToString();
                 string loadFunctionName = "LoadMap" + mapId;

@@ -22,7 +22,7 @@ namespace HatCMS
             get
             {
                 return new CmsDependency[] {
-                CmsFileDependency.UnderAppPath("js/_system/ckeditor/ckeditor.js"),
+                CmsFileDependency.UnderAppPath("js/_system/ckeditor/ckeditor.js", new DateTime(2011,5,9)),
                     CmsFileDependency.UnderAppPath("js/_system/ckeditor/config.js", new DateTime(2010,4,29)),
                     CmsFileDependency.UnderAppPath("js/_system/ckeditor/styles.js"),
                     CmsFileDependency.UnderAppPath("js/_system/ckeditor/contents.css"),                    
@@ -51,7 +51,7 @@ namespace HatCMS
 
         public static void AddPageJavascriptStatements(CmsPage page, string editorId, string renderWidth, string renderHeight, CmsLanguage language)
         {
-            page.HeadSection.AddJavascriptFile("js/_system/ckeditor/ckeditor.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/ckeditor/ckeditor.js");
 
             string lang = "";
             if (language.isValidLanguage && CmsConfig.Languages.Length > 1)

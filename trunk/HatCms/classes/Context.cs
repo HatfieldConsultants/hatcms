@@ -471,6 +471,16 @@ namespace HatCMS
             Thread.CurrentThread.CurrentUICulture = targetCulture;
         }
 
+        /// <summary>
+        /// External modules (found in external DLL assembies) can provide a class that inherits from CmsModuleInfo to provide information on
+        /// the module. 
+        /// </summary>
+        /// <returns></returns>
+        public static CmsModuleInfo[] getAllModuleInfos()
+        {
+            return CmsModuleUtils.getAllModuleInfos();
+        }
+
 		/// <summary>
 		/// This function is called whenever a new request is started.
 		/// </summary>

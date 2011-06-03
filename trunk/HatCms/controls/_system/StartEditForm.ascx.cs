@@ -35,7 +35,7 @@ namespace HatCMS.Controls
             if (CmsContext.currentPage.currentUserCanWrite && CmsContext.currentEditMode == CmsEditMode.Edit)
             {
                 writer.WriteLine(CmsContext.currentPage.getFormStartHtml(FormId, "submitting = true;"));
-                CmsContext.currentPage.HeadSection.AddJavascriptFile("js/_system/beforeUnload.js");
+                CmsContext.currentPage.HeadSection.AddJavascriptFile(JavascriptGroup.FrontEnd, "js/_system/beforeUnload.js");
             }
         }
 

@@ -386,7 +386,7 @@ namespace HatCMS.Placeholders
                 js.Append("} " + Environment.NewLine);
 
                 page.HeadSection.AddJSStatements(js.ToString());
-                page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
+                page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
 
                 html.Append("<br>Check: <a href=\"#\" onclick=\"" + checkAllFnName + "(); return false;\">all</a> | <a href=\"#\" onclick=\"" + checkNoneFnName + "(); return false;\">none</a>");
 

@@ -34,7 +34,7 @@ namespace HatCMS.Placeholders.Calendar
 
 
             ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("EditCalendarCategoryPagePath", "/_admin/EventCalendarCategory"), CmsConfig.Languages));
-            ret.Add(CmsControlDependency.UnderControlDir("_system/Internal/EventCalendarCategoryPopup.ascx", new DateTime(2010, 2, 17)));
+            ret.Add(new CmsControlDependency("EventCalendarCategoryPopup"));
 
             // -- Hatfield modified version of jquery.fullcalendar -- SimpleCalendar
             ret.Add(CmsFileDependency.UnderAppPath("_system/tools/Calendar/SimpleCalendarJsonData.ashx"));
@@ -222,9 +222,9 @@ namespace HatCMS.Placeholders.Calendar
         /// <param name="page"></param>
         protected void addCssAndScriptForCalendarPlugin(CmsPage page)
         {
-            page.HeadSection.AddCSSFile("js/_system/jquery.fullcalendar/fullcalendar.css");
-            page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
-            page.HeadSection.AddJavascriptFile("js/_system/jquery.fullcalendar/fullcalendar.min.js");
+            page.HeadSection.AddCSSFile(CSSGroup.Library, "js/_system/jquery.fullcalendar/fullcalendar.css");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery.fullcalendar/fullcalendar.min.js");
         }
 
         /// <summary>

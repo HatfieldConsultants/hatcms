@@ -35,9 +35,9 @@ namespace HatCMS.setup
             ret.Add(CmsFileDependency.UnderAppPath("css/_system/Setup.css"));
             ret.Add(new CmsTemplateDependency(RedirectTemplateName));
             ret.Add(new CmsTemplateDependency("_login"));
-            ret.Add(new CmsTemplateDependency("internal/_gotoEditMode"));
-            ret.Add(new CmsTemplateDependency("internal/_gotoViewMode"));
-            ret.Add(new CmsTemplateDependency("internal/_CreateNewPagePopup"));                        
+            ret.Add(new CmsTemplateDependency("_gotoEditMode"));
+            ret.Add(new CmsTemplateDependency("_gotoViewMode"));
+            ret.Add(new CmsTemplateDependency("_CreateNewPagePopup"));                        
 
             return ret.ToArray();
         }
@@ -324,7 +324,7 @@ namespace HatCMS.setup
             CmsDependency[] dependencies;
             try
             {
-                dependencies = CmsDependencies.GatherAllDependencies();
+                dependencies = CmsDependencyUtils.GatherAllDependencies();
             }
             catch (Exception ex)
             {
@@ -405,64 +405,64 @@ namespace HatCMS.setup
 
 
                 //# Toggle Edit Admin Action Page
-                InsertPage("gotoEdit", "Goto Edit Mode", "Goto Edit Mode", "", "internal/_gotoEditMode", AdminActionsPageId, -1, false);
+                InsertPage("gotoEdit", "Goto Edit Mode", "Goto Edit Mode", "", "_gotoEditMode", AdminActionsPageId, -1, false);
 
-                InsertPage("gotoView", "Goto View Mode", "Goto View Mode", "", "internal/_gotoViewMode", AdminActionsPageId, -1, false);
+                InsertPage("gotoView", "Goto View Mode", "Goto View Mode", "", "_gotoViewMode", AdminActionsPageId, -1, false);
 
 
                 //# /_admin/actions/createPage
-                InsertPage("createPage", "Create Page", "Create Page", "", "internal/_CreateNewPagePopup", AdminActionsPageId, -1, false);
+                InsertPage("createPage", "Create Page", "Create Page", "", "_CreateNewPagePopup", AdminActionsPageId, -1, false);
 
 
                 // # Delete Page Admin Action Page
-                InsertPage("deletePage", "Delete Page", "Delete Page", "", "internal/_DeletePagePopup", AdminActionsPageId, -1, false);
+                InsertPage("deletePage", "Delete Page", "Delete Page", "", "_DeletePagePopup", AdminActionsPageId, -1, false);
 
 
                 //# Sort Sub Pages Admin Action Page
-                InsertPage("sortSubPages", "Sort Sub Pages", "Sort Sub Pages", "", "internal/_SortSubPagesPopup", AdminActionsPageId, -1, false);
+                InsertPage("sortSubPages", "Sort Sub Pages", "Sort Sub Pages", "", "_SortSubPagesPopup", AdminActionsPageId, -1, false);
 
                 //# Change Menu Visibiity (Show In Menu indicator) Admin Action Page
-                InsertPage("MenuVisibilityPopup", "Change Menu Visibility", "Change Menu Visibility", "", "internal/_MenuVisibilityPopup", AdminActionsPageId, -1, false);
+                InsertPage("MenuVisibilityPopup", "Change Menu Visibility", "Change Menu Visibility", "", "_MenuVisibilityPopup", AdminActionsPageId, -1, false);
 
                 // /_admin/actions/movePage
-                InsertPage("movePage", "Move Page", "Move Page", "", "internal/_MovePagePopup", AdminActionsPageId, -1, false);
+                InsertPage("movePage", "Move Page", "Move Page", "", "_MovePagePopup", AdminActionsPageId, -1, false);
 
 
                 // /_admin/actions/renamePage
-                InsertPage("renamePage", "Rename Page", "Rename Page", "", "internal/_RenamePagePopup", AdminActionsPageId, -1, false);
+                InsertPage("renamePage", "Rename Page", "Rename Page", "", "_RenamePagePopup", AdminActionsPageId, -1, false);
 
                 // /_admin/actions/killLock
-                InsertPage("killLock", "Kill Edit Page Lock", "Kill Edit Page Lock", "", "internal/_KillLockPopup", AdminActionsPageId, -1, false);
+                InsertPage("killLock", "Kill Edit Page Lock", "Kill Edit Page Lock", "", "_KillLockPopup", AdminActionsPageId, -1, false);
 
 
                 // /_admin/actions/changeTemplate
-                InsertPage("changeTemplate", "Change Page's Template", "Change Page's Template", "", "internal/_ChangePageTemplatePopup", AdminActionsPageId, -1, false);
+                InsertPage("changeTemplate", "Change Page's Template", "Change Page's Template", "", "_ChangePageTemplatePopup", AdminActionsPageId, -1, false);
 
 
                 // /_admin/actions/deleteFileLibrary
-                InsertPage("deleteFileLibrary", "Delete a file library", "Delete a file library", "", "internal/_DeleteFileLibraryPopup", AdminActionsPageId, -1, false);
+                InsertPage("deleteFileLibrary", "Delete a file library", "Delete a file library", "", "_DeleteFileLibraryPopup", AdminActionsPageId, -1, false);
 
 
                 //# Admin Tools page (/_admin/Audit)
-                InsertPage("Audit", "Administration Tools", "Admin Tools", "", "internal/_AuditPopup", AdminPageId, -1, false);
+                InsertPage("Audit", "Administration Tools", "Admin Tools", "", "_AuditPopup", AdminPageId, -1, false);
 
                 //# view revisions page (/_admin/ViewRevisions)
-                InsertPage("ViewRevisions", "View Page Revisions", "View Page Revisions", "", "internal/_PageRevisionsPopup", AdminPageId, -1, false);
+                InsertPage("ViewRevisions", "View Page Revisions", "View Page Revisions", "", "_PageRevisionsPopup", AdminPageId, -1, false);
 
                 //# EditUsers page (/_admin/EditUsers)
-                InsertPage("EditUsers", "Edit Users", "Edit Users", "", "internal/_EditUsersPopup", AdminPageId, -1, false);
+                InsertPage("EditUsers", "Edit Users", "Edit Users", "", "_EditUsersPopup", AdminPageId, -1, false);
 
                 // edit job location page
-                InsertPage("JobLocation", "Job Location", "Job Location", "", "internal/_JobLocationPopup", AdminPageId, -1, false);
+                InsertPage("JobLocation", "Job Location", "Job Location", "", "_JobLocationPopup", AdminPageId, -1, false);
 
                 // edit event calendar category page
-                InsertPage("EventCalendarCategory", "Event Calendar Category", "Event Calendar Category", "", "internal/_EventCalendarCategoryPopup", AdminPageId, -1, false);
+                InsertPage("EventCalendarCategory", "Event Calendar Category", "Event Calendar Category", "", "_EventCalendarCategoryPopup", AdminPageId, -1, false);
 
                 // edit File Library category page
-                InsertPage("FileLibraryCategory", "File Library Category", "File Library Category", "", "internal/_FileLibraryCategoryPopup", AdminPageId, -1, false);
+                InsertPage("FileLibraryCategory", "File Library Category", "File Library Category", "", "_FileLibraryCategoryPopup", AdminPageId, -1, false);
 
                 // delete File Library page
-                InsertPage("deleteFileLibrary", "Delete File Library", "Delete File Library", "", "internal/_DeleteFileLibraryPopup", AdminPageId, -1, false);
+                InsertPage("deleteFileLibrary", "Delete File Library", "Delete File Library", "", "_DeleteFileLibraryPopup", AdminPageId, -1, false);
 
                 // --------------------------------
                 // /_Internal Page 

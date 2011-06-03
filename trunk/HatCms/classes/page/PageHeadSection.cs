@@ -14,6 +14,29 @@ using Hatfield.Web.Portal;
 namespace HatCMS
 {
     /// <summary>
+    /// group number serves as a weight: the markup for loading a stylesheet within a lower weight group is output to the page before the markup for loading a stylesheet within a higher weight group, so CSS within higher weight groups take precendence over CSS within lower weight groups.
+    /// <list type="bullet">
+    /// <item>CSSGroup.Library: Any system-layer CSS (ie for jquery UI). Loaded first.</item>
+    /// <item>CSSGroup.ControlOrPlaceholder: Any module-layer CSS (ie for a placeholder or control). Loaded second.</item>
+    /// <item>CSSGroup.FrontEnd: Any theme-layer CSS (ie for front-end development). Loaded third.</item>
+    /// <item>CSSGroup.Override: CSS that is loaded after everything else (fourth).</item>
+    /// </list>
+    /// </summary>
+    public enum CSSGroup { Library = -100, ControlOrPlaceholder = 0, FrontEnd = 100, Override = 1000 };
+
+    /// <summary>
+    /// group number serves as a weight: the markup for loading a stylesheet within a lower weight group is output to the page before the markup for loading a stylesheet within a higher weight group, so CSS within higher weight groups take precendence over CSS within lower weight groups.
+    /// <list type="bullet">
+    /// <item>JavascriptGroup.Library: Any system-layer JS (ie for Jquery). Loaded first.</item>
+    /// <item>JavascriptGroup.ControlOrPlaceholder: Any module-layer JS (ie for a placeholder or control). Loaded second</item>
+    /// <item>JavascriptGroup.FrontEnd: Any theme-layer JS (for front-end development). Loaded third.</item>
+    /// <item>JavascriptGroup.Override: Javascript that is after everything else.</item>
+    /// </list>
+    /// </summary>
+    public enum JavascriptGroup { Library = -100, ControlOrPlaceholder = 0, FrontEnd = 100, Override = 1000 };
+
+    
+    /// <summary>
     /// Handles the common output of a CmsPage's &gt;head&lt;&gt;/head&lt; through the use of some useful functions.
     /// <para>The items tracked in this class are output using a <see cref="CmsOutputFilter"/> at the CmsOutputFilterScope.PageHtmlOutput level.</para>
     /// </summary>
@@ -28,10 +51,10 @@ namespace HatCMS
             "mootools.v1.11.compressed.js", "mootools.v1.11.uncompressed.js", "mootools-1.2.4-core-yc.js", "mootools-1.2.4-core-jm.js", "mootools-1.2.4-core-nc.js", "mootools-1.2.4-core.js"
         };
         
-        private List<string> jsFilePaths;
+        private Dictionary<JavascriptGroup, List<string>> jsFilePaths;
         private List<string> jsOnReadyStatements;
         private List<string> jsStatements;
-        private List<string> cssFilePaths;
+        private Dictionary<CSSGroup, List<string>> cssFilePaths;
         private List<string> styleStatements;
         private List<string> registeredBlockNames;
 
@@ -41,10 +64,16 @@ namespace HatCMS
         {
             _page = owningPage;
 
-            jsFilePaths = new List<string>();
+            jsFilePaths = new Dictionary<JavascriptGroup, List<string>>();
+            foreach (JavascriptGroup jsGroup in Enum.GetValues(typeof(JavascriptGroup)))
+                jsFilePaths[jsGroup] = new List<string>();
+
             jsOnReadyStatements = new List<string>();
             jsStatements = new List<string>();
-            cssFilePaths = new List<string>();
+            cssFilePaths = new Dictionary<CSSGroup, List<string>>();
+            foreach (CSSGroup cssGroup in Enum.GetValues(typeof(JavascriptGroup)))
+                cssFilePaths[cssGroup] = new List<string>();
+
             styleStatements = new List<string>();
             registeredBlockNames = new List<string>();
         }
@@ -62,7 +91,7 @@ namespace HatCMS
         }
         
 
-        public string _runPageFilter(CmsPage pageBeingFiltered, string htmlToFilter)
+        private string _runPageFilter(CmsPage pageBeingFiltered, string htmlToFilter)
         {
             return StringUtils.Replace(htmlToFilter, "</head>", pageBeingFiltered.HeadSection._OutputForPageFilter(), true);
         }
@@ -107,12 +136,15 @@ namespace HatCMS
 
         private bool jqueryIsIncluded()
         {
-            foreach (string js in jsFilePaths)
+            foreach (JavascriptGroup jsGroup in jsFilePaths.Keys)
             {
-                foreach (string jqFn in JQueryLibraryFilenames)
+                foreach (string js in jsFilePaths[jsGroup])
                 {
-                    if (js.EndsWith(jqFn, StringComparison.CurrentCultureIgnoreCase))
-                        return true;
+                    foreach (string jqFn in JQueryLibraryFilenames)
+                    {
+                        if (js.EndsWith(jqFn, StringComparison.CurrentCultureIgnoreCase))
+                            return true;
+                    } // foreach
                 } // foreach
             } // foreach
             return false;
@@ -120,14 +152,53 @@ namespace HatCMS
 
         private bool mooToolsIsIncluded()
         {
-            foreach (string js in jsFilePaths)
+            foreach (JavascriptGroup jsGroup in jsFilePaths.Keys)
             {
-                foreach (string jqFn in MooToolsLibraryFilenames)
+                foreach (string js in jsFilePaths[jsGroup])
                 {
-                    if (js.EndsWith(jqFn, StringComparison.CurrentCultureIgnoreCase))
-                        return true;
+                    foreach (string jqFn in MooToolsLibraryFilenames)
+                    {
+                        if (js.EndsWith(jqFn, StringComparison.CurrentCultureIgnoreCase))
+                            return true;
+                    } // foreach
                 } // foreach
-            } // foreach
+            }
+            return false;
+        }
+
+        private JavascriptGroup? getGroupForJavascriptFile(string jsFile)
+        {
+            foreach (JavascriptGroup jsGroup in jsFilePaths.Keys)
+            {
+                foreach (string js in jsFilePaths[jsGroup])
+                {
+                    if (string.Compare(js, jsFile, true) == 0) 
+                        return jsGroup;
+
+                } // foreach
+            }
+            return null;
+        }
+
+        private CSSGroup? getGroupForCSSFile(string cssFile)
+        {
+            foreach (CSSGroup cssGroup in cssFilePaths.Keys)
+            {
+                foreach (string css in cssFilePaths[cssGroup])
+                {
+                    if (string.Compare(css, cssFile, true) == 0)
+                        return cssGroup;
+
+                } // foreach
+            }
+            return null;
+        }
+
+        private bool isExternallyHosted(string name)
+        {
+            if (name.StartsWith("http", StringComparison.CurrentCultureIgnoreCase))
+                return true;
+
             return false;
         }
         
@@ -135,15 +206,19 @@ namespace HatCMS
         /// Adds a javascript file statement to the head section
         /// </summary>
         /// <param name="pathToJSFileUnderAppPath"></param>
-        public void AddJavascriptFile(string pathToJSFileUnderAppPath)
+        public void AddJavascriptFile(JavascriptGroup jsGroup, string pathToJSFileUnderAppPath)
         {
             // -- add only unique items
-            string jsPath = pathToJSFileUnderAppPath;
-            if (!jsPath.StartsWith("http", StringComparison.CurrentCultureIgnoreCase))                
-                removeBeginningSlash(pathToJSFileUnderAppPath.Trim());
+            string jsPath = pathToJSFileUnderAppPath.Trim();
+            if (!isExternallyHosted(jsPath))
+                jsPath = removeBeginningSlash(jsPath);
 
-            if (StringUtils.IndexOf(jsFilePaths.ToArray(), jsPath, StringComparison.CurrentCultureIgnoreCase) < 0)
-                jsFilePaths.Add(jsPath);
+            JavascriptGroup? existingGroup = getGroupForJavascriptFile(jsPath);
+            if (existingGroup == null)
+                jsFilePaths[jsGroup].Add(jsPath);
+            else if (existingGroup != null && existingGroup != jsGroup)
+                throw new ArgumentException(pathToJSFileUnderAppPath+" has already been added to the "+existingGroup.ToString()+" javascript group");            
+                
         } // Add JavascriptFile
 
         /// <summary>
@@ -186,19 +261,26 @@ namespace HatCMS
         /// Adds a CSS file reference to the page's head section.
         /// </summary>
         /// <param name="pathToCSSFileUnderAppPath"></param>
-        public void AddCSSFile(string pathToCSSFileUnderAppPath)
+        public void AddCSSFile(CSSGroup cssGroup, string pathToCSSFileUnderAppPath)
         {
             // -- add only unique items
-            string cssPath = removeBeginningSlash(pathToCSSFileUnderAppPath.Trim());
-            if (StringUtils.IndexOf(cssFilePaths.ToArray(), cssPath, StringComparison.CurrentCultureIgnoreCase) < 0)
-                cssFilePaths.Add(cssPath);
+            string cssPath = pathToCSSFileUnderAppPath.Trim();
+            if (!isExternallyHosted(cssPath))
+                cssPath = removeBeginningSlash(cssPath);
+
+            CSSGroup? existingGroup = getGroupForCSSFile(cssPath);
+            if (existingGroup == null)
+                cssFilePaths[cssGroup].Add(cssPath);
+            else if (existingGroup != null && existingGroup != cssGroup)
+                throw new ArgumentException(cssPath + " has already been added to the " + existingGroup.ToString() + " CSS group");            
+
         } // Add AddCSSFile
 
 
         private string getOutputUrl(string pathToFileUnderAppPath, string cacheTimestamp)
         {
             StringBuilder url = new StringBuilder();
-            if (!pathToFileUnderAppPath.StartsWith("http", StringComparison.CurrentCultureIgnoreCase))
+            if (!isExternallyHosted(pathToFileUnderAppPath))
                 url.Append(CmsContext.ApplicationPath);
 
             url.Append(pathToFileUnderAppPath);
@@ -244,9 +326,12 @@ namespace HatCMS
             // A: put CSS files and style statements first so that scripts can reference them: http://code.google.com/speed/page-speed/docs/rendering.html#PutCSSInHead
             // -- 1: CSS Files
             //       note: do NOT use @import rule
-            foreach (string css in cssFilePaths)
+            foreach (CSSGroup cssGroup in Enum.GetValues(typeof(CSSGroup)))
             {
-                html.Append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + getOutputUrl(css, cacheTimestamp) + "\" />" + EOL);
+                foreach (string css in cssFilePaths[cssGroup])
+                {
+                    html.Append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + getOutputUrl(css, cacheTimestamp) + "\" />" + EOL);
+                }
             }
 
             // -- 2: Style statements
@@ -262,9 +347,12 @@ namespace HatCMS
 
             // B: Javascript files should be placed before javascript statements (http://code.google.com/speed/page-speed/docs/rtt.html#PutStylesBeforeScripts)
             // -- 3: Javascript files
-            foreach (string js in jsFilePaths)
+            foreach (JavascriptGroup jsGroup in Enum.GetValues(typeof(JavascriptGroup)))
             {
-                html.Append("<script src=\"" + getOutputUrl(js, cacheTimestamp) + "\" type=\"text/javascript\"></script>" + EOL);
+                foreach (string js in jsFilePaths[jsGroup])
+                {
+                    html.Append("<script src=\"" + getOutputUrl(js, cacheTimestamp) + "\" type=\"text/javascript\"></script>" + EOL);
+                }
             }
 
             bool scriptTagStarted = false;

@@ -49,8 +49,8 @@ namespace HatCMS.Placeholders.RegisterProject
             page.HeadSection.AddCSSStyleStatements(".registerProjectform { margin-top: 1em; }");
             page.HeadSection.AddCSSStyleStatements(".registerProjectform > label { display: block; }");
             page.HeadSection.AddCSSStyleStatements(".registerProjectform > input, .registerProjectform > textarea { margin-bottom: 1em; }");
-            page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
-            page.HeadSection.AddJavascriptFile("js/_system/RegisterProject/RegisterProject.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/RegisterProject/RegisterProject.js");
         }
 
 #region Multi-lang get method

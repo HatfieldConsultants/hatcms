@@ -24,9 +24,9 @@ namespace HatCMS.Controls._system
         protected void Page_Load(object sender, EventArgs e)
         {
             CmsPage page = CmsContext.currentPage;
-            page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
-            page.HeadSection.AddCSSFile("css/_system/simpleCalendar.css");
-            page.HeadSection.AddJavascriptFile("js/_system/jquery.simpleCalendar/simpleCalendar.min.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
+            page.HeadSection.AddCSSFile(CSSGroup.ControlOrPlaceholder, "css/_system/simpleCalendar.css");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/jquery.simpleCalendar/simpleCalendar.min.js");
             addJsOnReady(page);
         }
 

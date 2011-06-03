@@ -54,7 +54,7 @@ namespace HatCMS.Controls
             }
             PerRequestCache.AddToCache(cacheName, true);
 
-            page.HeadSection.AddJavascriptFile("js/_system/FloatingEditMenu.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/FloatingEditMenu.js");
 
 
             string divId = "editConsole_" + page.ID.ToString();

@@ -36,10 +36,10 @@ namespace HatCMS
 
         public static void AddPageJavascriptStatements(CmsPage page, string ControlId, string uploadUrl, string allowedFileTypes, string allowedFileTypesDescription)
         {
-            page.HeadSection.AddJavascriptFile("js/_system/swfUpload/swfupload.js");
-            page.HeadSection.AddJavascriptFile("js/_system/swfUpload/swfupload.queue.js");
-            page.HeadSection.AddJavascriptFile("js/_system/swfUpload/fileprogress.js");
-            page.HeadSection.AddJavascriptFile("js/_system/swfUpload/handlers.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/swfUpload/swfupload.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/swfUpload/swfupload.queue.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/swfUpload/fileprogress.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/swfUpload/handlers.js");
 
             string AuthId = "";
             HttpCookie auth_cookie = System.Web.HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];

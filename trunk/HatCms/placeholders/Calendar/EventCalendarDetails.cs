@@ -25,7 +25,7 @@ namespace HatCMS.Placeholders.Calendar
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/calendarIcon_16x16.png"));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/DatePicker.js"));
             ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("EditCalendarCategoryPagePath", "/_admin/EventCalendarCategory"), CmsConfig.Languages));
-            ret.Add(CmsControlDependency.UnderControlDir("_system/Internal/EventCalendarCategoryPopup.ascx", new DateTime(2010, 2, 17)));
+            ret.Add(new CmsControlDependency("EventCalendarCategoryPopup", new DateTime(2010, 2, 17)));
 
             // -- Hatfield modified version of jquery.fullcalendar -- SimpleCalendar
             ret.Add(CmsFileDependency.UnderAppPath("_system/tools/Calendar/SimpleCalendarJsonData.ashx"));
@@ -103,10 +103,13 @@ namespace HatCMS.Placeholders.Calendar
         /// <param name="page"></param>
         protected void addCssAndScriptForDateTimePicker(CmsPage page)
         {
-            page.HeadSection.AddCSSFile("css/_system/jquery-ui-lightness/jquery-ui-1.8.custom.css");
-            page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
-            page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-ui-1.8.custom.min.js");
-            page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-ui-timepicker-addon.min.js");
+            // -- css
+            page.HeadSection.AddCSSFile(CSSGroup.Library, "css/_system/jquery-ui-lightness/jquery-ui-1.8.custom.css");
+            
+            // -- javascript
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-ui-1.8.custom.min.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-ui-timepicker-addon.min.js");
         }
 
         /// <summary>

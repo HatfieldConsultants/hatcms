@@ -134,8 +134,8 @@ namespace HatCMS.Placeholders
             html.Append(PageUtils.getHiddenInputHtml(renderJsonToFormId, renderJsonToFormId, ""));
                                     
 
-            page.HeadSection.AddJavascriptFile("js/_system/json2.js");
-            page.HeadSection.AddJavascriptFile("js/_system/GlossaryEditor.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/json2.js");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.FrontEnd, "js/_system/GlossaryEditor.js");
 
             page.HeadSection.AddJSStatements(getJSVariableStatement(jsonDataVarName, items));
 

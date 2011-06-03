@@ -46,7 +46,7 @@ namespace HatCMS.Controls._system
 			if (!CmsContext.currentPage.HeadSection.isBlockRegisteredForOutput("TopDropdownNavigation"))
 			{
                 CmsContext.currentPage.HeadSection.registerBlockForOutput("TopDropdownNavigation");
-                CmsContext.currentPage.HeadSection.AddJavascriptFile("js/_system/TopNav.js");                
+                CmsContext.currentPage.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/TopNav.js");                
                 CmsContext.currentPage.HeadSection.AddJSOnReady("TopNavInit();");                
 			}
 						

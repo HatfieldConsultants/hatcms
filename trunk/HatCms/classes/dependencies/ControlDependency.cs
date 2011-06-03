@@ -17,7 +17,7 @@ namespace HatCMS
     /// </summary>
     public class CmsControlDependency: CmsDependency
     {
-        private string controlPath = "";
+        private string controlNameOrPath = "";
         private ExistsMode existsMode;
         /// <summary>
         /// set to DateTime.MinValue if no Last Modified date check is done.
@@ -26,7 +26,7 @@ namespace HatCMS
 
         public CmsControlDependency(CmsControlDefinition controlDefinition)
         {
-            controlPath = controlDefinition.ControlNameOrPath;
+            controlNameOrPath = controlDefinition.ControlNameOrPath;
             existsMode = ExistsMode.MustExist;
         }
 
@@ -38,7 +38,7 @@ namespace HatCMS
         /// </param>
         public CmsControlDependency(string ControlPathUnderControlsDirWithoutFileExtension, ExistsMode existsMode)
         {
-            controlPath = ControlPathUnderControlsDirWithoutFileExtension;
+            controlNameOrPath = ControlPathUnderControlsDirWithoutFileExtension;
             this.existsMode = existsMode;
         }
 
@@ -48,20 +48,20 @@ namespace HatCMS
         /// <param name="ControlPathUnderControlsDirWithoutFileExtension">        
         /// The control path never has a filename extension (ie "_system/login" is a valid control path, while "_system/login.ascx" is invalid).
         /// </param>
-        public CmsControlDependency(string ControlPathUnderControlsDirWithoutFileExtension)
+        public CmsControlDependency(string ControlNameOrPathUnderControlsDir)
         {
-            controlPath = ControlPathUnderControlsDirWithoutFileExtension;
+            controlNameOrPath = ControlNameOrPathUnderControlsDir;
         }
 
-        public CmsControlDependency(string ControlPathUnderControlsDir, DateTime fileshouldbelastmodifiedafter)
+        public CmsControlDependency(string ControlNameOrPathUnderControlsDir, DateTime fileshouldbelastmodifiedafter)
         {
-            controlPath = ControlPathUnderControlsDir;
+            controlNameOrPath = ControlNameOrPathUnderControlsDir;
             FileShouldBeLastModifiedAfter = fileshouldbelastmodifiedafter;
         }
 
         public override string GetContentHash()
         {
-            return controlPath.Trim().ToLower() + FileShouldBeLastModifiedAfter.Ticks.ToString();
+            return controlNameOrPath.Trim().ToLower() + FileShouldBeLastModifiedAfter.Ticks.ToString();
         }
 
         public static CmsControlDependency UnderControlDir(string ControlPathUnderControlsDir, DateTime modifiedAfter)
@@ -75,12 +75,13 @@ namespace HatCMS
             List<CmsDependencyMessage> ret = new List<CmsDependencyMessage>();
             try
             {
-                if (controlPath.EndsWith(".ascx", StringComparison.CurrentCultureIgnoreCase))
+                // -- remove the .ascx filename extension if one was provided.
+                if (controlNameOrPath.EndsWith(".ascx", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    controlPath = controlPath.Substring(0, controlPath.Length - (".ascx".Length));
+                    controlNameOrPath = controlNameOrPath.Substring(0, controlNameOrPath.Length - (".ascx".Length));
                 }
 
-                string controlPathWithoutOption = controlPath.Split(new char[] { ' ' })[0];
+                string controlPathWithoutOption = controlNameOrPath.Split(new char[] { ' ' })[0];
                 if (CmsContext.currentPage.TemplateEngine.controlExists(controlPathWithoutOption))
                 {
                     if (existsMode == ExistsMode.MustNotExist)
@@ -93,12 +94,12 @@ namespace HatCMS
                     }
                 }
                 else if (existsMode == ExistsMode.MustExist)
-                    ret.Add(CmsDependencyMessage.Error("CMS Control was not found: '" + controlPath + "'"));
+                    ret.Add(CmsDependencyMessage.Error("CMS Control was not found: '" + controlNameOrPath + "'"));
 
             }
             catch (Exception ex)
             {
-                ret.Add(CmsDependencyMessage.Error("CMS Control could not be loaded: '" + controlPath + "'"));
+                ret.Add(CmsDependencyMessage.Error("CMS Control could not be found: '" + controlNameOrPath + "'"));
             }
             return ret.ToArray();
         }

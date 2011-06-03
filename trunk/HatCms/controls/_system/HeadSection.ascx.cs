@@ -92,7 +92,7 @@ namespace HatCMS.Controls
 
             CmsPage currentPage = CmsContext.currentPage;
 
-            currentPage.HeadSection.AddJavascriptFile("js/_system/printerAndPdfVersion.js");
+            currentPage.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/printerAndPdfVersion.js");
             currentPage.HeadSection.AddJSStatements("_printerVer = " + printerVer.ToString().ToLower() + ";" + EOL);                                    
 
             if (PageUtils.getFromForm("print", 0) == 1)

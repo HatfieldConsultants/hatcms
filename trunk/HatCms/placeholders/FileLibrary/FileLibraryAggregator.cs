@@ -224,8 +224,8 @@ namespace HatCMS.Placeholders
         {
             if (renderParameters.displayMode == RenderParameters.DisplayMode.Tabs)
             {
-                page.HeadSection.AddJavascriptFile("js/_system/jquery/jquery-1.4.1.min.js");
-                page.HeadSection.AddJavascriptFile("js/_system/FileLibrary/FileLibrary.js");
+                page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
+                page.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/FileLibrary/FileLibrary.js");
             }
         }
 

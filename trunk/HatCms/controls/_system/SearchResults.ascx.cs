@@ -36,7 +36,7 @@ namespace HatCMS.Controls
             return ret.ToArray();
         }
 
-        private string getPageFilenameForIndex(CmsPage page)
+        private static string getPageFilenameForIndex(CmsPage page)
         {
             return page.ID.ToString();
         }
@@ -56,7 +56,7 @@ namespace HatCMS.Controls
             return CmsLanguage.GetFromHaystack(fi.SectionName, CmsConfig.Languages);
         }
                
-        private IndexableFileInfo[] indexStandardPage(CmsPage page)
+        private static IndexableFileInfo[] indexStandardPage(CmsPage page)
         {
             List<IndexableFileInfo> ret = new List<IndexableFileInfo>();
             foreach (CmsLanguage lang in CmsConfig.Languages)
@@ -79,7 +79,7 @@ namespace HatCMS.Controls
             return ret.ToArray();
         }
 
-		protected void ReIndexAllPages()
+		public static void ReIndexAllPages()
 		{			
 			// to extract urls: http://www.dotnetcoders.com/web/Learning/Regex/exHrefExtractor.aspx
 			// or http://regexlib.com/REDetails.aspx?regexp_id=1525
