@@ -16,6 +16,8 @@ To get HatCMS running on Linux, you need:
   # Ensure that [http://www.mono-project.com/IOMap IOMap] is enabled. To do this, add the command `MonoSetEnv mydomaincom MONO_IOMAP=all` to your mod_mono.conf or virtual host configuration file.
   # add `default.aspx` to the `DirectoryIndex` statement
 
+Note: [http://go-mono.com/config-mod-mono/ mono-project.com] provides a useful tool to help create the apache configuration files: [http://go-mono.com/config-mod-mono/ http://go-mono.com/config-mod-mono/]
+
 == Example virtual host configuration file ==
 Here is an example apache virtual host configuration file with two mono applications. The first application is HatCMS, and the child application could be a custom-build application.
 {{{
