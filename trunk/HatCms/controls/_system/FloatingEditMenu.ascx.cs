@@ -67,10 +67,11 @@ namespace HatCMS.Controls
 
             string leftPos = "580px";
             string topPos = "30px";
-            if (Request.Cookies[persistKey + "_left"] != null && Request.Cookies[persistKey + "_top"] != null)
+            System.Web.HttpRequest req = HttpContext.Current.Request;
+            if (req.Cookies[persistKey + "_left"] != null && req.Cookies[persistKey + "_top"] != null)
             {
-                string l = Request.Cookies[persistKey + "_left"].Value;
-                string t = Request.Cookies[persistKey + "_top"].Value;
+                string l = req.Cookies[persistKey + "_left"].Value;
+                string t = req.Cookies[persistKey + "_top"].Value;
                 if (l.EndsWith("px") && t.EndsWith("px"))
                 {
                     try

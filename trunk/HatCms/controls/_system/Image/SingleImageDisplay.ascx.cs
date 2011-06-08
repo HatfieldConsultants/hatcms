@@ -25,16 +25,16 @@ namespace HatCMS.Controls.Image
             int ImageId = PageUtils.getFromForm("i", -1);
             if (ImageId < 0)
             {
-                Response.Write("Error: invalid image specified");
-                Response.End();
+                writer.Write("Error: invalid image specified");
+                return;
             }
 
             SingleImageDb db = new SingleImageDb();
             SingleImageData image = db.getSingleImage(ImageId);
             if (image == null)
             {
-                Response.Write("Error: invalid image specified");
-                Response.End();
+                writer.Write("Error: invalid image specified");
+                return;
             }
 
             int imageBoxWidth = CmsConfig.getConfigValue("SingleImage.FullSizeDisplayWidth", -1);
@@ -72,7 +72,7 @@ namespace HatCMS.Controls.Image
 
             html.Append("</div>");
 
-            Response.Write(html.ToString());
+            writer.Write(html.ToString());
         }
     }
 }

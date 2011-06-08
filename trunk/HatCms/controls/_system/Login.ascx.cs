@@ -61,7 +61,7 @@ namespace HatCMS.Controls
                     // redirect
                     if (ReturnUrl.Trim() != "")
                     {
-                        Response.Redirect(ReturnUrl);
+                        System.Web.HttpContext.Current.Response.Redirect(ReturnUrl);
                     }
                     else
                     {                                                

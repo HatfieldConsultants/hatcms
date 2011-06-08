@@ -46,9 +46,26 @@ namespace HatCMS.Placeholders
                 foreach (UserImageGalleryPlaceholderData ph in phs)
                 {
                     CmsPage p = CmsContext.getPageById(ph.PageId);
-                    string dir = ph.getImageStorageDirectory(p);
-                    if (dir != String.Empty)
-                        ret.Add(new CmsWritableDirectoryDependency(dir));
+                    if (p.ID >= 0)
+                    {
+                        string dir = ph.getImageStorageDirectory(p);
+                        if (dir != String.Empty)
+                        {
+                            ret.Add(new CmsWritableDirectoryDependency(dir));
+                            // -- check if the image gallery files on disk are in the database.
+                            if (CmsLocalFileOnDisk.FetchAllFilesInDirectory(dir).Length > 0)
+                            {
+                                foreach (string fn in System.IO.Directory.GetFiles(dir))
+                                {
+                                    if (!fn.StartsWith(CmsLocalFileOnDisk.DeletedFileFilenamePrefix))
+                                    {
+                                        ret.Add(new CmsMessageDependency("The UserImageGallery directory '"+dir+"' has files, but are not in the database"));
+                                        break;
+                                    }
+                                } // foreach
+                            }
+                        }
+                    }
                 }
 
                 // -- REQUIRED config entries
@@ -70,6 +87,32 @@ namespace HatCMS.Placeholders
             }
 
             return ret.ToArray();
+        }
+
+        /// <summary>
+        /// returns the number of image galleries updated.
+        /// </summary>
+        /// <returns></returns>
+        public static int UpdateDatabaseCacheOfImageInfos()
+        {
+            // -- Update the CmsLocalImageOnDisk database cache from the disk source.
+            int ret = 0;
+            UserImageGalleryDb db = (new UserImageGalleryDb());
+            UserImageGalleryPlaceholderData[] phs = db.getAllUserImageGalleryPlaceholderDatas();
+            foreach (UserImageGalleryPlaceholderData ph in phs)
+            {                
+                CmsPage p = CmsContext.getPageById(ph.PageId);
+                if (p.ID >= 0)
+                {
+                    string dir = ph.getImageStorageDirectory(p);
+                    if (dir != String.Empty)
+                    {
+                        CmsLocalImageOnDisk[] updates = CmsLocalImageOnDisk.UpdateFolderInDatabase(new System.IO.DirectoryInfo(dir));
+                        ret++;
+                    } // if
+                } // if
+            } // foreach
+            return ret;
         }
 
         protected string getPageXofYText(CmsLanguage lang)

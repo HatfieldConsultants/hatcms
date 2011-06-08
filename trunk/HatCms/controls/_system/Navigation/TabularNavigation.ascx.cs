@@ -144,7 +144,7 @@ namespace HatCMS.Controls.Navigation
             if (this.RenderHorizontal)
                 html.Append("</tr>" + Environment.NewLine);
             html.Append("</table>");
-            Response.Write(html.ToString());
+            writer.Write(html.ToString());
         } // Render
 
 

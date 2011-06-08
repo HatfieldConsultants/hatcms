@@ -208,6 +208,43 @@ namespace HatCMS.Placeholders
             writer.Write(html.ToString());
         } // RenderEdit
 
+        private class SpamTestQuestion
+        {
+            public string Question;
+            public string Answer;
+
+            public SpamTestQuestion(string question, string answer)
+            {
+                Question = question;
+                Answer = answer;
+            }
+
+            public static SpamTestQuestion[] Questions
+            {
+                get
+                {
+                    return new SpamTestQuestion[] {
+                        new SpamTestQuestion("What is 1 + 2 ?", "3"),
+                        new SpamTestQuestion("What is 10 + 20 ?", "30"),
+                        new SpamTestQuestion("What is 3 + 2 ?", "5"),
+                        new SpamTestQuestion("What is 5 + 5 ?", "10"),
+                        new SpamTestQuestion("What is 7 + 7 ?", "14"),
+                        new SpamTestQuestion("What is 10 + 2 ?", "12"),
+                        new SpamTestQuestion("What is 11 + 12 ?", "23"),
+                        new SpamTestQuestion("What is 15 + 20 ?", "35"),
+                        new SpamTestQuestion("What is 1 + 10 ?", "11"),
+                        new SpamTestQuestion("What is 15 + 2 ?", "17"),
+                        new SpamTestQuestion("What is 100 + 200 ?", "300")
+                    };
+                }
+            }
+
+            public static int GetRandomQuestionIndex()
+            {
+                return new Random().Next(0, Questions.Length - 1);
+            }
+        }
+
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
             UserFeedbackDb db = new UserFeedbackDb();
@@ -220,6 +257,15 @@ namespace HatCMS.Placeholders
             bool formValuesLoadedFromSession = false;
             if (action.Trim().ToLower() == "send")
             {
+                // -- get the spam question index
+                int spamQuestionIndex = (PageUtils.getFromForm(ControlId + "spamQuestionIndex", SpamTestQuestion.GetRandomQuestionIndex()));
+                if (spamQuestionIndex >= SpamTestQuestion.Questions.Length || spamQuestionIndex < 0)
+                    spamQuestionIndex = SpamTestQuestion.GetRandomQuestionIndex();
+
+                SpamTestQuestion questionToAnswer = SpamTestQuestion.Questions[spamQuestionIndex];
+
+                string spamQuestionAnswer = (PageUtils.getFromForm(ControlId + "spamQuestionAnswer", ""));
+
                 submittedData.Name = (PageUtils.getFromForm(ControlId + "Name", ""));
                 submittedData.Name = submittedData.Name.Trim();
                 submittedData.EmailAddress = PageUtils.getFromForm(ControlId + "Email", "");
@@ -231,7 +277,9 @@ namespace HatCMS.Placeholders
                 submittedData.ReferringUrl = PageUtils.getFromForm(ControlId + "Referer", "");
 
                 // -- validate user submitted values
-                if (submittedData.Name == "")
+                if (questionToAnswer.Answer != spamQuestionAnswer)
+                    _errorMessage = "Your answer to the math question was incorrect. Please try again.";
+                else if (submittedData.Name == "")
                     _errorMessage = getErrorEnterNameText(langToRenderFor);
                 else if (submittedData.EmailAddress == "")
                     _errorMessage = getErrorEnterEmailText(langToRenderFor);
@@ -335,8 +383,21 @@ namespace HatCMS.Placeholders
             html.Append("</td>");
             html.Append("</tr>");
 
+            // -- spam stop question
+            int qIndex = SpamTestQuestion.GetRandomQuestionIndex();
+            SpamTestQuestion spamQuestion = SpamTestQuestion.Questions[qIndex];
+            html.Append("<tr>");
+            html.Append("<td valign=\"top\">");
+            html.Append(spamQuestion.Question);
+            html.Append("</td>");
+            html.Append("<td valign=\"top\">");
+            html.Append(PageUtils.getInputTextHtml(ControlId + "spamQuestionAnswer", ControlId + "spamQuestionAnswer", "", 5, 255));
+            html.Append("</td>");
+            html.Append("</tr>");
+
             html.Append("</table>");
-                        
+
+            html.Append(PageUtils.getHiddenInputHtml(ControlId + "spamQuestionIndex", qIndex.ToString()));            
             html.Append(PageUtils.getHiddenInputHtml(ControlId + "Action", "send"));
             html.Append(PageUtils.getHiddenInputHtml(ControlId + "Referer", PageUtils.getFromForm("r","(unknown)")));
 

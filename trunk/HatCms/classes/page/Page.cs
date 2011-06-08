@@ -859,8 +859,9 @@ namespace HatCMS
         private class CmsPageWebControl : System.Web.UI.UserControl
         {
             private CmsPage OwningPage;
-            public CmsPageWebControl(CmsPage owningPage)
+            public CmsPageWebControl(CmsPage owningPage): base()
             {
+                
                 OwningPage = owningPage;
             }
 
@@ -868,9 +869,18 @@ namespace HatCMS
             /// Renders the page through the creation of child controls. The TemplateEngine creates and adds these controls.
             /// </summary>
             protected override void CreateChildControls()
-            {
+            {                
                 if (OwningPage.ID < 0)
-                    throw new Exception("this page could not be rendered because it has not been initialized from the database.");
+                {
+                    if (new CmsPageCache().GetHomePageId() < 0)
+                    {
+                        throw new CmsNoPagesFoundException("There could be a database connection problem: The home page could be loaded from the database.");
+                    }
+                    else
+                    {
+                        throw new Exception("This page could not be rendered because it has not been initialized from the database.");
+                    }
+                }
 
                 // -- checks if the current user can read the current page. If not authorized, redirect to the Login page.
                 bool canRead = OwningPage.Zone.canRead(CmsContext.currentWebPortalUser);

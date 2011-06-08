@@ -103,17 +103,19 @@ namespace HatCMS
         /// <returns></returns>
         public static bool AddControlToPage(string controlNameOrPathToAdd, CmsControlDefinition controlDefnToAdd, System.Web.UI.UserControl parentToAddControlTo, CmsLanguage langToRenderFor)
         {
-            try
+            if (ControlOnDiskExists(controlNameOrPathToAdd))
             {
                 Control ascxControl = LoadControlOnDisk(controlNameOrPathToAdd);
                 if (ascxControl != null)
                 {
                     parentToAddControlTo.Controls.Add(ascxControl);
                     ascxControl.ID = controlDefnToAdd.RawTemplateParameters;
-                    
+
                     return true;
                 }
-
+            }
+            else if (ControlClassExists(controlNameOrPathToAdd))
+            {
                 HatCMS.Controls.BaseCmsControl c = LoadControlFromClass(controlNameOrPathToAdd);
                 if (c != null)
                 {
@@ -121,8 +123,7 @@ namespace HatCMS
                     return true;
                 }
             }
-            catch
-            { }
+
             return false;
         }
 
@@ -272,18 +273,14 @@ namespace HatCMS
         /// <returns></returns>
         public static Control LoadControlOnDisk(string controlName)
         {
-            try
-            {
-                string virtualPath = CmsContext.ApplicationPath + TemplateEngine.TemplateEngineV2.CONTROLS_SUBDIR + controlName + ".ascx";
-                string contronFNOnDisk = HttpContext.Current.Server.MapPath(virtualPath);
-                if (System.IO.File.Exists(contronFNOnDisk))
-                {
-                    return (new Page()).LoadControl(virtualPath);
-                }
-            }
-            catch
-            { }
 
+            string virtualPath = CmsContext.ApplicationPath + TemplateEngine.TemplateEngineV2.CONTROLS_SUBDIR + controlName + ".ascx";
+            string contronFNOnDisk = HttpContext.Current.Server.MapPath(virtualPath);
+            if (System.IO.File.Exists(contronFNOnDisk))
+            {
+                return (new Page()).LoadControl(virtualPath);
+            }
+            
             return null;
         }
 

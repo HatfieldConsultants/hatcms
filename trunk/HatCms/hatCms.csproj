@@ -780,6 +780,7 @@
     <Content Include="images\_system\TopMultiLevelDropDownMenu\down.gif" />
     <Content Include="images\_system\TopMultiLevelDropDownMenu\right.gif" />
     <Content Include="js\_system\beforeUnload.js" />
+    <Content Include="js\_system\ckeditor\adapters\jquery.js" />
     <Content Include="js\_system\ckeditor\ckeditor.js" />
     <Content Include="js\_system\ckeditor\config.js" />
     <Content Include="js\_system\ckeditor\contents.css" />
@@ -791,11 +792,13 @@
     <Content Include="js\_system\ckeditor\lang\bs.js" />
     <Content Include="js\_system\ckeditor\lang\ca.js" />
     <Content Include="js\_system\ckeditor\lang\cs.js" />
+    <Content Include="js\_system\ckeditor\lang\cy.js" />
     <Content Include="js\_system\ckeditor\lang\da.js" />
     <Content Include="js\_system\ckeditor\lang\de.js" />
     <Content Include="js\_system\ckeditor\lang\el.js" />
     <Content Include="js\_system\ckeditor\lang\en-au.js" />
     <Content Include="js\_system\ckeditor\lang\en-ca.js" />
+    <Content Include="js\_system\ckeditor\lang\en-gb.js" />
     <Content Include="js\_system\ckeditor\lang\en-uk.js" />
     <Content Include="js\_system\ckeditor\lang\en.js" />
     <Content Include="js\_system\ckeditor\lang\eo.js" />
@@ -816,6 +819,7 @@
     <Content Include="js\_system\ckeditor\lang\is.js" />
     <Content Include="js\_system\ckeditor\lang\it.js" />
     <Content Include="js\_system\ckeditor\lang\ja.js" />
+    <Content Include="js\_system\ckeditor\lang\ka.js" />
     <Content Include="js\_system\ckeditor\lang\km.js" />
     <Content Include="js\_system\ckeditor\lang\ko.js" />
     <Content Include="js\_system\ckeditor\lang\lt.js" />
@@ -958,6 +962,7 @@
     <Content Include="js\_system\ckeditor\skins\v2\dialog.css" />
     <Content Include="js\_system\ckeditor\skins\v2\editor.css" />
     <Content Include="js\_system\ckeditor\skins\v2\icons.png" />
+    <Content Include="js\_system\ckeditor\skins\v2\icons_rtl.png" />
     <Content Include="js\_system\ckeditor\skins\v2\images\dialog_sides.gif" />
     <Content Include="js\_system\ckeditor\skins\v2\images\dialog_sides.png" />
     <Content Include="js\_system\ckeditor\skins\v2\images\dialog_sides_rtl.png" />

@@ -109,7 +109,7 @@ namespace HatCMS.Controls
                         }
                     } // else
 
-                    Response.Write(fileContents);
+                    writer.Write(fileContents);
                 } // if
             } // if
         } // Render

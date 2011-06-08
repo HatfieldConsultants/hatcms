@@ -47,11 +47,11 @@ namespace HatCMS.Controls
             CmsPage currentPage = CmsContext.currentPage;
             if (getSelectedParentPagePath(currentPage) != "" && getSelectedImage(currentPage) != "" && parentOrSelfHasPath(currentPage, getSelectedParentPagePath(currentPage)))
             {
-                Response.Write("<img src=\"" + getSelectedImage(currentPage) + "\">");
+                writer.Write("<img src=\"" + getSelectedImage(currentPage) + "\">");
             }
             else if (getUnSelectedImage(currentPage) != "")
             {
-                Response.Write("<img src=\"" + getUnSelectedImage(currentPage) + "\">");
+                writer.Write("<img src=\"" + getUnSelectedImage(currentPage) + "\">");
             }
         } // render
     }

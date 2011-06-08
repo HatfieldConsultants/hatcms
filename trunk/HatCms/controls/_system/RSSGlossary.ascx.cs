@@ -59,6 +59,8 @@ namespace HatCMS.Controls
 
             int cacheDuration_hours = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "cacheduration_hours", 12);
 
+            System.Web.Caching.Cache Cache = HttpContext.Current.Cache;
+
             Rss.RssFeed glossaryRss;
             // the RSS feed is cached to improve performance.
             if (cacheDuration_hours >= 0 && Cache[url] != null)
@@ -87,6 +89,11 @@ namespace HatCMS.Controls
 
                 string[] charsWithData = getCharsWithData(items);
                 string letterToDisplay = Glossary.getLetterToDisplay(phData);
+
+                if (letterToDisplay != "")
+                {
+                    items = GlossaryData.getItemsStartingWithChar(items, letterToDisplay[0]);
+                }
 
                 html.Append(Glossary.GetHtmlDisplay(CmsContext.currentPage, items, phData, charsWithData, letterToDisplay));
                 

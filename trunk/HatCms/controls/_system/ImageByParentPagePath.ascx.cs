@@ -84,7 +84,7 @@ namespace HatCMS.Controls
                 if (img != String.Empty)
                 {
                     string html = ("<img src=\"" + img + "\" />");
-                    Response.Write(html.ToString());
+                    writer.Write(html.ToString());
                 } // if
             } // if
         } // Render

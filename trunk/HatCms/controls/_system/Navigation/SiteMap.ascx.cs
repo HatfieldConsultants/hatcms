@@ -95,7 +95,7 @@ namespace HatCMS.Controls.Navigation
 
             html.Append("<br style=\"clear: left\" />");
             html.Append("</div>");
-            Response.Write(html.ToString());
+            writer.Write(html.ToString());
         } // Render
 
 
