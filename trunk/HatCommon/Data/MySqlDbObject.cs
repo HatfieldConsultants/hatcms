@@ -503,6 +503,9 @@ namespace Hatfield.Web.Portal.Data
             Type typeMatch;
             switch (dbType)
             {
+                case "smallint":
+                    typeMatch = typeof(int);
+                    break;
                 case "int":
                     typeMatch = typeof(int);
                     break;
