@@ -82,7 +82,7 @@ namespace HatCMS.Placeholders
                     string jsonToSave = getJSVariableStatement(jsonDataVarName, dataToSave);
                     try
                     {
-                        string jsonFilename = System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath + "_system/writable/Glossary/" + jsonDataVarName + ".js");
+                        string jsonFilename = System.Web.Hosting.HostingEnvironment.MapPath(CmsContext.ApplicationPath + "_system/writable/Glossary/" + jsonDataVarName + ".js");
                         System.IO.File.Delete(jsonFilename);
                         System.IO.File.WriteAllText(jsonFilename, jsonToSave);
                     }

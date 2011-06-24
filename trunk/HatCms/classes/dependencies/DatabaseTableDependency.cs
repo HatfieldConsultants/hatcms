@@ -128,6 +128,8 @@ namespace HatCMS
                     isKey = true;
                 else if (colStatement.IndexOf("UNIQUE KEY", StringComparison.CurrentCultureIgnoreCase) >= 0)
                     isKey = true;
+                else if (colStatement.IndexOf("UNIQUE INDEX", StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    isKey = true;
                 else if (colStatement.IndexOf("KEY `", StringComparison.CurrentCultureIgnoreCase) >= 0)
                     isKey = true;                
 

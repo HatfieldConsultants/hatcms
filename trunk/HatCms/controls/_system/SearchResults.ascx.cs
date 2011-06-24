@@ -124,7 +124,7 @@ namespace HatCMS.Controls
                 string dir = CmsConfig.getConfigValue("SearchEngineIndexDir", @"~/_system/writable/KeywordIndex/");
 
                 dir = VirtualPathUtility.ToAbsolute(dir);
-                return HttpContext.Current.Server.MapPath(dir);
+                return System.Web.Hosting.HostingEnvironment.MapPath(dir);
 
             }
         }
@@ -136,7 +136,7 @@ namespace HatCMS.Controls
                 string spellingIndexDir = CmsConfig.getConfigValue("SearchEngineSpellingIndexDir", @"~\_system\SpellCheckerIndex\");
 
                 spellingIndexDir = VirtualPathUtility.ToAbsolute(spellingIndexDir);
-                return HttpContext.Current.Server.MapPath(spellingIndexDir);
+                return System.Web.Hosting.HostingEnvironment.MapPath(spellingIndexDir);
 
             }
         }

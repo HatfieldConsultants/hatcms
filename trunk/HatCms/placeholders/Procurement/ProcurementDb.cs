@@ -241,13 +241,20 @@ namespace HatCMS.Placeholders.Procurement
             return entity;
         }
 
+        /// <summary>        
+        /// </summary>
+        /// <param name="lang"></param>
+        /// <param name="sequence"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public List<ProcurementDetailsData> fetchProcurementDetailsByCount(CmsLanguage lang, int sequence, int count)
         {
             StringBuilder sql = new StringBuilder("SELECT N.PageId,N.Identifier,N.LangCode,N.DateOfProcurement FROM ");
             sql.Append(TableNameDetails + " N, pages P");
             sql.Append(" WHERE N.Deleted IS NULL");
             sql.Append(" AND P.Deleted IS NULL");
-            sql.Append(" AND N.PageId=P.PageId");
+            sql.Append(" AND N.PageId=P.PageId ");
+            sql.Append(" AND P.Deleted is null ");
             sql.Append(" ORDER BY DateOfProcurement desc");
             sql.Append(" LIMIT " + sequence + ", " + count + ";");
 
@@ -283,10 +290,11 @@ namespace HatCMS.Placeholders.Procurement
 
             where.Add(" N.LangCode='" + lang.shortCode + "' ");
             where.Add(" N.Deleted is null ");
+            where.Add(" P.Deleted is null ");
             string whereClause = String.Join(" AND ", (string[])where.ToArray(typeof(string)));
 
             StringBuilder sql = new StringBuilder("SELECT N.PageId, N.Identifier, N.LangCode, N.DateOfProcurement FROM ");
-            sql.Append(TableNameDetails + " N");
+            sql.Append(TableNameDetails + " N, , pages P");
             sql.Append(" WHERE ");
             sql.Append(whereClause);
             sql.Append(" ORDER BY N.DateOfProcurement desc;");

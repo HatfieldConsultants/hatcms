@@ -77,12 +77,14 @@ namespace HatCMS.Placeholders
             string height = "1.5em";
             bool renamePageBasedOnTitle = false;
             bool hideNavigationMenuText = false;
+            string pageTitlePrompt = "Page Title:";
             if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)
             {
                 width = PlaceholderUtils.getParameterValue("width", width, paramList);
                 height = PlaceholderUtils.getParameterValue("height", height, paramList);
                 renamePageBasedOnTitle = PlaceholderUtils.getParameterValue("RenamePageBasedOnTitle", renamePageBasedOnTitle, paramList);
                 hideNavigationMenuText = PlaceholderUtils.getParameterValue("HideNavigationMenuText", hideNavigationMenuText, paramList);
+                pageTitlePrompt = PlaceholderUtils.getParameterValue("PageTitlePrompt", pageTitlePrompt, paramList);
             }
             else
                 throw new ArgumentException("Invalid CmsTemplateEngineVersion");            
@@ -100,7 +102,7 @@ namespace HatCMS.Placeholders
 			{                
                 // -- save the page title
                 pageTitle = PageUtils.getFromForm(formName + "_value", "");
-                if (pageTitle.CompareTo(page.Title) != 0 && page.setTitle(pageTitle, langToRenderFor))
+                if ((pageTitle.CompareTo(page.Title) != 0 || renamePageBasedOnTitle) && page.setTitle(pageTitle, langToRenderFor))
 				{                    
                     Message = "Page Title Updated";
                     // -- save the name based on the page title
@@ -162,7 +164,7 @@ namespace HatCMS.Placeholders
 			// note: no need to put in the <form></form> tags.
             html.Append("<div class=\"PageTitlePlaceholder\">");
 			html.Append("<div class=\"PageTitleEdit\" style=\"background: #CCC; padding: 0.2em;\">");
-            html.Append("Page Title: <input style=\"font-size: " + height + "; font-weight: bold; width: " + width + "; height:" + height + " \" type=\"text\" name=\"" + formName + "_value\" value=\"" + pageTitle + "\"><br>");
+            html.Append(pageTitlePrompt+" <input style=\"font-size: " + height + "; font-weight: bold; width: " + width + "; height:" + height + " \" type=\"text\" name=\"" + formName + "_value\" value=\"" + pageTitle + "\"><br>");
             html.Append("</div>" + Environment.NewLine);
 
             html.Append("<div class=\"PageMenuTextEdit\" style=\"background: #CCC; padding: 0.2em;\">");

@@ -58,7 +58,7 @@ namespace HatCMS.Controls
                 throw new ArgumentException("Invalid CmsTemplateEngineVersion");
             }
 
-            System.Web.Caching.Cache Cache = HttpContext.Current.Cache;
+            System.Web.Caching.Cache Cache = System.Web.Hosting.HostingEnvironment.Cache;
             Rss.RssFeed newsRss;
             // the RSS feed is cached to improve performance.
             if (cacheDuration_hours >= 0 && Cache[rssurl] != null)

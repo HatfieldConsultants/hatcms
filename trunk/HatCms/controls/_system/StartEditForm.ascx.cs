@@ -23,7 +23,7 @@ namespace HatCMS.Controls
         {
             List<CmsDependency> ret = new List<CmsDependency>();
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/beforeUnload.js"));
-            return ret.ToArray();
+            return ret.ToArray();                                    
         }
 
 

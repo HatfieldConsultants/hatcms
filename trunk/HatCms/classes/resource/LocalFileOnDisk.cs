@@ -168,7 +168,7 @@ namespace HatCMS
             string baseUrl = getDMSStorageFolderUrl(pageLinkedToFile, identifier, language);
 
             string fn = baseUrl + prependToFilename + userFilename;
-            string fnOnDisk = System.Web.HttpContext.Current.Server.MapPath(fn);
+            string fnOnDisk = System.Web.Hosting.HostingEnvironment.MapPath(fn);
             return fnOnDisk;
         }
 
@@ -181,7 +181,7 @@ namespace HatCMS
 
         public string getUrl(System.Web.HttpContext context)
         {
-            string rootPath = context.Server.MapPath(CmsContext.ApplicationPath);
+            string rootPath = System.Web.Hosting.HostingEnvironment.MapPath(CmsContext.ApplicationPath);
             string url = PathUtils.RelativePathTo(rootPath, this.FilePath);
 
             if (url.StartsWith("..\\"))
@@ -684,7 +684,7 @@ namespace HatCMS
                         if (meta.Name.StartsWith("IMAGEThumb") && meta.Name.EndsWith("URL") && meta.ItemValue.IndexOf(".aspx") == -1)
                         {
 
-                            string thumbFilename = System.Web.HttpContext.Current.Server.MapPath(meta.ItemValue);
+                            string thumbFilename = System.Web.Hosting.HostingEnvironment.MapPath(meta.ItemValue);
                             try
                             {
                                 File.Delete(thumbFilename);

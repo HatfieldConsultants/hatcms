@@ -24,7 +24,7 @@ namespace HatCMS
 
         public override CmsDependencyMessage[] ValidateDependency()
         {
-            return testTemplate(templateName, System.Web.HttpContext.Current);
+            return testTemplate(templateName);
         }
 
         public override string GetContentHash()
@@ -32,7 +32,7 @@ namespace HatCMS
             return templateName.Trim().ToLower();
         }
 
-        public static CmsDependencyMessage[] testTemplate(string _templateName, System.Web.HttpContext Context)
+        public static CmsDependencyMessage[] testTemplate(string _templateName)
         {
             List<CmsDependencyMessage> ret = new List<CmsDependencyMessage>();
             

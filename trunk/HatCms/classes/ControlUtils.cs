@@ -138,8 +138,8 @@ namespace HatCMS
             {
                 if (ControlOnDiskExists(controlNameOrPath))
                 {
-                    string virtualPath = CmsContext.ApplicationPath + TemplateEngine.TemplateEngineV2.CONTROLS_SUBDIR + controlNameOrPath + ".ascx";
-                    string controlFNOnDisk = HttpContext.Current.Server.MapPath(virtualPath);
+                    string virtualPath = "~/" + TemplateEngine.TemplateEngineV2.CONTROLS_SUBDIR + controlNameOrPath + ".ascx";
+                    string controlFNOnDisk = System.Web.Hosting.HostingEnvironment.MapPath(virtualPath);
                     return new System.IO.FileInfo(controlFNOnDisk).LastWriteTime;
                 }
                 else if (ControlClassExists(controlNameOrPath))
@@ -182,8 +182,8 @@ namespace HatCMS
         {
             try
             {
-                string virtualPath = CmsContext.ApplicationPath + TemplateEngine.TemplateEngineV2.CONTROLS_SUBDIR + controlName + ".ascx";
-                string contronFNOnDisk = HttpContext.Current.Server.MapPath(virtualPath);
+                string virtualPath = "~/" + TemplateEngine.TemplateEngineV2.CONTROLS_SUBDIR + controlName + ".ascx";
+                string contronFNOnDisk = System.Web.Hosting.HostingEnvironment.MapPath(virtualPath);
                 if (System.IO.File.Exists(contronFNOnDisk))
                 {
                     return true;
@@ -274,8 +274,8 @@ namespace HatCMS
         public static Control LoadControlOnDisk(string controlName)
         {
 
-            string virtualPath = CmsContext.ApplicationPath + TemplateEngine.TemplateEngineV2.CONTROLS_SUBDIR + controlName + ".ascx";
-            string contronFNOnDisk = HttpContext.Current.Server.MapPath(virtualPath);
+            string virtualPath = "~/" + TemplateEngine.TemplateEngineV2.CONTROLS_SUBDIR + controlName + ".ascx";
+            string contronFNOnDisk = System.Web.Hosting.HostingEnvironment.MapPath(virtualPath);
             if (System.IO.File.Exists(contronFNOnDisk))
             {
                 return (new Page()).LoadControl(virtualPath);

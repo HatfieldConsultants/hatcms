@@ -143,7 +143,7 @@ namespace HatCMS.Placeholders
             }
 
             sb.Append(fileName);
-            return System.Web.HttpContext.Current.Server.MapPath(sb.ToString());
+            return System.Web.Hosting.HostingEnvironment.MapPath(sb.ToString());
         }
 
         /// <summary>

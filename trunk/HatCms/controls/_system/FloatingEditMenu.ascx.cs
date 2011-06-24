@@ -67,30 +67,35 @@ namespace HatCMS.Controls
 
             string leftPos = "580px";
             string topPos = "30px";
-            System.Web.HttpRequest req = HttpContext.Current.Request;
-            if (req.Cookies[persistKey + "_left"] != null && req.Cookies[persistKey + "_top"] != null)
+            // -- read the position of the floating toolbar from the cookie.
+            // note that the cookie name must be the same as is defined in FloatingEditMenu.js.
+            if (HttpContext.Current != null && HttpContext.Current.Request != null)
             {
-                string l = req.Cookies[persistKey + "_left"].Value;
-                string t = req.Cookies[persistKey + "_top"].Value;
-                if (l.EndsWith("px") && t.EndsWith("px"))
+                System.Web.HttpRequest req = HttpContext.Current.Request;
+                if (req.Cookies[persistKey + "_left"] != null && req.Cookies[persistKey + "_top"] != null)
                 {
-                    try
+                    string l = req.Cookies[persistKey + "_left"].Value;
+                    string t = req.Cookies[persistKey + "_top"].Value;
+                    if (l.EndsWith("px") && t.EndsWith("px"))
                     {
-                        // if the edit menu is off the screen, move it back into view.
-                        // note: for max screen sizes, you can not use Request.Browser.ScreenPixelsWidth
-                        int ll = Convert.ToInt32(l.Substring(0, l.Length - "px".Length));
-                        int tt = Convert.ToInt32(t.Substring(0, t.Length - "px".Length));
+                        try
+                        {
+                            // if the edit menu is off the screen, move it back into view.
+                            // note: for max screen sizes, you can not use Request.Browser.ScreenPixelsWidth
+                            int ll = Convert.ToInt32(l.Substring(0, l.Length - "px".Length));
+                            int tt = Convert.ToInt32(t.Substring(0, t.Length - "px".Length));
 
-                        if (ll < 10)
-                            ll = 10;
-                        if (tt < 10)
-                            tt = 10;
+                            if (ll < 10)
+                                ll = 10;
+                            if (tt < 10)
+                                tt = 10;
 
-                        leftPos = ll.ToString() + "px";
-                        topPos = tt.ToString() + "px";
+                            leftPos = ll.ToString() + "px";
+                            topPos = tt.ToString() + "px";
+                        }
+                        catch
+                        { }
                     }
-                    catch
-                    { }
                 }
             }
 

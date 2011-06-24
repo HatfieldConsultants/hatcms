@@ -91,7 +91,7 @@ namespace HatCMS
                         else if (PageTemplate != "" && String.Compare(page.TemplateName, PageTemplate, true) != 0)
                             ret.Add(CmsDependencyMessage.Error("The required page '" + PagePath + "' was found, but does not have the correct template (required: '" + PageTemplate + "'); actual: '" + page.TemplateName + "'"));
                         else
-                            ret.AddRange(CmsTemplateDependency.testTemplate(page.TemplateName, System.Web.HttpContext.Current));
+                            ret.AddRange(CmsTemplateDependency.testTemplate(page.TemplateName));
                     }
                     catch (Exception ex)
                     {
@@ -119,7 +119,7 @@ namespace HatCMS
                         else if (PageTemplate != "" && String.Compare(page.TemplateName, PageTemplate, true) != 0)
                             ret.Add(CmsDependencyMessage.Error("The required page '" + PagePath + "' was found, but does not have the correct template (required: '" + PageTemplate + "'); actual: '" + page.TemplateName + "'"));
                         else
-                            ret.AddRange(CmsTemplateDependency.testTemplate(page.TemplateName, System.Web.HttpContext.Current));
+                            ret.AddRange(CmsTemplateDependency.testTemplate(page.TemplateName));
                     }
                     catch (Exception ex)
                     {

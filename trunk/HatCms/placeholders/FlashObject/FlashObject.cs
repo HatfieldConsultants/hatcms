@@ -191,7 +191,7 @@ namespace HatCMS.Placeholders
 
         private string getSWFPathDropdown(string DropDownFormName, FlashObjectData flashObject)
         {
-            string UserFilesDir = System.Web.HttpContext.Current.Server.MapPath(InlineImageBrowser2.UserFilesPath + "Flash/");
+            string UserFilesDir = System.Web.Hosting.HostingEnvironment.MapPath(InlineImageBrowser2.UserFilesPath + "Flash/");
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(UserFilesDir);
             NameValueCollection options = new NameValueCollection();
             options.Add("", "(no flash file selected)");

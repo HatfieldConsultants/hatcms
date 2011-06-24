@@ -172,10 +172,12 @@ namespace HatCMS.Placeholders
             CmsPageHeadSection h = page.HeadSection;
             h.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
 
+            /*
             StringBuilder css = new StringBuilder();
             css.Append(".listing > div > label { margin: 5px; display: block; float: left; clear: left; text-align: right; padding-left: 1em; width: 160px; }" + EOL);
             css.Append(".listing > div > span  { margin: 5px; display: block; float: left; clear: right; text-align: left; padding-left: 1em; width: 300px; }" + EOL);
             h.AddCSSStyleStatements(css.ToString());
+             */
         }
 
         /// <summary>

@@ -46,6 +46,7 @@ namespace HatCMS.Placeholders.RegisterProject
 
         protected void addHeaderEntry(CmsPage page)
         {
+            
             page.HeadSection.AddCSSStyleStatements(".registerProjectform { margin-top: 1em; }");
             page.HeadSection.AddCSSStyleStatements(".registerProjectform > label { display: block; }");
             page.HeadSection.AddCSSStyleStatements(".registerProjectform > input, .registerProjectform > textarea { margin-bottom: 1em; }");
@@ -173,7 +174,10 @@ namespace HatCMS.Placeholders.RegisterProject
             entity.Website = PageUtils.getFromForm(controlId + "_Website", "");
             entity.FundingSource = PageUtils.getFromForm(controlId + "_FundingSource", "");
             entity.CreatedDateTime = DateTime.Now;
-            entity.ClientIp = HttpContext.Current.Request.UserHostAddress;
+            if (HttpContext.Current != null && HttpContext.Current.Request != null)
+                entity.ClientIp = HttpContext.Current.Request.UserHostAddress;
+            else
+                entity.ClientIp = "";
 
             if (new RegisterProjectDb().insertData(entity) == false)
                 return "<p style=\"font-weight: bold; color: red;\">" + getSaveErrorText(lang) + "</p>";

@@ -197,35 +197,33 @@ namespace HatCMS.TemplateEngine
 
 
         private string _getTemplateFilenameOnDisk()
-        {            
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
+        {                        
             // get the templateFilename
-            string templateUrl = CmsContext.ApplicationPath + TEMPLATE_SUBDIR + templateName + TEMPLATE_EXTENSION;
-            string templateFN_ondisk = context.Server.MapPath(templateUrl);
+            string templateUrl = "~/" + TEMPLATE_SUBDIR + templateName + TEMPLATE_EXTENSION;
+            string templateFN_ondisk = System.Web.Hosting.HostingEnvironment.MapPath(templateUrl);
 
             return templateFN_ondisk;
         }
 
         private string _getTemplateLayoutFilenameOnDisk(string layoutPath)
-        {
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
+        {            
             // get the template Layout Filename
-            string templateUrl = CmsContext.ApplicationPath + TEMPLATE_LAYOUT_SUBDIR + layoutPath + TEMPLATE_LAYOUT_EXTENSION;
-            string templateFN_ondisk = context.Server.MapPath(templateUrl);
+            string templateUrl = "~/" + TEMPLATE_LAYOUT_SUBDIR + layoutPath + TEMPLATE_LAYOUT_EXTENSION;
+            string templateFN_ondisk = System.Web.Hosting.HostingEnvironment.MapPath(templateUrl);
 
             return templateFN_ondisk;
         }
 
         private string _getCachedFileContents(string filenameOnDisk)
         {
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            System.Web.Caching.Cache Cache = System.Web.Hosting.HostingEnvironment.Cache;
 
             string fullText = "";
             // -- see if the template's contents are in the memory cache
             string cacheKey = "template_" + filenameOnDisk;
-            if (context.Cache[cacheKey] != null)
+            if (Cache[cacheKey] != null)
             {
-                fullText = context.Cache[cacheKey] as string;
+                fullText = Cache[cacheKey] as string;
             }
             else
             {
@@ -240,7 +238,7 @@ namespace HatCMS.TemplateEngine
                 try
                 {
                     fullText = sr.ReadToEnd();
-                    context.Cache.Insert(cacheKey, fullText, new System.Web.Caching.CacheDependency(filenameOnDisk));
+                    Cache.Insert(cacheKey, fullText, new System.Web.Caching.CacheDependency(filenameOnDisk));
                 }
                 finally
                 {
@@ -930,8 +928,8 @@ namespace HatCMS.TemplateEngine
             List<string> ret = new List<string>();
             
             // -- 1: add templates on disk
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
-            string path = context.Server.MapPath(CmsContext.ApplicationPath + TEMPLATE_SUBDIR);
+
+            string path = System.Web.Hosting.HostingEnvironment.MapPath(CmsContext.ApplicationPath + TEMPLATE_SUBDIR);
             
             getRecursiveTemplatesOnDisk(ret, path, "");
 

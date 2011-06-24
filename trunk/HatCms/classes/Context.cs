@@ -147,20 +147,18 @@ namespace HatCMS
         public static CmsPageCache getPageCache()
         {                 
             string cacheKey = "hatCmsPageCache";
-
-            // System.Web.HttpContext.Current.Items is a per-request cache: http://msdn.microsoft.com/en-us/magazine/cc163854.aspx#S6
-            if (System.Web.HttpContext.Current != null)
+            
+            if (PerRequestCache.CacheContains(cacheKey))
             {
-                if (!System.Web.HttpContext.Current.Items.Contains(cacheKey))
-                {
-                    System.Web.HttpContext.Current.Items.Add(cacheKey, new CmsPageCache());
-                }
-                return (CmsPageCache)System.Web.HttpContext.Current.Items[cacheKey];
+                return (CmsPageCache)PerRequestCache.GetFromCache(cacheKey, new CmsPageCache());
             }
             else
             {
                 if (_pageCacheObject == null)
                     _pageCacheObject = new CmsPageCache();
+
+                PerRequestCache.AddToCache(cacheKey, _pageCacheObject);
+                
                 return _pageCacheObject;
             }                 
      
@@ -202,12 +200,13 @@ namespace HatCMS
 		{
 			get
 			{
-                if (!System.Web.HttpContext.Current.Items.Contains("authProcessed"))
+                string cacheKey = "authProcessed";
+                if (!PerRequestCache.CacheContains(cacheKey))
                 {
                     WebPortalAuthentication.processAuthenticateRequest(System.Web.HttpContext.Current);
-                    System.Web.HttpContext.Current.Items.Add("authProcessed",  true);
+                    PerRequestCache.AddToCache("authProcessed",  true);
                 }
-                System.Web.HttpContext.Current.Items.Remove("authProcessed");
+                
                 return System.Web.HttpContext.Current.User;
 			}
 		}
@@ -266,14 +265,15 @@ namespace HatCMS
             {
                 try
                 {
-                    // -- we cache the currentWebPortal user so that we don't go to the database
-                    if (PerRequestCache.CacheContains("currentWebPortalUser"))
-                        return PerRequestCache.GetFromCache("currentWebPortalUser", null) as WebPortalUser;
+                    // -- we cache the currentWebPortal user so that we don't go to the database all the time
+                    string cacheKey = "currentWebPortalUser";
+                    if (PerRequestCache.CacheContains(cacheKey))
+                        return PerRequestCache.GetFromCache(cacheKey, null) as WebPortalUser;
 
                     if (currentUser != null && currentUser.Identity.IsAuthenticated)
                     {
                         WebPortalUser u = WebPortalUser.FetchUser(currentUser.Identity.Name, CmsPortalApplication.GetInstance());
-                        System.Web.HttpContext.Current.Items.Add("currentWebPortalUser", u);
+                        PerRequestCache.AddToCache(cacheKey, u);
                         return u;
                     }
                     else
@@ -448,11 +448,13 @@ namespace HatCMS
             }
 
 
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            
             // note: do not use targetPage.getUrl(paramList); (it causes an infinite loop)
             string url = getUrlByPagePath(targetPage.Path, paramList);
 
-            context.Response.Redirect(url, true);
+            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            if (context != null)
+                context.Response.Redirect(url, true);
         }
 
         /// <summary>
@@ -766,9 +768,9 @@ namespace HatCMS
                 case CmsUrlFormat.FullIncludingProtocolAndDomainName:
                     if (System.Web.HttpContext.Current == null || System.Web.HttpContext.Current.Request == null || System.Web.HttpContext.Current.Server == null)
                         throw new Exception("getUrlByPagePath() requires a running web request!");
-
-                    System.Web.HttpRequest r = System.Web.HttpContext.Current.Request;
-                    
+                    // there is a way to get the bindings (domain names) for the current website from IIS using Microsoft.Web.Administration.dll (found in c:\windows\system32\inetsrv\)
+                    // info and code is here: http://blogs.msdn.com/b/carlosag/archive/2011/01/21/get-iis-bindings-at-runtime-without-being-an-administrator.aspx
+                    System.Web.HttpRequest r = System.Web.HttpContext.Current.Request;                    
 
                     string rootUrl = r.Url.Scheme + "://" + r.Url.Host;
                     if (!r.Url.IsDefaultPort)
@@ -797,9 +799,7 @@ namespace HatCMS
 		/// <returns></returns>		
         public static string getUrlByPagePath(string pagePath, NameValueCollection paramList, CmsUrlFormat urlFormat, CmsLanguage pageLanguage)
 		{
-            string url = getUrlByPagePath(pagePath, urlFormat, pageLanguage);
-
-            System.Web.HttpContext context = System.Web.HttpContext.Current;
+            string url = getUrlByPagePath(pagePath, urlFormat, pageLanguage);            
 
             string urlQueryStartChar = "?";
             if (url.IndexOf("?") > -1)
@@ -811,16 +811,13 @@ namespace HatCMS
 				string val = paramList[key];
                 if (first)
                 {
-                    if (context != null)
-                        url = url + urlQueryStartChar + key + "=" + context.Server.UrlEncode(val);
-                    else
-                        url = url + urlQueryStartChar + key + "=" + val;
+                    url = url + urlQueryStartChar + key + "=" + System.Web.HttpUtility.UrlEncode(val);
 
                     first = false;
                 }
                 else
                 {
-                    url = url + "&" + key + "=" + context.Server.UrlEncode(val);
+                    url = url + "&" + key + "=" + System.Web.HttpUtility.UrlEncode(val);
                 }
 			}
 			return url;
@@ -957,8 +954,12 @@ namespace HatCMS
 
             if (useInternal404NotFoundErrorHandler)
             {
-                string fromUrl = PageUtils.getFromForm("aspxerrorpath", System.Web.HttpContext.Current.Request.Url.PathAndQuery);
-                fromUrl = System.Web.HttpContext.Current.Server.UrlEncode(fromUrl);
+                string defaultUrl = "";
+                if (System.Web.HttpContext.Current != null && System.Web.HttpContext.Current.Request != null)
+                    defaultUrl = System.Web.HttpContext.Current.Request.Url.PathAndQuery;
+
+                string fromUrl = PageUtils.getFromForm("aspxerrorpath", defaultUrl);
+                fromUrl = System.Web.HttpUtility.UrlEncode(fromUrl);
 
                 string Internal404NotFoundErrorHandlerPageUrl = CmsContext.ApplicationPath + "/_internal/error404.aspx?from=" + fromUrl;
                 if (CmsConfig.getConfigValue("Internal404NotFoundErrorHandlerPageUrl","") != "" )

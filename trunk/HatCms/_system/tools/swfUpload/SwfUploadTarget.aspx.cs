@@ -45,7 +45,7 @@ namespace HatCMS.FCKHelpers
                         baseDir += "/";
                 }
 
-                string fullDir = Context.Server.MapPath(baseDir + dir);
+                string fullDir = System.Web.Hosting.HostingEnvironment.MapPath(baseDir + dir);
 
                 if (!fullDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
                     fullDir += Path.DirectorySeparatorChar;

@@ -140,7 +140,7 @@ namespace HatCMS.Placeholders
         {
             AddJobPostingCommandToEditMenu(page, page);
 
-            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childJobPages = CmsContext.getAllPlaceholderDefinitions("JobPostingDetails", page, CmsContext.PageGatheringMode.ChildPagesOnly);
+            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childJobPages = CmsContext.getAllPlaceholderDefinitions("JobPostingDetails", page, CmsContext.PageGatheringMode.FullRecursion);
             JobPostingLocation[] allLocations = JobPostingLocation.FetchAll();
             JobPostingLocation theAllLocationsLocation = JobPostingLocation.getAllLocations(allLocations);
 
@@ -162,13 +162,26 @@ namespace HatCMS.Placeholders
 
             // -- do HTML output only for the location
             StringBuilder html = new StringBuilder();
+            bool jobsOutput = false;
             foreach (JobPostingLocation location in allLocations)
             {
                 if (aggregatorData.LocationId < 0 || aggregatorData.LocationId == theAllLocationsLocation.JobLocationId || location.JobLocationId == aggregatorData.LocationId)
                 {
-                    html.Append(getHtmlForJobsInLocation(childJobDetails, location, langToRenderFor));
+                    string jobHtml = getHtmlForJobsInLocation(childJobDetails, location, langToRenderFor);
+                    if (jobHtml != "")
+                    {
+                        html.Append(jobHtml);
+                        jobsOutput = true;
+                    }
+                    
                 }
             } // foreach
+
+            if (!jobsOutput)
+            {
+                html.Append("<p class=\"noJobsMessage\">There are currently no jobs available</p>"); 
+            }
+
             writer.Write(html.ToString());
             
         }
@@ -267,31 +280,33 @@ namespace HatCMS.Placeholders
 
         public override Rss.RssItem[] GetRssFeedItems(CmsPage page, CmsPlaceholderDefinition placeholderDefinition, CmsLanguage langToRenderFor)
         {
-            
-            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childJobPages = CmsContext.getAllPlaceholderDefinitions("JobPostingDetails", page, CmsContext.PageGatheringMode.ChildPagesOnly);
-            JobPostingLocation[] allLocations = JobPostingLocation.FetchAll();
-            JobPostingLocation theAllLocationsLocation = JobPostingLocation.getAllLocations(allLocations);
-
-            JobPostingDb db = new JobPostingDb();
-            JobPostingAggregatorData aggregatorData = db.getJobPostingAggregatorData(page, placeholderDefinition.Identifier, langToRenderFor, true);
-
-            // -- grab all the details for all child job pages.
-
             List<Rss.RssItem> ret = new List<Rss.RssItem>();
-            foreach (CmsPage childPage in childJobPages.Keys)
-            {                
-                foreach (CmsPlaceholderDefinition phDef in childJobPages[childPage])
-                {
-                    JobPostingDetailsData dataObj = db.getJobPostingDetailsData(childPage, phDef.Identifier, langToRenderFor, true);
-                    if (!dataObj.IsExpired && (aggregatorData.LocationId < 0 || aggregatorData.LocationId == theAllLocationsLocation.JobLocationId || dataObj.LocationId == aggregatorData.LocationId))
-                    {
-                        Rss.RssItem rssItem = CreateAndInitRssItem(childPage, langToRenderFor);
-                        rssItem.Description = childPage.renderAllPlaceholdersToString(langToRenderFor, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
-                        ret.Add(rssItem);
-                    }                    
-                }
-            } // foreach child page
+            Dictionary<CmsPage, CmsPlaceholderDefinition[]> childJobPages = CmsContext.getAllPlaceholderDefinitions("JobPostingDetails", page, CmsContext.PageGatheringMode.ChildPagesOnly);
+            if (childJobPages.Count > 0)
+            {
+                JobPostingLocation[] allLocations = JobPostingLocation.FetchAll();
+                JobPostingLocation theAllLocationsLocation = JobPostingLocation.getAllLocations(allLocations);
 
+                JobPostingDb db = new JobPostingDb();
+                JobPostingAggregatorData aggregatorData = db.getJobPostingAggregatorData(page, placeholderDefinition.Identifier, langToRenderFor, true);
+
+                // -- grab all the details for all child job pages.
+
+
+                foreach (CmsPage childPage in childJobPages.Keys)
+                {
+                    foreach (CmsPlaceholderDefinition phDef in childJobPages[childPage])
+                    {
+                        JobPostingDetailsData dataObj = db.getJobPostingDetailsData(childPage, phDef.Identifier, langToRenderFor, true);
+                        if (!dataObj.IsExpired && (aggregatorData.LocationId < 0 || aggregatorData.LocationId == theAllLocationsLocation.JobLocationId || dataObj.LocationId == aggregatorData.LocationId))
+                        {
+                            Rss.RssItem rssItem = CreateAndInitRssItem(childPage, langToRenderFor);
+                            rssItem.Description = childPage.renderAllPlaceholdersToString(langToRenderFor, CmsPage.RenderPlaceholderFilterAction.RunAllPageAndPlaceholderFilters);
+                            ret.Add(rssItem);
+                        }
+                    }
+                } // foreach child page
+            }
 
 
             return ret.ToArray();

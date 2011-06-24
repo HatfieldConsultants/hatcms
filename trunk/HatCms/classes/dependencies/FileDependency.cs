@@ -18,7 +18,7 @@ namespace HatCMS
     public class CmsFileDependency : CmsDependency
     {
         private string FullFilePath = "";
-
+        private ExistsMode _mode = ExistsMode.MustExist;
 
         /// <summary>
         /// set to DateTime.MinValue if no Last Modified date check is done.
@@ -29,29 +29,57 @@ namespace HatCMS
         {
             FullFilePath = fullfilepath;
             FileShouldBeLastModifiedAfter = DateTime.MinValue;
+            _mode = ExistsMode.MustExist;
         }
 
-        public static CmsFileDependency UnderAppPath(string pathUnderAppPath)
+        public CmsFileDependency(string fullfilepath, ExistsMode existsmode)
         {
-            string fullFilePath = System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath + pathUnderAppPath);
-            return new CmsFileDependency(fullFilePath);
-        }
-
-        public static CmsFileDependency UnderAppPath(string pathUnderAppPath, DateTime modifiedAfter)
-        {
-            string fullFilePath = System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath + pathUnderAppPath);
-            return new CmsFileDependency(fullFilePath, modifiedAfter);
+            FullFilePath = fullfilepath;
+            FileShouldBeLastModifiedAfter = DateTime.MinValue;
+            _mode = existsmode;
         }
 
         public CmsFileDependency(string fullfilepath, DateTime fileshouldbelastmodifiedafter)
         {
             FullFilePath = fullfilepath;
             FileShouldBeLastModifiedAfter = fileshouldbelastmodifiedafter;
+            _mode = ExistsMode.MustExist;
+        }
+
+        public CmsFileDependency(string fullfilepath, DateTime fileshouldbelastmodifiedafter, ExistsMode existsmode)
+        {
+            FullFilePath = fullfilepath;
+            FileShouldBeLastModifiedAfter = fileshouldbelastmodifiedafter;
+            _mode = existsmode;
+        }
+
+        public static CmsFileDependency UnderAppPath(string pathUnderAppPath)
+        {
+            string fullFilePath = System.Web.Hosting.HostingEnvironment.MapPath("~/" + pathUnderAppPath);
+            return new CmsFileDependency(fullFilePath);
+        }
+
+        public static CmsFileDependency UnderAppPath(string pathUnderAppPath, ExistsMode existsmode)
+        {
+            string fullFilePath = System.Web.Hosting.HostingEnvironment.MapPath("~/" + pathUnderAppPath);
+            return new CmsFileDependency(fullFilePath, existsmode);
+        }
+
+        public static CmsFileDependency UnderAppPath(string pathUnderAppPath, DateTime modifiedAfter)
+        {
+            string fullFilePath = System.Web.Hosting.HostingEnvironment.MapPath("~/" + pathUnderAppPath);
+            return new CmsFileDependency(fullFilePath, modifiedAfter);
+        }
+
+        public static CmsFileDependency UnderAppPath(string pathUnderAppPath, DateTime modifiedAfter, ExistsMode existsmode)
+        {
+            string fullFilePath = System.Web.Hosting.HostingEnvironment.MapPath("~/" + pathUnderAppPath);
+            return new CmsFileDependency(fullFilePath, modifiedAfter, existsmode);
         }
 
         public override string GetContentHash()
         {
-            return FullFilePath.Trim().ToLower();
+            return FullFilePath.Trim().ToLower()+_mode.ToString();
         }
 
         public override CmsDependencyMessage[] ValidateDependency()
@@ -62,7 +90,7 @@ namespace HatCMS
                 // -- .aspx files must exist in the CmsConfig.URLsToNotRemap array
                 if (String.Compare(Path.GetExtension(FullFilePath), ".aspx", true) == 0)
                 {
-                    string appPathFullDir = System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath);
+                    string appPathFullDir = System.Web.Hosting.HostingEnvironment.MapPath(CmsContext.ApplicationPath);
                     string relPath = Hatfield.Web.Portal.PathUtils.RelativePathTo(appPathFullDir, FullFilePath);
                     if (relPath.StartsWith(@"\"))
                         relPath = relPath.Substring(1); // remove first slash
@@ -83,16 +111,21 @@ namespace HatCMS
 
                 if (File.Exists(FullFilePath))
                 {
-                    if (FileShouldBeLastModifiedAfter.Ticks != DateTime.MinValue.Ticks)
+                    if (_mode == ExistsMode.MustNotExist)
+                    {
+                        ret.Add(CmsDependencyMessage.Error("File must NOT exist: \"" + FullFilePath + "\""));
+                    }
+                    else if (FileShouldBeLastModifiedAfter.Ticks != DateTime.MinValue.Ticks)
                     {
                         FileInfo fi = new FileInfo(FullFilePath);
                         if (fi.LastWriteTime.Ticks < FileShouldBeLastModifiedAfter.Ticks)
-                            ret.Add(CmsDependencyMessage.Error("\""+FullFilePath+"\" should have a last modified date after "+FileShouldBeLastModifiedAfter.ToString("d MMM yyyy hh:mm")));
+                            ret.Add(CmsDependencyMessage.Error("\"" + FullFilePath + "\" should have a last modified date after " + FileShouldBeLastModifiedAfter.ToString("d MMM yyyy hh:mm")));
                     }
                 }
                 else
                 {
-                    ret.Add(CmsDependencyMessage.Error("File does not exist: \""+FullFilePath+"\""));
+                    if (_mode == ExistsMode.MustExist)
+                        ret.Add(CmsDependencyMessage.Error("File does not exist: \""+FullFilePath+"\""));
                 }
             }
             catch(Exception ex)

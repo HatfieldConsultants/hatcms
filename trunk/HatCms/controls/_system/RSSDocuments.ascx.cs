@@ -51,6 +51,8 @@ namespace HatCMS.Controls
 
             Rss.RssFeed documentsRss;
             // the RSS feed is cached to improve performance.
+            System.Web.Caching.Cache Cache = System.Web.Hosting.HostingEnvironment.Cache;
+
             if (cacheDuration_hours >= 0 && Cache[url] != null)
             {
                 documentsRss = (Rss.RssFeed)Cache[url];

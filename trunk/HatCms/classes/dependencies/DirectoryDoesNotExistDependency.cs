@@ -25,7 +25,7 @@ namespace HatCMS
 
         public static CmsDirectoryDoesNotExistDependency UnderAppPath(string pathUnderAppPath)
         {
-            string fullFilePath = System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath + pathUnderAppPath);
+            string fullFilePath = System.Web.Hosting.HostingEnvironment.MapPath("~/" + pathUnderAppPath);
             return new CmsDirectoryDoesNotExistDependency(fullFilePath);
         }
 

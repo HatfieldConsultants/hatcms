@@ -78,6 +78,7 @@ namespace HatCMS
                   KEY `ResourceId` (`ResourceId`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
                 "));
+
             ret.Add(new CmsDatabaseTableDependency(@"
                 CREATE TABLE  `resourceitems` (
                   `AutoIncId` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -96,6 +97,10 @@ namespace HatCMS
                   UNIQUE KEY `ResourceItemsUniqueIdRevisionNumber` (`ResourceId`,`RevisionNumber`),
                   KEY `RevisionNumIndex` (`RevisionNumber`,`FileDirectory`(255),`Deleted`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+                "));
+
+            ret.Add(new CmsDatabaseTableDependency(@"
+                    CREATE TABLE `PersistentVariables` (                      `PersistentVariableId` INT NOT NULL AUTO_INCREMENT ,                      `Name` VARCHAR(255) NOT NULL ,                      `PersistedValue` BLOB NULL ,                      PRIMARY KEY (`PersistentVariableId`) ,                      UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) );
                 "));
 
             // -- some project directories should be removed from production sites
@@ -144,7 +149,7 @@ namespace HatCMS
             // -- ensure that the HtmlContent placeholders do not have the old link to the showThumb.aspx page (note: this validation is slow, but very useful.)
             ret.Add(new CmsPlaceholderContentDependency("HtmlContent", "_system/showthumb.aspx", CmsDependency.ExistsMode.MustNotExist, StringComparison.CurrentCultureIgnoreCase));
 
-            ret.Add(new CmsControlDependency("_system/internal/EditCalendarCategoriesPopup", CmsDependency.ExistsMode.MustNotExist)); // deprecated. now "_system/internal/EventCalendarCategoryPopup"
+            ret.Add(new CmsControlDependency("_system/internal/EditCalendarCategoriesPopup", CmsDependency.ExistsMode.MustNotExist)); // deprecated. now "EventCalendarCategoryPopup"
 
             // -- gather all admin tool dependencies
             ret.AddRange(HatCMS.Admin.BaseCmsAdminTool.getAllAdminToolDependencies());

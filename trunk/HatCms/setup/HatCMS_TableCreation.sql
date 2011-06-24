@@ -270,6 +270,9 @@ CREATE TABLE  `pages` (
   KEY `pages_deleted` (`Deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+CREATE  TABLE `persistentvariables` (  `PersistentVariableId` INT NOT NULL AUTO_INCREMENT ,  `Name` VARCHAR(255) NOT NULL ,  `PersistedValue` BLOB NULL ,  PRIMARY KEY (`PersistentVariableId`) ,  UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) );
+
 CREATE TABLE  `plaintextcontent` (
   `PlainTextContentId` int(11) NOT NULL AUTO_INCREMENT,
   `PageId` int(11) NOT NULL DEFAULT '0',
@@ -472,7 +475,7 @@ CREATE TABLE  `userimagegallery` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `ProcurementAggregator` (
+CREATE TABLE `procurementaggregator` (
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
   `LangCode` varchar(5) NOT NULL,
@@ -482,7 +485,7 @@ CREATE TABLE `ProcurementAggregator` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `ProcurementDetails` (
+CREATE TABLE `procurementdetails` (
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
   `LangCode` varchar(5) NOT NULL,
@@ -561,3 +564,4 @@ CREATE TABLE  `filelibraryaggregator2` (
   PRIMARY KEY (`SimpleFileAggregatorId`),
   KEY `simplefileaggregatorPageIndex` (`PageId`,`Identifier`,`LangCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

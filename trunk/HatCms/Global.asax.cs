@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Web;
 using System.Web.SessionState;
 using System.Web.Security;
-
+using System.Threading;
 using Hatfield.Web.Portal;
 
 namespace HatCMS 
@@ -32,7 +32,15 @@ namespace HatCMS
             }
         }
 
-        private ConsoleTraceListener traceListener;
+        private ConsoleTraceListener _traceListener;
+        private static System.Threading.Timer _timer = null;
+        
+        /// <summary>
+        /// time-interval (milliseconds) to wait between calls to RunBackgroundPeriodicTasks(). 
+        /// default value is every hour (3600000 ms)
+        /// </summary>
+        private const int _backgroundTimerPeriod_ms = 60 * 60 * 1000; 
+        
         
         /// <summary>
 		/// constructor (never needs to be called)
@@ -44,8 +52,18 @@ namespace HatCMS
 		
 		protected void Application_Start(Object sender, EventArgs e)
 		{            
-            traceListener = new ConsoleTraceListener();
-            System.Diagnostics.Trace.Listeners.Add(traceListener);            
+            // -- initialize the console trace listener
+            _traceListener = new ConsoleTraceListener();
+            System.Diagnostics.Trace.Listeners.Add(_traceListener);            
+
+            // -- run all OnApplicationStart background tasks
+            CmsBackgroundTaskUtils.RunAllApplicationStartBackgroundTasks();
+
+            // -- initialize Period Background Task timer
+            int dueTime_ms = 60 * 1000; // milliseconds to wait before calling RunBackgroundPeriodicTasks for first time.            
+
+            _timer = new System.Threading.Timer(RunBackgroundPeriodicTasks, null, dueTime_ms, _backgroundTimerPeriod_ms);
+            
 		}
         
 		protected void Session_Start(Object sender, EventArgs e)
@@ -53,6 +71,24 @@ namespace HatCMS
             Console.WriteLine("Application - Session_Start");
             CmsContext.Application_Start_Session();
 		}
+
+        private static void RunBackgroundPeriodicTasks(object state)
+        {
+            // -- ensure we don't call this function again until RunBackgroundTasks has returned
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
+            try
+            {
+                CmsBackgroundTaskUtils.RunAllApplicablePeriodicTasks();
+                
+            }
+            catch (Exception ex)
+            {
+                Console.Write("Background Task Error: Something went wrong. Reason: {0} Stack: {1}", ex.Message, ex.StackTrace);
+            }
+
+            
+            _timer.Change(_backgroundTimerPeriod_ms, _backgroundTimerPeriod_ms);
+        }
 
         
         /// <summary>
@@ -64,10 +100,7 @@ namespace HatCMS
         {
             Console.WriteLine("Application - Application_BeginRequest");
 
-            CmsContext.StartNewRequest();
-
-            ProcessSwfUploadFixes();
-
+            ProcessSwfUploadFixes(); // this needs to be before the UrlsToNotRemap is checked.
 
             // get the requested page path
             string baseProcessingPage = CmsContext.ApplicationPath + "default.aspx";
@@ -84,6 +117,8 @@ namespace HatCMS
             string extension = System.IO.Path.GetExtension(pagePath);
             if (String.Compare(extension, ".aspx", true) != 0)
                 return;
+
+            CmsContext.StartNewRequest();            
 
             // remove extension
             pagePath = pagePath.Substring(0, pagePath.Length - ".aspx".Length);
@@ -115,6 +150,9 @@ namespace HatCMS
 
         private void ProcessSwfUploadFixes()
         {
+            if (HttpContext.Current == null || HttpContext.Current.Request == null)
+                return;
+
             try
             {
                 string session_param_name = "ASPSESSID";
@@ -195,12 +233,24 @@ namespace HatCMS
         
         protected void Application_Error(Object sender, EventArgs e)
         {
-            Hatfield.Web.Portal.ApplicationUtils.Application_Error_StandardEmailSender(HttpContext.Current, "jsuwala@hatfieldgroup.com", new string[] { "jsuwala@hatfieldgroup.com"}, "mx.hatfieldgroup.com");
+            string techEmail = CmsConfig.getConfigValue("TechnicalAdministratorEmail", "");
+            string smtpServer = CmsConfig.getConfigValue("smtpServer", "");
+            if (techEmail.IndexOf("@") > 0 && smtpServer.Trim() != "")
+            {
+                Hatfield.Web.Portal.ApplicationUtils.Application_Error_StandardEmailSender(HttpContext.Current, techEmail, new string[] { techEmail }, smtpServer);
+            }
         }
 
 		
 		protected void Application_End(Object sender, EventArgs e)
 		{
+            // -- run all OnApplicationStart background tasks
+            CmsBackgroundTaskUtils.RunAllApplicationEndBackgroundTasks();
+
+            // -- get rid of the periodic background events timer.
+            if (_timer != null)
+                _timer.Dispose();
+
             Console.WriteLine("Application_End");
 		}
 		

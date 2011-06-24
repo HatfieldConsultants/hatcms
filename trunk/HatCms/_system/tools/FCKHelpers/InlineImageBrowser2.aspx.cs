@@ -75,7 +75,7 @@ namespace HatCMS.WebEditor.Helpers
 
         public static string ReverseMapPath(string PhysicalFilePath)
         {            
-            string rootPath = System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath);
+            string rootPath = System.Web.Hosting.HostingEnvironment.MapPath(CmsContext.ApplicationPath);
             string url = PathUtils.RelativePathTo(rootPath, PhysicalFilePath);
 
             if (url.StartsWith("..\\"))

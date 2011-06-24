@@ -45,7 +45,7 @@ namespace HatCMS.Placeholders
             string baseUrl = GetFileStorageDirectoryUrl(page, identifier, language);
 
             string fn = baseUrl + prependToFilename + userFilename;
-            string fnOnDisk = System.Web.HttpContext.Current.Server.MapPath(fn);
+            string fnOnDisk = System.Web.Hosting.HostingEnvironment.MapPath(fn);
             return fnOnDisk;
         }
 

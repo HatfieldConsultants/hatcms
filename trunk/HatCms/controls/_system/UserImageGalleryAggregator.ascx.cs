@@ -95,9 +95,11 @@ namespace HatCMS.Controls._system
             CmsPage galleryPage = CmsContext.currentPage;
             int numGalleriesOutput = 0;
             StringBuilder html = new StringBuilder();
-            foreach (CmsPage g in galleryPage.ChildPages)
+            CmsPage[] sortedPages = CmsPage.SortPagesBySortOrdinal(galleryPage.ChildPages);
+            for (int i = sortedPages.Length - 1; i >= 0; i--)
             {
-                if (g.ShowInMenu)
+                CmsPage g = sortedPages[i];
+                if (true) // g.showInMenu
                 {
 
 

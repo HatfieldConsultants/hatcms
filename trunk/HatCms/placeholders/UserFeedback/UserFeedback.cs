@@ -297,10 +297,13 @@ namespace HatCMS.Placeholders
                     {
                         // -- success
                         //    save submitted values to the current session
-                        System.Web.SessionState.HttpSessionState session = System.Web.HttpContext.Current.Session;
-                        session[ControlId + "Name"] = submittedData.Name;
-                        session[ControlId + "Email"] = submittedData.EmailAddress;
-                        session[ControlId + "Location"] = submittedData.Location;
+                        if (HttpContext.Current != null && HttpContext.Current.Session != null)
+                        {
+                            System.Web.SessionState.HttpSessionState session = System.Web.HttpContext.Current.Session;
+                            session[ControlId + "Name"] = submittedData.Name;
+                            session[ControlId + "Email"] = submittedData.EmailAddress;
+                            session[ControlId + "Location"] = submittedData.Location;
+                        }
                         //    send notification email message
                         sendAdministratorNotification(formInfo, submittedData);
                         //   output the Thankyou message
@@ -316,21 +319,24 @@ namespace HatCMS.Placeholders
             else
             {
                 // -- get previously submitted values from the current session
-                System.Web.SessionState.HttpSessionState session = System.Web.HttpContext.Current.Session;
-                if (session[ControlId + "Name"] != null)
+                if (System.Web.HttpContext.Current != null && System.Web.HttpContext.Current.Session != null)
                 {
-                    submittedData.Name = session[ControlId + "Name"].ToString();
-                    formValuesLoadedFromSession = true;
-                }
-                if (session[ControlId + "Email"] != null)
-                {
-                    submittedData.EmailAddress = session[ControlId + "Email"].ToString();
-                    formValuesLoadedFromSession = true;
-                }
-                if (session[ControlId + "Location"] != null)
-                {
-                    submittedData.Location = session[ControlId + "Location"].ToString();
-                    formValuesLoadedFromSession = true;
+                    System.Web.SessionState.HttpSessionState session = System.Web.HttpContext.Current.Session;
+                    if (session[ControlId + "Name"] != null)
+                    {
+                        submittedData.Name = session[ControlId + "Name"].ToString();
+                        formValuesLoadedFromSession = true;
+                    }
+                    if (session[ControlId + "Email"] != null)
+                    {
+                        submittedData.EmailAddress = session[ControlId + "Email"].ToString();
+                        formValuesLoadedFromSession = true;
+                    }
+                    if (session[ControlId + "Location"] != null)
+                    {
+                        submittedData.Location = session[ControlId + "Location"].ToString();
+                        formValuesLoadedFromSession = true;
+                    }
                 }
             }
 
@@ -424,7 +430,11 @@ namespace HatCMS.Placeholders
 
             string subject = CmsContext.currentPage.Title;
 
-            string body = "The following feedback was sent from the "+System.Web.HttpContext.Current.Request.Url.Host+" website" + Environment.NewLine + Environment.NewLine;
+            string host = CmsConfig.getConfigValue("SiteName", "");
+            if (HttpContext.Current != null && HttpContext.Current.Request != null)
+                host = HttpContext.Current.Request.Url.Host;
+
+            string body = "The following feedback was sent from the " + host + " website" + Environment.NewLine + Environment.NewLine;
             body += "Date: " + DateTime.Now.ToString("MMM dd yyyy hh:mm tt") + Environment.NewLine;
             body += "From: " + submittedData.Name+" ("+submittedData.EmailAddress +")"+ Environment.NewLine;
             body += "Location: " + submittedData.Location + Environment.NewLine;

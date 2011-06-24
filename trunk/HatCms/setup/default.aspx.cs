@@ -106,7 +106,7 @@ namespace HatCMS.setup
 
                 conn.ChangeDatabase(tb_DbName.Text.Trim());
 
-                string SQLTableSetupFilename = Server.MapPath("~/setup/HatCMS_TableCreation.sql");
+                string SQLTableSetupFilename = System.Web.Hosting.HostingEnvironment.MapPath("~/setup/HatCMS_TableCreation.sql");
                 string sqlTableSetup = System.IO.File.ReadAllText(SQLTableSetupFilename);
                 string[] sqlArray = sqlTableSetup.Replace("\n", "").Replace("\r", "").Split(new string[] { "CREATE TABLE" }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string sql in sqlArray)
@@ -301,7 +301,7 @@ namespace HatCMS.setup
         
         
 
-        public static ConfigValidationMessage[] VerifyConfig(System.Web.HttpContext Context)
+        public static ConfigValidationMessage[] VerifyConfig()
         {
             List<ConfigValidationMessage> ret = new List<ConfigValidationMessage>();
             try
@@ -353,7 +353,7 @@ namespace HatCMS.setup
 
 		protected void b_verifyConfig_Click(object sender, System.EventArgs e)
 		{
-            ConfigValidationMessage[] messages = VerifyConfig(Context);
+            ConfigValidationMessage[] messages = VerifyConfig();
             ConfigValidationMessage[] errorMessages = ConfigValidationMessage.getAllInvalidMessages(messages);
             if (errorMessages.Length == 0)
             {
@@ -380,7 +380,7 @@ namespace HatCMS.setup
             {
                 
                 // home page 
-                int HomePageId = InsertPage("", "Home Page", "Home Page", "", "HomePage", 0, 0, true);
+                int HomePageId = InsertPage("", "Home Page", "Home Page", "", "HomePage", -1, 0, true);
                 // create the home page security zones
                 InsertHomePageZone(HomePageId);
 
@@ -444,7 +444,7 @@ namespace HatCMS.setup
 
 
                 //# Admin Tools page (/_admin/Audit)
-                InsertPage("Audit", "Administration Tools", "Admin Tools", "", "_AuditPopup", AdminPageId, -1, false);
+                InsertPage("Audit", "Administration Tools", "Admin Tools", "", "_AdminMenuPopup", AdminPageId, -1, false);
 
                 //# view revisions page (/_admin/ViewRevisions)
                 InsertPage("ViewRevisions", "View Page Revisions", "View Page Revisions", "", "_PageRevisionsPopup", AdminPageId, -1, false);

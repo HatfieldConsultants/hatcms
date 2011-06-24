@@ -892,9 +892,9 @@ namespace HatCMS.Placeholders
                     string formId = "swfUpload";
                     html.Append(page.getFormStartHtml(formId));
                     html.Append("<strong>"+getAddFileText(langToRenderFor)+":</strong>");
-                    html.Append(" <input type=\"file\" name=\"\">");
+                    html.Append(" <input type=\"file\" name=\"" + ControlId + "_postedFile\">");
                     html.Append(PageUtils.getHiddenInputHtml(ControlId + "_action", "postFile"));
-                    html.Append(" <input type=\"submit\" name=\"" + ControlId + "_FileUpload\" value=\"" + getUploadButtonText(langToRenderFor) + "\" onclick=\"document.getElementById('" + ControlId + "Frobber').style.display = 'inline';\">");
+                    html.Append(" <input type=\"submit\" name=\"" + ControlId + "_FileUploadSubmitButton\" value=\"" + getUploadButtonText(langToRenderFor) + "\" onclick=\"document.getElementById('" + ControlId + "Frobber').style.display = 'inline';\">");
                     html.Append(" <img src=\"" + CmsContext.ApplicationPath + "images/_system/ajax-loader_24x24.gif\" width=\"24\" height=\"24\" align=\"absmiddle\" id=\"" + ControlId + "Frobber\" style=\"display: none;\">");
                     html.Append("<br>" + getMaxFileSizeText(langToRenderFor) + ": " + PageUtils.MaxUploadFileSize);
                     html.Append(page.getFormCloseHtml(formId));
@@ -909,7 +909,10 @@ namespace HatCMS.Placeholders
 
                     // -- SWF Upload
                     if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V1")
-                        throw new Exception("Error: you can not use SWFUpload for the PageFiles placeholder with DMSFileStorageLocationVersion set to V1");
+                    {
+                        writer.Write("Error: you can not use SWFUpload for the PageFiles placeholder with DMSFileStorageLocationVersion set to V1");
+                        return;
+                    }
 
                     string uploadUrl = CmsContext.ApplicationPath + "_system/tools/swfUpload/SwfUploadTarget.aspx?DMS=1&dir=" + storageUrl;
                     string fileFilters = "*.pdf;*.doc;*.docx;*.xls;*.xlsx;*.txt;*.zip";
@@ -1065,7 +1068,7 @@ namespace HatCMS.Placeholders
             StringBuilder html = new StringBuilder();
 
             html.Append("<p><strong>File Listing Configuration:</strong></p>");
-
+            html.Append("<p><em>Note: files are added to this display when viewing the page.</em></p>");
             html.Append("<table>");
 
             html.Append("<tr>");
@@ -1087,6 +1090,7 @@ namespace HatCMS.Placeholders
             html.Append("<td># of files to show per page:</td>");            
             html.Append("<td>");
             html.Append(PageUtils.getInputTextHtml(ControlId + "numFilesToShowPerPage", ControlId + "numFilesToShowPerPage", data.numFilesToShowPerPage.ToString(), 3, 3));
+            html.Append(" <em>(set to -1 to show all files on a single page</em>");
             html.Append("</td>");
             html.Append("</tr>");
 

@@ -24,7 +24,7 @@ namespace HatCMS
         {
 
             List<string> ret = new List<string>();
-            System.Web.HttpServerUtility server = System.Web.HttpContext.Current.Server;
+            
             string appPath = CmsContext.ApplicationPath;
 
             string html = HtmlHaystack.Trim();
@@ -50,13 +50,12 @@ namespace HatCMS
                 searchFor.Add("href='" + url + "'");
                 searchFor.Add("href='" + appPath + url + "'");
 
-                if (server != null)
-                {
-                    searchFor.Add("href=\"" + server.UrlEncode(url) + "\"");
-                    searchFor.Add("href=\"" + server.UrlEncode(appPath + url) + "\"");
-                    searchFor.Add("href='" + server.UrlEncode(url) + "'");
-                    searchFor.Add("href='" + server.UrlEncode(appPath + url) + "'");
-                }
+                
+                searchFor.Add("href=\"" + HttpUtility.UrlEncode(url) + "\"");
+                searchFor.Add("href=\"" + HttpUtility.UrlEncode(appPath + url) + "\"");
+                searchFor.Add("href='" + HttpUtility.UrlEncode(url) + "'");
+                searchFor.Add("href='" + HttpUtility.UrlEncode(appPath + url) + "'");
+            
 
                 searchFor.Add("src=\"" + (url) + "\"");
                 searchFor.Add("src=\"" + (appPath + url) + "\"");

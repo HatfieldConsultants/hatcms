@@ -52,7 +52,9 @@ namespace HatCMS.Placeholders
 			string referer = Hatfield.Web.Portal.PageUtils.getFromForm("from","");
 			if (referer == "")
 			{
-				if (System.Web.HttpContext.Current.Request.ServerVariables["HTTP_REFERER"] != null)
+                if (System.Web.HttpContext.Current != null && 
+                        System.Web.HttpContext.Current.Request != null &&
+                        System.Web.HttpContext.Current.Request.ServerVariables["HTTP_REFERER"] != null)
 					referer = System.Web.HttpContext.Current.Request.ServerVariables["HTTP_REFERER"];
 			}
             else if (referer.IndexOf("?404;") > -1)

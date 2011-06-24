@@ -564,6 +564,9 @@ namespace HatCMS.Placeholders
             if (PageUtils.getFromForm(controlId + "action", "") != "postFile")
                 return "";
 
+            if (HttpContext.Current == null || HttpContext.Current.Request == null)
+                return "";
+
             HttpRequest req = System.Web.HttpContext.Current.Request;
             if (req.Files.Count == 0)
                 return formatErrorMsg("No file was received. Please try again...");

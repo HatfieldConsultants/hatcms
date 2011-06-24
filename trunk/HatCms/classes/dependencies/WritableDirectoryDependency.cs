@@ -26,7 +26,7 @@ namespace HatCMS
 
         public static CmsWritableDirectoryDependency UnderAppPath(string pathUnderAppPath)
         {
-            string fullFilePath = System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath + pathUnderAppPath);
+            string fullFilePath = System.Web.Hosting.HostingEnvironment.MapPath(CmsContext.ApplicationPath + pathUnderAppPath);
             return new CmsWritableDirectoryDependency(fullFilePath);
         }
 

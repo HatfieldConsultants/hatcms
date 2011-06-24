@@ -95,7 +95,7 @@ namespace HatCMS.Controls
                     {
                         try
                         {
-                            string filenameOnDisk = Server.MapPath(filePath);
+                            string filenameOnDisk = System.Web.Hosting.HostingEnvironment.MapPath(filePath);
                             fileContents = System.IO.File.ReadAllText(filenameOnDisk);
                             // cache for 12 hours
                             Cache.Insert(cacheKey, fileContents, new System.Web.Caching.CacheDependency(filenameOnDisk), System.Web.Caching.Cache.NoAbsoluteExpiration, TimeSpan.FromHours(12));

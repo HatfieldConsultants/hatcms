@@ -59,7 +59,7 @@ namespace HatCMS.Controls
 
             int cacheDuration_hours = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, "cacheduration_hours", 12);
 
-            System.Web.Caching.Cache Cache = HttpContext.Current.Cache;
+            System.Web.Caching.Cache Cache = System.Web.Hosting.HostingEnvironment.Cache;
 
             Rss.RssFeed glossaryRss;
             // the RSS feed is cached to improve performance.

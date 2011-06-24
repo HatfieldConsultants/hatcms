@@ -311,7 +311,7 @@ namespace HatCMS.Placeholders.Calendar
 
             try
             {
-                CmsPage editCategoryPage = CmsContext.getPageByPath("_admin/EventCalendarCategory");
+                CmsPage editCategoryPage = CmsContext.getPageByPath(CmsConfig.getConfigValue("EditCalendarCategoryPagePath", "/_admin/EventCalendarCategory"));
                 html.Append(" <a href=\"" + editCategoryPage.getUrl(langToRenderFor) + "\" onclick=\"window.open(this.href,'" + categoryDropDown + "','resizable=1,scrollbars=1,width=800,height=400'); return false;\">(edit)</a>");
             }
             catch (Exception ex)

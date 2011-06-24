@@ -50,6 +50,7 @@ namespace HatCMS.Placeholders
                     ret.Add(job);
             } // foreach
             return ret.ToArray();
+            
         }
 
     }
@@ -92,6 +93,9 @@ namespace HatCMS.Placeholders
             ret.Add(new CmsConfigItemDependency("JobPostingDetails.BackToJobListingText", CmsDependency.ExistsMode.MustExist));
             ret.Add(new CmsConfigItemDependency("JobPostingDetails.LocationText", CmsDependency.ExistsMode.MustExist));
             
+            // -- category edit page
+            ret.Add(new CmsPageDependency("_admin/JobLocation", CmsConfig.Languages));
+
             // -- obsolete config entries:
             ret.Add(new CmsConfigItemDependency("JobPostingLocations", CmsDependency.ExistsMode.MustNotExist));            
             ret.Add(new CmsConfigItemDependency("DeleteJobPath", CmsDependency.ExistsMode.MustNotExist));

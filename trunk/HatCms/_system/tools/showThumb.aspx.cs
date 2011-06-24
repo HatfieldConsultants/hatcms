@@ -23,7 +23,7 @@ namespace HatCMS
             {                
                 string relPath = CmsConfig.getConfigValue("ThumbImageCacheDirectory", "~/_system/writable/ThumbnailCache/");
                 string absPath = VirtualPathUtility.ToAbsolute(relPath);
-                string pathOnDisk = HttpContext.Current.Server.MapPath(absPath);
+                string pathOnDisk = System.Web.Hosting.HostingEnvironment.MapPath(absPath);
 
                 if (!pathOnDisk.EndsWith(Path.DirectorySeparatorChar.ToString()))
                     pathOnDisk += Path.DirectorySeparatorChar.ToString();
@@ -34,7 +34,7 @@ namespace HatCMS
         
         private static BaseShowThumbnailPageParameters getBaseShowThumbnailPageParameters()
         {
-            string FullSizeImageStorageDir = System.Web.HttpContext.Current.Server.MapPath(System.Web.HttpContext.Current.Request.ApplicationPath);
+            string FullSizeImageStorageDir = System.Web.Hosting.HostingEnvironment.MapPath("~/");
             if (!FullSizeImageStorageDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
                 FullSizeImageStorageDir = FullSizeImageStorageDir + Path.DirectorySeparatorChar.ToString();
 

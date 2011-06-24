@@ -42,10 +42,13 @@ namespace HatCMS
             page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/swfUpload/handlers.js");
 
             string AuthId = "";
-            HttpCookie auth_cookie = System.Web.HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
-            if (auth_cookie != null)
+            if (System.Web.HttpContext.Current != null && System.Web.HttpContext.Current.Request != null)
             {
-                AuthId = auth_cookie.Value;
+                HttpCookie auth_cookie = System.Web.HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+                if (auth_cookie != null)
+                {
+                    AuthId = auth_cookie.Value;
+                }
             }
 
             if (allowedFileTypes == "")

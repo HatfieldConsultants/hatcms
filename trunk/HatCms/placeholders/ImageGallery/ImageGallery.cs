@@ -125,7 +125,7 @@ namespace HatCMS.Placeholders
         {
             get
             {
-                return System.Web.HttpContext.Current.Server.MapPath(BaseDirectoryPathUrl);                
+                return System.Web.Hosting.HostingEnvironment.MapPath(BaseDirectoryPathUrl);                
             }
         }
 
@@ -209,11 +209,11 @@ namespace HatCMS.Placeholders
 					// "imgCaption"+ImageGalleryId+"_"+imgFilenameUnderAppPath;					
 					if (captionId != "")
 					{						
-						string capId = System.Web.HttpContext.Current.Server.UrlDecode(captionId);
+						string capId = System.Web.HttpUtility.UrlDecode(captionId);
 						if (capId.StartsWith("imgCaption"+ImageGalleryId+"_"))
 						{
 							string imgFilenameUnderAppPath = capId.Substring(("imgCaption"+ImageGalleryId+"_").Length);
-                            string caption = PageUtils.getFromForm(System.Web.HttpContext.Current.Server.UrlEncode(capId), "");
+                            string caption = PageUtils.getFromForm(System.Web.HttpUtility.UrlEncode(capId), "");
 							ImageGalleryImageData img = data.getImageData(imgFilenameUnderAppPath);
 							img.Caption = caption;
 							img.Filename = imgFilenameUnderAppPath;
@@ -356,7 +356,7 @@ namespace HatCMS.Placeholders
 
         private string getDirOnDiskToView(ImageGalleryData data)
         {
-            return System.Web.HttpContext.Current.Server.MapPath(CmsContext.ApplicationPath + data.subDir);
+            return System.Web.Hosting.HostingEnvironment.MapPath(CmsContext.ApplicationPath + data.subDir);
         }
 
         private string getHtmlForThumbView(CmsPage page, ImageGalleryData data, string ImageGalleryId, bool inEditMode)
@@ -412,7 +412,7 @@ namespace HatCMS.Placeholders
                 html.Append("<br>");
                 if (inEditMode)
                 {
-                    string tbName = System.Web.HttpContext.Current.Server.UrlEncode("imgCaption" + ImageGalleryId + "_" + imgFilenameUnderAppPath);
+                    string tbName = System.Web.HttpUtility.UrlEncode("imgCaption" + ImageGalleryId + "_" + imgFilenameUnderAppPath);
                     formCaptionNames.Add(tbName);
                     string tb = PageUtils.getInputTextHtml(tbName, tbName, imgData.Caption, 15, 255);
                     tb = "<nobr>caption: " + tb + "</nobr>";

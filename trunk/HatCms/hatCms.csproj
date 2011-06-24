@@ -109,6 +109,7 @@
     </Compile>
     <Compile Include="classes\admin\AdminToolInfo.cs" />
     <Compile Include="classes\admin\BaseAdminTool.cs" />
+    <Compile Include="classes\backgroundTasks\BackgroundTaskUtils.cs" />
     <Compile Include="classes\BaseCmsControl.cs" />
     <Compile Include="classes\Config.cs">
       <SubType>Code</SubType>
@@ -151,7 +152,10 @@
     <Compile Include="classes\page\PageLanguageInfo.cs" />
     <Compile Include="classes\page\PageLockData.cs" />
     <Compile Include="classes\page\PageRevisionData.cs" />
+    <Compile Include="classes\backgroundTasks\BackgroundTask.cs" />
+    <Compile Include="classes\backgroundTasks\BackgroundTaskInfo.cs" />
     <Compile Include="classes\permissions\PortalApplication.cs" />
+    <Compile Include="classes\PersistentVariable.cs" />
     <Compile Include="classes\placeholderCommonControls\CKEditorHelpers.cs" />
     <Compile Include="classes\Context.cs">
       <SubType>Code</SubType>
@@ -174,6 +178,13 @@
     <Compile Include="classes\zone\CmsZone.cs" />
     <Compile Include="classes\zone\CmsZoneUserRole.cs" />
     <Compile Include="classes\zone\CmsZoneUserRoleDb.cs" />
+    <Compile Include="controls\_system\PrinterAndPDFVersions.ascx.cs">
+      <DependentUpon>PrinterAndPDFVersions.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="controls\_system\PrinterAndPDFVersions.ascx.designer.cs">
+      <DependentUpon>PrinterAndPDFVersions.ascx</DependentUpon>
+    </Compile>
     <Compile Include="controls\_system\RSSNews.ascx.cs">
       <DependentUpon>RSSNews.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -583,6 +594,9 @@
     <Compile Include="_system\tools\ckhelpers\InlinePageBrowser.aspx.designer.cs">
       <DependentUpon>InlinePageBrowser.aspx</DependentUpon>
     </Compile>
+    <Compile Include="_system\tools\cron.ashx.cs">
+      <DependentUpon>cron.ashx</DependentUpon>
+    </Compile>
     <Compile Include="_system\tools\download.ashx.cs">
       <DependentUpon>download.ashx</DependentUpon>
     </Compile>
@@ -648,6 +662,7 @@
     <Compile Include="_system\tools\swfUpload\SwfUploadTarget.aspx.designer.cs">
       <DependentUpon>SwfUploadTarget.aspx</DependentUpon>
     </Compile>
+    <Content Include="controls\_system\PrinterAndPDFVersions.ascx" />
     <Content Include="controls\_system\RSSNews.ascx" />
     <Content Include="controls\_system\RSSDocuments.ascx" />
     <Content Include="controls\_system\RSSGlossary.ascx" />
@@ -690,7 +705,6 @@
     <Content Include="controls\_system\UserImageGalleryAggregator.ascx" />
     <Content Include="css\hatCMSPrint.css" />
     <Content Include="css\hatCMS.css" />
-    <Content Include="css\WaterEconomics.css" />
     <Content Include="css\_system\AdminTools.css" />
     <Content Include="css\_system\jquery-ui-lightness\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="css\_system\jquery-ui-lightness\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -975,7 +989,6 @@
     <Content Include="js\_system\ckeditor\skins\v2\templates.css" />
     <Content Include="js\_system\ckeditor\styles.js" />
     <Content Include="js\_system\ckeditor\themes\default\theme.js" />
-    <Content Include="js\_system\printerAndPdfVersion.js" />
     <Content Include="js\_system\DatePicker.js" />
     <Content Include="js\_system\dhtmlx\dhtmlxTree\codebase\dhtmlxcommon.js" />
     <Content Include="js\_system\dhtmlx\dhtmlxTree\codebase\dhtmlxtree.css" />
@@ -1194,6 +1207,7 @@
     <None Include="templates\_NewsArticleDetails.template" />
     <None Include="templates\_ProcurementDetails.template" />
     <None Include="templates\_SingleImageDisplay.template" />
+    <Content Include="_system\tools\cron.ashx" />
     <Content Include="_system\writable\web.config" />
     <Content Include="UserFiles\web.config" />
     <Content Include="_system\tools\cachingProxy.ashx" />

@@ -217,14 +217,17 @@ namespace HatCMS.Placeholders
                 {
                     // due to the dynamic nature of placeholders,
                     // placeholders can not redirect on their own, so must raise an Exception to do so.
-                    System.Web.HttpResponse resp = System.Web.HttpContext.Current.Response;
-                    resp.Clear();
-                    resp.ClearContent();
-                    resp.ClearHeaders();
-                    string targetUrl = (ex.InnerException as CmsPlaceholderNeedsRedirectionException).TargetUrl;
-                    resp.StatusCode = 301; // Moved Permanently
-                    resp.AddHeader("Location", targetUrl);
-                    resp.Redirect(targetUrl, true);
+                    if (HttpContext.Current != null && HttpContext.Current.Response != null)
+                    {
+                        System.Web.HttpResponse resp = System.Web.HttpContext.Current.Response;
+                        resp.Clear();
+                        resp.ClearContent();
+                        resp.ClearHeaders();
+                        string targetUrl = (ex.InnerException as CmsPlaceholderNeedsRedirectionException).TargetUrl;
+                        resp.StatusCode = 301; // Moved Permanently
+                        resp.AddHeader("Location", targetUrl);
+                        resp.Redirect(targetUrl, true);
+                    }
                 }
                 else
                 {

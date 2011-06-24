@@ -29,8 +29,9 @@ using System.Runtime.CompilerServices;
 // Version 1: first open source release
 // Version 1.1: major re-org of files.
 // Version 1.2: new admin functions, revised placeholders, confirmed to work on Mono.
+// Version 1.3: new module/plugin system; Background tasks
 
-[assembly: AssemblyVersion("1.2.*")]
+[assembly: AssemblyVersion("1.3.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

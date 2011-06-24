@@ -26,7 +26,7 @@ namespace HatCMS
 		/// the unique identifier for this page. 
 		/// Set to -1 if not initialized from the database.
 		/// </summary>
-		public new int ID;
+		public int ID;
         
         /// <summary>
         /// The CmsPageLanguageInfo instances track all language specific parameters (such as title, menuTitle, name, etc) for this page.
@@ -274,15 +274,16 @@ namespace HatCMS
         public CmsPageRevisionData getRevisionData(int revisionNumber)
         {
             CmsPageRevisionData[] allRevs;
-            string cacheKey = "allRevs" + this.Path;
-            // System.Web.HttpContext.Current.Items is a per-request cache: http://msdn.microsoft.com/en-us/magazine/cc163854.aspx#S6
-            if (System.Web.HttpContext.Current != null && System.Web.HttpContext.Current.Items.Contains(cacheKey))
+            string cacheKey = "allRevs" + this.ID;
+            
+            if (PerRequestCache.CacheContains(cacheKey))
             {
-                allRevs = (CmsPageRevisionData[])System.Web.HttpContext.Current.Items[cacheKey];
+                allRevs = (CmsPageRevisionData[])PerRequestCache.GetFromCache(cacheKey, new CmsPageRevisionData[0]);
             }
             else
             {
                 allRevs = getAllRevisionData();
+                PerRequestCache.AddToCache(cacheKey, allRevs);
             }
                                    
             foreach (CmsPageRevisionData rev in allRevs)
@@ -1607,7 +1608,7 @@ namespace HatCMS
                         // -- cache the home page id
                         foreach (CmsPage p in pages)
                         {
-                            if (p.Name == "" && p.ParentID == 0)
+                            if (p.Name == "" && p.ParentID <= 0)
                                 pageCache.SetHomePageId(p.ID);
                         }
 
@@ -1937,7 +1938,7 @@ namespace HatCMS
 
                 string parentId = newPage.ParentID.ToString();
                 if (newPage.ParentID < 0)
-                    parentId = "NULL";
+                    parentId = "-1";
 
                 StringBuilder sql = new StringBuilder();
                 sql.Append("INSERT into pages ( showInMenu, template, parentPageId, sortOrdinal, LastUpdatedDateTime, CreatedDateTime, LastModifiedBy, RevisionNumber) VALUES ");
