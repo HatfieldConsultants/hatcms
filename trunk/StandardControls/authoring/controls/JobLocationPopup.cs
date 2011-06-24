@@ -14,7 +14,7 @@ namespace HatCMS.Controls
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/JobDatabase/JobLocation.js"));
             return ret.ToArray();
         }
 
@@ -203,12 +203,12 @@ namespace HatCMS.Controls
             if (data.SaveToDatabase() == false)
             {
                 if (id == -1)
-                    return "<p style=\"color: red;\">Error adding record.</p>";
+                    return "<p style=\"color: red;\">Error adding Job Location.</p>";
                 else
-                    return "<p style=\"color: red;\">Error updating record.</p>";
+                    return "<p style=\"color: red;\">Error updating Job Location.</p>";
             }
             else
-                return "<p>Record saved.</p>";
+                return "<p>Job Location saved.</p>";
         }
 
         /// <summary>

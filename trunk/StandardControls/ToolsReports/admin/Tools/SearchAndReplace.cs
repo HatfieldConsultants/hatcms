@@ -176,7 +176,7 @@ namespace HatCMS.Admin
                 html.Append("<p style=\"color: red; font-weight: bold;\">" + _errorMessage + "</p>");
             }
 
-            html.Append(PageUtils.getHiddenInputHtml("AdminTool", this.GetType().Name ));            
+            html.Append(PageUtils.getHiddenInputHtml("RunTool", GetType().Name) + EOL);         
 
             html.Append(CmsContext.currentPage.getFormCloseHtml("SearchReplaceForm"));
             // -- do the search

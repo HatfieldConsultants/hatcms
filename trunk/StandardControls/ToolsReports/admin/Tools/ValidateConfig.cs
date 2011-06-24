@@ -17,7 +17,7 @@ namespace HatCMS.Admin
     {
         public override CmsAdminToolInfo getToolInfo()
         {
-            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Other, AdminMenuTab.Reports, "Validate CMS Config");
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Report_Other, AdminMenuTab.Reports, "Validate System Configuration");
         }
 
         public override CmsDependency[] getDependencies()
@@ -29,7 +29,7 @@ namespace HatCMS.Admin
         public override string Render()
         {
             StringBuilder html = new StringBuilder();
-            setupPage.ConfigValidationMessage[] msgs = setupPage.VerifyConfig(HttpContext.Current);
+            setupPage.ConfigValidationMessage[] msgs = setupPage.VerifyConfig();
             setupPage.ConfigValidationMessage[] errorMessages = setupPage.ConfigValidationMessage.getAllInvalidMessages(msgs);
             if (errorMessages.Length == 0)
             {
@@ -38,7 +38,7 @@ namespace HatCMS.Admin
             else
             {
 
-                html.Append("<div style=\"color: red;\">Error validating configuration: </div>");
+                html.Append("<div style=\"color: red;\">The following errors were found in your configuration: </div>");
                 html.Append("<ul>");
 
                 foreach (setupPage.ConfigValidationMessage m in errorMessages)

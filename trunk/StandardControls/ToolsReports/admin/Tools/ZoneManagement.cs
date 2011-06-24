@@ -139,7 +139,7 @@ namespace HatCMS.Admin
                         return formatErrorMsg("Default zone cannot be deleted.");
 
                     if (zoneDb.delete(createUpdateRecord(controlId, id)) == false)
-                        return formatErrorMsg("Error deleting record.");
+                        return formatErrorMsg("Error deleting zone.");
                 }
                 else
                 {   // when ID != -1 and no DELETE flag, CHG mode
@@ -147,11 +147,11 @@ namespace HatCMS.Admin
                         return formatErrorMsg("Default zone must start from home page (i.e. '/').");
 
                     if (zoneDb.update(createUpdateRecord(controlId, id)) == false)
-                        return formatErrorMsg("Error updating record.");
+                        return formatErrorMsg("Error updating zone.");
                 }
             }
 
-            return formatNormalMsg("Record saved.");
+            return formatNormalMsg("Zone saved.");
         }
         
         /// <summary>

@@ -25,7 +25,7 @@ namespace HatCMS.Controls
         /// </summary>
         /// <param name="langArray"></param>
         /// <param name="page"></param>
-        protected void addJavascript(CmsLanguage[] langArray, CmsPage page)
+        protected void addJavascriptToPage(CmsLanguage[] langArray, CmsPage page)
         {
             StringBuilder js = new StringBuilder("var langCode = [");
             foreach (CmsLanguage lang in langArray)
@@ -46,7 +46,7 @@ namespace HatCMS.Controls
         /// From config file, read the possible options for category color.
         /// </summary>
         /// <returns></returns>
-        protected string[] GetColorCode()
+        protected string[] GetPossibleColorCodes()
         {
             string color = CmsConfig.getConfigValue("EventCalendar.CategoryColor", "#0000FF");
             return color.Split(new char[] { '|' });
@@ -222,17 +222,17 @@ namespace HatCMS.Controls
                     if (id == -1)
                     {
                         if (db.insertCategoryData(d) == false)
-                            return "<p style=\"color: red;\">Error adding record.</p>";
+                            return "<p style=\"color: red;\">Error adding category.</p>";
                     }
                     else
                     {
                         if (db.updateCategoryData(d) == false)
-                            return "<p style=\"color: red;\">Error updating record.</p>";
+                            return "<p style=\"color: red;\">Error updating category.</p>";
                     }
                 }
             }
 
-            return "<p>Record saved.</p>";
+            return "<p>Calendar Category saved.</p>";
         }
 
        
@@ -292,13 +292,13 @@ namespace HatCMS.Controls
         public override string RenderToString(CmsControlDefinition controlDefnToRender, CmsLanguage langToRenderFor)
         {
             CmsPage page = CmsContext.currentPage;
-            addJavascript(CmsConfig.Languages, page);
+            addJavascriptToPage(CmsConfig.Languages, page);
             page.HeadSection.AddJSOnReady("updateOpener( window.name );");
 
             
             StringBuilder html = new StringBuilder();
 
-            string[] colorArray = GetColorCode();
+            string[] colorArray = GetPossibleColorCodes();
             string controlId = "eventCalendarCategory_";
             CmsLanguage[] langArray = CmsConfig.Languages;
             
