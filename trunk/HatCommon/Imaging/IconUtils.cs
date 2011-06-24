@@ -32,7 +32,7 @@ namespace Hatfield.Web.Portal.Imaging
         /// <returns></returns>
         public static Set getIconSet(string appPath, bool largeIcon)
         {
-            string pathOnDisk = HttpContext.Current.Server.MapPath(getPath(appPath, largeIcon));
+            string pathOnDisk = System.Web.Hosting.HostingEnvironment.MapPath(getPath(appPath, largeIcon));
             DirectoryInfo di = new DirectoryInfo(pathOnDisk);
             FileInfo[] fi = di.GetFiles("*.gif");
 

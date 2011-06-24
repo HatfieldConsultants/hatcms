@@ -29,13 +29,13 @@ namespace Hatfield.Web.Portal.Imaging
         private string ThumbImageCacheDirectory = "";
 
 
-        public string CacheKeyToUrl(System.Web.HttpContext webContext, string cacheKey, string ImageFileExtension)
+        public string CacheKeyToUrl(string cacheKey, string ImageFileExtension)
         {
             string filename = CacheKeyToFilename(cacheKey, ImageFileExtension);
 
-            string appPath = PageUtils.getApplicationPath(webContext);
+            string appPath = PageUtils.ApplicationPath;
 
-            string appPathOnDisk = webContext.Server.MapPath(appPath);
+            string appPathOnDisk = System.Web.Hosting.HostingEnvironment.MapPath(appPath);
             if (!appPathOnDisk.EndsWith(Path.DirectorySeparatorChar.ToString()))
                 appPathOnDisk = appPathOnDisk + Path.DirectorySeparatorChar.ToString();
 

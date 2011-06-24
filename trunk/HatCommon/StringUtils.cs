@@ -88,9 +88,10 @@ namespace Hatfield.Web.Portal
 
         }
 
+		private static readonly char[] base36Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
         static public string Base36Encode(Int64 value)
         {
-            char[] base36Chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+            
             string returnValue = "";
             if (value < 0)
             {
@@ -103,6 +104,8 @@ namespace Hatfield.Web.Portal
             } while (value != 0);
             return returnValue;
         }
+		
+	
 
         public static System.IO.MemoryStream WriteTextToMemoryStream(string textToWrite, System.Text.Encoding encoding)
         {

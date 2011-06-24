@@ -24,7 +24,7 @@ namespace Hatfield.Web.Portal
         public static string ApplicationPath
         {
             get
-            {
+            {                
                 return getApplicationPath(System.Web.HttpContext.Current);
             }
         }
@@ -35,8 +35,9 @@ namespace Hatfield.Web.Portal
         public static string getApplicationPath(HttpContext context)
         {
             try
-            {                
-                string apath = context.Request.ApplicationPath;
+            {
+                
+                string apath = System.Web.Hosting.HostingEnvironment.ApplicationVirtualPath;
                 if (!apath.EndsWith("/"))
                     apath = apath + "/";
                 return apath;
@@ -59,7 +60,7 @@ namespace Hatfield.Web.Portal
         {
             try
             {
-                string webConfigFN = context.Server.MapPath("~/web.config");
+                string webConfigFN = System.Web.Hosting.HostingEnvironment.MapPath("~/web.config");
                 System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
                 xmlDoc.Load(webConfigFN);
                 System.Xml.XmlNodeList nodes = xmlDoc.GetElementsByTagName("httpRuntime");
@@ -1072,8 +1073,13 @@ namespace Hatfield.Web.Portal
 
             pageHolder.Controls.Add(control);
 
-            System.IO.StringWriter output = new System.IO.StringWriter();
+            System.IO.StringWriter output = new System.IO.StringWriter();            
+            
             context.Server.Execute(pageHolder, output, true);
+
+            // note: to get around the need to have an HttpContext, the ASP.Net runtime needs to be loaded.
+            // information & code is here: http://www.codeproject.com/KB/dotnet/usingaspruntime.aspx or http://www.west-wind.com/presentations/aspnetruntime/aspnetruntime.asp
+
             return output.ToString();
         }
 
