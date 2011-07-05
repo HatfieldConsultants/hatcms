@@ -1,0 +1,1 @@
+<%@ Control Language="c#" AutoEventWireup="True" Codebehind="FloatingEditMenu.ascx.cs" Inherits="HatCMS.Controls.FloatingEditMenu" TargetSchema="http://schemas.microsoft.com/intellisense/ie3-2nav3-0" %>

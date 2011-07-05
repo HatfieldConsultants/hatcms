@@ -1,0 +1,1 @@
+<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="TabularNavigation.ascx.cs" Inherits="HatCMS.Controls.Navigation.TabularNavigation" %>

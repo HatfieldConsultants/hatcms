@@ -1,0 +1,10 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")##
+					
+						<div id="peachbox">
+						##PlaceHolder(PageTitle id="1")## 
+						##PlaceHolder(HtmlContent id="1" width="500px" height="400px")##
+						##PlaceHolder(UserFeedback id="1" width="100%" height="500px")## 
+						<p>&nbsp;<p>
+						</div>
+##EndPlaceholderRegion("MainContent")##
