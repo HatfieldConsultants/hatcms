@@ -4,6 +4,9 @@ using MySql.Data.MySqlClient;
 using System.Web.Configuration;
 using System.Collections;
 using System.Collections.Generic;
+using log4net;
+using log4net.Config;
+
 
 namespace Hatfield.Web.Portal.Data
 {
@@ -16,7 +19,9 @@ namespace Hatfield.Web.Portal.Data
     public abstract class MySqlDbObject : IDBObject
     {
         protected MySqlConnection Connection;
-
+        private static readonly int MySqlCommandTimeout = 60 * 5; //setting timeout to five minutes to handle large queries
+        private static readonly ILog log = LogManager.GetLogger(typeof(MySqlDbObject));
+        
         /// <summary>
         /// creates a new DbObject without the ConnectionString set.
         /// You must use doConnection() to start this connection.
@@ -334,13 +339,15 @@ namespace Hatfield.Web.Portal.Data
 
                 MySqlDataAdapter sqlDA = new MySqlDataAdapter();
                 sqlDA.SelectCommand = new MySqlCommand(sql, Connection);
+                sqlDA.SelectCommand.CommandTimeout = MySqlCommandTimeout;
 
                 sqlDA.Fill(dataSet);
 
             }
             catch (Exception ex)
             {
-                Console.Write(ex.Message);
+                log.Error("failed query: " + sql);
+                throw ex;
             }
             finally
             {
@@ -368,6 +375,8 @@ namespace Hatfield.Web.Portal.Data
 
                 // -- run the insert command
                 MySqlCommand cmd = Connection.CreateCommand();
+                cmd.CommandTimeout = MySqlCommandTimeout;
+
                 cmd.CommandText = sql;
                 int numInserted = cmd.ExecuteNonQuery();
 
@@ -378,7 +387,10 @@ namespace Hatfield.Web.Portal.Data
             }
             catch (Exception ex)
             {
+                log.Error("failed query: " + sql);
                 Console.Write(ex.Message);
+                throw ex;
+
             }
             finally
             {
@@ -411,16 +423,15 @@ namespace Hatfield.Web.Portal.Data
 
                 cmd = Connection.CreateCommand();
                 cmd.CommandText = sql;
-
-                cmd.CommandTimeout = (600); // default: 30
-                // Console.Write(Connection.ConnectionTimeout.ToString()); // default: 15
-
+                cmd.CommandTimeout = MySqlCommandTimeout;
+                                
                 int result = cmd.ExecuteNonQuery();
 
                 return result;
             }
             catch (Exception e)
             {
+                log.Error("failed query: " + sql);
                 throw e;
             }
 
