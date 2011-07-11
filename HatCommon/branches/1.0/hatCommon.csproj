@@ -87,8 +87,8 @@
     <Compile Include="Data\IDBObject.cs" />
     <Compile Include="Data\MySqlDbObject.cs" />
     <Compile Include="Data\OutputDataSetToExcel.cs" />
-    <Compile Include="EXIF\EXIFExtractor.cs" />
-    <Compile Include="EXIF\ExifHash.cs" />
+    <Compile Include="metadata\EXIF\EXIFExtractor.cs" />
+    <Compile Include="metadata\EXIF\ExifHash.cs" />
     <Compile Include="FileUtils.cs" />
     <Compile Include="Html\PageNumberAnchor.cs" />
     <Compile Include="Html\PageNumberAnchorUtils.cs" />
@@ -177,7 +177,7 @@
     <Compile Include="ExecuteDynamicCode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="EXIF\decoy.jpg" />
+    <EmbeddedResource Include="metadata\EXIF\decoy.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Search\Lucene\DLLs\" />
