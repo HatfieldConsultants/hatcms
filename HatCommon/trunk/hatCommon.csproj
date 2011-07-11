@@ -52,6 +52,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\Interop.DSOFile\Interop.DSOFile.dll</HintPath>
     </Reference>
+
+    <Reference Include="JsonFx.Json, Version=1.4.1003.3007, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\JsonFx\JsonFx.Json.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\log4net\log4net.dll</HintPath>
@@ -98,17 +103,6 @@
     <Compile Include="Imaging\ImageDiskCache.cs" />
     <Compile Include="Imaging\Thumbnail2.cs" />
     <Compile Include="JavascriptEvent.cs" />
-    <Compile Include="json\IJsonSerializable.cs" />
-    <Compile Include="json\JsonIgnoreAttribute.cs" />
-    <Compile Include="json\JsonNameAttribute.cs" />
-    <Compile Include="json\JsonReader.cs" />
-    <Compile Include="json\JsonSerializationException.cs" />
-    <Compile Include="json\JsonSpecifiedPropertyAttribute.cs" />
-    <Compile Include="json\JsonToken.cs" />
-    <Compile Include="json\JsonWriter.cs" />
-    <Compile Include="metadata\EXIF\EXIFExtractor.cs" />
-    <Compile Include="metadata\EXIF\ExifHash.cs" />
-    <Compile Include="metadata\MetaData.cs" />
     <Compile Include="Net\Mail.cs" />
     <Compile Include="Net\NetworkDrive.cs" />
     <Compile Include="Net\UserImpersonation.cs" />
@@ -183,14 +177,6 @@
     <Compile Include="Search\Lucene\SpellSuggestions\TRStringDistance.cs" />
     <Compile Include="StringUtils.cs" />
     <Compile Include="ExecuteDynamicCode.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="json\License.txt" />
-    <Content Include="json\Readme.txt" />
-    <Content Include="metadata\DSOFile\dsofile.dll" />
-    <Content Include="metadata\EXIF\decoy.jpg" />
-    <Content Include="metadata\XMP\CsXmpToolkit.dll" />
-    <Content Include="metadata\XMP\XmpToolkit.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Search\Lucene\DLLs\" />
