@@ -110,7 +110,7 @@ CREATE TABLE  `htmlcontent` (
   `html` longtext NOT NULL,
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`HtmlContentId`),
-  KEY `htmlcontent_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`) USING BTREE
+  KEY `htmlcontent_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`) 
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
@@ -266,12 +266,16 @@ CREATE TABLE  `pages` (
   PRIMARY KEY (`pageId`),
   KEY `pages_secondary` (`pageId`,`Deleted`),
   KEY `pages_tertiary` (`parentPageId`,`Deleted`),
-  KEY `pages_quartinary` (`parentPageId`,`Deleted`) USING BTREE,
   KEY `pages_deleted` (`Deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE  TABLE `persistentvariables` (  `PersistentVariableId` INT NOT NULL AUTO_INCREMENT ,  `Name` VARCHAR(255) NOT NULL ,  `PersistedValue` BLOB NULL ,  PRIMARY KEY (`PersistentVariableId`) ,  UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) );
+CREATE  TABLE `persistentvariables` (
+  `PersistentVariableId` INT NOT NULL AUTO_INCREMENT ,
+  `Name` VARCHAR(255) NOT NULL ,
+  `PersistedValue` BLOB NULL ,
+  PRIMARY KEY (`PersistentVariableId`) ,
+  UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) );
 
 CREATE TABLE  `plaintextcontent` (
   `PlainTextContentId` int(11) NOT NULL AUTO_INCREMENT,
@@ -332,7 +336,7 @@ CREATE TABLE  `singleimage` (
   `Tags` varchar(255) NOT NULL DEFAULT '',
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`SingleImageId`),
-  KEY `singleimage_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`) USING BTREE,
+  KEY `singleimage_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`) ,
   KEY `singleimage_tertiary` (`RevisionNumber`,`PageId`,`langShortCode`,`ImagePath`,`Deleted`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 

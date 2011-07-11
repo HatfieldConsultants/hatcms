@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hatCms", "hatCms.csproj", "
 		Release.AspNetCompiler.Debug = "False"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hatCommon", "include\hatcommon\hatCommon.csproj", "{E1A1A3F9-A397-45E3-8934-818155A61D57}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hatCommon", "include\hatCommon\hatCommon.csproj", "{E1A1A3F9-A397-45E3-8934-818155A61D57}"
 	ProjectSection(WebsiteProperties) = preProject
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.Debug = "False"

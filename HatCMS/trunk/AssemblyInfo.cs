@@ -26,12 +26,17 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
+// Notes on updating the AssemblyVersion: 
+// * Do not change the AssemblyVersion for a servicing release which is intended to be backwards compatible.
+// * Do change the AssemblyVersion for a release that you know has breaking changes.
+
 // Version 1: first open source release
 // Version 1.1: major re-org of files.
 // Version 1.2: new admin functions, revised placeholders, confirmed to work on Mono.
 // Version 1.3: new module/plugin system; Background tasks
 
-[assembly: AssemblyVersion("1.3.*")]
+[assembly: AssemblyVersion("1.3")]
+[assembly: AssemblyFileVersion("1.3.1.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

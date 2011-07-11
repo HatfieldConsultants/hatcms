@@ -118,6 +118,7 @@
     <Compile Include="classes\ControlUtils.cs" />
     <Compile Include="classes\CoreDependencies.cs" />
     <Compile Include="classes\dependencies\BaseDependency.cs" />
+    <Compile Include="classes\dependencies\CmsVersionDependency.cs" />
     <Compile Include="classes\dependencies\ConfigItemDependency.cs" />
     <Compile Include="classes\dependencies\ControlDependency.cs" />
     <Compile Include="classes\dependencies\ControlParmDependency.cs" />
@@ -643,7 +644,6 @@
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.designer.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
@@ -1250,7 +1250,7 @@
     <Content Include="_system\tools\swfUpload\SwfUploadTarget.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="include\hatcommon\hatCommon.csproj">
+    <ProjectReference Include="include\hatCommon\hatCommon.csproj">
       <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
       <Name>hatCommon</Name>
     </ProjectReference>
