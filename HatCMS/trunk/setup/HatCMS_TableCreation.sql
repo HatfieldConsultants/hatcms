@@ -391,7 +391,7 @@ CREATE TABLE  `userfeedbacksubmitteddata` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `NewsArticleAggregator` (
+CREATE TABLE `newsarticleaggregator` (
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
   `LangCode` varchar(2) NOT NULL,
@@ -401,7 +401,7 @@ CREATE TABLE `NewsArticleAggregator` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `NewsArticleDetails` (
+CREATE TABLE `newsarticledetails` (
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
   `LangCode` varchar(2) NOT NULL,
@@ -411,7 +411,7 @@ CREATE TABLE `NewsArticleDetails` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `EventCalendarAggregator` (
+CREATE TABLE `eventcalendaraggregator` (
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
   `LangCode` varchar(2) NOT NULL,
@@ -446,7 +446,7 @@ CREATE TABLE  `eventcalendarcategory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `RegisterProject` (
+CREATE TABLE `registerproject` (
   `ProjectId` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
   `Location` varchar(255) NOT NULL,
@@ -510,7 +510,7 @@ CREATE TABLE `zone` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `ZoneUserRole` (
+CREATE TABLE `zoneuserrole` (
   `ZoneId` int(11) NOT NULL,
   `UserRoleId` int(11) NOT NULL,
   `ReadAccess` int(1) DEFAULT '0',
@@ -530,7 +530,7 @@ CREATE TABLE  `filelibrarycategory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `FileLibraryAggregator` (
+CREATE TABLE `filelibraryaggregator` (
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
   `LangCode` varchar(5) NOT NULL,
