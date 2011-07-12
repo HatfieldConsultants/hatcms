@@ -26,7 +26,9 @@ namespace HatCMS.Admin
             List<CmsDependency> ret = new List<CmsDependency>();
             ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("GotoEditModePath", "/_admin/action/gotoEdit"), CmsConfig.Languages));
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery/jquery-1.4.1.min.js"));
-            ret.Add(CmsFileDependency.UnderAppPath("css/_system/AdminTools.css"));
+            
+            // AdminTools.css is now embedded in this project's Assembly.
+            ret.Add(CmsFileDependency.UnderAppPath("css/_system/AdminTools.css", CmsDependency.ExistsMode.MustNotExist));
             return ret.ToArray();
         }
 
@@ -110,7 +112,7 @@ namespace HatCMS.Admin
             CmsPage page = CmsContext.currentPage;
             CmsLanguage langToRenderFor = CmsContext.currentLanguage;
 
-            page.HeadSection.AddCSSFile(CSSGroup.ControlOrPlaceholder, "css/_system/AdminTools.css");
+            page.HeadSection.AddEmbeddedCSSFile(CSSGroup.ControlOrPlaceholder, typeof(AdminMenu).Assembly, "AdminTools.css");
 
             BaseCmsAdminTool toolToRun = getToolToRun();
 

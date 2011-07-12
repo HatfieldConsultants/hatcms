@@ -18,7 +18,7 @@ namespace HatCMS.Admin
         {
             List<CmsDependency> ret = new List<CmsDependency>();
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/jquery/jquery-1.4.1.min.js"));
-            ret.Add(CmsFileDependency.UnderAppPath("js/_system/Zone/ZoneManagement.js"));
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/Zone/ZoneManagement.js", CmsDependency.ExistsMode.MustNotExist)); // now an embedded resource
 
             return ret.ToArray();
         }
@@ -242,7 +242,7 @@ namespace HatCMS.Admin
         {
             CmsPageHeadSection h = CmsContext.currentPage.HeadSection;
             h.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
-            h.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/Zone/ZoneManagement.js");
+            h.AddEmbeddedJavascriptFile(JavascriptGroup.ControlOrPlaceholder, typeof(ZoneManagement).Assembly, "ZoneManagement.js");            
         }
 
         /// <summary>

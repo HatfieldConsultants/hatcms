@@ -13,6 +13,7 @@ namespace HatCMS.Controls
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/sortSelectList.js", CmsDependency.ExistsMode.MustNotExist)); // now an embedded resource            
 
             return ret.ToArray();
         }
@@ -67,7 +68,7 @@ namespace HatCMS.Controls
             // -- render the form
             CmsPage currentPage = CmsContext.currentPage;
 
-            currentPage.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/sortSelectList.js");
+            currentPage.HeadSection.AddEmbeddedJavascriptFile(JavascriptGroup.ControlOrPlaceholder, typeof(SortSubPagesPopup).Assembly, "sortSelectList.js");
 
 
             string formId = "sortSubPagesForm";
