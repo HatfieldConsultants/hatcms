@@ -52,7 +52,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\Interop.DSOFile\Interop.DSOFile.dll</HintPath>
     </Reference>
-
     <Reference Include="JsonFx.Json, Version=1.4.1003.3007, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\JsonFx\JsonFx.Json.dll</HintPath>
@@ -92,8 +91,6 @@
     <Compile Include="Data\IDBObject.cs" />
     <Compile Include="Data\MySqlDbObject.cs" />
     <Compile Include="Data\OutputDataSetToExcel.cs" />
-    <Compile Include="metadata\EXIF\EXIFExtractor.cs" />
-    <Compile Include="metadata\EXIF\ExifHash.cs" />
     <Compile Include="FileUtils.cs" />
     <Compile Include="Html\PageNumberAnchor.cs" />
     <Compile Include="Html\PageNumberAnchorUtils.cs" />
@@ -105,6 +102,12 @@
     <Compile Include="Imaging\ImageDiskCache.cs" />
     <Compile Include="Imaging\Thumbnail2.cs" />
     <Compile Include="JavascriptEvent.cs" />
+    <Compile Include="metadata\EXIF\EXIFExtractor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="metadata\EXIF\ExifHash.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="metadata\MetaData.cs" />
     <Compile Include="Net\Mail.cs" />
     <Compile Include="Net\NetworkDrive.cs" />
@@ -182,7 +185,7 @@
     <Compile Include="ExecuteDynamicCode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="metadata\EXIF\decoy.jpg" />
+    <Content Include="metadata\EXIF\decoy.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Search\Lucene\DLLs\" />
