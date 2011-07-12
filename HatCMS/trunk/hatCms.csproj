@@ -81,7 +81,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\JsonFx\JsonFx.Json.dll</HintPath>
     </Reference>
-    <Reference Include="mysql.data, Version=6.3.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+    <Reference Include="mysql.data, Version=6.0.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\MySQL\mysql.data.dll</HintPath>
     </Reference>
@@ -644,6 +644,7 @@
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.designer.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
@@ -1262,8 +1263,10 @@
     <Folder Include="UserFiles\Flash\" />
     <Folder Include="UserFiles\ImageGalleries\" />
     <Folder Include="UserFiles\Image\" />
+    <Folder Include="_system\writable\css\" />
     <Folder Include="_system\writable\DMSStorage\" />
     <Folder Include="_system\writable\Glossary\" />
+    <Folder Include="_system\writable\js\" />
     <Folder Include="_system\writable\KeywordIndex\" />
     <Folder Include="_system\writable\SpellCheckerIndex\" />
     <Folder Include="_system\writable\ThumbnailCache\" />
