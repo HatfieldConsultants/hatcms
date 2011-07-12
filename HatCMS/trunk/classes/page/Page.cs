@@ -888,7 +888,7 @@ namespace HatCMS
                 if (canRead == false && OwningPage.Path != CmsConfig.getConfigValue("LoginPath", "/_login"))
                 {
                     NameValueCollection loginParams = new NameValueCollection();
-                    loginParams.Add("target", this.ID.ToString());
+                    loginParams.Add("target", OwningPage.ID.ToString());
                     CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath", "/_login")), loginParams);
                 }
 
