@@ -127,7 +127,7 @@
       <Project>{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}</Project>
       <Name>hatCms</Name>
     </ProjectReference>
-    <ProjectReference Include="include\HatCMS\include\hatCommon\hatCommon.csproj">
+    <ProjectReference Include="include\HatCommon\hatCommon.csproj">
       <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
       <Name>hatCommon</Name>
     </ProjectReference>
