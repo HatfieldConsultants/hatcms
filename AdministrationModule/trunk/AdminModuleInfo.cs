@@ -14,9 +14,10 @@ namespace HatCMS.Admin
         /// <returns></returns>
         public override CmsDependency[] getModuleDependencies()
         {            
-
             // -- add the library dependecies
             List<CmsDependency> ret = new List<CmsDependency>();
+
+            ret.Add(new CmsVersionDependency("HatCmsAdministration Module", new System.Version("1.3"))); 
 
             // -- the internal templates directory no longer exists (they are served from this project's Assembly).
             ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("templates/internal"));
@@ -24,6 +25,7 @@ namespace HatCMS.Admin
             // -- several control directories no longer exist (they are served from this project's Assembly).
             ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("controls/_system/Admin"));
             ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("controls/_system/Internal"));
+            
             
 
             return ret.ToArray();
