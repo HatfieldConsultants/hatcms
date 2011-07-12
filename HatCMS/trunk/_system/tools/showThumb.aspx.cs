@@ -21,7 +21,7 @@ namespace HatCMS
         {
             get
             {                
-                string relPath = CmsConfig.getConfigValue("ThumbImageCacheDirectory", "~/_system/writable/ThumbnailCache/");
+                string relPath = "~/_system/writable/ThumbnailCache/";
                 string absPath = VirtualPathUtility.ToAbsolute(relPath);
                 string pathOnDisk = System.Web.Hosting.HostingEnvironment.MapPath(absPath);
 

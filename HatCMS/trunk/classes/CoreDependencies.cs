@@ -100,7 +100,12 @@ namespace HatCMS
                 "));
 
             ret.Add(new CmsDatabaseTableDependency(@"
-                    CREATE TABLE `PersistentVariables` (                      `PersistentVariableId` INT NOT NULL AUTO_INCREMENT ,                      `Name` VARCHAR(255) NOT NULL ,                      `PersistedValue` BLOB NULL ,                      PRIMARY KEY (`PersistentVariableId`) ,                      UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) );
+                    CREATE TABLE `PersistentVariables` (
+                      `PersistentVariableId` INT NOT NULL AUTO_INCREMENT ,
+                      `Name` VARCHAR(255) NOT NULL ,
+                      `PersistedValue` BLOB NULL ,
+                      PRIMARY KEY (`PersistentVariableId`) ,
+                      UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) );
                 "));
 
             // -- some project directories should be removed from production sites
@@ -132,8 +137,13 @@ namespace HatCMS
             ret.Add(new CmsConfigItemDependency("RequireAnonLogin", CmsDependency.ExistsMode.MustNotExist)); // deprecated 10 Feb 2011. Use the Zones system to manage anon logins
             ret.Add(new CmsConfigItemDependency("PathSpaceReplacementChar", CmsDependency.ExistsMode.MustNotExist)); // always set to "+".
             ret.Add(new CmsConfigItemDependency("RewriteEngineOn", CmsDependency.ExistsMode.MustNotExist)); // RewriteEngine is always on.
+            ret.Add(new CmsConfigItemDependency("ThumbImageCacheDirectory", CmsDependency.ExistsMode.MustNotExist)); // thumbnail cache is always in _system/writable/ThumbnailCache
             ret.Add(new CmsConfigItemDependency("Languages"));
-            ret.Add(new CmsConfigItemDependency("useInternal404NotFoundErrorHandler"));            
+            ret.Add(new CmsConfigItemDependency("useInternal404NotFoundErrorHandler"));      
+      
+            // -- writable directories
+            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/js"));
+            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/css"));
             
             bool useInternal404NotFoundErrorHandler = CmsConfig.getConfigValue("useInternal404NotFoundErrorHandler", false);
             if (useInternal404NotFoundErrorHandler)

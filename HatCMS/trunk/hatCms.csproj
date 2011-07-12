@@ -663,6 +663,13 @@
     <Compile Include="_system\tools\swfUpload\SwfUploadTarget.aspx.designer.cs">
       <DependentUpon>SwfUploadTarget.aspx</DependentUpon>
     </Compile>
+    <Compile Include="_system\tools\upgrade.aspx.cs">
+      <SubType>ASPXCodeBehind</SubType>
+      <DependentUpon>upgrade.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="_system\tools\upgrade.aspx.designer.cs">
+      <DependentUpon>upgrade.aspx</DependentUpon>
+    </Compile>
     <Content Include="controls\_system\PrinterAndPDFVersions.ascx" />
     <Content Include="controls\_system\RSSNews.ascx" />
     <Content Include="controls\_system\RSSDocuments.ascx" />
@@ -1209,6 +1216,7 @@
     <None Include="templates\_ProcurementDetails.template" />
     <None Include="templates\_SingleImageDisplay.template" />
     <Content Include="_system\tools\cron.ashx" />
+    <Content Include="_system\tools\upgrade.aspx" />
     <Content Include="_system\writable\web.config" />
     <Content Include="UserFiles\web.config" />
     <Content Include="_system\tools\cachingProxy.ashx" />

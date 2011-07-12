@@ -25,6 +25,7 @@ namespace HatCMS.Placeholders
             // -- writable directories
             ret.Add(CmsWritableDirectoryDependency.UnderAppPath("UserFiles/Image"));
             ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/ThumbnailCache"));
+            ret.Add(new CmsConfigItemDependency("ThumbImageCacheDirectory", CmsDependency.ExistsMode.MustNotExist)); // removed this config entry. Thumbnail cache is always in _system/writable/ThumbnailCache
             
             // -- helpers
             ret.Add(CmsFileDependency.UnderAppPath("_system/tools/SingleImage/SingleImageEditor.aspx", new DateTime(2010,4,30)));

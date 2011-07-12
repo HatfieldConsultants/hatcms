@@ -50,11 +50,42 @@ namespace HatCMS
         string[] MooToolsLibraryFilenames = new string[] {
             "mootools.v1.11.compressed.js", "mootools.v1.11.uncompressed.js", "mootools-1.2.4-core-yc.js", "mootools-1.2.4-core-jm.js", "mootools-1.2.4-core-nc.js", "mootools-1.2.4-core.js"
         };
-        
+
+        private class EmbeddedJsFileInfo
+        {
+            public JavascriptGroup jsGroup;
+            public System.Reflection.Assembly assemblyWithEmbeddedFile;
+            public string embeddedFilename;
+
+            public EmbeddedJsFileInfo(JavascriptGroup group, System.Reflection.Assembly assembly, string filename)
+            {
+                jsGroup = group;
+                assemblyWithEmbeddedFile = assembly;
+                embeddedFilename = filename;
+            }
+        }
+
+        private class EmbeddedCSSFileInfo
+        {
+            public CSSGroup cssGroup;
+            public System.Reflection.Assembly assemblyWithEmbeddedFile;
+            public string embeddedFilename;
+
+            public EmbeddedCSSFileInfo(CSSGroup group, System.Reflection.Assembly assembly, string filename)
+            {
+                cssGroup = group;
+                assemblyWithEmbeddedFile = assembly;
+                embeddedFilename = filename;
+            }
+        }
+
+
         private Dictionary<JavascriptGroup, List<string>> jsFilePaths;
+        private Dictionary<JavascriptGroup, List<EmbeddedJsFileInfo>> jsEmbeddedResources;
         private List<string> jsOnReadyStatements;
         private List<string> jsStatements;
         private Dictionary<CSSGroup, List<string>> cssFilePaths;
+        private Dictionary<CSSGroup, List<EmbeddedCSSFileInfo>> cssEmbeddedResources;
         private List<string> styleStatements;
         private List<string> registeredBlockNames;
 
@@ -65,14 +96,22 @@ namespace HatCMS
             _page = owningPage;
 
             jsFilePaths = new Dictionary<JavascriptGroup, List<string>>();
+            jsEmbeddedResources = new Dictionary<JavascriptGroup, List<EmbeddedJsFileInfo>>();
             foreach (JavascriptGroup jsGroup in Enum.GetValues(typeof(JavascriptGroup)))
+            {
                 jsFilePaths[jsGroup] = new List<string>();
+                jsEmbeddedResources[jsGroup] = new List<EmbeddedJsFileInfo>();
+            }
 
             jsOnReadyStatements = new List<string>();
             jsStatements = new List<string>();
             cssFilePaths = new Dictionary<CSSGroup, List<string>>();
+            cssEmbeddedResources = new Dictionary<CSSGroup, List<EmbeddedCSSFileInfo>>();
             foreach (CSSGroup cssGroup in Enum.GetValues(typeof(JavascriptGroup)))
+            {
                 cssFilePaths[cssGroup] = new List<string>();
+                cssEmbeddedResources[cssGroup] = new List<EmbeddedCSSFileInfo>();
+            }
 
             styleStatements = new List<string>();
             registeredBlockNames = new List<string>();
@@ -221,6 +260,12 @@ namespace HatCMS
                 
         } // Add JavascriptFile
 
+
+        public void AddEmbeddedJavascriptFile(JavascriptGroup jsGroup, System.Reflection.Assembly assemblyWithEmbeddedFile, string embeddedFilename)
+        {
+            jsEmbeddedResources[jsGroup].Add(new EmbeddedJsFileInfo(jsGroup, assemblyWithEmbeddedFile, embeddedFilename));
+        }
+
         /// <summary>
         /// Adds some javascript statements to the OnReady event handler. Do NOT include &lt;script&gt;&lt;/script&gt; tags!
         /// </summary>
@@ -276,6 +321,11 @@ namespace HatCMS
 
         } // Add AddCSSFile
 
+        public void AddEmbeddedCSSFile(CSSGroup cssGroup, System.Reflection.Assembly assemblyWithEmbeddedFile, string embeddedFilename)
+        {
+            cssEmbeddedResources[cssGroup].Add(new EmbeddedCSSFileInfo(cssGroup, assemblyWithEmbeddedFile, embeddedFilename));
+        }
+
 
         private string getOutputUrl(string pathToFileUnderAppPath, string cacheTimestamp)
         {
@@ -297,13 +347,13 @@ namespace HatCMS
         {
             // -- if authoring, always force cache to bust. Otherwise base the timestamp from when the assembly was created.
             long ticks = DateTime.Now.Ticks;
-            if (CmsContext.currentPage.currentUserCanWrite)
+            if (this._page.currentUserCanWrite)
                 ticks = DateTime.Now.Ticks;
             else
             {
                 try
                 {
-                    System.IO.FileInfo fi = new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                    System.IO.FileInfo fi = new System.IO.FileInfo(typeof(CmsContext).Assembly.Location);
                     ticks = fi.CreationTime.Ticks;
                 }
                 catch
@@ -313,11 +363,243 @@ namespace HatCMS
             string ret = StringUtils.Base36Encode(ticks);            
             return ret;
         }
+       
+
+        private string combineInternalCssFiles(CSSGroup cssGroup, List<string> cssFilePaths, List<EmbeddedCSSFileInfo> embeddedCssFiles)
+        {
+            if (cssFilePaths.Count == 0 && embeddedCssFiles.Count == 0)
+                return "";
+                                   
+            StringBuilder outFileContents = new StringBuilder();
+            // -- read each internal file
+            foreach (string cssPath in cssFilePaths)
+            {
+                if (!isExternallyHosted(cssPath))
+                {
+                    string cssFn = System.Web.Hosting.HostingEnvironment.MapPath("~/" + cssPath);                    
+                    string css = System.IO.File.ReadAllText(cssFn);
+                    outFileContents.Append(css);
+                    outFileContents.Append(Environment.NewLine);                    
+                }
+            }
+
+            foreach (EmbeddedCSSFileInfo embeddedCss in embeddedCssFiles)
+            {
+                string[] embeddedNames = embeddedCss.assemblyWithEmbeddedFile.GetManifestResourceNames();
+                foreach (string embeddedName in embeddedNames)
+                {
+                    if (embeddedName.EndsWith(embeddedCss.embeddedFilename, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        System.IO.Stream stream = embeddedCss.assemblyWithEmbeddedFile.GetManifestResourceStream(embeddedName);
+                        string css = new System.IO.StreamReader(stream).ReadToEnd();
+                        
+                        outFileContents.Append(css);
+                        outFileContents.Append(Environment.NewLine);
+                        break;
+                    }
+
+                } 
+            } // foreach
+
+            
+
+            // -- the filename is based on the contents of the file
+            string outName = cssGroup.ToString() + "_" + outFileContents.ToString().GetHashCode().ToString();
+            outName = System.IO.Path.ChangeExtension(outName, ".css");
+            string outUrl = VirtualPathUtility.ToAbsolute("~/_system/writable/css/" + outName);
+
+            string outFn = System.Web.Hosting.HostingEnvironment.MapPath(outUrl);
+            if (!System.IO.File.Exists(outFn))
+                System.IO.File.WriteAllText(outFn, outFileContents.ToString(), System.Text.Encoding.UTF8);
+
+            return outUrl;
+
+        }
+
+        private string combineInternalJsFiles(JavascriptGroup jsGroup, List<string> jsFilePaths, List<EmbeddedJsFileInfo> embeddedJsFiles)
+        {
+            if (jsFilePaths.Count == 0 && embeddedJsFiles.Count == 0)
+                return "";
+
+            StringBuilder outFileContents = new StringBuilder();
+            // -- read each internal file
+            foreach (string jsPath in jsFilePaths)
+            {
+                if (!isExternallyHosted(jsPath))
+                {
+                    string jsFn = System.Web.Hosting.HostingEnvironment.MapPath("~/" + jsPath);
+                    string js = System.IO.File.ReadAllText(jsFn);
+                    outFileContents.Append(js);
+                    outFileContents.Append(Environment.NewLine);
+                }
+            }
+
+            foreach (EmbeddedJsFileInfo embeddedJs in embeddedJsFiles)
+            {
+                string[] embeddedNames = embeddedJs.assemblyWithEmbeddedFile.GetManifestResourceNames();
+                foreach (string embeddedFullName in embeddedNames)
+                {
+                    if (embeddedFullName.EndsWith(embeddedJs.embeddedFilename, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        System.IO.Stream stream = embeddedJs.assemblyWithEmbeddedFile.GetManifestResourceStream(embeddedFullName);
+                        string js = new System.IO.StreamReader(stream).ReadToEnd();
+
+                        outFileContents.Append(js);
+                        outFileContents.Append(Environment.NewLine);
+                        break;
+                    }
+
+                }
+            } // foreach
 
 
+            // -- the filename is based on the contents of the file
+            string outName = jsGroup.ToString() + "_" + outFileContents.ToString().GetHashCode().ToString();
+            outName = System.IO.Path.ChangeExtension(outName, ".js");
+            string outUrl = VirtualPathUtility.ToAbsolute("~/_system/writable/js/" + outName);
+
+            string outFn = System.Web.Hosting.HostingEnvironment.MapPath(outUrl);
+            if (!System.IO.File.Exists(outFn))
+                System.IO.File.WriteAllText(outFn, outFileContents.ToString(), System.Text.Encoding.UTF8);
+
+            return outUrl;
+
+        }
+
+        private string[] getExternalUrls(List<string> urls)
+        {
+            List<string> ret = new List<string>();
+            foreach (string url in urls)
+            {
+                if (isExternallyHosted(url))
+                    ret.Add(url);
+            }
+            return ret.ToArray();
+        }        
+
+        private string _OutputForPageFilter()
+        {            
+
+            StringBuilder html = new StringBuilder();
+            string EOL = Environment.NewLine;
+
+            // -- 1: output CSS files
+            Array enumVals = Enum.GetValues(typeof(CSSGroup)); // this returns an unsorted list.
+            Array.Sort(enumVals);
+            foreach (CSSGroup cssGroup in enumVals)
+            {
+                // - first: external CSS files
+                string[] externalCssUrls = getExternalUrls(cssFilePaths[cssGroup]);
+                foreach (string externalCssUrl in externalCssUrls)
+                    html.Append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + externalCssUrl + "\" />" + EOL);
+
+                // - second: internal (combined) CSS files
+                string localCssUrl = combineInternalCssFiles(cssGroup, cssFilePaths[cssGroup], this.cssEmbeddedResources[cssGroup]);
+                if (localCssUrl != "")
+                    html.Append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + localCssUrl + "\" />" + EOL);
+            }
+
+            // -- Style statements
+            // Q: should style statements be combined into the CSSGroup.FrontEnd file?             
+            if (styleStatements.Count > 0)
+            {
+                html.Append("<style type=\"text/css\">" + EOL);
+                foreach (string s in styleStatements)
+                {
+                    html.Append(s + EOL);
+                }
+                html.Append(EOL + "</style>" + EOL);
+            }
+
+            // -- output Javascript files
+            Array jsEnumVals = Enum.GetValues(typeof(JavascriptGroup)); // this returns an unsorted list.
+            Array.Sort(jsEnumVals);
+
+            foreach (JavascriptGroup jsGroup in jsEnumVals)
+            {
+                // - first: external JS files
+                string[] externalJsUrls = getExternalUrls(jsFilePaths[jsGroup]);
+                foreach (string externalJsUrl in externalJsUrls)
+                    html.Append("<script src=\"" + externalJsUrl + "\" type=\"text/javascript\"></script>" + EOL);
+
+                // - second: internal (combined) CSS files
+                string localJsUrl = combineInternalJsFiles(jsGroup, jsFilePaths[jsGroup], this.jsEmbeddedResources[jsGroup]);
+                if (localJsUrl != "")
+                    html.Append("<script src=\"" + localJsUrl + "\" type=\"text/javascript\"></script>" + EOL);
+            }
+
+            bool scriptTagStarted = false;
+            // -- 4: Javascript Statements
+            if (jsStatements.Count > 0)
+            {
+                html.Append("<script type=\"text/javascript\">" + EOL);
+                scriptTagStarted = true;
+                foreach (string js in jsStatements)
+                {
+                    html.Append(js + EOL + EOL);
+                } // foreach
+            }
+
+            // -- 5: Javascript On Ready
+            if (jqueryIsIncluded() && jsOnReadyStatements.Count > 0)
+            {
+                if (!scriptTagStarted)
+                {
+                    html.Append("<script type=\"text/javascript\">" + EOL);
+                    scriptTagStarted = true;
+                }
+                html.Append("$(document).ready(function() {" + EOL);
+                foreach (string js in jsOnReadyStatements)
+                {
+                    html.Append(js + EOL + EOL);
+                } // foreach
+                html.Append("});" + EOL);
+            }
+            else if (mooToolsIsIncluded() && jsOnReadyStatements.Count > 0)
+            {
+                // 	window.addEvent('domready', function(){
+                if (!scriptTagStarted)
+                {
+                    html.Append("<script type=\"text/javascript\">" + EOL);
+                    scriptTagStarted = true;
+                }
+                html.Append("window.addEvent('domready', function(){" + EOL);
+                foreach (string js in jsOnReadyStatements)
+                {
+                    html.Append(js + EOL + EOL);
+                } // foreach
+                html.Append("});" + EOL);
+            }
+            else if (jsOnReadyStatements.Count > 0)
+            {
+                string onLoadFunctionName = "hatCms_pageLoad";
+                if (!scriptTagStarted)
+                {
+                    html.Append("<script type=\"text/javascript\">" + EOL);
+                    scriptTagStarted = true;
+                }
+                html.Append("function " + onLoadFunctionName + "() {" + EOL);
+                foreach (string js in jsOnReadyStatements)
+                {
+                    html.Append(js + EOL + EOL);
+                } // foreach
+                html.Append("} // " + onLoadFunctionName + "()" + EOL);
+                html.Append(CmsPageHeadSection.getOnloadJavascript(onLoadFunctionName));
+                html.Append(EOL);
+
+            }
+            if (scriptTagStarted)
+            {
+                html.Append("</script>" + EOL);
+            }
+
+            html.Append("</head>" + EOL);
+
+            return html.ToString();
+        }
         
 
-        public string _OutputForPageFilter()
+        public string _OutputForPageFilter_Old()
         {
             string cacheTimestamp = getOutputCacheTimestamp();
             
