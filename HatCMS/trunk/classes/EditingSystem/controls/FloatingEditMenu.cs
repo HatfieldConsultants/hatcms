@@ -1,60 +1,53 @@
-namespace HatCMS.Controls
+using System;
+using System.Text;
+using System.Collections.Generic;
+using System.Data;
+using System.Configuration;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using Hatfield.Web.Portal;
+
+namespace HatCMS.Controls.EditingSystem
 {
-	using System;
-    using System.Collections.Generic;
-    using System.Text;
-	using System.Data;
-	using System.Drawing;
-	using System.Web;
-	using System.Web.UI.WebControls;
-	using System.Web.UI.HtmlControls;
-	using System.Collections.Specialized;
-
-    using Hatfield.Web.Portal;
-    using HatCMS.Placeholders;
-
-	/// <summary>
-	///		Renders the FloatingEditMenu to any user that is logged in. Options are different based on access levels, and the currently viewed page.
-	/// </summary>
-	public partial class FloatingEditMenu : System.Web.UI.UserControl
-	{
-
-		protected void Page_Load(object sender, System.EventArgs e)
-		{
-			// nothing to initialize
-		}
-
-        public CmsDependency[] getDependencies()
+    public class FloatingEditMenu : BaseCmsControl
+    {
+        public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(CmsFileDependency.UnderAppPath("js/_system/FloatingEditMenu.js", new DateTime(2010, 5, 13)));
+            ret.Add(CmsFileDependency.UnderAppPath("js/_system/FloatingEditMenu.js", CmsDependency.ExistsMode.MustNotExist )); // FloatingEditMenu.js is now embedded.
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/hatCms_logo.png"));
+            
+            ret.Add(CmsFileDependency.UnderAppPath("controls/_system/FloatingEditMenu.ascx", CmsDependency.ExistsMode.MustNotExist)); // this class removes this
+
             ret.AddRange(new CmsPageEditMenu.DefaultStandardActionRenderers().getDependencies());
             return ret.ToArray();
         }
 
-        protected override void Render(System.Web.UI.HtmlTextWriter writer)
-        {
+        public override string RenderToString(CmsControlDefinition controlDefnToRender, CmsLanguage langToRenderFor)
+        {            
             // -- don't render anything unless the user is logged in.
             if (!CmsContext.currentUserIsLoggedIn)
-                return;            
+                return "";
 
             StringBuilder html = new StringBuilder();
             CmsPage page = CmsContext.currentPage;
 
             if (!page.currentUserCanWrite) // if the page is not writable, skip rendering the edit menu
-                return;
+                return "";
 
             // -- use the PerRequest cache to ensure that this control is only displayed once (not multiple times per language)
             string cacheName = "FloatingEditMenu";
             if (PerRequestCache.CacheContains(cacheName))
             {
-                throw new TemplateExecutionException(page.TemplateName, "The FloatingEditMenu control should be placed after the ##EndPageBody## statement.");
-                return;
+                throw new TemplateExecutionException(page.TemplateName, "The FloatingEditMenu control should be placed after the ##EndPageBody## template file statement.");                
             }
             PerRequestCache.AddToCache(cacheName, true);
 
-            page.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/FloatingEditMenu.js");
+            page.HeadSection.AddEmbeddedJavascriptFile(JavascriptGroup.ControlOrPlaceholder, typeof(FloatingEditMenu).Assembly, "FloatingEditMenu.js");
 
 
             string divId = "editConsole_" + page.ID.ToString();
@@ -119,10 +112,9 @@ namespace HatCMS.Controls
             html.Append("</table>");
             html.Append("</div>");
             html.Append("</div>");
-            writer.WriteLine(html.ToString());
 
-        } // Render
-
+            return html.ToString();
+        }
 
         private string getCurrentEditMenuActionsHtml(CmsPage page)
         {
@@ -138,23 +130,5 @@ namespace HatCMS.Controls
             return String.Join("<br />", lines.ToArray());
         }
 
-		#region Web Form Designer generated code
-		override protected void OnInit(EventArgs e)
-		{
-			//
-			// CODEGEN: This call is required by the ASP.NET Web Form Designer.
-			//
-			InitializeComponent();
-			base.OnInit(e);
-		}
-		
-		/// <summary>
-		///		Required method for Designer support - do not modify
-		///		the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-		}
-		#endregion
-	}
+    }
 }

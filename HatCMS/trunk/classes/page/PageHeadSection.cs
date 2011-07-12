@@ -35,7 +35,8 @@ namespace HatCMS
     /// </summary>
     public enum JavascriptGroup { Library = -100, ControlOrPlaceholder = 0, FrontEnd = 100, Override = 1000 };
 
-    
+    public enum AggregateMode { Aggregate, DoNotAggregate };
+
     /// <summary>
     /// Handles the common output of a CmsPage's &gt;head&lt;&gt;/head&lt; through the use of some useful functions.
     /// <para>The items tracked in this class are output using a <see cref="CmsOutputFilter"/> at the CmsOutputFilterScope.PageHtmlOutput level.</para>
@@ -80,11 +81,13 @@ namespace HatCMS
         }
 
 
-        private Dictionary<JavascriptGroup, List<string>> jsFilePaths;
+        private Dictionary<JavascriptGroup, List<string>> jsFilePaths_Aggregate;
+        private Dictionary<JavascriptGroup, List<string>> jsFilePaths_DoNotAggregate;
         private Dictionary<JavascriptGroup, List<EmbeddedJsFileInfo>> jsEmbeddedResources;
         private List<string> jsOnReadyStatements;
         private List<string> jsStatements;
-        private Dictionary<CSSGroup, List<string>> cssFilePaths;
+        private Dictionary<CSSGroup, List<string>> cssFilePaths_Aggregate;
+        private Dictionary<CSSGroup, List<string>> cssFilePaths_DoNotAggregate;
         private Dictionary<CSSGroup, List<EmbeddedCSSFileInfo>> cssEmbeddedResources;
         private List<string> styleStatements;
         private List<string> registeredBlockNames;
@@ -95,21 +98,26 @@ namespace HatCMS
         {
             _page = owningPage;
 
-            jsFilePaths = new Dictionary<JavascriptGroup, List<string>>();
+            jsFilePaths_Aggregate = new Dictionary<JavascriptGroup, List<string>>();
+            jsFilePaths_DoNotAggregate = new Dictionary<JavascriptGroup, List<string>>();
             jsEmbeddedResources = new Dictionary<JavascriptGroup, List<EmbeddedJsFileInfo>>();
             foreach (JavascriptGroup jsGroup in Enum.GetValues(typeof(JavascriptGroup)))
             {
-                jsFilePaths[jsGroup] = new List<string>();
+                jsFilePaths_Aggregate[jsGroup] = new List<string>();
+                jsFilePaths_DoNotAggregate[jsGroup] = new List<string>();
                 jsEmbeddedResources[jsGroup] = new List<EmbeddedJsFileInfo>();
             }
 
             jsOnReadyStatements = new List<string>();
             jsStatements = new List<string>();
-            cssFilePaths = new Dictionary<CSSGroup, List<string>>();
+            
+            cssFilePaths_Aggregate = new Dictionary<CSSGroup, List<string>>();
+            cssFilePaths_DoNotAggregate = new Dictionary<CSSGroup, List<string>>();
             cssEmbeddedResources = new Dictionary<CSSGroup, List<EmbeddedCSSFileInfo>>();
             foreach (CSSGroup cssGroup in Enum.GetValues(typeof(JavascriptGroup)))
             {
-                cssFilePaths[cssGroup] = new List<string>();
+                cssFilePaths_Aggregate[cssGroup] = new List<string>();
+                cssFilePaths_DoNotAggregate[cssGroup] = new List<string>();
                 cssEmbeddedResources[cssGroup] = new List<EmbeddedCSSFileInfo>();
             }
 
@@ -175,9 +183,21 @@ namespace HatCMS
 
         private bool jqueryIsIncluded()
         {
-            foreach (JavascriptGroup jsGroup in jsFilePaths.Keys)
+            foreach (JavascriptGroup jsGroup in jsFilePaths_Aggregate.Keys)
             {
-                foreach (string js in jsFilePaths[jsGroup])
+                foreach (string js in jsFilePaths_Aggregate[jsGroup])
+                {
+                    foreach (string jqFn in JQueryLibraryFilenames)
+                    {
+                        if (js.EndsWith(jqFn, StringComparison.CurrentCultureIgnoreCase))
+                            return true;
+                    } // foreach
+                } // foreach
+            } // foreach
+
+            foreach (JavascriptGroup jsGroup in this.jsFilePaths_DoNotAggregate.Keys)
+            {
+                foreach (string js in jsFilePaths_DoNotAggregate[jsGroup])
                 {
                     foreach (string jqFn in JQueryLibraryFilenames)
                     {
@@ -191,9 +211,9 @@ namespace HatCMS
 
         private bool mooToolsIsIncluded()
         {
-            foreach (JavascriptGroup jsGroup in jsFilePaths.Keys)
+            foreach (JavascriptGroup jsGroup in this.jsFilePaths_Aggregate.Keys)
             {
-                foreach (string js in jsFilePaths[jsGroup])
+                foreach (string js in jsFilePaths_Aggregate[jsGroup])
                 {
                     foreach (string jqFn in MooToolsLibraryFilenames)
                     {
@@ -202,33 +222,76 @@ namespace HatCMS
                     } // foreach
                 } // foreach
             }
+
+            foreach (JavascriptGroup jsGroup in jsFilePaths_DoNotAggregate.Keys)
+            {
+                foreach (string js in jsFilePaths_DoNotAggregate[jsGroup])
+                {
+                    foreach (string jqFn in MooToolsLibraryFilenames)
+                    {
+                        if (js.EndsWith(jqFn, StringComparison.CurrentCultureIgnoreCase))
+                            return true;
+                    } // foreach
+                } // foreach
+            }
+
             return false;
         }
 
-        private JavascriptGroup? getGroupForJavascriptFile(string jsFile)
+        private JavascriptGroup? getGroupForJavascriptFile(string jsFile, AggregateMode aggregationMode)
         {
-            foreach (JavascriptGroup jsGroup in jsFilePaths.Keys)
+            if (aggregationMode == AggregateMode.Aggregate)
             {
-                foreach (string js in jsFilePaths[jsGroup])
+                foreach (JavascriptGroup jsGroup in jsFilePaths_Aggregate.Keys)
                 {
-                    if (string.Compare(js, jsFile, true) == 0) 
-                        return jsGroup;
+                    foreach (string js in jsFilePaths_Aggregate[jsGroup])
+                    {
+                        if (string.Compare(js, jsFile, true) == 0)
+                            return jsGroup;
 
-                } // foreach
+                    } // foreach
+                }
+            }
+            else if (aggregationMode == AggregateMode.DoNotAggregate)
+            {
+                foreach (JavascriptGroup jsGroup in jsFilePaths_DoNotAggregate.Keys)
+                {
+                    foreach (string js in jsFilePaths_DoNotAggregate[jsGroup])
+                    {
+                        if (string.Compare(js, jsFile, true) == 0)
+                            return jsGroup;
+
+                    } // foreach
+                }
             }
             return null;
         }
 
-        private CSSGroup? getGroupForCSSFile(string cssFile)
+        private CSSGroup? getGroupForCSSFile(string cssFile, AggregateMode aggregationMode)
         {
-            foreach (CSSGroup cssGroup in cssFilePaths.Keys)
+            if (aggregationMode == AggregateMode.Aggregate)
             {
-                foreach (string css in cssFilePaths[cssGroup])
+                foreach (CSSGroup cssGroup in cssFilePaths_Aggregate.Keys)
                 {
-                    if (string.Compare(css, cssFile, true) == 0)
-                        return cssGroup;
+                    foreach (string css in cssFilePaths_Aggregate[cssGroup])
+                    {
+                        if (string.Compare(css, cssFile, true) == 0)
+                            return cssGroup;
 
-                } // foreach
+                    } // foreach
+                }
+            }
+            else if (aggregationMode == AggregateMode.DoNotAggregate)
+            {
+                foreach (CSSGroup cssGroup in cssFilePaths_DoNotAggregate.Keys)
+                {
+                    foreach (string css in cssFilePaths_DoNotAggregate[cssGroup])
+                    {
+                        if (string.Compare(css, cssFile, true) == 0)
+                            return cssGroup;
+
+                    } // foreach
+                }
             }
             return null;
         }
@@ -242,21 +305,35 @@ namespace HatCMS
         }
         
         /// <summary>
-        /// Adds a javascript file statement to the head section
+        /// Adds a javascript file statement to the head section. This file will be aggregated with other files in the same group.
         /// </summary>
         /// <param name="pathToJSFileUnderAppPath"></param>
         public void AddJavascriptFile(JavascriptGroup jsGroup, string pathToJSFileUnderAppPath)
+        {
+            AddJavascriptFile(jsGroup, pathToJSFileUnderAppPath, AggregateMode.Aggregate);
+        }
+
+        /// <summary>
+        /// Adds a javascript file statement to the head section
+        /// </summary>
+        /// <param name="pathToJSFileUnderAppPath"></param>
+        public void AddJavascriptFile(JavascriptGroup jsGroup, string pathToJSFileUnderAppPath, AggregateMode aggregationMode)
         {
             // -- add only unique items
             string jsPath = pathToJSFileUnderAppPath.Trim();
             if (!isExternallyHosted(jsPath))
                 jsPath = removeBeginningSlash(jsPath);
 
-            JavascriptGroup? existingGroup = getGroupForJavascriptFile(jsPath);
+            JavascriptGroup? existingGroup = getGroupForJavascriptFile(jsPath, aggregationMode);
             if (existingGroup == null)
-                jsFilePaths[jsGroup].Add(jsPath);
+            {
+                if (aggregationMode == AggregateMode.Aggregate)
+                    jsFilePaths_Aggregate[jsGroup].Add(jsPath);
+                else
+                    jsFilePaths_DoNotAggregate[jsGroup].Add(jsPath);
+            }                
             else if (existingGroup != null && existingGroup != jsGroup)
-                throw new ArgumentException(pathToJSFileUnderAppPath+" has already been added to the "+existingGroup.ToString()+" javascript group");            
+                throw new ArgumentException(pathToJSFileUnderAppPath + " has already been added to the " + existingGroup.ToString() + " javascript group");            
                 
         } // Add JavascriptFile
 
@@ -308,14 +385,28 @@ namespace HatCMS
         /// <param name="pathToCSSFileUnderAppPath"></param>
         public void AddCSSFile(CSSGroup cssGroup, string pathToCSSFileUnderAppPath)
         {
+            AddCSSFile(cssGroup, pathToCSSFileUnderAppPath, AggregateMode.Aggregate);
+        }
+
+        /// <summary>
+        /// Adds a CSS file reference to the page's head section.
+        /// </summary>
+        /// <param name="pathToCSSFileUnderAppPath"></param>
+        public void AddCSSFile(CSSGroup cssGroup, string pathToCSSFileUnderAppPath, AggregateMode aggregationMode)
+        {
             // -- add only unique items
             string cssPath = pathToCSSFileUnderAppPath.Trim();
             if (!isExternallyHosted(cssPath))
                 cssPath = removeBeginningSlash(cssPath);
 
-            CSSGroup? existingGroup = getGroupForCSSFile(cssPath);
+            CSSGroup? existingGroup = getGroupForCSSFile(cssPath, aggregationMode);
             if (existingGroup == null)
-                cssFilePaths[cssGroup].Add(cssPath);
+            {
+                if (aggregationMode == AggregateMode.Aggregate)
+                    cssFilePaths_Aggregate[cssGroup].Add(cssPath);
+                else
+                    cssFilePaths_DoNotAggregate[cssGroup].Add(cssPath);
+            }
             else if (existingGroup != null && existingGroup != cssGroup)
                 throw new ArgumentException(cssPath + " has already been added to the " + existingGroup.ToString() + " CSS group");            
 
@@ -416,14 +507,14 @@ namespace HatCMS
 
         }
 
-        private string combineInternalJsFiles(JavascriptGroup jsGroup, List<string> jsFilePaths, List<EmbeddedJsFileInfo> embeddedJsFiles)
+        private string combineInternalJsFiles(JavascriptGroup jsGroup, List<string> jsFilePathsToAggregate, List<EmbeddedJsFileInfo> embeddedJsFiles)
         {
-            if (jsFilePaths.Count == 0 && embeddedJsFiles.Count == 0)
+            if (jsFilePathsToAggregate.Count == 0 && embeddedJsFiles.Count == 0)
                 return "";
 
             StringBuilder outFileContents = new StringBuilder();
             // -- read each internal file
-            foreach (string jsPath in jsFilePaths)
+            foreach (string jsPath in jsFilePathsToAggregate)
             {
                 if (!isExternallyHosted(jsPath))
                 {
@@ -482,6 +573,7 @@ namespace HatCMS
 
             StringBuilder html = new StringBuilder();
             string EOL = Environment.NewLine;
+            string fileTimestamp = getOutputCacheTimestamp();
 
             // -- 1: output CSS files
             Array enumVals = Enum.GetValues(typeof(CSSGroup)); // this returns an unsorted list.
@@ -489,14 +581,20 @@ namespace HatCMS
             foreach (CSSGroup cssGroup in enumVals)
             {
                 // - first: external CSS files
-                string[] externalCssUrls = getExternalUrls(cssFilePaths[cssGroup]);
+                string[] externalCssUrls = getExternalUrls(cssFilePaths_Aggregate[cssGroup]);
                 foreach (string externalCssUrl in externalCssUrls)
                     html.Append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + externalCssUrl + "\" />" + EOL);
 
                 // - second: internal (combined) CSS files
-                string localCssUrl = combineInternalCssFiles(cssGroup, cssFilePaths[cssGroup], this.cssEmbeddedResources[cssGroup]);
+                string localCssUrl = combineInternalCssFiles(cssGroup, cssFilePaths_Aggregate[cssGroup], this.cssEmbeddedResources[cssGroup]);
                 if (localCssUrl != "")
                     html.Append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + localCssUrl + "\" />" + EOL);
+
+                // - third: non-combined CSS files
+                foreach (string rawCssUrl in cssFilePaths_DoNotAggregate[cssGroup])
+                {
+                    html.Append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + getOutputUrl(rawCssUrl, fileTimestamp) + "\" />" + EOL);
+                }
             }
 
             // -- Style statements
@@ -518,14 +616,20 @@ namespace HatCMS
             foreach (JavascriptGroup jsGroup in jsEnumVals)
             {
                 // - first: external JS files
-                string[] externalJsUrls = getExternalUrls(jsFilePaths[jsGroup]);
+                string[] externalJsUrls = getExternalUrls(jsFilePaths_Aggregate[jsGroup]);
                 foreach (string externalJsUrl in externalJsUrls)
                     html.Append("<script src=\"" + externalJsUrl + "\" type=\"text/javascript\"></script>" + EOL);
 
-                // - second: internal (combined) CSS files
-                string localJsUrl = combineInternalJsFiles(jsGroup, jsFilePaths[jsGroup], this.jsEmbeddedResources[jsGroup]);
+                // - second: internal (combined) JS files
+                string localJsUrl = combineInternalJsFiles(jsGroup, jsFilePaths_Aggregate[jsGroup], this.jsEmbeddedResources[jsGroup]);
                 if (localJsUrl != "")
                     html.Append("<script src=\"" + localJsUrl + "\" type=\"text/javascript\"></script>" + EOL);
+
+                // - third: non-combined JS files
+                foreach (string rawJsUrl in jsFilePaths_DoNotAggregate[jsGroup])
+                {
+                    html.Append("<script src=\"" + getOutputUrl(rawJsUrl, fileTimestamp) + "\" type=\"text/javascript\"></script>" + EOL);
+                }
             }
 
             bool scriptTagStarted = false;
@@ -610,7 +714,7 @@ namespace HatCMS
             //       note: do NOT use @import rule
             foreach (CSSGroup cssGroup in Enum.GetValues(typeof(CSSGroup)))
             {
-                foreach (string css in cssFilePaths[cssGroup])
+                foreach (string css in cssFilePaths_Aggregate[cssGroup])
                 {
                     html.Append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + getOutputUrl(css, cacheTimestamp) + "\" />" + EOL);
                 }
@@ -631,7 +735,7 @@ namespace HatCMS
             // -- 3: Javascript files
             foreach (JavascriptGroup jsGroup in Enum.GetValues(typeof(JavascriptGroup)))
             {
-                foreach (string js in jsFilePaths[jsGroup])
+                foreach (string js in jsFilePaths_Aggregate[jsGroup])
                 {
                     html.Append("<script src=\"" + getOutputUrl(js, cacheTimestamp) + "\" type=\"text/javascript\"></script>" + EOL);
                 }

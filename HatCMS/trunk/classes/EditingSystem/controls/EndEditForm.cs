@@ -1,30 +1,27 @@
-namespace HatCMS.Controls
+using System;
+using System.Collections.Specialized;
+using System.Text;
+using System.Data;
+using System.Configuration;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using Hatfield.Web.Portal;
+
+namespace HatCMS.Controls.EditingSystem
 {
-	using System;
-    using System.Text;
-    using System.Collections.Generic;
-	using System.Data;
-	using System.Drawing;
-	using System.Web;
-	using System.Web.UI.WebControls;
-	using System.Web.UI.HtmlControls;
-	using System.Collections.Specialized;
+    public class EndEditForm : BaseCmsControl
+    {
+        public override CmsDependency[] getDependencies()
+        {
+            return new CmsDependency[0];
+        }
 
-    using Hatfield.Web.Portal;
-
-	/// <summary>
-	///		Summary description for EndEditForm.
-	/// </summary>
-	public partial class EndEditForm : System.Web.UI.UserControl
-	{
-
-		protected void Page_Load(object sender, System.EventArgs e)
-		{
-			// Put user code to initialize the page here
-		}
-
-		protected override void Render(System.Web.UI.HtmlTextWriter writer)
-		{            
+        public override string RenderToString(CmsControlDefinition controlDefnToRender, CmsLanguage langToRenderFor)
+        {
             // -- render based on the current edit mode
             if (CmsContext.currentEditMode == CmsEditMode.Edit)
             {
@@ -46,6 +43,7 @@ namespace HatCMS.Controls
                     }
 
                     CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.currentPage, paramList);
+                    return "";
                     // -- setEditModeAndRedirect ends response
                 } // if submit
 
@@ -55,27 +53,14 @@ namespace HatCMS.Controls
 
 
                 html.Append(CmsContext.currentPage.getFormCloseHtml(StartEditForm.FormId));
-                writer.WriteLine(html.ToString());
-            } // if in edit mode            
-		}
 
-		#region Web Form Designer generated code
-		override protected void OnInit(EventArgs e)
-		{
-			//
-			// CODEGEN: This call is required by the ASP.NET Web Form Designer.
-			//
-			InitializeComponent();
-			base.OnInit(e);
-		}
-		
-		/// <summary>
-		///		Required method for Designer support - do not modify
-		///		the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-		}
-		#endregion
-	}
+                return html.ToString();
+            } // if in edit mode   
+            else
+            {
+                // -in View mode
+                return "";
+            }
+        }
+    }
 }

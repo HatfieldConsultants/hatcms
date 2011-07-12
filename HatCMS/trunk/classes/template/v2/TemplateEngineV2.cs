@@ -287,8 +287,8 @@ namespace HatCMS.TemplateEngine
                 throw new TemplateExecutionException(templateName, "You must include a StartPageBody and EndPageBody command in the template when multiple languages are used");
             
 
-            string startEditFormCommand = COMMAND_DELIMITER+"RenderControl(_system/StartEditForm)"+COMMAND_DELIMITER;
-            string endEditFormCommand = COMMAND_DELIMITER+"RenderControl(_system/EndEditForm)"+COMMAND_DELIMITER;
+            string startEditFormCommand = COMMAND_DELIMITER+"RenderControl(StartEditForm)"+COMMAND_DELIMITER;
+            string endEditFormCommand = COMMAND_DELIMITER+"RenderControl(EndEditForm)"+COMMAND_DELIMITER;
             if (layoutText.IndexOf(startEditFormCommand, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
                 templateText.IndexOf(startEditFormCommand, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
                 layoutText.IndexOf(endEditFormCommand, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
@@ -379,7 +379,7 @@ namespace HatCMS.TemplateEngine
                 // -- if the first StartPageBody, start the form - the same as in StartEditForm.ascx
                 if (currentLangIndex == 0)
                 {
-                    RenderTextToPage(parentUserControl, COMMAND_DELIMITER + "RenderControl(_system/StartEditForm)" + COMMAND_DELIMITER);                    
+                    RenderTextToPage(parentUserControl, COMMAND_DELIMITER + "RenderControl(StartEditForm)" + COMMAND_DELIMITER);                    
                 }
                 
                 string cssStyle = "display: none;";
@@ -406,7 +406,7 @@ namespace HatCMS.TemplateEngine
                 else
                 {
                     // -- the last EndPageBody, so close the edit form using the EndEditForm control
-                    RenderTextToPage(parentUserControl, COMMAND_DELIMITER + "RenderControl(_system/EndEditForm)" + COMMAND_DELIMITER);
+                    RenderTextToPage(parentUserControl, COMMAND_DELIMITER + "RenderControl(EndEditForm)" + COMMAND_DELIMITER);
                 }
             }
             else if (command.StartsWith(COMMAND_DELIMITER + "PlaceholderRegion", StringComparison.CurrentCultureIgnoreCase))

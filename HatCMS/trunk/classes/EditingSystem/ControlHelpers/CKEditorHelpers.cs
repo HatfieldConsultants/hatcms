@@ -51,7 +51,8 @@ namespace HatCMS
 
         public static void AddPageJavascriptStatements(CmsPage page, string editorId, string renderWidth, string renderHeight, CmsLanguage language)
         {
-            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/ckeditor/ckeditor.js");
+            // ckeditor.js can not be aggregated because there is sniffing done based on this filename
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/ckeditor/ckeditor.js", AggregateMode.DoNotAggregate);
 
             string lang = "";
             if (language.isValidLanguage && CmsConfig.Languages.Length > 1)

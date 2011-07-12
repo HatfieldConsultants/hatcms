@@ -157,14 +157,14 @@
     <Compile Include="classes\backgroundTasks\BackgroundTaskInfo.cs" />
     <Compile Include="classes\permissions\PortalApplication.cs" />
     <Compile Include="classes\PersistentVariable.cs" />
-    <Compile Include="classes\placeholderCommonControls\CKEditorHelpers.cs" />
+    <Compile Include="classes\EditingSystem\ControlHelpers\CKEditorHelpers.cs" />
     <Compile Include="classes\Context.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="classes\Exceptions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="classes\placeholderCommonControls\SWFUploadHelpers.cs" />
+    <Compile Include="classes\EditingSystem\ControlHelpers\SWFUploadHelpers.cs" />
     <Compile Include="classes\resource\LocalFileOnDisk.cs" />
     <Compile Include="classes\resource\LocalFileOnDiskMetaItem.cs" />
     <Compile Include="classes\resource\LocalImageOnDisk.cs" />
@@ -179,6 +179,9 @@
     <Compile Include="classes\zone\CmsZone.cs" />
     <Compile Include="classes\zone\CmsZoneUserRole.cs" />
     <Compile Include="classes\zone\CmsZoneUserRoleDb.cs" />
+    <Compile Include="classes\EditingSystem\controls\EndEditForm.cs" />
+    <Compile Include="classes\EditingSystem\controls\FloatingEditMenu.cs" />
+    <Compile Include="classes\EditingSystem\controls\StartEditForm.cs" />
     <Compile Include="controls\_system\PrinterAndPDFVersions.ascx.cs">
       <DependentUpon>PrinterAndPDFVersions.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -227,20 +230,6 @@
     </Compile>
     <Compile Include="controls\_system\CopyrightStatement.ascx.designer.cs">
       <DependentUpon>CopyrightStatement.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\EndEditForm.ascx.cs">
-      <DependentUpon>EndEditForm.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\EndEditForm.ascx.designer.cs">
-      <DependentUpon>EndEditForm.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\FloatingEditMenu.ascx.cs">
-      <DependentUpon>FloatingEditMenu.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\FloatingEditMenu.ascx.designer.cs">
-      <DependentUpon>FloatingEditMenu.ascx</DependentUpon>
     </Compile>
     <Compile Include="controls\_system\Footer.ascx.cs">
       <DependentUpon>Footer.ascx</DependentUpon>
@@ -430,13 +419,6 @@
     </Compile>
     <Compile Include="controls\_system\SimpleCalendar.ascx.designer.cs">
       <DependentUpon>SimpleCalendar.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="controls\_system\StartEditForm.ascx.cs">
-      <DependentUpon>StartEditForm.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\StartEditForm.ascx.designer.cs">
-      <DependentUpon>StartEditForm.ascx</DependentUpon>
     </Compile>
     <Compile Include="controls\_system\SubPageTextAggregator.ascx.cs">
       <DependentUpon>SubPageTextAggregator.ascx</DependentUpon>
@@ -677,8 +659,6 @@
     <Content Include="controls\_system\Breadcrumb.ascx" />
     <Content Include="controls\_system\BreadcrumbList.ascx" />
     <Content Include="controls\_system\CopyrightStatement.ascx" />
-    <Content Include="controls\_system\EndEditForm.ascx" />
-    <Content Include="controls\_system\FloatingEditMenu.ascx" />
     <Content Include="controls\_system\Footer.ascx" />
     <Content Include="controls\_system\Header.ascx" />
     <Content Include="controls\_system\HeadSection.ascx" />
@@ -706,14 +686,12 @@
     <Content Include="controls\_system\SecondLevelSectionTitle.ascx" />
     <Content Include="controls\_system\SimilarPages.ascx" />
     <Content Include="controls\_system\SimpleCalendar.ascx" />
-    <Content Include="controls\_system\StartEditForm.ascx" />
     <Content Include="controls\_system\SubPageTextAggregator.ascx" />
     <Content Include="controls\_system\LanguageSwitcher.ascx" />
     <Content Include="controls\_system\UpcomingEvents.ascx" />
     <Content Include="controls\_system\UserImageGalleryAggregator.ascx" />
     <Content Include="css\hatCMSPrint.css" />
     <Content Include="css\hatCMS.css" />
-    <Content Include="css\_system\AdminTools.css" />
     <Content Include="css\_system\jquery-ui-lightness\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="css\_system\jquery-ui-lightness\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="css\_system\jquery-ui-lightness\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -801,7 +779,7 @@
     <Content Include="images\_system\printer.png" />
     <Content Include="images\_system\TopMultiLevelDropDownMenu\down.gif" />
     <Content Include="images\_system\TopMultiLevelDropDownMenu\right.gif" />
-    <Content Include="js\_system\beforeUnload.js" />
+    <EmbeddedResource Include="classes\EditingSystem\js\beforeUnload.js" />
     <Content Include="js\_system\ckeditor\adapters\jquery.js" />
     <Content Include="js\_system\ckeditor\ckeditor.js" />
     <Content Include="js\_system\ckeditor\config.js" />
@@ -1059,7 +1037,7 @@
     <Content Include="js\_system\FCKPlugins\hatImageBrowser\fckplugin.js" />
     <Content Include="js\_system\FCKPlugins\hatImageBrowser\fck_image.html" />
     <Content Include="js\_system\FCKPlugins\hatImageBrowser\Image.gif" />
-    <Content Include="js\_system\FloatingEditMenu.js" />
+    <EmbeddedResource Include="classes\EditingSystem\js\FloatingEditMenu.js" />
     <Content Include="js\_system\GlossaryEditor.js" />
     <Content Include="js\_system\JobDatabase\JobLocation.js" />
     <Content Include="js\_system\jquery.fullcalendar\changelog.txt" />
@@ -1078,7 +1056,6 @@
     <Content Include="js\_system\RegisterProject\RegisterProject.js" />
     <Content Include="js\_system\FileLibrary\FileLibrary.js" />
     <Content Include="js\_system\FileLibrary\FileLibraryCategory.js" />
-    <Content Include="js\_system\sortSelectList.js" />
     <Content Include="js\_system\swfUpload\fileprogress.js" />
     <Content Include="js\_system\swfUpload\handlers.js" />
     <Content Include="js\_system\swfUpload\swfupload.js" />
@@ -1088,7 +1065,6 @@
     <Content Include="js\_system\swfUpload\XPButtonUploadText_61x22.png" />
     <Content Include="js\_system\TopMultiLevelDropDownMenu.js" />
     <Content Include="js\_system\TopNav.js" />
-    <Content Include="js\_system\Zone\ZoneManagement.js" />
     <Content Include="setup\default.aspx" />
     <Content Include="setup\HatCMS_TableCreation.sql" />
     <Content Include="setup\HatPortal_TableCreation.txt" />
@@ -1102,14 +1078,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="controls\_system\BreadcrumbList.ascx.resx">
       <DependentUpon>BreadcrumbList.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\EndEditForm.ascx.resx">
-      <DependentUpon>EndEditForm.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\FloatingEditMenu.ascx.resx">
-      <DependentUpon>FloatingEditMenu.ascx.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="controls\_system\Footer.ascx.resx">
@@ -1154,10 +1122,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="controls\_system\SearchResults.ascx.resx">
       <DependentUpon>SearchResults.ascx.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="controls\_system\StartEditForm.ascx.resx">
-      <DependentUpon>StartEditForm.ascx.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="controls\_system\SubPageTextAggregator.ascx.resx">
@@ -1259,7 +1223,7 @@
     <Content Include="_system\tools\swfUpload\SwfUploadTarget.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HatCommon\hatCommon.csproj">
+    <ProjectReference Include="include\hatCommon\hatCommon.csproj">
       <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
       <Name>hatCommon</Name>
     </ProjectReference>
