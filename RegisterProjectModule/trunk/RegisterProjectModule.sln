@@ -2,17 +2,51 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegisterProjectModule", "RegisterProjectModule.csproj", "{BBEB6850-B79C-4B6E-B495-F2678EB8D4E6}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hatCms", "include\HatCMS\hatCms.csproj", "{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hatCommon", "include\HatCMS\include\hatCommon\hatCommon.csproj", "{E1A1A3F9-A397-45E3-8934-818155A61D57}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BBEB6850-B79C-4B6E-B495-F2678EB8D4E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BBEB6850-B79C-4B6E-B495-F2678EB8D4E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBEB6850-B79C-4B6E-B495-F2678EB8D4E6}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{BBEB6850-B79C-4B6E-B495-F2678EB8D4E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBEB6850-B79C-4B6E-B495-F2678EB8D4E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBEB6850-B79C-4B6E-B495-F2678EB8D4E6}.Release|x86.ActiveCfg = Release|Any CPU
+		{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}.Release|x86.ActiveCfg = Release|Any CPU
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Debug|x86.ActiveCfg = Debug|x86
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Debug|x86.Build.0 = Debug|x86
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Release|x86.ActiveCfg = Release|x86
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
