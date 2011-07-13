@@ -30,11 +30,28 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="admin\Reports\ListRegisteredProjects.cs" />
+    <Compile Include="ModuleInfo.cs" />
+    <Compile Include="placeholder\RegisterProject.cs" />
+    <Compile Include="placeholder\RegisterProjectDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="include\HatCMS\hatCms.csproj">
+      <Project>{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}</Project>
+      <Name>hatCms</Name>
+    </ProjectReference>
+    <ProjectReference Include="include\HatCMS\include\hatCommon\hatCommon.csproj">
+      <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
+      <Name>hatCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="js\RegisterProject.js" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
