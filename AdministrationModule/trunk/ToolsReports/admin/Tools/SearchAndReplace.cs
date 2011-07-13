@@ -29,6 +29,11 @@ namespace HatCMS.Admin
             return ret.ToArray();
         }
 
+        public override System.Web.UI.WebControls.GridView RenderToGridViewForOutputToExcelFile()
+        {
+            return null; // not implemented.
+        }
+
         #region SearchAndReplace
         public override string Render()
         {

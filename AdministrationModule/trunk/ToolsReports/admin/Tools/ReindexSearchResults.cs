@@ -44,8 +44,12 @@ namespace HatCMS.Admin
             else
                 return "<p style=\"color: red\">Error: could not re-index all pages for the search engine</p>";
 
-        }        
+        }
 
+        public override System.Web.UI.WebControls.GridView RenderToGridViewForOutputToExcelFile()
+        {
+            return null; // not implemented.
+        }
        
 
     }

@@ -84,6 +84,10 @@ namespace HatCMS.Admin
 
         }
 
+        public override System.Web.UI.WebControls.GridView RenderToGridViewForOutputToExcelFile()
+        {
+            return null; // not implemented.
+        }
 
     }
 }

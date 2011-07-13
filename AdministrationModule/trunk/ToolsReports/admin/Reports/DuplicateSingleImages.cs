@@ -104,6 +104,11 @@ namespace HatCMS.Admin
             return html.ToString();
         }
 
+        public override System.Web.UI.WebControls.GridView RenderToGridViewForOutputToExcelFile()
+        {
+            return null; // not implemented.
+        }
+
         private SingleImageData[] ImgPathAlreadyExists(SingleImageData[] haystack, SingleImageData needle)
         {
             List<SingleImageData> ret = new List<SingleImageData>();
@@ -176,7 +181,7 @@ namespace HatCMS.Admin
         }
 
 
-
+        
 
     }
 }

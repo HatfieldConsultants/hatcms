@@ -92,6 +92,11 @@ namespace HatCMS.Admin
             return html.ToString();
         } // RenderSearchHtmlContent
 
+        public override System.Web.UI.WebControls.GridView RenderToGridViewForOutputToExcelFile()
+        {
+            return null; // not implemented.
+        }
+
         private string getHtmlContentSearchSnippet(string htmlContent, string searchText)
         {
             int snippetWindowPre = 20;

@@ -58,7 +58,6 @@
     <Compile Include="ToolsReports\admin\AdminMenu.cs" />
     <Compile Include="ToolsReports\admin\Reports\DuplicateSingleImages.cs" />
     <Compile Include="ToolsReports\admin\Reports\LastModifiedTable.cs" />
-    <Compile Include="ToolsReports\admin\Reports\ListRegisteredProjects.cs" />
     <Compile Include="ToolsReports\admin\Reports\ListUserFeedback.cs" />
     <Compile Include="ToolsReports\admin\Reports\PageImageSummary.cs" />
     <Compile Include="ToolsReports\admin\Reports\PagesByTemplate.cs" />

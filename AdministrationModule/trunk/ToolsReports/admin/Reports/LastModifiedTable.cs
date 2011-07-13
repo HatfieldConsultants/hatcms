@@ -69,6 +69,11 @@ namespace HatCMS.Admin
             return html.ToString();
         } // RenderLastModifiedTable
 
+        public override System.Web.UI.WebControls.GridView RenderToGridViewForOutputToExcelFile()
+        {
+            return null; // not implemented.
+        }
+
         private string getLastModifiedTitle(CmsPage p)
         {
             TimeSpan timespan = TimeSpan.FromTicks(DateTime.Now.Ticks - p.LastUpdatedDateTime.Ticks);

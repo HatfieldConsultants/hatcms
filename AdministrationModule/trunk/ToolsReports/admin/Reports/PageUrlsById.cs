@@ -88,6 +88,9 @@ namespace HatCMS.Admin
             return html.ToString();
         } // RenderPageUrlsById
 
-
+        public override System.Web.UI.WebControls.GridView RenderToGridViewForOutputToExcelFile()
+        {
+            return null; // not implemented.
+        }
     }
 }

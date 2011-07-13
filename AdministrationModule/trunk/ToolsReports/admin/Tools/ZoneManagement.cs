@@ -271,6 +271,12 @@ namespace HatCMS.Admin
             return html.ToString();
         }
 
+        
+        public override System.Web.UI.WebControls.GridView RenderToGridViewForOutputToExcelFile()
+        {
+            return null; // not implemented.
+        }
+
         /// <summary>
         /// For the default zone which starting page is
         /// the home page, delete is not allowed.
