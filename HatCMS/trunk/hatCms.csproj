@@ -480,8 +480,6 @@
     <Compile Include="placeholders\Procurement\ProcurementDetails.cs" />
     <Compile Include="placeholders\Redirect\PageRedirectDb.cs" />
     <Compile Include="placeholders\Redirect\Redirect.cs" />
-    <Compile Include="placeholders\RegisterProject\RegisterProject.cs" />
-    <Compile Include="placeholders\RegisterProject\RegisterProjectDb.cs" />
     <Compile Include="placeholders\SingleImageGallery\SingleImageGalleryDb.cs" />
     <Compile Include="placeholders\SingleImage\SingleImageDb.cs" />
     <Compile Include="placeholders\SingleImage\SingleImageDisplayInfo.cs" />
@@ -1053,7 +1051,6 @@
     <Content Include="js\_system\jquery\jquery-ui-timepicker-addon.min.js" />
     <Content Include="js\_system\json2.js" />
     <Content Include="js\_system\ProjectInfo.js" />
-    <Content Include="js\_system\RegisterProject\RegisterProject.js" />
     <Content Include="js\_system\FileLibrary\FileLibrary.js" />
     <Content Include="js\_system\FileLibrary\FileLibraryCategory.js" />
     <Content Include="js\_system\swfUpload\fileprogress.js" />

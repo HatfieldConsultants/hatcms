@@ -6,7 +6,6 @@ using System.Web.Services;
 using System.Web.Services.Protocols;
 using System.Web.UI.WebControls;
 using Hatfield.Web.Portal.Data;
-using HatCMS.Placeholders.RegisterProject;
 using Hatfield.Web.Portal;
 using HatCMS.Admin;
 using HatCMS.Placeholders;
@@ -52,14 +51,24 @@ namespace HatCMS._system
         {
             string fileName = tool.ToString() + "_" + DateTime.Now.ToString("yyyy-MM-dd") + ".xls";
             GridView gridview1 = new GridView();
-            
+
+            try
+            {
+                gridview1 = tool.RenderToGridViewForOutputToExcelFile();
+                if (gridview1 != null)
+                    OutputDataSetToExcelFile.OutputToResponse(gridview1, fileName, "", "", context.Response);
+            }
+            catch           
+            {                      }
+
+            /*
             if (tool.GetType().Name.EndsWith("ListUserFeedback"))
                 gridview1 = new UserFeedbackDb().FetchAllUserFeedbackSubmittedDataAsGrid();
             else if (tool.GetType().Name.EndsWith("ListRegisteredProjects"))
                 gridview1 = new RegisterProjectDb().fetchAllAsGrid();
-
+            */
             
-            OutputDataSetToExcelFile.OutputToResponse(gridview1, fileName, "", "", context.Response);
+            
         }
 
         public bool IsReusable

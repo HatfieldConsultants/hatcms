@@ -184,6 +184,13 @@ namespace HatCMS.Admin
         /// </summary>
         /// <returns></returns>
         public abstract CmsDependency[] getDependencies();
+
+        /// <summary>
+        /// returns a grid view of data for output as an Excel file.
+        /// To return nothing, this function can return null.
+        /// </summary>
+        /// <returns></returns>
+        public abstract System.Web.UI.WebControls.GridView RenderToGridViewForOutputToExcelFile();
         
     }
 }
