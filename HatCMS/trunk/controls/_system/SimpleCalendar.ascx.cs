@@ -23,11 +23,7 @@ namespace HatCMS.Controls._system
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            CmsPage page = CmsContext.currentPage;
-            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
-            page.HeadSection.AddCSSFile(CSSGroup.ControlOrPlaceholder, "css/_system/simpleCalendar.css");
-            page.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/jquery.simpleCalendar/simpleCalendar.min.js");
-            addJsOnReady(page);
+
         }
 
         public CmsDependency[] getDependencies()
@@ -220,13 +216,22 @@ namespace HatCMS.Controls._system
                 url.Append(page.getUrl(CmsContext.currentLanguage));
                 url.Append("?simpleCalendarDate=");
             }
-            catch { }
+
+            catch (Exception e) {
+                throw e;
+            }
 
             return url.ToString();
         }
 
         protected override void Render(HtmlTextWriter writer)
         {
+            CmsPage page = CmsContext.currentPage;
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/jquery/jquery-1.4.1.min.js");
+            page.HeadSection.AddCSSFile(CSSGroup.ControlOrPlaceholder, "css/_system/simpleCalendar.css");
+            page.HeadSection.AddJavascriptFile(JavascriptGroup.ControlOrPlaceholder, "js/_system/jquery.simpleCalendar/simpleCalendar.min.js");
+            addJsOnReady(page);
+            
             writer.Write("<div class=\"SimpleCalendar-Container\">" + EOL);
             writer.Write("<div class=\"SimpleCalendar-Title\">" + EOL);
             writer.Write(getEventsCalendarText() + EOL);

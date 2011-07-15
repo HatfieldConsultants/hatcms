@@ -1113,7 +1113,9 @@ namespace HatCMS
                 } // foreach
                 return ret.ToArray();
             }
-            catch { }
+            catch (Exception e) {
+                throw e;
+            }
             return new string[0];
         }
 

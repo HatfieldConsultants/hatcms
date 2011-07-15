@@ -1065,7 +1065,6 @@
     <Content Include="setup\default.aspx" />
     <Content Include="setup\HatCMS_TableCreation.sql" />
     <Content Include="setup\HatPortal_TableCreation.txt" />
-    <Content Include="templates\HomePageLayout.htm" />
     <Content Include="templates\PageLayout.htm" />
     <Content Include="templates\SingleImageDisplay.htm" />
     <Content Include="Web.config" />
@@ -1176,9 +1175,9 @@
     <None Include="templates\_NewsArticleDetails.template" />
     <None Include="templates\_ProcurementDetails.template" />
     <None Include="templates\_SingleImageDisplay.template" />
+    <Content Include="_system\writable\web.config" />
     <Content Include="_system\tools\cron.ashx" />
     <Content Include="_system\tools\upgrade.aspx" />
-    <Content Include="_system\writable\web.config" />
     <Content Include="UserFiles\web.config" />
     <Content Include="_system\tools\cachingProxy.ashx" />
     <Content Include="_system\tools\Calendar\CalendarICalData.ashx" />
@@ -1222,7 +1221,7 @@
   <ItemGroup>
     <ProjectReference Include="include\hatCommon\hatCommon.csproj">
       <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
-      <Name>hatCommon</Name>
+      <Name>hatCommon %28HatCMS\hatCommon%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
