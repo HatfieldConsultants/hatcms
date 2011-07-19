@@ -1148,9 +1148,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="xmlSiteMap.ashx" />
-    <Content Include="css\web.config" />
-    <Content Include="js\web.config" />
-    <Content Include="images\web.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -1175,10 +1172,8 @@
     <None Include="templates\_NewsArticleDetails.template" />
     <None Include="templates\_ProcurementDetails.template" />
     <None Include="templates\_SingleImageDisplay.template" />
-    <Content Include="_system\writable\web.config" />
     <Content Include="_system\tools\cron.ashx" />
     <Content Include="_system\tools\upgrade.aspx" />
-    <Content Include="UserFiles\web.config" />
     <Content Include="_system\tools\cachingProxy.ashx" />
     <Content Include="_system\tools\Calendar\CalendarICalData.ashx" />
     <Content Include="_system\tools\rss.ashx" />
