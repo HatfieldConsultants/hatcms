@@ -23,11 +23,20 @@ namespace HatCMS.Placeholders
         public override CmsDependency[] getDependencies()
         {
             List<CmsDependency> ret = new List<CmsDependency>();
-            ret.Add(new CmsDatabaseTableDependency("contacts", 
-                new string[] { "ContactsId", "PageId", "Identifier", 
-                    "numColumnsToShow", "nameDisplayMode", "forceFilterToCategoryId", 
-                    "allowFilterByCategory", "allowFilterByCompany", 
-                    "accessLevelToEditContacts", "accessLevelToAddContacts", "deleted" }));
+            ret.Add(new CmsDatabaseTableDependency( @"
+                CREATE TABLE `contacts` (
+                  `ContactsId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                  `PageId` int(10) unsigned NOT NULL,
+                  `Identifier` int(10) unsigned NOT NULL,
+                  `numColumnsToShow` int(10) unsigned NOT NULL,
+                  `maxNumContactsPerColumn` int(10) unsigned NOT NULL,
+                  `nameDisplayMode` varchar(255) NOT NULL,
+                  `accessLevelToEditContacts` varchar(255) NOT NULL,
+                  `accessLevelToAddContacts` varchar(255) NOT NULL,
+                  `deleted` datetime DEFAULT NULL,
+                  PRIMARY KEY (`ContactsId`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            "));
             ret.Add(new CmsDatabaseTableDependency(@"
                 CREATE TABLE  `contactdata` (
                   `ContactId` int(10) unsigned NOT NULL AUTO_INCREMENT,
