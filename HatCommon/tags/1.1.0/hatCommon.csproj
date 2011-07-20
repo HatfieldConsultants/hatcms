@@ -1,0 +1,201 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E1A1A3F9-A397-45E3-8934-818155A61D57}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Hat.Common</RootNamespace>
+    <AssemblyName>hat.Common</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CsXmpToolkit, Version=0.3.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\CsXMPToolkit\CsXmpToolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.DSOFile, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\Interop.DSOFile\Interop.DSOFile.dll</HintPath>
+    </Reference>
+    <Reference Include="JsonFx.Json, Version=1.4.1003.3007, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\JsonFx\JsonFx.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\log4net\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net, Version=2.0.0.4, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\Lucene.NET\Lucene.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="mysql.data, Version=6.0.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\MySQLConnector\mysql.data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationUtils.cs" />
+    <Compile Include="AssemblyHelpers.cs" />
+    <Compile Include="Authentication\WebPortal.cs" />
+    <Compile Include="Authentication\WebPortalUser\ApplicationPermissions.cs" />
+    <Compile Include="Authentication\WebPortalUser\WebPortalDB.cs" />
+    <Compile Include="Authentication\WebPortalUser\WebPortalUserRole.cs" />
+    <Compile Include="ConfigUtils.cs" />
+    <Compile Include="Data\CSVReader2.cs" />
+    <Compile Include="Data\DatabaseColumnDescriptor.cs" />
+    <Compile Include="Data\DBDialect.cs" />
+    <Compile Include="Data\DBHelpers.cs" />
+    <Compile Include="Data\IDBObject.cs" />
+    <Compile Include="Data\MySqlDbObject.cs" />
+    <Compile Include="Data\OutputDataSetToExcel.cs" />
+    <Compile Include="FileUtils.cs" />
+    <Compile Include="Html\PageNumberAnchor.cs" />
+    <Compile Include="Html\PageNumberAnchorUtils.cs" />
+    <Compile Include="Imaging\BaseShowThumbnailPage2.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Imaging\BaseShowThumbnailPageParameters.cs" />
+    <Compile Include="Imaging\IconUtils.cs" />
+    <Compile Include="Imaging\ImageDiskCache.cs" />
+    <Compile Include="Imaging\Thumbnail2.cs" />
+    <Compile Include="JavascriptEvent.cs" />
+    <Compile Include="metadata\EXIF\EXIFExtractor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="metadata\EXIF\ExifHash.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="metadata\MetaData.cs" />
+    <Compile Include="Net\Mail.cs" />
+    <Compile Include="Net\NetworkDrive.cs" />
+    <Compile Include="Net\UserImpersonation.cs" />
+    <Compile Include="PageHelpers\PerRequestCache.cs" />
+    <Compile Include="PageUtils.cs" />
+    <Compile Include="PathUtils.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Authentication\WebPortalUser\WebPortalUser.cs" />
+    <Compile Include="Collections.cs" />
+    <Compile Include="RSS\Collections\ExceptionCollection.cs" />
+    <Compile Include="RSS\Collections\RssCategoryCollection.cs" />
+    <Compile Include="RSS\Collections\RssChannelCollection.cs" />
+    <Compile Include="RSS\Collections\RssFeedCollection.cs" />
+    <Compile Include="RSS\Collections\RssItemCollection.cs" />
+    <Compile Include="RSS\Collections\RssModuleCollection.cs" />
+    <Compile Include="RSS\Collections\RssModuleItemCollection.cs" />
+    <Compile Include="RSS\Collections\RssModuleItemCollectionCollection.cs" />
+    <Compile Include="RSS\RssChannel\RssChannel.cs" />
+    <Compile Include="RSS\RssChannel\RssCloud.cs" />
+    <Compile Include="RSS\RssChannel\RssImage.cs" />
+    <Compile Include="RSS\RssChannel\RssTextInput.cs" />
+    <Compile Include="RSS\RssFeed.cs" />
+    <Compile Include="RSS\RssItem\RssEnclosure.cs" />
+    <Compile Include="RSS\RssItem\RssGuid.cs" />
+    <Compile Include="RSS\RssItem\RssItem.cs" />
+    <Compile Include="RSS\RssItem\RssSource.cs" />
+    <Compile Include="RSS\RssModule.cs" />
+    <Compile Include="RSS\RssModuleItem.cs" />
+    <Compile Include="RSS\RssModules\RssBlogChannel.cs" />
+    <Compile Include="RSS\RssModules\RssCreativeCommon.cs" />
+    <Compile Include="RSS\RssModules\RssPhotoAlbum.cs" />
+    <Compile Include="RSS\RssReader.cs" />
+    <Compile Include="RSS\RssWriter.cs" />
+    <Compile Include="RSS\Shared\RssCategory.cs" />
+    <Compile Include="RSS\Shared\RssCompact.cs" />
+    <Compile Include="RSS\Shared\RssDefault.cs" />
+    <Compile Include="RSS\Shared\RssElement.cs" />
+    <Compile Include="RSS\Shared\RssEnumerators.cs" />
+    <Compile Include="Search\Lucene\Highlighter\DefaultEncoder.cs" />
+    <Compile Include="Search\Lucene\Highlighter\Encoder.cs" />
+    <Compile Include="Search\Lucene\Highlighter\Formatter.cs" />
+    <Compile Include="Search\Lucene\Highlighter\Fragmenter.cs" />
+    <Compile Include="Search\Lucene\Highlighter\Highlighter.cs" />
+    <Compile Include="Search\Lucene\Highlighter\QueryScorer.cs" />
+    <Compile Include="Search\Lucene\Highlighter\QueryTermExtractor.cs" />
+    <Compile Include="Search\Lucene\Highlighter\Scorer.cs" />
+    <Compile Include="Search\Lucene\Highlighter\SimpleFragmenter.cs" />
+    <Compile Include="Search\Lucene\Highlighter\SimpleHTMLFormatter.cs" />
+    <Compile Include="Search\Lucene\Highlighter\TextFragment.cs" />
+    <Compile Include="Search\Lucene\Highlighter\TokenGroup.cs" />
+    <Compile Include="Search\Lucene\Highlighter\WeightedTerm.cs" />
+    <Compile Include="Search\Lucene\hatWebPortalAnalyzer.cs" />
+    <Compile Include="Search\Lucene\IFilterFileContents.cs" />
+    <Compile Include="Search\Lucene\Indexer.cs" />
+    <Compile Include="Search\Lucene\KeywordSearch.cs" />
+    <Compile Include="Search\Lucene\KStemmer\KStemData\KStemData1.cs" />
+    <Compile Include="Search\Lucene\KStemmer\KStemData\KStemData2.cs" />
+    <Compile Include="Search\Lucene\KStemmer\KStemData\KStemData3.cs" />
+    <Compile Include="Search\Lucene\KStemmer\KStemData\KStemData4.cs" />
+    <Compile Include="Search\Lucene\KStemmer\KStemData\KStemData5.cs" />
+    <Compile Include="Search\Lucene\KStemmer\KStemData\KStemData6.cs" />
+    <Compile Include="Search\Lucene\KStemmer\KStemData\KStemData7.cs" />
+    <Compile Include="Search\Lucene\KStemmer\KStemData\KStemData8.cs" />
+    <Compile Include="Search\Lucene\KStemmer\KStemFilter.cs" />
+    <Compile Include="Search\Lucene\KStemmer\KStemmer.cs" />
+    <Compile Include="Search\Lucene\Similar\SimilarityQueries.cs" />
+    <Compile Include="Search\Lucene\SpellSuggestions\Dictionary.cs" />
+    <Compile Include="Search\Lucene\SpellSuggestions\LuceneDictionary.cs" />
+    <Compile Include="Search\Lucene\SpellSuggestions\SpellChecker.cs" />
+    <Compile Include="Search\Lucene\SpellSuggestions\SuggestWord.cs" />
+    <Compile Include="Search\Lucene\SpellSuggestions\SuggestWordQueue.cs" />
+    <Compile Include="Search\Lucene\SpellSuggestions\TRStringDistance.cs" />
+    <Compile Include="StringUtils.cs" />
+    <Compile Include="ExecuteDynamicCode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="metadata\EXIF\decoy.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Search\Lucene\DLLs\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
