@@ -1,0 +1,7 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")## 						
+						##PlaceHolder(PageTitle id="1")## 
+						
+						##PlaceHolder(Glossary id="1")## 
+						
+##EndPlaceholderRegion("MainContent")##

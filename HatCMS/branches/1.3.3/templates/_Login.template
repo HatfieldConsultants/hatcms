@@ -1,0 +1,6 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")##
+						
+						##RenderControl(_system/Login)## 
+						
+##EndPlaceholderRegion("MainContent")##

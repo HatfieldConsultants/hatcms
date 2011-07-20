@@ -1,0 +1,1 @@
+<%@ Page language="c#" Codebehind="showThumb.aspx.cs" AutoEventWireup="True" Inherits="HatCMS.showThumbPage" %>
