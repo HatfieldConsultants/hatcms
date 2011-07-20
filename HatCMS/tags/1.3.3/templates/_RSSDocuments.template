@@ -1,0 +1,8 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")## 						
+						<h1>##RenderControl(_system/PageTitle)##</h1>
+						##PlaceHolder(PageTitle id="1")## 
+						
+						##RenderControl(_system/RssDocuments rssurl="http://www.sadcwaterhub.org/documents/feed?source_tid_op=or&type_tid_op=or&icp_tid_op=or&rbo_tid_op=or&river_basin_tid_op=or&river_basin_tid[0]=68&title=" showbycategory="true" listingtitle="")## 
+						
+##EndPlaceholderRegion("MainContent")##

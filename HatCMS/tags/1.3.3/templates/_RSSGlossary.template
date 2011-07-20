@@ -1,0 +1,8 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")## 						
+						<h1>##RenderControl(_system/PageTitle)##</h1>
+						##PlaceHolder(PageTitle id="1")## 
+						
+						##RenderControl(_system/RssGlossary rssurl="http://www.sadcwaterhub.org/glossary/feed?lang_tid[0]=2")## 
+						
+##EndPlaceholderRegion("MainContent")##

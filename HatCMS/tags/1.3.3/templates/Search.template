@@ -1,0 +1,4 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")##
+	##RenderControl(_system/SearchResults)##
+##EndPlaceholderRegion("MainContent")##
