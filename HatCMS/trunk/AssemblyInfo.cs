@@ -36,7 +36,7 @@ using System.Runtime.CompilerServices;
 // Version 1.3: new module/plugin system; Background tasks
 
 [assembly: AssemblyVersion("1.3")]
-[assembly: AssemblyFileVersion("1.3.2.*")]
+[assembly: AssemblyFileVersion("1.3.3.*")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
