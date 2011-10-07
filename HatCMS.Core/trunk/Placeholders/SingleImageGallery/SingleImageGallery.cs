@@ -279,8 +279,8 @@ namespace HatCMS.Placeholders
                 fullImageBoxHeight = placeholderData.FullSizeDisplayBoxHeight;
             }
 
-            string imgUrl = showThumbPage.getThumbDisplayUrl(imageToShow.ImagePath, fullImageBoxWidth, fullImageBoxHeight);
-            System.Drawing.Size imgSize = showThumbPage.getDisplayWidthAndHeight(imageToShow.ImagePath, fullImageBoxWidth, fullImageBoxHeight);
+            string imgUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(imageToShow.ImagePath, fullImageBoxWidth, fullImageBoxHeight);
+            System.Drawing.Size imgSize = CmsContext.UserInterface.ShowThumbnailPage.getDisplayWidthAndHeight(imageToShow.ImagePath, fullImageBoxWidth, fullImageBoxHeight);
 
             string width = "";
             string height = "";

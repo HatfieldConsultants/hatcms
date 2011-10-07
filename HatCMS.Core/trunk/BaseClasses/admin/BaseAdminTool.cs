@@ -129,7 +129,7 @@ namespace HatCMS.Admin
         protected string SingleImageHtmlDisplay(SingleImageData img)
         {
             StringBuilder html = new StringBuilder();
-            string thumbUrl = showThumbPage.getThumbDisplayUrl(img.ImagePath, 150, 150);
+            string thumbUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(img.ImagePath, 150, 150);
             html.Append("<img src=\"" + thumbUrl + "\">");
             html.Append("<br />" + img.ImagePath + "");
             html.Append("<br />Caption: " + img.Caption + "");

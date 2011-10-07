@@ -577,7 +577,7 @@ namespace HatCMS.Placeholders
 
             if (getFileTypeName(fileData).EndsWith("graphic", StringComparison.CurrentCultureIgnoreCase))
             {
-                string imgPreviewUrl = showThumbPage.getThumbDisplayUrl(FileLibraryDetailsData.getDownloadUrl(detailsPage, identifier, lang, fName, fileUrlFormat), 200, -1);
+                string imgPreviewUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(FileLibraryDetailsData.getDownloadUrl(detailsPage, identifier, lang, fName, fileUrlFormat), 200, -1);
                 string imgTag = "<img border=\"0\" src=\"" + imgPreviewUrl + "\"></a>";
                 html.Append(renderDiv(getImagePreviewText(lang), FileLibraryDetailsData.getDownloadAnchorHtml(detailsPage, identifier, lang, fName, imgTag, "_blank", "", fileUrlFormat)));
             }
@@ -638,7 +638,7 @@ namespace HatCMS.Placeholders
 
             if (getFileTypeName(fileData).EndsWith("graphic", StringComparison.CurrentCultureIgnoreCase))
             {
-                string imgPreviewUrl = showThumbPage.getThumbDisplayUrl(FileLibraryDetailsData.getDownloadUrl(detailsPage, identifier, lang, fName, fileUrlFormat), 200, -1);
+                string imgPreviewUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(FileLibraryDetailsData.getDownloadUrl(detailsPage, identifier, lang, fName, fileUrlFormat), 200, -1);
                 string imgTag = "<img border=\"0\" src=\"" + imgPreviewUrl + "\"></a>";
                 html.Append(renderDiv(getImagePreviewText(lang), FileLibraryDetailsData.getDownloadAnchorHtml(detailsPage, identifier, lang, fName, imgTag, "_blank", "", fileUrlFormat)));
             }

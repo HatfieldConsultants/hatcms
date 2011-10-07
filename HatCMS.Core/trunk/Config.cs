@@ -346,5 +346,30 @@ namespace HatCMS
             }
         }
 
+        private static string DEFAULT_USER_FILES_PATH = CmsContext.ApplicationPath + "UserFiles/";
+        /// <summary>
+        /// the root URL that User uploaded files are found at.
+        /// Eg: /UserFiles/
+        /// Note: returned path always ends in a slash (/)
+        /// </summary>
+        public static string UserFilesPath
+        {
+            get
+            {
+                string s = CmsConfig.getConfigValue("FCKeditor:UserFilesPath", DEFAULT_USER_FILES_PATH);
+
+                if (!s.EndsWith("/"))
+                    s += "/";
+
+                if (s.StartsWith("~/"))
+                {
+                    s = s.Substring(2); // remove "~/"
+                    s = CmsContext.ApplicationPath + s; // replace ~/ with ApplicationPath
+                }
+
+                return s;
+            }
+        }
+
     }
 }

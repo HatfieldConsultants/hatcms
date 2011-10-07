@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 using System.Collections;
 using System.Collections.Generic;
 using Hatfield.Web.Portal;
-using HatCMS.WebEditor.Helpers;
+// using HatCMS.WebEditor.Helpers;
 
 namespace HatCMS.Placeholders
 {
@@ -136,11 +136,11 @@ namespace HatCMS.Placeholders
         {
             StringBuilder html = new StringBuilder();
             if (displayInfo.ImagePath.Trim() == "")
-                return "";            
+                return "";
 
-            string thumbUrl = showThumbPage.getThumbDisplayUrl(displayInfo.ImagePath, displayInfo.ThumbImageDisplayBox);
-            System.Drawing.Size imgThumbSize = showThumbPage.getDisplayWidthAndHeight(displayInfo.ImagePath, displayInfo.ThumbImageDisplayBox);
-            System.Drawing.Size imgLargeSize = showThumbPage.getDisplayWidthAndHeight(displayInfo.ImagePath, displayInfo.FullImageDisplayBox);
+            string thumbUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(displayInfo.ImagePath, displayInfo.ThumbImageDisplayBox);
+            System.Drawing.Size imgThumbSize = CmsContext.UserInterface.ShowThumbnailPage.getDisplayWidthAndHeight(displayInfo.ImagePath, displayInfo.ThumbImageDisplayBox);
+            System.Drawing.Size imgLargeSize = CmsContext.UserInterface.ShowThumbnailPage.getDisplayWidthAndHeight(displayInfo.ImagePath, displayInfo.FullImageDisplayBox);
 
             int popWidth = -1;
             int popHeight = -1;
@@ -344,7 +344,7 @@ namespace HatCMS.Placeholders
             largerParams.Add("i", image.SingleImageId.ToString());
             string showLargerPageUrl = CmsContext.getUrlByPagePath(showLargerPagePath, largerParams);
 
-            System.Drawing.Size imgLargeSize = showThumbPage.getDisplayWidthAndHeight(image.ImagePath, fullWidth, fullHeight);
+            System.Drawing.Size imgLargeSize = CmsContext.UserInterface.ShowThumbnailPage.getDisplayWidthAndHeight(image.ImagePath, fullWidth, fullHeight);
 
             int popWidth = imgLargeSize.Width + popupPaddingWidth;
             int popHeight = imgLargeSize.Height + popupPaddingHeight;

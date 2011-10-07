@@ -181,14 +181,7 @@ namespace HatCMS
 
         public string getUrl(System.Web.HttpContext context)
         {
-            string rootPath = System.Web.Hosting.HostingEnvironment.MapPath(CmsContext.ApplicationPath);
-            string url = PathUtils.RelativePathTo(rootPath, this.FilePath);
-
-            if (url.StartsWith("..\\"))
-                url = url.Substring(2); // remove ".."
-
-            url = url.Replace("\\", "/");
-            return url;
+            return PathUtils.getRelativeUrl(this.FilePath);            
 
         }
 

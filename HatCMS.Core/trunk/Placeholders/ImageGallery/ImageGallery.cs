@@ -304,7 +304,7 @@ namespace HatCMS.Placeholders
 				}				
 
 				string imgFilenameUnderAppPath = data.subDir+Path.GetFileName(jpg);
-				string largeUrl = showThumbPage.getThumbDisplayUrl(imgFilenameUnderAppPath, data.largeSize, -1);
+                string largeUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(imgFilenameUnderAppPath, data.largeSize, -1);
 				
 				string backUrl = CmsContext.getUrlByPagePath(page.Path);
                 writer.Write("<p class=\"ImageGalleryBackLink\"><a class=\"ImageGalleryBackLink\" href=\"" + backUrl + "\">&#171; back to thumbnails</a><p>");
@@ -389,7 +389,7 @@ namespace HatCMS.Placeholders
                 }
 
                 string imgFilenameUnderAppPath = data.subDir + Path.GetFileName(jpg);
-                string thumbUrl = showThumbPage.getThumbDisplayUrl(imgFilenameUnderAppPath, data.thumbSize, -1);
+                string thumbUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(imgFilenameUnderAppPath, data.thumbSize, -1);
 
                 ImageGalleryImageData imgData = data.getImageData(imgFilenameUnderAppPath);
 

@@ -7,7 +7,7 @@ using System.Collections;
 using System.IO;
 
 using Hatfield.Web.Portal;
-using HatCMS.WebEditor.Helpers;
+// using HatCMS.WebEditor.Helpers;
 
 namespace HatCMS.Placeholders
 {
@@ -161,8 +161,8 @@ namespace HatCMS.Placeholders
 
             html.Append(SWFPathDropDownHtml);
 
-            string onclick = "window.open(this.href, 'newWin', 'resizable,height=" + PopupFlashObjectBrowser.PopupHeight + ",width=" + PopupFlashObjectBrowser.PopupWidth + "'); return false;";
-            html.Append(" <a href=\"" + PopupFlashObjectBrowser.getUrl(JSCallbackFunctionName) + "\" onclick=\"" + onclick + "\">browse for flash file</a>");
+            string onclick = "window.open(this.href, 'newWin', 'resizable,height=" + CmsContext.UserInterface.FlashObjectBrowser.PopupHeight + ",width=" + CmsContext.UserInterface.FlashObjectBrowser.PopupWidth + "'); return false;";
+            html.Append(" <a href=\"" + CmsContext.UserInterface.FlashObjectBrowser.getUrl(JSCallbackFunctionName) + "\" onclick=\"" + onclick + "\">browse for flash file</a>");
 
             html.Append("</td></tr>");
             
@@ -191,7 +191,7 @@ namespace HatCMS.Placeholders
 
         private string getSWFPathDropdown(string DropDownFormName, FlashObjectData flashObject)
         {
-            string UserFilesDir = System.Web.Hosting.HostingEnvironment.MapPath(InlineImageBrowser2.UserFilesPath + "Flash/");
+            string UserFilesDir = System.Web.Hosting.HostingEnvironment.MapPath(CmsConfig.UserFilesPath + "Flash/");
             System.IO.DirectoryInfo di = new System.IO.DirectoryInfo(UserFilesDir);
             NameValueCollection options = new NameValueCollection();
             options.Add("", "(no flash file selected)");
@@ -204,17 +204,17 @@ namespace HatCMS.Placeholders
         private void AddSWFFilesToListRecursive(NameValueCollection ret, System.IO.DirectoryInfo di)
         {
             if (!CmsContext.currentUserIsSuperAdmin && di.Name.StartsWith("_"))
-                return ;	
+                return ;
 
 
-            if (PopupFlashObjectBrowser.DirHasSWFFiles(di))
+            if (CmsContext.UserInterface.FlashObjectBrowser.DirHasSWFFiles(di))
             {
-                foreach (System.IO.FileInfo fi in PopupFlashObjectBrowser.GetFlashFiles(di))
+                foreach (System.IO.FileInfo fi in CmsContext.UserInterface.FlashObjectBrowser.GetFlashFiles(di))
                 {
                     if ((fi.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden &&
                         (fi.Attributes & FileAttributes.System) != FileAttributes.System)
                     {
-                        string fileUrl = InlineImageBrowser2.ReverseMapPath(fi.FullName);
+                        string fileUrl = PathUtils.getRelativeUrl(fi);
                         // the key is the dropdown's value, options[key] is the display text
                         string displayText = fileUrl;
                         if (displayText.StartsWith("UserFiles/"))

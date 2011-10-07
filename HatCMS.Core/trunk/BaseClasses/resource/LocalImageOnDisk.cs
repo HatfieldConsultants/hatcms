@@ -166,7 +166,7 @@ namespace HatCMS
             string thumbUrl = this.getThumbDisplayUrl(displayWidth, displayHeight);
             if (thumbUrl == "")
             {
-                thumbUrl = showThumbPage.getThumbDisplayUrl(this, displayWidth, displayHeight);
+                thumbUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(this, displayWidth, displayHeight);
                 if (thumbUrl.ToLower().IndexOf(".aspx") < 0)
                 {
                     this.setThumbDisplayUrl(displayWidth, displayHeight, thumbUrl);
@@ -178,7 +178,7 @@ namespace HatCMS
             string imgId = "file_" + this.ResourceId.ToString();
             // int[] dimensions = InlineImageBrowser2.getImageDimensions(fi.FullName);
 
-            System.Drawing.Size sz = showThumbPage.getDisplayWidthAndHeight(this, displayWidth, displayHeight);
+            System.Drawing.Size sz = CmsContext.UserInterface.ShowThumbnailPage.getDisplayWidthAndHeight(this, displayWidth, displayHeight);
             string html = "";
             if (sz.IsEmpty)
             {

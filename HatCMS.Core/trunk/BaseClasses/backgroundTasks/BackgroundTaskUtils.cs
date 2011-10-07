@@ -57,6 +57,7 @@ namespace HatCMS
             RunAllBackgroundTasksOfType(CmsBackgroundTaskInfo.CmsTaskType.RunOnlyOnApplicationStart);
         }
 
+
         public static void RunAllApplicationEndBackgroundTasks()
         {
             RunAllBackgroundTasksOfType(CmsBackgroundTaskInfo.CmsTaskType.RunOnlyOnApplicationEnd);

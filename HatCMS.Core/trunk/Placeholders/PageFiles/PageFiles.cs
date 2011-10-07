@@ -465,7 +465,7 @@ namespace HatCMS.Placeholders
 
                 if (fileTypeDescription.EndsWith("graphic", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    string imgPreviewUrl = showThumbPage.getThumbDisplayUrl(fileData.getDownloadUrl(), 200, -1);
+                    string imgPreviewUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(fileData.getDownloadUrl(), 200, -1);
                     html.Append("<tr>");
                     html.Append("<td valign=\"top\">" + getImagePreviewText(langToRenderFor) + ":</td>");
                     html.Append("<td>");

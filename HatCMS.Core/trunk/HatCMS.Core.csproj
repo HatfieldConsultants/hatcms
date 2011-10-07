@@ -1,0 +1,205 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BCB2C5CD-189B-4B31-BC59-589A76837EBB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>HatCMS.Core</AssemblyName>
+    <RootNamespace>HatCMS.Core</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>.\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>.\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="antlr.runtime, Version=2.7.6.2, Culture=neutral, PublicKeyToken=1790ba318ebc5d56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\iCal\antlr.runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="DDay.iCal, Version=1.0.1.490, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\iCal\DDay.iCal.dll</HintPath>
+    </Reference>
+    <Reference Include="JsonFx.Json, Version=1.4.1003.3007, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\JsonFx\JsonFx.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="mysql.data, Version=6.0.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\MySQL\mysql.data.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseClasses\admin\AdminToolInfo.cs" />
+    <Compile Include="BaseClasses\admin\BaseAdminTool.cs" />
+    <Compile Include="BaseClasses\backgroundTasks\BackgroundTask.cs" />
+    <Compile Include="BaseClasses\backgroundTasks\BackgroundTaskInfo.cs" />
+    <Compile Include="BaseClasses\backgroundTasks\BackgroundTaskUtils.cs" />
+    <Compile Include="BaseClasses\BaseCmsControl.cs" />
+    <Compile Include="BaseClasses\ContentUtils.cs" />
+    <Compile Include="BaseClasses\ControlUtils.cs" />
+    <Compile Include="BaseClasses\CoreDependencies.cs" />
+    <Compile Include="BaseClasses\dependencies\BaseDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\CmsVersionDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\ConfigItemDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\ControlDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\ControlParmDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\DatabaseTableDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\DependencyMessage.cs" />
+    <Compile Include="BaseClasses\dependencies\DirectoryDoesNotExistDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\FileDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\MessageDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\PageDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\PlaceholderContentDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\PlaceholderDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\TemplateDependency.cs" />
+    <Compile Include="BaseClasses\dependencies\WritableDirectoryDependency.cs" />
+    <Compile Include="BaseClasses\EditingSystem\ControlHelpers\CKEditorHelpers.cs" />
+    <Compile Include="BaseClasses\EditingSystem\ControlHelpers\SWFUploadHelpers.cs" />
+    <Compile Include="BaseClasses\EditingSystem\controls\EndEditForm.cs" />
+    <Compile Include="BaseClasses\EditingSystem\controls\FloatingEditMenu.cs" />
+    <Compile Include="BaseClasses\EditingSystem\controls\StartEditForm.cs" />
+    <Compile Include="BaseClasses\filtering\BaseCmsOutputFilter.cs" />
+    <Compile Include="BaseClasses\filtering\FilterScope.cs" />
+    <Compile Include="BaseClasses\filtering\GlossaryHighlightingFilter.cs" />
+    <Compile Include="BaseClasses\filtering\HtmlLinkFilter.cs" />
+    <Compile Include="BaseClasses\filtering\OutputFilter.cs" />
+    <Compile Include="BaseClasses\filtering\OutputFilterUtils.cs" />
+    <Compile Include="BaseClasses\iCal\iCalOutputStream.cs" />
+    <Compile Include="BaseClasses\language\Language.cs" />
+    <Compile Include="BaseClasses\modules\ModuleInfo.cs" />
+    <Compile Include="BaseClasses\modules\ModuleUtils.cs" />
+    <Compile Include="BaseClasses\page\CreateNewPageOptions.cs" />
+    <Compile Include="BaseClasses\page\Page.cs" />
+    <Compile Include="BaseClasses\page\PageCache.cs" />
+    <Compile Include="BaseClasses\page\PageDb.cs" />
+    <Compile Include="BaseClasses\page\PageEditMenu.cs" />
+    <Compile Include="BaseClasses\page\PageHeadSection.cs" />
+    <Compile Include="BaseClasses\page\PageLanguageInfo.cs" />
+    <Compile Include="BaseClasses\page\PageLockData.cs" />
+    <Compile Include="BaseClasses\page\PageRevisionData.cs" />
+    <Compile Include="BaseClasses\permissions\PortalApplication.cs" />
+    <Compile Include="BaseClasses\PersistentVariable.cs" />
+    <Compile Include="BaseClasses\resource\LocalFileOnDisk.cs" />
+    <Compile Include="BaseClasses\resource\LocalFileOnDiskMetaItem.cs" />
+    <Compile Include="BaseClasses\resource\LocalImageOnDisk.cs" />
+    <Compile Include="BaseClasses\TemplateEngine\ControlDefinition.cs" />
+    <Compile Include="BaseClasses\TemplateEngine\PlaceholderDefinition.cs" />
+    <Compile Include="BaseClasses\TemplateEngine\TemplateEngine.cs" />
+    <Compile Include="BaseClasses\TemplateEngine\TemplateEngineVersion.cs" />
+    <Compile Include="BaseClasses\TemplateEngine\TemplateExecutionException.cs" />
+    <Compile Include="BaseClasses\TemplateEngine\v2\TemplateEngineV2.cs" />
+    <Compile Include="BaseClasses\SecurityZones\CmsZone.cs" />
+    <Compile Include="BaseClasses\SecurityZones\CmsZoneDb.cs" />
+    <Compile Include="BaseClasses\SecurityZones\CmsZoneUserRole.cs" />
+    <Compile Include="BaseClasses\SecurityZones\CmsZoneUserRoleDb.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="EditMode.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="Placeholders\BaseCmsPlaceholder.cs" />
+    <Compile Include="Placeholders\Calendar\EventCalendarAggregator.cs" />
+    <Compile Include="Placeholders\Calendar\EventCalendarDb.cs" />
+    <Compile Include="Placeholders\Calendar\EventCalendarDetails.cs" />
+    <Compile Include="Placeholders\Contacts\ContactData.cs" />
+    <Compile Include="Placeholders\Contacts\ContactDataCategory.cs" />
+    <Compile Include="Placeholders\Contacts\ContactPlaceholderData.cs" />
+    <Compile Include="Placeholders\Contacts\Contacts.cs" />
+    <Compile Include="Placeholders\Contacts\ContactsDb.cs" />
+    <Compile Include="Placeholders\EditModeComment.cs" />
+    <Compile Include="Placeholders\FileLibrary\FileLibraryAggregator.cs" />
+    <Compile Include="Placeholders\FileLibrary\FileLibraryAggregator2.cs" />
+    <Compile Include="Placeholders\FileLibrary\FileLibraryAggregatorData.cs" />
+    <Compile Include="Placeholders\FileLibrary\FileLibraryCategoryData.cs" />
+    <Compile Include="Placeholders\FileLibrary\FileLibraryDb.cs" />
+    <Compile Include="Placeholders\FileLibrary\FileLibraryDetails.cs" />
+    <Compile Include="Placeholders\FileLibrary\FileLibraryDetailsData.cs" />
+    <Compile Include="Placeholders\FlashObject\FlashObject.cs" />
+    <Compile Include="Placeholders\FlashObject\FlashObjectDb.cs" />
+    <Compile Include="Placeholders\Glossary\Glossary.cs" />
+    <Compile Include="Placeholders\Glossary\GlossaryData.cs" />
+    <Compile Include="Placeholders\Glossary\GlossaryDb.cs" />
+    <Compile Include="Placeholders\Glossary\GlossaryPlaceholderData.cs" />
+    <Compile Include="Placeholders\GoogleMap\GoogleMap.cs" />
+    <Compile Include="Placeholders\GoogleMap\GoogleMapDb.cs" />
+    <Compile Include="Placeholders\HtmlContent\HtmlContent.cs" />
+    <Compile Include="Placeholders\HtmlContent\HtmlContentDb.cs" />
+    <Compile Include="Placeholders\ImageGallery\ImageGallery.cs" />
+    <Compile Include="Placeholders\ImageGallery\ImageGalleryDb.cs" />
+    <Compile Include="Placeholders\JobDatabase\JobDatabaseDb.cs" />
+    <Compile Include="Placeholders\JobDatabase\JobPostingAggregator.cs" />
+    <Compile Include="Placeholders\JobDatabase\JobPostingDetails.cs" />
+    <Compile Include="Placeholders\JobDatabase\JobPostingLocation.cs" />
+    <Compile Include="Placeholders\NewsDatabase\NewsArticleAggregator.cs" />
+    <Compile Include="Placeholders\NewsDatabase\NewsArticleDb.cs" />
+    <Compile Include="Placeholders\NewsDatabase\NewsArticleDetails.cs" />
+    <Compile Include="Placeholders\PageFiles\PageFiles.cs" />
+    <Compile Include="Placeholders\PageFiles\PageFilesDb.cs" />
+    <Compile Include="Placeholders\PageFiles\PageFilesItemData.cs" />
+    <Compile Include="Placeholders\PageFiles\PageFilesPlaceholderData.cs" />
+    <Compile Include="Placeholders\PageNotFoundRedirect\PageNotFoundRedirect.cs" />
+    <Compile Include="Placeholders\PageNotFoundRedirect\PageNotFoundRedirectDb.cs" />
+    <Compile Include="Placeholders\PageTitle.cs" />
+    <Compile Include="Placeholders\PlaceholderUtils.cs" />
+    <Compile Include="Placeholders\PlainTextContent\PlainTextContent.cs" />
+    <Compile Include="Placeholders\PlainTextContent\PlainTextContentDb.cs" />
+    <Compile Include="Placeholders\Procurement\ProcurementAggregator.cs" />
+    <Compile Include="Placeholders\Procurement\ProcurementDb.cs" />
+    <Compile Include="Placeholders\Procurement\ProcurementDetails.cs" />
+    <Compile Include="Placeholders\Redirect\PageRedirectDb.cs" />
+    <Compile Include="Placeholders\Redirect\Redirect.cs" />
+    <Compile Include="Placeholders\SingleImageGallery\SingleImageGallery.cs" />
+    <Compile Include="Placeholders\SingleImageGallery\SingleImageGalleryDb.cs" />
+    <Compile Include="Placeholders\SingleImageGallery\SingleImageGalleryPlaceholderData.cs" />
+    <Compile Include="Placeholders\SingleImage\SingleImage.cs" />
+    <Compile Include="Placeholders\SingleImage\SingleImageData.cs" />
+    <Compile Include="Placeholders\SingleImage\SingleImageDb.cs" />
+    <Compile Include="Placeholders\SingleImage\SingleImageDisplayInfo.cs" />
+    <Compile Include="Placeholders\UserFeedback\UserFeedback.cs" />
+    <Compile Include="Placeholders\UserFeedback\UserFeedbackDb.cs" />
+    <Compile Include="Placeholders\UserImageGallery\UserImageGallery.cs" />
+    <Compile Include="Placeholders\UserImageGallery\UserImageGalleryDb.cs" />
+    <Compile Include="Placeholders\UserImageGallery\UserImageGalleryPlaceholderData.cs" />
+    <Compile Include="Placeholders\_db\PlaceholderDb.cs" />
+    <Compile Include="UI\UserInterface.cs" />
+    <Compile Include="UrlFormat.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BaseClasses\EditingSystem\js\beforeUnload.js" />
+    <EmbeddedResource Include="BaseClasses\EditingSystem\js\FloatingEditMenu.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="include\hatCommon\hatCommon.csproj">
+      <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
+      <Name>hatCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="_svn\prop-base\" />
+    <Folder Include="_svn\props\" />
+    <Folder Include="_svn\text-base\" />
+    <Folder Include="_svn\tmp\prop-base\" />
+    <Folder Include="_svn\tmp\props\" />
+    <Folder Include="_svn\tmp\text-base\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>

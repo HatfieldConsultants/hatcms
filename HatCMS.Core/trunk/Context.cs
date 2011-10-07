@@ -1,4 +1,5 @@
 using System;
+using System.Web;
 using System.Security.Principal;
 using System.Collections.Specialized;
 using System.Collections;
@@ -48,7 +49,7 @@ namespace HatCMS
 		{
             get
             {
-                string cacheKey = "currentPage"+DateTime.Now.Ticks;
+                string cacheKey = "currentPage" + DateTime.Now.Ticks;
                 if (PerRequestCache.CacheContains(cacheKey))
                 {
                     return (CmsPage)PerRequestCache.GetFromCache(cacheKey, new CmsPage());
@@ -494,8 +495,29 @@ namespace HatCMS
             
             // -- set the current thread's culture info
             setCurrentCultureInfo(currentLanguage);
-		}
+        }
 
+        private static CmsUserInterface _UserInterface;
+        public static CmsUserInterface UserInterface
+        {
+            get
+            {
+                if (_UserInterface != null)
+                    return _UserInterface;
+                
+                throw new NotImplementedException("Error: You must pass call CmsContext.Application_Start from your global.asax file with a valid CmsUserInterface object");
+            }
+        }
+
+
+        #region global.asax functions
+        private static System.Threading.Timer _backgroundTaskTimer = null;
+
+        /// <summary>
+        /// time-interval (milliseconds) to wait between calls to RunBackgroundPeriodicTasks(). 
+        /// default value is every hour (3600000 ms)
+        /// </summary>
+        private const int _backgroundTimerPeriod_ms = 60 * 60 * 1000; 
         /// <summary>
         /// This function is called by the Global.asax's Application_Start_Session function.
         /// </summary>
@@ -503,8 +525,183 @@ namespace HatCMS
         {
             
         }
-		
 
+        /// <summary>
+        /// This function is called by the global.asax's Application_start function
+        /// </summary>
+        public static void Application_Start(CmsUserInterface UIToRegister )
+        {
+            _UserInterface = UIToRegister;
+
+            // -- run all OnApplicationStart background tasks
+            CmsBackgroundTaskUtils.RunAllApplicationStartBackgroundTasks();
+
+            // -- initialize Period Background Task timer
+            int dueTime_ms = 60 * 1000; // milliseconds to wait before calling RunBackgroundPeriodicTasks for first time.            
+
+            _backgroundTaskTimer = new System.Threading.Timer(RunBackgroundPeriodicTasks, null, dueTime_ms, _backgroundTimerPeriod_ms);
+
+        }
+
+        private static void RunBackgroundPeriodicTasks(object state)
+        {
+            // -- ensure we don't call this function again until RunBackgroundTasks has returned
+            _backgroundTaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
+            try
+            {
+                CmsBackgroundTaskUtils.RunAllApplicablePeriodicTasks();
+            }
+            catch (Exception ex)
+            {
+                Console.Write("Background Task Error: Something went wrong. Reason: {0} Stack: {1}", ex.Message, ex.StackTrace);
+            }
+            finally
+            {
+                _backgroundTaskTimer.Change(_backgroundTimerPeriod_ms, _backgroundTimerPeriod_ms);
+            }
+        }
+
+
+        public static void Application_End()
+        {
+            // -- run all OnApplicationStart background tasks
+            CmsBackgroundTaskUtils.RunAllApplicationEndBackgroundTasks();
+
+            // -- get rid of the periodic background events timer.
+            if (_backgroundTaskTimer != null)
+                _backgroundTaskTimer.Dispose();
+
+        }
+
+        /// <summary>
+        /// This function is called by the global.asax's Application_BeginRequest function.
+        /// This is where all the URL re-writing magic happens.
+        /// </summary>
+        public static void Application_BeginRequest(System.Web.HttpContext context)
+        {
+            ProcessSwfUploadFixes(context); // this needs to be before the UrlsToNotRemap is checked.
+
+            // get the requested page path
+            string baseProcessingPage = CmsContext.ApplicationPath + "default.aspx";
+            string pagePath = context.Request.Url.AbsolutePath.Substring(CmsContext.ApplicationPath.Length);
+
+            // do not process the urls in "URLsToNotRemap" configuration entry.
+            if (StringUtils.IndexOf(CmsConfig.URLsToNotRemap, pagePath, StringComparison.CurrentCultureIgnoreCase) != -1)
+            {
+                return;
+            }
+
+            // only re-map ASPX files
+            string extension = System.IO.Path.GetExtension(pagePath);
+            if (String.Compare(extension, ".aspx", true) != 0)
+                return;
+
+            CmsContext.StartNewRequest();
+
+            // remove extension
+            pagePath = pagePath.Substring(0, pagePath.Length - ".aspx".Length);
+
+            if (String.Compare(pagePath, "default", true) == 0)
+                pagePath = "/";
+
+
+            if (!pagePath.StartsWith("/"))
+                pagePath = "/" + pagePath;
+
+            string queryString = "p=" + pagePath; // note: no starting "?"
+            if (context.Request.Url.Query != "")
+            {
+                string query = context.Request.Url.Query;
+                if (query.StartsWith("?"))
+                {
+                    // replace beginning "?" with "&"
+                    query = query.Substring(1);
+                    query = "&" + query;
+                }
+                queryString += query;
+            }
+
+            // send the request to the default.aspx page with the page path in the querystring.            
+            context.RewritePath(baseProcessingPage, null, queryString);
+        }
+
+        private static void ProcessSwfUploadFixes(System.Web.HttpContext context)
+        {
+            if (context == null || context.Request == null)
+                return;
+
+            try
+            {
+                string session_param_name = "ASPSESSID";
+                string session_cookie_name = "ASP.NET_SESSIONID";
+
+                if (context.Request.Form[session_param_name] != null)
+                {
+                    UpdateCookie(session_cookie_name, HttpContext.Current.Request.Form[session_param_name], context);
+                }
+                else if (context.Request.QueryString[session_param_name] != null)
+                {
+                    UpdateCookie(session_cookie_name, context.Request.QueryString[session_param_name], context);
+                }
+            }
+            catch (Exception)
+            {
+                context.Response.StatusCode = 500;
+                context.Response.Write("Error Initializing Session");
+            }
+
+            try
+            {
+                string auth_param_name = "AUTHID";
+                string auth_cookie_name = System.Web.Security.FormsAuthentication.FormsCookieName;
+
+                if (context.Request.Form[auth_param_name] != null)
+                {
+                    UpdateCookie(auth_cookie_name, context.Request.Form[auth_param_name], context);
+                }
+                else if (context.Request.QueryString[auth_param_name] != null)
+                {
+                    UpdateCookie(auth_cookie_name, context.Request.QueryString[auth_param_name], context);
+                }
+
+            }
+            catch (Exception)
+            {
+                context.Response.StatusCode = 500;
+                context.Response.Write("Error Initializing Forms Authentication");
+            }
+        }
+
+        private static void UpdateCookie(string cookie_name, string cookie_value, HttpContext context)
+        {
+            HttpCookie cookie = context.Request.Cookies.Get(cookie_name);
+            if (cookie == null)
+            {
+                cookie = new HttpCookie(cookie_name);
+                HttpContext.Current.Request.Cookies.Add(cookie);
+            }
+            cookie.Value = cookie_value;
+            context.Request.Cookies.Set(cookie);
+        }
+
+
+        /// <summary>
+        /// This function is called by the global.asax's Application_Error function
+        /// </summary>
+        public static void Application_Error(HttpContext context)
+        {
+            string techEmail = CmsConfig.getConfigValue("TechnicalAdministratorEmail", "");
+            string smtpServer = CmsConfig.getConfigValue("smtpServer", "");
+            if (techEmail.IndexOf("@") > 0 && smtpServer.Trim() != "")
+            {
+                Hatfield.Web.Portal.ApplicationUtils.Application_Error_StandardEmailSender(context, techEmail, new string[] { techEmail }, smtpServer);
+            }
+
+        }
+
+        #endregion
+
+        #region getPageByPath function
         /// <summary>
 		/// gets a CmsPage from the database with the given path.
         /// The pagePath should NEVER includes the language shortCode.
@@ -558,7 +755,9 @@ namespace HatCMS
                 CmsPage.FetchPageByPath(pagePath);
         }
 
-		/// <summary>
+        #endregion
+
+        /// <summary>
 		/// gets a CmsPage from the database with the given ID.
 		/// Returns an empty CmsPage (with id = -1) if the page was not found.
 		/// </summary>
@@ -648,6 +847,7 @@ namespace HatCMS
             return false;
         }
 
+        #region getUrlByPagePath functions
 
         /// <summary>
         /// returns the user accessible URL for a pagePath in the currentLanguage.
@@ -821,9 +1021,11 @@ namespace HatCMS
                 }
 			}
 			return url;
-		}
+        }
 
-		/// <summary>
+        #endregion
+
+        /// <summary>
 		/// gets the names of the currently available templates for the current user.
 		/// </summary>
         public static string[] getTemplateNamesForCurrentUser()
@@ -831,6 +1033,7 @@ namespace HatCMS
             return currentPage.TemplateEngine.getTemplateNamesForCurrentUser();
         }
 
+        #region getAllPagesWithPlaceholder functions
 
         public enum PageGatheringMode { ChildPagesOnly, FullRecursion }
 
@@ -902,6 +1105,8 @@ namespace HatCMS
         {
             return getAllPagesWithPlaceholder(placeholderType, HomePage, PageGatheringMode.FullRecursion);
         }
+
+        #endregion
 
         /// <summary>
         /// NOTE: returns ALL matching pages in the system, regardless of the user's security level.

@@ -46,17 +46,14 @@ namespace HatCMS
             return new CmsDependencyMessage(MessageLevel.Error, ex.Message);
         }
 
-        public static HatCMS.setup.setupPage.ConfigValidationMessage[] ToConfigValidationMessages(CmsDependencyMessage[] dMsgs)
+        public static CmsDependencyMessage[] GetAllMessagesByLevel(MessageLevel levelToReturn, CmsDependencyMessage[] messageHaystack)
         {
-            List<HatCMS.setup.setupPage.ConfigValidationMessage> ret = new List<HatCMS.setup.setupPage.ConfigValidationMessage>();
-
-            foreach (CmsDependencyMessage dMsg in dMsgs)
+            List<CmsDependencyMessage> ret = new List<CmsDependencyMessage>();
+            foreach (CmsDependencyMessage msg in messageHaystack)
             {
-                bool isValid = (dMsg.Level == MessageLevel.Status);
-                HatCMS.setup.setupPage.ConfigValidationMessage cMsg = new HatCMS.setup.setupPage.ConfigValidationMessage(isValid, dMsg.Message);
-                ret.Add(cMsg);
+                if (msg.Level == levelToReturn)
+                    ret.Add(msg);
             }
-
             return ret.ToArray();
         }
 
