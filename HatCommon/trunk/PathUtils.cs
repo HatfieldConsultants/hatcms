@@ -81,5 +81,52 @@ namespace Hatfield.Web.Portal
             return newPath;
 
         }
+
+        /// <summary>
+        /// Returns the URL of the file, relative to the current web-application's path.
+        /// </summary>
+        /// <param name="FullFilePath">the full file path (including drive name, path, and filename) of the resource on disk. Eg: "C:\Inetpub\wwwroot\hatCms\UserFiles\Image\(Evening Grosbeak)  J Elser.jpg"</param>
+        /// <returns></returns>
+        public static string getRelativeUrl(string FullFilePath)
+        {
+            string rootPath = System.Web.Hosting.HostingEnvironment.MapPath(PageUtils.ApplicationPath);
+            string url = RelativePathTo(rootPath, FullFilePath);
+
+            if (url.StartsWith("..\\"))
+                url = url.Substring(2); // remove ".."
+            
+            url = url.Replace("\\", "/");
+            url = url.Replace("//", "/");
+            return url;
+
+
+            /*
+            string rootUserFilesDir = context.Server.MapPath(CmsConfig.UserFilesPath);
+
+            string subDir = fi.Directory.FullName.Replace(rootUserFilesDir, "");
+
+            subDir = CmsConfig.UserFilesPath + subDir;
+            if (!subDir.EndsWith("\\"))
+                subDir += "\\";
+
+            string fileUrl = subDir + fi.Name;
+
+            fileUrl = fileUrl.Replace("\\", "/");
+
+            fileUrl = fileUrl.Replace("//", "/");
+
+            return fileUrl;
+            */
+        }
+
+        /// <summary>
+        ///  Returns the URL of the file, relative to the current web-application's path.
+        /// </summary>
+        /// <param name="fileInfo"></param>
+        /// <returns></returns>
+        public static string getRelativeUrl(FileInfo fileInfo)
+        {
+            return getRelativeUrl(fileInfo.FullName);
+        }
     }
 }

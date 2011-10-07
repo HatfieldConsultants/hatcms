@@ -164,5 +164,25 @@ namespace Hatfield.Web.Portal
             #endregion
         }
 
+        /// <summary>
+        ///  Returns the URL of the file, relative to the current web-application's path.
+        /// </summary>
+        /// <param name="FullFilePath">the full file path (including drive name, path, and filename) of the resource on disk. Eg: "C:\Inetpub\wwwroot\hatCms\UserFiles\Image\(Evening Grosbeak)  J Elser.jpg"</param>
+        /// <returns></returns>
+        public static string getRelativeUrl(string FullFilePath)
+        {
+            return PathUtils.getRelativeUrl(FullFilePath);
+        }
+
+        /// <summary>
+        ///  Returns the URL of the file, relative to the current web-application's path.
+        /// </summary>
+        /// <param name="fileInfo"></param>
+        /// <returns></returns>
+        public static string getRelativeUrl(FileInfo fileInfo)
+        {
+            return PathUtils.getRelativeUrl(fileInfo);
+        }
+
     }
 }
