@@ -30,7 +30,7 @@ namespace HatCMS.Admin
 
         public override string Render()
         {
-            string rootDirName = System.Web.Hosting.HostingEnvironment.MapPath(InlineImageBrowser2.UserFilesPath);
+            string rootDirName = System.Web.Hosting.HostingEnvironment.MapPath(CmsConfig.UserFilesPath);
             string[] fileUrls = recursiveGatherFileUrls(new DirectoryInfo(rootDirName));
             int totalUrls = fileUrls.Length;
 

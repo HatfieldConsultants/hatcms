@@ -48,7 +48,7 @@ namespace HatCMS.Admin
                     {
                         foreach (SingleImageData imgData in pageImages)
                         {
-                            string thumbUrl = showThumbPage.getThumbDisplayUrl(imgData.ImagePath, 150, 150);
+                            string thumbUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(imgData.ImagePath, 150, 150);
                             html.Append("<tr><td><img src=\"" + thumbUrl + "\"><br />Caption: " + imgData.Caption + "<br />Source:" + imgData.Credits + "<br />Path: " + imgData.ImagePath + "</td></tr>");
                         } // foreach
                     }

@@ -24,8 +24,8 @@ namespace HatCms.Admin.BackgroundTasks
                 return; // don't run anything if there's no email address or smtp server defined.
             }
 
-            setupPage.ConfigValidationMessage[] msgs = setupPage.VerifyConfig();
-            setupPage.ConfigValidationMessage[] errorMessages = setupPage.ConfigValidationMessage.getAllInvalidMessages(msgs);
+            CmsDependencyMessage[] msgs = setupPage.VerifyConfig();
+            CmsDependencyMessage[] errorMessages = CmsDependencyMessage.GetAllMessagesByLevel(CmsDependencyMessage.MessageLevel.Error, msgs);
             if (errorMessages.Length > 0) // only email errors
             {
                 StringBuilder msgBody = new StringBuilder();
@@ -45,9 +45,9 @@ namespace HatCms.Admin.BackgroundTasks
                 msgBody.Append("</div>");
                 msgBody.Append("<ul>");
 
-                foreach (setupPage.ConfigValidationMessage m in errorMessages)
+                foreach (CmsDependencyMessage m in errorMessages)
                 {
-                    msgBody.Append("<li>" + m.message + "</li>");
+                    msgBody.Append("<li>" + m.Message + "</li>");
                 }
                 msgBody.Append("</ul>");
 

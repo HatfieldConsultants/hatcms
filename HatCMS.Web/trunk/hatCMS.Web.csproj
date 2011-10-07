@@ -111,6 +111,44 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="classes\Administration\BackgroundTasks\EmailConfigErrors.cs" />
+    <Compile Include="classes\Administration\BackgroundTasks\ReindexAllPagesBackgroundTask.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\AdminMenu.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Reports\DuplicateSingleImages.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Reports\LastModifiedTable.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Reports\ListUserFeedback.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Reports\PageImageSummary.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Reports\PagesByTemplate.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Reports\PageUrlsById.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Reports\SingleImageMissingCaptions.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Reports\UnusedFiles.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Tools\BulkCreatePages.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Tools\EmptyThumbnailCache.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Tools\RecreateUserImageGalleriesFromDisk.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Tools\ReindexSearchResults.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Tools\SearchAndReplace.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Tools\SearchHtmlContent.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Tools\SearchSingleImagesByCaption.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Tools\ValidateConfig.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Tools\ZoneAuthority.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Tools\ZoneManagement.cs" />
+    <Compile Include="classes\Administration\ToolsReports\controls\AdminMenuPopup.cs" />
+    <Compile Include="classes\Authoring\controls\ChangePageTemplatePopup.cs" />
+    <Compile Include="classes\Authoring\controls\CreateNewPagePopup.cs" />
+    <Compile Include="classes\Authoring\controls\DeleteFileLibraryPopup.cs" />
+    <Compile Include="classes\Authoring\controls\DeletePagePopup.cs" />
+    <Compile Include="classes\Authoring\controls\EditUsersPopup.cs" />
+    <Compile Include="classes\Authoring\controls\EventCalendarCategoryPopup.cs" />
+    <Compile Include="classes\Authoring\controls\FileLibraryCategoryPopup.cs" />
+    <Compile Include="classes\Authoring\controls\GotoEditModeAction.cs" />
+    <Compile Include="classes\Authoring\controls\GotoViewModeAction.cs" />
+    <Compile Include="classes\Authoring\controls\JobLocationPopup.cs" />
+    <Compile Include="classes\Authoring\controls\MenuVisibilityPopup.cs" />
+    <Compile Include="classes\Authoring\controls\MovePagePopup.cs" />
+    <Compile Include="classes\Authoring\controls\RemovePageLockPopup.cs" />
+    <Compile Include="classes\Authoring\controls\RenamePagePopup.cs" />
+    <Compile Include="classes\Authoring\controls\SortSubPagesPopup.cs" />
+    <Compile Include="classes\Authoring\controls\ViewRevisionHistoryPopup.cs" />
     <Compile Include="controls\_system\PrinterAndPDFVersions.ascx.cs">
       <DependentUpon>PrinterAndPDFVersions.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -507,6 +545,10 @@
     <Compile Include="_system\tools\upgrade.aspx.designer.cs">
       <DependentUpon>upgrade.aspx</DependentUpon>
     </Compile>
+    <Content Include="classes\Administration\ToolsReports\css\AdminTools.css" />
+    <Content Include="classes\Administration\ToolsReports\js\sortSelectList.js" />
+    <Content Include="classes\Administration\ToolsReports\js\ZoneManagement.js" />
+    <EmbeddedResource Include="classes\Authoring\templates\InternalPopup.htm" />
     <Content Include="controls\_system\PrinterAndPDFVersions.ascx" />
     <Content Include="controls\_system\RSSNews.ascx" />
     <Content Include="controls\_system\RSSDocuments.ascx" />
@@ -1003,6 +1045,23 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="xmlSiteMap.ashx" />
+    <None Include="classes\Administration\ToolsReports\templates\_AdminMenuPopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_ChangePageTemplatePopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_CreateNewPagePopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_DeleteFileLibraryPopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_DeletePagePopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_EditUsersPopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_EventCalendarCategoryPopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_FileLibraryCategoryPopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_GotoEditMode.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_GotoViewMode.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_JobLocationPopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_KillLockPopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_MenuVisibilityPopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_MovePagePopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_PageRevisionsPopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_RenamePagePopup.template" />
+    <EmbeddedResource Include="classes\Authoring\templates\_SortSubPagesPopup.template" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

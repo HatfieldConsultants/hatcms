@@ -82,7 +82,7 @@ namespace HatCMS.Admin
                 foreach (string imgPath in toReport.Keys)
                 {
                     html.Append("<tr>");
-                    string thumbUrl = showThumbPage.getThumbDisplayUrl(imgPath, 150, 150);
+                    string thumbUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(imgPath, 150, 150);
                     html.Append("<td><img src=\"" + thumbUrl + "\"><br />" + imgPath + "</td>");
                     html.Append("<td>");
                     html.Append("<ul>");

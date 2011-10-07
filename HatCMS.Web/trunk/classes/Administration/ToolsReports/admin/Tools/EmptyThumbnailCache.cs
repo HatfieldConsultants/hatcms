@@ -30,7 +30,7 @@ namespace HatCMS.Admin
         {
             StringBuilder html = new StringBuilder();
 
-            string thumbDir = showThumbPage.ThumbImageCacheDirectory;
+            string thumbDir = CmsContext.UserInterface.ShowThumbnailPage.ThumbImageCacheDirectory;
             FileInfo[] files = (new DirectoryInfo(thumbDir)).GetFiles();
             html.Append("Attempting to delete " + files.Length + " files in the thumbnail cache...<br>");
             int deleted = 0;

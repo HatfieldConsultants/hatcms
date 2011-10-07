@@ -29,8 +29,8 @@ namespace HatCMS.Admin
         public override string Render()
         {
             StringBuilder html = new StringBuilder();
-            setupPage.ConfigValidationMessage[] msgs = setupPage.VerifyConfig();
-            setupPage.ConfigValidationMessage[] errorMessages = setupPage.ConfigValidationMessage.getAllInvalidMessages(msgs);
+            CmsDependencyMessage[] msgs = setupPage.VerifyConfig();
+            CmsDependencyMessage[] errorMessages = CmsDependencyMessage.GetAllMessagesByLevel(CmsDependencyMessage.MessageLevel.Error, msgs);
             if (errorMessages.Length == 0)
             {
                 html.Append("<p style=\"color: green;\">Configuration has been validated without errors</p>");
@@ -41,9 +41,9 @@ namespace HatCMS.Admin
                 html.Append("<div style=\"color: red;\">The following errors were found in your configuration: </div>");
                 html.Append("<ul>");
 
-                foreach (setupPage.ConfigValidationMessage m in errorMessages)
+                foreach (CmsDependencyMessage m in errorMessages)
                 {
-                    html.Append("<li>" + m.message + "</li>");
+                    html.Append("<li>" + m.Message + "</li>");
                 }
                 html.Append("</ul>");
 
