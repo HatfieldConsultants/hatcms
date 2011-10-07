@@ -15,7 +15,7 @@ using Hatfield.Web.Portal;
 
 namespace HatCMS.WebEditor.Helpers
 {
-    public partial class PopupFlashObjectBrowser : System.Web.UI.Page
+    public partial class PopupFlashObjectBrowser : System.Web.UI.Page, IFlashObjectBrowser
     {
         protected string JSCallbackFunctionName
         {
@@ -36,7 +36,7 @@ namespace HatCMS.WebEditor.Helpers
             
             if (!this.IsPostBack)
             {
-                TreeNode rootNode = new TreeNode("Flash Files",Server.MapPath(InlineImageBrowser2.UserFilesPath + "Flash/"));
+                TreeNode rootNode = new TreeNode("Flash Files",Server.MapPath(CmsConfig.UserFilesPath + "Flash/"));
                 rootNode.Selected = true;
                 rootNode.PopulateOnDemand = true;                
                 FolderTreeView.Nodes.Add(rootNode);
@@ -105,35 +105,6 @@ namespace HatCMS.WebEditor.Helpers
             }
         }
 
-        public static FileInfo[] GetFlashFiles(DirectoryInfo di)
-        {
-            ArrayList ret = new ArrayList();
-
-            foreach (string filter in PopupFlashObjectBrowser.FlashFileFilters)
-            {
-                ret.AddRange(di.GetFiles(filter));
-            } // foreach
-
-            return (FileInfo[])ret.ToArray(typeof(FileInfo));
-        }
-
-        public static bool DirHasSWFFiles(DirectoryInfo di)
-        {
-            foreach (string filter in PopupFlashObjectBrowser.FlashFileFilters)
-            {
-                if (di.GetFiles(filter).Length > 0)
-                    return true;
-            }
-            return false;
-        }
-
-        public static string getUrl(string JSCallbackFunctionName)
-        {
-            return CmsContext.ApplicationPath + "_system/tools/FlashObject/PopupFlashObjectBrowser.aspx?callback=" + System.Web.HttpContext.Current.Server.UrlPathEncode(JSCallbackFunctionName);
-        }
-
-        public static int PopupWidth = 500;
-        public static int PopupHeight = 400;
 
 
         protected void FolderTreeView_SelectedNodeChanged(object sender, EventArgs e)
@@ -152,9 +123,7 @@ namespace HatCMS.WebEditor.Helpers
                 foreach (FileInfo fi in flashFileInfos)
                 {
                     // -- create the file's Url	
-                    string fileUrl = InlineImageBrowser2.ReverseMapPath(fi.FullName);
-
-                    // string thumbUrl = showThumbPage.getThumbDisplayUrl(fileUrl, 120, true);                    
+                    string fileUrl = PathUtils.getRelativeUrl(fi.FullName);                    
 
                     string fiName = fi.Name;
                     if (fiName.IndexOf("'") > -1)
@@ -272,5 +241,42 @@ namespace HatCMS.WebEditor.Helpers
             TreeNodeEventArgs treeNodeEventArgs = new TreeNodeEventArgs(FolderTreeView.SelectedNode);
             FolderTreeView_TreeNodePopulate(sender, treeNodeEventArgs);
         } // page_load
+
+        #region IFlashObjectBrowser Members
+
+        bool IFlashObjectBrowser.DirHasSWFFiles(DirectoryInfo di)
+        {
+            foreach (string filter in PopupFlashObjectBrowser.FlashFileFilters)
+            {
+                if (di.GetFiles(filter).Length > 0)
+                    return true;
+            }
+            return false;
+
+        }
+
+        public FileInfo[] GetFlashFiles(DirectoryInfo di)
+        {
+            ArrayList ret = new ArrayList();
+
+            foreach (string filter in PopupFlashObjectBrowser.FlashFileFilters)
+            {
+                ret.AddRange(di.GetFiles(filter));
+            } // foreach
+
+            return (FileInfo[])ret.ToArray(typeof(FileInfo));
+        }
+
+
+        public string getUrl(string JSCallbackFunctionName)
+        {
+            return CmsContext.ApplicationPath + "_system/tools/FlashObject/PopupFlashObjectBrowser.aspx?callback=" + System.Web.HttpContext.Current.Server.UrlPathEncode(JSCallbackFunctionName);
+        }
+
+        public int PopupWidth { get { return 500; } }
+        public int PopupHeight { get { return 400; } }
+
+
+        #endregion
     }
 }

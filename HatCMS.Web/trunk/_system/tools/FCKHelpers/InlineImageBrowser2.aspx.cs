@@ -19,7 +19,7 @@ namespace HatCMS.WebEditor.Helpers
     {
 
         #region Static functions used by other classes
-        private static string DEFAULT_USER_FILES_PATH = CmsContext.ApplicationPath + "UserFiles/";
+        
         public static string[] ImageFileFilters
         {
             get
@@ -27,29 +27,7 @@ namespace HatCMS.WebEditor.Helpers
                 return new string[] { "*.jpg", "*.gif", "*.png", "*.jpe", "*.jpeg" };
             }
         }
-
-
-        /// <summary>
-        /// the root URL that User files are found at
-        /// </summary>
-        public static string UserFilesPath
-        {
-            get
-            {
-                string s = CmsConfig.getConfigValue("FCKeditor:UserFilesPath",DEFAULT_USER_FILES_PATH);
-
-                if (!s.EndsWith("/"))
-                    s += "/";
-
-                if (s.StartsWith("~/"))
-                {
-                    s = s.Substring(2); // remove "~/"
-                    s = CmsContext.ApplicationPath + s; // replace ~/ with ApplicationPath
-                }
-
-                return s;
-            }
-        }
+        
 
         public static FileInfo[] GetImageFiles(DirectoryInfo di)
         {
@@ -165,7 +143,7 @@ namespace HatCMS.WebEditor.Helpers
 
             if (!this.IsPostBack)
             {
-                TreeNode rootNode = new TreeNode("Images",Server.MapPath(InlineImageBrowser2.UserFilesPath + "Image/"));
+                TreeNode rootNode = new TreeNode("Images",Server.MapPath(CmsConfig.UserFilesPath + "Image/"));
                 rootNode.Selected = true;
                 rootNode.PopulateOnDemand = true;                
                 FolderTreeView.Nodes.Add(rootNode);
@@ -362,7 +340,7 @@ namespace HatCMS.WebEditor.Helpers
 
                 int phThumbWidth = 999;
                 int phThumbHeight = 222;
-                string thumbUrlFormat = showThumbPage.getThumbDisplayUrl(res, phThumbWidth, phThumbHeight);
+                string thumbUrlFormat = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(res, phThumbWidth, phThumbHeight);
                 thumbUrlFormat = thumbUrlFormat.Replace(phThumbWidth.ToString(), "{0}");
                 thumbUrlFormat = thumbUrlFormat.Replace(phThumbHeight.ToString(), "{1}");
 

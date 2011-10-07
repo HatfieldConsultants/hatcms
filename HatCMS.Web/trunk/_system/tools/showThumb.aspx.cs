@@ -12,12 +12,12 @@ namespace HatCMS
 	/// <summary>
 	/// An .ASPX page that either shows the thumbnail for an image, or directs the client to the cached version of the thumbnail. Thumbnail images can be cached in memory, and on disk.
 	/// </summary>
-    public partial class showThumbPage : Hatfield.Web.Portal.Imaging.BaseShowThumbnailPage2 
+    public partial class showThumbPage : Hatfield.Web.Portal.Imaging.BaseShowThumbnailPage2, IShowThumbnailPage 
 	{
         /// <summary>
         /// the full path on-disk to the directory to store image thumbnails
         /// </summary>
-        public static string ThumbImageCacheDirectory
+        public string ThumbImageCacheDirectory
         {
             get
             {                
@@ -32,7 +32,7 @@ namespace HatCMS
         } // ThumbImageCacheDirectory
 
         
-        private static BaseShowThumbnailPageParameters getBaseShowThumbnailPageParameters()
+        private BaseShowThumbnailPageParameters getBaseShowThumbnailPageParameters()
         {
             string FullSizeImageStorageDir = System.Web.Hosting.HostingEnvironment.MapPath("~/");
             if (!FullSizeImageStorageDir.EndsWith(Path.DirectorySeparatorChar.ToString()))
@@ -51,7 +51,7 @@ namespace HatCMS
         } // getBaseShowThumbnailPageParameters
 
 
-        public static string getThumbDisplayUrl(string imgPath, System.Drawing.Size displayBoxSize)
+        public string getThumbDisplayUrl(string imgPath, System.Drawing.Size displayBoxSize)
         {
             return BaseShowThumbnailPage2.getThumbDisplayUrl(
                 getBaseShowThumbnailPageParameters(),
@@ -61,7 +61,7 @@ namespace HatCMS
 
         }
 
-        public static string getThumbDisplayUrl(string imgPath, int displayBoxWidth, int displayBoxHeight)
+        public string getThumbDisplayUrl(string imgPath, int displayBoxWidth, int displayBoxHeight)
         {
             return BaseShowThumbnailPage2.getThumbDisplayUrl(
                 getBaseShowThumbnailPageParameters(),
@@ -71,7 +71,7 @@ namespace HatCMS
 
         }
 
-        public static string getThumbDisplayUrl(CmsLocalImageOnDisk resource, int displayBoxWidth, int displayBoxHeight)
+        public string getThumbDisplayUrl(CmsLocalImageOnDisk resource, int displayBoxWidth, int displayBoxHeight)
         {
             string url = resource.getThumbDisplayUrl(displayBoxWidth, displayBoxHeight);
             if (url != "")
@@ -97,7 +97,7 @@ namespace HatCMS
         /// <param name="displayBoxWidth"></param>
         /// <param name="displayBoxHeight"></param>
         /// <returns></returns>
-        public static System.Drawing.Size getDisplayWidthAndHeight(string fileUrl, System.Drawing.Size displayBox)
+        public System.Drawing.Size getDisplayWidthAndHeight(string fileUrl, System.Drawing.Size displayBox)
         {
             return BaseShowThumbnailPage2.getDisplayWidthAndHeight(
                  getBaseShowThumbnailPageParameters(),
@@ -113,7 +113,7 @@ namespace HatCMS
         /// <param name="displayBoxWidth"></param>
         /// <param name="displayBoxHeight"></param>
         /// <returns></returns>
-        public static System.Drawing.Size getDisplayWidthAndHeight(string fileUrl, int displayBoxWidth, int displayBoxHeight)
+        public System.Drawing.Size getDisplayWidthAndHeight(string fileUrl, int displayBoxWidth, int displayBoxHeight)
         {
             return BaseShowThumbnailPage2.getDisplayWidthAndHeight(
                  getBaseShowThumbnailPageParameters(),
@@ -129,7 +129,7 @@ namespace HatCMS
         /// <param name="displayBoxWidth"></param>
         /// <param name="displayBoxHeight"></param>
         /// <returns></returns>
-        public static System.Drawing.Size getDisplayWidthAndHeight(CmsLocalImageOnDisk resource, int displayBoxWidth, int displayBoxHeight)
+        public System.Drawing.Size getDisplayWidthAndHeight(CmsLocalImageOnDisk resource, int displayBoxWidth, int displayBoxHeight)
         {
             int[] actualSize = resource.getImageDimensions();
             if (actualSize.Length == 2)

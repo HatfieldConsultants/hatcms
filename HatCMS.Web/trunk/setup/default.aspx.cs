@@ -267,6 +267,7 @@ namespace HatCMS.setup
 
         }
 
+        /*
         public class ConfigValidationMessage
         {
             public ConfigValidationMessage(bool IsValid, string Message)
@@ -298,12 +299,12 @@ namespace HatCMS.setup
                 return ret.ToArray();
             }
         }
-        
-        
+        */
 
-        public static ConfigValidationMessage[] VerifyConfig()
+
+        public static CmsDependencyMessage[] VerifyConfig()
         {
-            List<ConfigValidationMessage> ret = new List<ConfigValidationMessage>();
+            List<CmsDependencyMessage> ret = new List<CmsDependencyMessage>();
             try
             {                
                 ret.AddRange(testAllDependencies());
@@ -311,14 +312,14 @@ namespace HatCMS.setup
             }
             catch (Exception ex)
             {
-                ret.Add(new ConfigValidationMessage(false, "Error validating configuration: " + ex.Message));
+                ret.Add(new CmsDependencyMessage( CmsDependencyMessage.MessageLevel.Error, "Error validating configuration: " + ex.Message));
             }            
 
             return ret.ToArray();
         }
 
 
-        private static ConfigValidationMessage[] testAllDependencies()
+        private static CmsDependencyMessage[] testAllDependencies()
         {
             List<CmsDependencyMessage> dMsgs = new List<CmsDependencyMessage>();
             CmsDependency[] dependencies;
@@ -347,14 +348,14 @@ namespace HatCMS.setup
                 }
             }
                         
-            return CmsDependencyMessage.ToConfigValidationMessages(dMsgs.ToArray());
+            return dMsgs.ToArray();
             
         }
 
 		protected void b_verifyConfig_Click(object sender, System.EventArgs e)
 		{
-            ConfigValidationMessage[] messages = VerifyConfig();
-            ConfigValidationMessage[] errorMessages = ConfigValidationMessage.getAllInvalidMessages(messages);
+            CmsDependencyMessage[] messages = VerifyConfig();
+            CmsDependencyMessage[] errorMessages = CmsDependencyMessage.GetAllMessagesByLevel(CmsDependencyMessage.MessageLevel.Error, messages);
             if (errorMessages.Length == 0)
             {
                 l_msg.Text = "<div style=\"color: green;\">Configuration has been validated without errors</div>";                
@@ -365,9 +366,9 @@ namespace HatCMS.setup
                 msg.Append("<div style=\"color: red;\">Errors found in the configuration: </div>");
                 msg.Append("<ul>");
 
-                foreach (ConfigValidationMessage m in errorMessages)
+                foreach (CmsDependencyMessage m in errorMessages)
                 {
-                    msg.Append("<li>" + m.message + "</li>");
+                    msg.Append("<li>" + m.Message + "</li>");
                 }
                 msg.Append("</ul>");
                 l_msg.Text = msg.ToString();                            

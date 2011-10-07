@@ -13,7 +13,7 @@ namespace HatCMS._system.ckhelpers
     /// <summary>
     /// Summary description for $codebehindclassname$
     /// </summary>
-    [WebService(Namespace = "http://tempuri.org/")]
+    [WebService(Namespace = "http://hatcms.org/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     public class dhtmlxFiles_xml : IHttpHandler
     {
@@ -32,36 +32,16 @@ namespace HatCMS._system.ckhelpers
             return false;
         }
 
-        public static string UserFilesPath
-        {
-            get
-            {
-
-                return InlineImageBrowser2.UserFilesPath;
-            }
-        }
 
         public static string getUrl(FileInfo fi, HttpContext context)
         {
-            string rootUserFilesDir = context.Server.MapPath(UserFilesPath);
-
-            string subDir = fi.Directory.FullName.Replace(rootUserFilesDir, "");
-
-            subDir = UserFilesPath + subDir;
-            if (!subDir.EndsWith("\\"))
-                subDir += "\\";
-
-            string fileUrl = subDir + fi.Name;
-
-            fileUrl = fileUrl.Replace("\\", "/");
-
-            fileUrl = fileUrl.Replace("//", "/");
-
-            return fileUrl;
+            return Hatfield.Web.Portal.PathUtils.getRelativeUrl(fi);
         }
 
         public static string getDirUrl(DirectoryInfo di, HttpContext context)
         {
+            return Hatfield.Web.Portal.PathUtils.getRelativeUrl(di.FullName);
+            /*
             string rootUserFilesDir = context.Server.MapPath(UserFilesPath);
 
             string subDir = di.FullName.Replace(rootUserFilesDir, "");
@@ -77,6 +57,7 @@ namespace HatCMS._system.ckhelpers
             fileUrl = fileUrl.Replace("//", "/");
 
             return fileUrl;
+             */
         }
 
         public void ProcessRequest(HttpContext context)
@@ -107,7 +88,7 @@ namespace HatCMS._system.ckhelpers
             XmlDeclaration declaration = doc.CreateXmlDeclaration("1.0", "iso-8859-1", String.Empty);
             doc.InsertBefore(declaration, doc.DocumentElement);
 
-            DirectoryInfo userDir = new DirectoryInfo(context.Server.MapPath(UserFilesPath));
+            DirectoryInfo userDir = new DirectoryInfo(context.Server.MapPath(CmsConfig.UserFilesPath));
             foreach(DirectoryInfo di in userDir.GetDirectories())
             {
                 rootTreeEl.AppendChild(ToXmlRecursive(di,0, doc, pageLevelToExpand, selectedUrl, isSuperAdmin, context));

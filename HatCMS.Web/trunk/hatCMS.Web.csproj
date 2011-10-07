@@ -2,7 +2,7 @@
   <PropertyGroup>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}</ProjectGuid>
+    <ProjectGuid>{FF87DC92-A98B-4DFD-BA42-BA89D46884A7}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -73,17 +73,21 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="antlr.runtime, Version=2.7.6.2, Culture=neutral, PublicKeyToken=1790ba318ebc5d56, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\HatCMS.Core\include\iCal\antlr.runtime.dll</HintPath>
+    </Reference>
     <Reference Include="DDay.iCal, Version=1.0.1.490, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\iCal\DDay.iCal.dll</HintPath>
+      <HintPath>include\HatCMS.Core\include\iCal\DDay.iCal.dll</HintPath>
     </Reference>
     <Reference Include="JsonFx.Json, Version=1.4.1003.3007, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\JsonFx\JsonFx.Json.dll</HintPath>
+      <HintPath>include\HatCMS.Core\include\JsonFx\JsonFx.Json.dll</HintPath>
     </Reference>
     <Reference Include="mysql.data, Version=6.0.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\MySQL\mysql.data.dll</HintPath>
+      <HintPath>include\HatCMS.Core\include\MySQL\mysql.data.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -107,81 +111,6 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="classes\admin\AdminToolInfo.cs" />
-    <Compile Include="classes\admin\BaseAdminTool.cs" />
-    <Compile Include="classes\backgroundTasks\BackgroundTaskUtils.cs" />
-    <Compile Include="classes\BaseCmsControl.cs" />
-    <Compile Include="classes\Config.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="classes\ContentUtils.cs" />
-    <Compile Include="classes\ControlUtils.cs" />
-    <Compile Include="classes\CoreDependencies.cs" />
-    <Compile Include="classes\dependencies\BaseDependency.cs" />
-    <Compile Include="classes\dependencies\CmsVersionDependency.cs" />
-    <Compile Include="classes\dependencies\ConfigItemDependency.cs" />
-    <Compile Include="classes\dependencies\ControlDependency.cs" />
-    <Compile Include="classes\dependencies\ControlParmDependency.cs" />
-    <Compile Include="classes\dependencies\DatabaseTableDependency.cs" />
-    <Compile Include="classes\dependencies\DependencyMessage.cs" />
-    <Compile Include="classes\dependencies\DirectoryDoesNotExistDependency.cs" />
-    <Compile Include="classes\dependencies\FileDependency.cs" />
-    <Compile Include="classes\dependencies\MessageDependency.cs" />
-    <Compile Include="classes\dependencies\PageDependency.cs" />
-    <Compile Include="classes\dependencies\PlaceholderContentDependency.cs" />
-    <Compile Include="classes\dependencies\PlaceholderDependency.cs" />
-    <Compile Include="classes\dependencies\TemplateDependency.cs" />
-    <Compile Include="classes\dependencies\WritableDirectoryDependency.cs" />
-    <Compile Include="classes\EditMode.cs" />
-    <Compile Include="classes\filtering\BaseCmsOutputFilter.cs" />
-    <Compile Include="classes\filtering\FilterScope.cs" />
-    <Compile Include="classes\filtering\GlossaryHighlightingFilter.cs" />
-    <Compile Include="classes\filtering\HtmlLinkFilter.cs" />
-    <Compile Include="classes\filtering\OutputFilter.cs" />
-    <Compile Include="classes\filtering\OutputFilterUtils.cs" />
-    <Compile Include="classes\iCal\iCalOutputStream.cs" />
-    <Compile Include="classes\language\Language.cs" />
-    <Compile Include="classes\modules\ModuleInfo.cs" />
-    <Compile Include="classes\modules\ModuleUtils.cs" />
-    <Compile Include="classes\page\CreateNewPageOptions.cs" />
-    <Compile Include="classes\page\Page.cs">
-    </Compile>
-    <Compile Include="classes\page\PageCache.cs" />
-    <Compile Include="classes\page\PageDb.cs" />
-    <Compile Include="classes\page\PageEditMenu.cs" />
-    <Compile Include="classes\page\PageHeadSection.cs" />
-    <Compile Include="classes\page\PageLanguageInfo.cs" />
-    <Compile Include="classes\page\PageLockData.cs" />
-    <Compile Include="classes\page\PageRevisionData.cs" />
-    <Compile Include="classes\backgroundTasks\BackgroundTask.cs" />
-    <Compile Include="classes\backgroundTasks\BackgroundTaskInfo.cs" />
-    <Compile Include="classes\permissions\PortalApplication.cs" />
-    <Compile Include="classes\PersistentVariable.cs" />
-    <Compile Include="classes\EditingSystem\ControlHelpers\CKEditorHelpers.cs" />
-    <Compile Include="classes\Context.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="classes\Exceptions.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="classes\EditingSystem\ControlHelpers\SWFUploadHelpers.cs" />
-    <Compile Include="classes\resource\LocalFileOnDisk.cs" />
-    <Compile Include="classes\resource\LocalFileOnDiskMetaItem.cs" />
-    <Compile Include="classes\resource\LocalImageOnDisk.cs" />
-    <Compile Include="classes\template\ControlDefinition.cs" />
-    <Compile Include="classes\template\PlaceholderDefinition.cs" />
-    <Compile Include="classes\template\TemplateEngine.cs" />
-    <Compile Include="classes\template\TemplateEngineVersion.cs" />
-    <Compile Include="classes\template\TemplateExecutionException.cs" />
-    <Compile Include="classes\template\v2\TemplateEngineV2.cs" />
-    <Compile Include="classes\UrlFormat.cs" />
-    <Compile Include="classes\zone\CmsZoneDb.cs" />
-    <Compile Include="classes\zone\CmsZone.cs" />
-    <Compile Include="classes\zone\CmsZoneUserRole.cs" />
-    <Compile Include="classes\zone\CmsZoneUserRoleDb.cs" />
-    <Compile Include="classes\EditingSystem\controls\EndEditForm.cs" />
-    <Compile Include="classes\EditingSystem\controls\FloatingEditMenu.cs" />
-    <Compile Include="classes\EditingSystem\controls\StartEditForm.cs" />
     <Compile Include="controls\_system\PrinterAndPDFVersions.ascx.cs">
       <DependentUpon>PrinterAndPDFVersions.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -448,66 +377,6 @@
     <Compile Include="controls\_system\UserImageGalleryAggregator.ascx.designer.cs">
       <DependentUpon>UserImageGalleryAggregator.ascx</DependentUpon>
     </Compile>
-    <Compile Include="placeholders\Calendar\EventCalendarAggregator.cs" />
-    <Compile Include="placeholders\Calendar\EventCalendarDb.cs" />
-    <Compile Include="placeholders\Calendar\EventCalendarDetails.cs" />
-    <Compile Include="placeholders\Contacts\ContactsDb.cs" />
-    <Compile Include="placeholders\FileLibrary\FileLibraryAggregator2.cs" />
-    <Compile Include="placeholders\FlashObject\FlashObject.cs" />
-    <Compile Include="placeholders\FlashObject\FlashObjectDb.cs" />
-    <Compile Include="placeholders\Glossary\GlossaryDb.cs" />
-    <Compile Include="placeholders\GoogleMap\GoogleMap.cs" />
-    <Compile Include="placeholders\GoogleMap\GoogleMapDb.cs" />
-    <Compile Include="placeholders\HtmlContent\HtmlContent.cs" />
-    <Compile Include="placeholders\HtmlContent\HtmlContentDb.cs" />
-    <Compile Include="placeholders\ImageGallery\ImageGallery.cs" />
-    <Compile Include="placeholders\ImageGallery\ImageGalleryDb.cs" />
-    <Compile Include="placeholders\JobDatabase\JobDatabaseDb.cs" />
-    <Compile Include="placeholders\JobDatabase\JobPostingAggregator.cs" />
-    <Compile Include="placeholders\JobDatabase\JobPostingDetails.cs" />
-    <Compile Include="placeholders\JobDatabase\JobPostingLocation.cs" />
-    <Compile Include="placeholders\NewsDatabase\NewsArticleAggregator.cs" />
-    <Compile Include="placeholders\NewsDatabase\NewsArticleDb.cs" />
-    <Compile Include="placeholders\NewsDatabase\NewsArticleDetails.cs" />
-    <Compile Include="placeholders\PageFiles\PageFilesDb.cs" />
-    <Compile Include="placeholders\PageNotFoundRedirect\PageNotFoundRedirect.cs" />
-    <Compile Include="placeholders\PageNotFoundRedirect\PageNotFoundRedirectDb.cs" />
-    <Compile Include="placeholders\PlaceholderUtils.cs" />
-    <Compile Include="placeholders\PlainTextContent\PlainTextContent.cs" />
-    <Compile Include="placeholders\PlainTextContent\PlainTextContentDb.cs" />
-    <Compile Include="placeholders\Procurement\ProcurementAggregator.cs" />
-    <Compile Include="placeholders\Procurement\ProcurementDb.cs" />
-    <Compile Include="placeholders\Procurement\ProcurementDetails.cs" />
-    <Compile Include="placeholders\Redirect\PageRedirectDb.cs" />
-    <Compile Include="placeholders\Redirect\Redirect.cs" />
-    <Compile Include="placeholders\SingleImageGallery\SingleImageGalleryDb.cs" />
-    <Compile Include="placeholders\SingleImage\SingleImageDb.cs" />
-    <Compile Include="placeholders\SingleImage\SingleImageDisplayInfo.cs" />
-    <Compile Include="placeholders\FileLibrary\FileLibraryAggregator.cs" />
-    <Compile Include="placeholders\FileLibrary\FileLibraryAggregatorData.cs" />
-    <Compile Include="placeholders\FileLibrary\FileLibraryCategoryData.cs" />
-    <Compile Include="placeholders\FileLibrary\FileLibraryDb.cs" />
-    <Compile Include="placeholders\FileLibrary\FileLibraryDetails.cs" />
-    <Compile Include="placeholders\FileLibrary\FileLibraryDetailsData.cs" />
-    <Compile Include="placeholders\UserFeedback\UserFeedback.cs" />
-    <Compile Include="placeholders\UserFeedback\UserFeedbackDb.cs" />
-    <Compile Include="placeholders\UserImageGallery\UserImageGallery.cs" />
-    <Compile Include="placeholders\UserImageGallery\UserImageGalleryDb.cs" />
-    <Compile Include="placeholders\UserImageGallery\UserImageGalleryPlaceholderData.cs" />
-    <Compile Include="placeholders\Contacts\ContactDataCategory.cs" />
-    <Compile Include="placeholders\Contacts\ContactData.cs" />
-    <Compile Include="placeholders\Contacts\ContactPlaceholderData.cs" />
-    <Compile Include="placeholders\Contacts\Contacts.cs" />
-    <Compile Include="placeholders\Glossary\Glossary.cs" />
-    <Compile Include="placeholders\Glossary\GlossaryData.cs" />
-    <Compile Include="placeholders\Glossary\GlossaryPlaceholderData.cs" />
-    <Compile Include="placeholders\PageFiles\PageFiles.cs" />
-    <Compile Include="placeholders\PageFiles\PageFilesItemData.cs" />
-    <Compile Include="placeholders\PageFiles\PageFilesPlaceholderData.cs" />
-    <Compile Include="placeholders\SingleImageGallery\SingleImageGallery.cs" />
-    <Compile Include="placeholders\SingleImageGallery\SingleImageGalleryPlaceholderData.cs" />
-    <Compile Include="placeholders\SingleImage\SingleImage.cs" />
-    <Compile Include="placeholders\SingleImage\SingleImageData.cs" />
     <Compile Include="xmlSiteMap.ashx.cs">
       <DependentUpon>xmlSiteMap.ashx</DependentUpon>
     </Compile>
@@ -520,18 +389,6 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="placeholders\BaseCmsPlaceholder.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="placeholders\EditModeComment.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="placeholders\PageTitle.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="placeholders\_db\PlaceholderDb.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
@@ -777,7 +634,6 @@
     <Content Include="images\_system\printer.png" />
     <Content Include="images\_system\TopMultiLevelDropDownMenu\down.gif" />
     <Content Include="images\_system\TopMultiLevelDropDownMenu\right.gif" />
-    <EmbeddedResource Include="classes\EditingSystem\js\beforeUnload.js" />
     <Content Include="js\_system\ckeditor\adapters\jquery.js" />
     <Content Include="js\_system\ckeditor\ckeditor.js" />
     <Content Include="js\_system\ckeditor\config.js" />
@@ -1035,7 +891,6 @@
     <Content Include="js\_system\FCKPlugins\hatImageBrowser\fckplugin.js" />
     <Content Include="js\_system\FCKPlugins\hatImageBrowser\fck_image.html" />
     <Content Include="js\_system\FCKPlugins\hatImageBrowser\Image.gif" />
-    <EmbeddedResource Include="classes\EditingSystem\js\FloatingEditMenu.js" />
     <Content Include="js\_system\GlossaryEditor.js" />
     <Content Include="js\_system\JobDatabase\JobLocation.js" />
     <Content Include="js\_system\jquery.fullcalendar\changelog.txt" />
@@ -1214,9 +1069,13 @@
     <Content Include="_system\tools\swfUpload\SwfUploadTarget.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="include\hatCommon\hatCommon.csproj">
+    <ProjectReference Include="include\HatCMS.Core\HatCMS.Core.csproj">
+      <Project>{BCB2C5CD-189B-4B31-BC59-589A76837EBB}</Project>
+      <Name>HatCMS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="include\HatCMS.Core\include\hatCommon\hatCommon.csproj">
       <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
-      <Name>hatCommon %28HatCMS\hatCommon%29</Name>
+      <Name>hatCommon</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -41,8 +41,8 @@ namespace HatCMS.Controls.Image
             int imageBoxHeight = CmsConfig.getConfigValue("SingleImage.FullSizeDisplayHeight", -1);            
 
             // -- prepare the output
-            string largeImageUrl = showThumbPage.getThumbDisplayUrl(image.ImagePath, imageBoxWidth, imageBoxHeight);
-            System.Drawing.Size LargeImageSize = showThumbPage.getDisplayWidthAndHeight(image.ImagePath, imageBoxWidth, imageBoxHeight);
+            string largeImageUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(image.ImagePath, imageBoxWidth, imageBoxHeight);
+            System.Drawing.Size LargeImageSize = CmsContext.UserInterface.ShowThumbnailPage.getDisplayWidthAndHeight(image.ImagePath, imageBoxWidth, imageBoxHeight);
                         
             string width = "";
             string height = "";

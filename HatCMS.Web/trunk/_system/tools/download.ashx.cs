@@ -59,15 +59,7 @@ namespace HatCMS._system
                     OutputDataSetToExcelFile.OutputToResponse(gridview1, fileName, "", "", context.Response);
             }
             catch           
-            {                      }
-
-            /*
-            if (tool.GetType().Name.EndsWith("ListUserFeedback"))
-                gridview1 = new UserFeedbackDb().FetchAllUserFeedbackSubmittedDataAsGrid();
-            else if (tool.GetType().Name.EndsWith("ListRegisteredProjects"))
-                gridview1 = new RegisterProjectDb().fetchAllAsGrid();
-            */
-            
+            {} // fail silently.            
             
         }
 

@@ -47,15 +47,6 @@ namespace HatCMS.WebEditor.Helpers
             }
 		}
 
-        private string UserFilesPath
-        {
-            get
-            {
-
-                return InlineImageBrowser2.UserFilesPath;
-            }
-        }
-
 
         private void RegisterScrollToSelectedScript(TreeView treeView)
         {
@@ -112,11 +103,11 @@ namespace HatCMS.WebEditor.Helpers
         private TreeNode createNodeForFile(FileInfo fi)
         {
             // -- create the file's Url					
-            string rootUserFilesDir = Server.MapPath(UserFilesPath);
+            string rootUserFilesDir = Server.MapPath(CmsConfig.UserFilesPath);
 
             string subDir = fi.FullName.Replace(rootUserFilesDir, "");
 
-            subDir = UserFilesPath + subDir;
+            subDir = CmsConfig.UserFilesPath + subDir;
             if (!subDir.EndsWith("\\"))
                 subDir += "\\";
 
@@ -162,7 +153,7 @@ namespace HatCMS.WebEditor.Helpers
 
         private void fillInitialTree()
         {
-            string UserFilesDir = Server.MapPath(InlineImageBrowser2.UserFilesPath);
+            string UserFilesDir = Server.MapPath(CmsConfig.UserFilesPath);
             DirectoryInfo di = new DirectoryInfo(UserFilesDir);
 
             TreeNode homeNode = createNodeForDirectory(di);

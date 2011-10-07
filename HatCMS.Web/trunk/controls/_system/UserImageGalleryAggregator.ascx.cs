@@ -125,7 +125,7 @@ namespace HatCMS.Controls._system
                         {
                             numGalleriesOutput++;
 
-                            string thumbUrl = showThumbPage.getThumbDisplayUrl(allResources[0], 100, 100); ;
+                            string thumbUrl = CmsContext.UserInterface.ShowThumbnailPage.getThumbDisplayUrl(allResources[0], 100, 100); ;
                             html.Append("<tr><td><a href=\"" + g.Url + "\"><img border=\"0\" src=\"" + thumbUrl + "\"></a></td><td><a href=\"" + g.Url + "\">" + g.Title + "</a><br />(" + allResources.Length + " images)</td></tr>");
                         }
                     }
