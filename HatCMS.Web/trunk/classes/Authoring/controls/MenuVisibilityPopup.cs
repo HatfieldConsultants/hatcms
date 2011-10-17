@@ -230,7 +230,7 @@ namespace HatCMS.Controls
             if (cmsPage.ID != CmsContext.HomePage.ID)
             {
                 bool boxChecked = cmsPage.ShowInMenu;
-                bool editable = cmsPage.Zone.canWrite(CmsContext.currentWebPortalUser); // if zone is authorized, checkbox is editable by user
+                bool editable = cmsPage.SecurityZone.canWrite(CmsContext.currentWebPortalUser); // if zone is authorized, checkbox is editable by user
                 string htmlName = controlId + "_show";
                 if (editable)
                     html.Append(PageUtils.getCheckboxHtml("", htmlName, htmlName, "true", boxChecked, "", false) + EOL);

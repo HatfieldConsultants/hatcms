@@ -19,7 +19,7 @@ namespace HatCms.Admin.BackgroundTasks
         {
             string techEmail = CmsConfig.getConfigValue("TechnicalAdministratorEmail", "");
             string smtpServer = CmsConfig.getConfigValue("smtpServer", "");
-            if (techEmail.IndexOf("@") < 1 || smtpServer.Trim() != "")
+            if (techEmail.IndexOf("@") < 1 || smtpServer.Trim() == "")
             {
                 return; // don't run anything if there's no email address or smtp server defined.
             }

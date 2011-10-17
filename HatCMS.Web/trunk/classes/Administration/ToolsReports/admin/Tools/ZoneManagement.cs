@@ -11,7 +11,7 @@ namespace HatCMS.Admin
 
         public override CmsAdminToolInfo getToolInfo()
         {
-            return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Security, AdminMenuTab.Tools, "Create/Edit Zones");
+            return new CmsAdminToolInfo(CmsAdminToolCategory.Tool_Security, AdminMenuTab.Tools, "Create/Edit Security Zones");
         }
 
         public override CmsDependency[] getDependencies()
@@ -24,7 +24,7 @@ namespace HatCMS.Admin
         }
 
         
-        protected CmsZoneDb zoneDb = new CmsZoneDb();
+        protected CmsPageSecurityZoneDb zoneDb = new CmsPageSecurityZoneDb();
 
         /// <summary>
         /// Create the Zone entity object for adding record

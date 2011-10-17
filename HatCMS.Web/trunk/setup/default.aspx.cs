@@ -222,20 +222,20 @@ namespace HatCMS.setup
             CmsPageSecurityZone z = new CmsPageSecurityZone();
             z.ZoneName = "Default zone";
             z.StartingPageId = HomePageId;
-            if (new CmsZoneDb().insert(z) == false)
+            if (new CmsPageSecurityZoneDb().insert(z) == false)
                 throw new Exception("Cannot insert Home Page Zone");
 
             // anonymous users can read, but not write pages in this zone
-            CmsZoneUserRole anonZoneRole = new CmsZoneUserRole(z.ZoneId, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, true, false);
-            if (new CmsZoneUserRoleDb().insert(anonZoneRole) == false)
+            CmsPageSecurityZoneUserRole anonZoneRole = new CmsPageSecurityZoneUserRole(z.ZoneId, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, true, false);
+            if (new CmsPageSecurityZoneUserRoleDb().insert(anonZoneRole) == false)
                 throw new Exception("Cannot insert anonymous ZoneUserRole");
 
             // authors can write and read all pages in this zone            
             WebPortalUserRole authorRole = WebPortalUserRole.Fetch(CmsConfig.getConfigValue("AuthorAccessUserRole", "Author"));
             if (authorRole.RoleID >= 0)
             {
-                CmsZoneUserRole authorZoneRole = new CmsZoneUserRole(z.ZoneId, authorRole.RoleID , true, true);
-                if (new CmsZoneUserRoleDb().insert(authorZoneRole) == false)
+                CmsPageSecurityZoneUserRole authorZoneRole = new CmsPageSecurityZoneUserRole(z.ZoneId, authorRole.RoleID , true, true);
+                if (new CmsPageSecurityZoneUserRoleDb().insert(authorZoneRole) == false)
                     throw new Exception("Cannot insert author ZoneUserRole");
             }
 
@@ -248,20 +248,20 @@ namespace HatCMS.setup
             
             z.ZoneName = "Internal Author Tools Zone";
             z.StartingPageId = AdminPageId;
-            if (new CmsZoneDb().insert(z) == false)
+            if (new CmsPageSecurityZoneDb().insert(z) == false)
                 throw new Exception("Cannot insert Zone");
 
             // anonymous users cannot read or write in this zone
-            CmsZoneUserRole anonZoneRole = new CmsZoneUserRole(z.ZoneId, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, false, false);
-            if (new CmsZoneUserRoleDb().insert(anonZoneRole) == false)
+            CmsPageSecurityZoneUserRole anonZoneRole = new CmsPageSecurityZoneUserRole(z.ZoneId, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, false, false);
+            if (new CmsPageSecurityZoneUserRoleDb().insert(anonZoneRole) == false)
                 throw new Exception("Cannot insert anonymous ZoneUserRole");
 
             // authors can write and read all pages in this zone            
             WebPortalUserRole authorRole = WebPortalUserRole.Fetch(CmsConfig.getConfigValue("AuthorAccessUserRole", "Author"));
             if (authorRole.RoleID >= 0)
             {
-                CmsZoneUserRole authorZoneRole = new CmsZoneUserRole(z.ZoneId, authorRole.RoleID, true, true);
-                if (new CmsZoneUserRoleDb().insert(authorZoneRole) == false)
+                CmsPageSecurityZoneUserRole authorZoneRole = new CmsPageSecurityZoneUserRole(z.ZoneId, authorRole.RoleID, true, true);
+                if (new CmsPageSecurityZoneUserRoleDb().insert(authorZoneRole) == false)
                     throw new Exception("Cannot insert author ZoneUserRole");
             }
 

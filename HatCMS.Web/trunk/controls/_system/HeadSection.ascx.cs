@@ -75,7 +75,10 @@ namespace HatCMS.Controls
                 html.Append("<meta name=\"description\" content=\"" + Server.HtmlEncode(description) + "\">");
                 html.Append(Environment.NewLine);
             }
-                        
+                    
+            // -- generator meta tag (bug #134)
+            html.Append("<meta name=\"generator\" content=\"HatCMS "+CmsContext.currentHatCMSCoreVersion.ToString()+" - Open Source Content Management\" />");
+
             return html.ToString();
         }
 

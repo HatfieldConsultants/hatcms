@@ -4,7 +4,7 @@
 		##PlaceHolder(SingleImage id="1" width="720" height="-1")##
 		##PlaceHolder(PageTitle id="1")## 
 		<div style="clear: both; padding-top: 5px;">
-		    ##PlaceHolder(HtmlContent id="1" width="720px" height="400px" OutputOnlyIfHasContent="true")##
+		    ##PlaceHolder(HtmlContent id="1" width="720px" height="400px")##
 		</div>
 		<hr />
 		##PlaceHolder(UserFeedback id="1")##

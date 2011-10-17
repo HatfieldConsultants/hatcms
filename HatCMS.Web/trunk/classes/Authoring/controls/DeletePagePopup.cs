@@ -41,7 +41,7 @@ namespace HatCMS.Controls
                         return ("Access Denied");                        
                     }
 
-                    if (page.isZoneBoundary == true) // if the cms page is a zone boundary, do not allow delete
+                    if (page.isSecurityZoneBoundary == true) // if the cms page is a zone boundary, do not allow delete
                     {
                         html += "<span style=\"color: red\">Cannot delete the page because it is located at the zone boundary.</span>";
                         html += "<p><input type=\"button\" onclick=\"window.close();\" value=\"close this window\">";

@@ -66,10 +66,10 @@ namespace HatCMS.Controls
                 return "Invalid Target parameter. No page to delete.";
 
             CmsPage p = getCmsPage();
-            if (p.Zone.canWrite(CmsContext.currentWebPortalUser) == false)
+            if (p.SecurityZone.canWrite(CmsContext.currentWebPortalUser) == false)
                 return "Access Denied";
 
-            if (p.isZoneBoundary == true)
+            if (p.isSecurityZoneBoundary == true)
                 return "Delete failed because the page is located at the zone boundary.";
 
             string template = p.TemplateName;

@@ -19,8 +19,8 @@ namespace HatCMS.Admin
             return ret.ToArray();
         }
 
-        protected CmsZoneDb db = new CmsZoneDb();
-        protected CmsZoneUserRoleDb roleDb = new CmsZoneUserRoleDb();
+        protected CmsPageSecurityZoneDb db = new CmsPageSecurityZoneDb();
+        protected CmsPageSecurityZoneUserRoleDb roleDb = new CmsPageSecurityZoneUserRoleDb();
 
         /// <summary>
         /// Create the html form hidden fields
@@ -42,9 +42,9 @@ namespace HatCMS.Admin
         /// <param name="r"></param>
         /// <param name="accessMode"></param>
         /// <returns></returns>
-        protected CmsZoneUserRole createUserRoleEntity(CmsPageSecurityZone z, WebPortalUserRole r, string[] accessMode)
+        protected CmsPageSecurityZoneUserRole createUserRoleEntity(CmsPageSecurityZone z, WebPortalUserRole r, string[] accessMode)
         {
-            CmsZoneUserRole entity = new CmsZoneUserRole();
+            CmsPageSecurityZoneUserRole entity = new CmsPageSecurityZoneUserRole();
             entity.ZoneId = z.ZoneId;
             entity.UserRoleId = r.RoleID;
             foreach (string s in accessMode)
@@ -70,7 +70,7 @@ namespace HatCMS.Admin
             if (PageUtils.getFromForm("update", "") != "updateZoneAuthority")
                 return "";
 
-            List<CmsZoneUserRole> authority = new List<CmsZoneUserRole>();
+            List<CmsPageSecurityZoneUserRole> authority = new List<CmsPageSecurityZoneUserRole>();
             foreach (CmsPageSecurityZone z in zoneList)
             {
                 roleDb.deleteByZone(z);
@@ -82,7 +82,7 @@ namespace HatCMS.Admin
                     if (accessMode.Length == 0)
                         continue;
 
-                    CmsZoneUserRole entity = createUserRoleEntity(z, r, accessMode);
+                    CmsPageSecurityZoneUserRole entity = createUserRoleEntity(z, r, accessMode);
                     authority.Add(entity);
                 }
             }
@@ -153,10 +153,10 @@ namespace HatCMS.Admin
         protected string RenderZoneAuthorityRow(CmsPageSecurityZone zone, List<WebPortalUserRole> roleList, string adminRoleName)
         {
             int zID = zone.ZoneId;
-            List<CmsZoneUserRole> authority = roleDb.fetchAllByZone(zone);
+            List<CmsPageSecurityZoneUserRole> authority = roleDb.fetchAllByZone(zone);
             Set rSet = new Set();
             Set wSet = new Set();
-            foreach (CmsZoneUserRole z in authority)
+            foreach (CmsPageSecurityZoneUserRole z in authority)
             {
                 if (z.ReadAccess)
                     rSet.Add(z.UserRoleId);

@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
-[assembly: AssemblyTitle("Hat Web Content Management System (HatCMS)")]
+[assembly: AssemblyTitle("Hat Web Content Management System - Web Component (HatCMS.Web)")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Hatfield Consultants Ltd.")]

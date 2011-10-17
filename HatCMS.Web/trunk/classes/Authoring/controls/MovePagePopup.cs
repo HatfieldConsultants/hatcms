@@ -131,7 +131,7 @@ namespace HatCMS.Controls
                     {
                         CmsPage pageToAdd = allPages[pageId];
                         // -- don't allow moving a page to a child of the page, or to the same location as it is now.
-                        bool zoneAuthorized = pageToAdd.Zone.canWrite(CmsContext.currentWebPortalUser);
+                        bool zoneAuthorized = pageToAdd.SecurityZone.canWrite(CmsContext.currentWebPortalUser);
                         if (zoneAuthorized && !pageToAdd.isChildOf(pageToMove) && pageToAdd.ID != pageToMove.ParentID)
                             targetDropDownVals.Add(pageId.ToString(), pageToAdd.Path);
                     }
