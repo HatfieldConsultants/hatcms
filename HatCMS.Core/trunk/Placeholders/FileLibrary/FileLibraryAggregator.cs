@@ -925,7 +925,7 @@ namespace HatCMS.Placeholders
                         {
                             string urlDetails = "";
                             // -- link direct to the file only if the current user can't edit the file.
-                            if (renderParameters.fileLinkMode == RenderParameters.FileLinkMode.LinkToFile && !page.Zone.canWrite(CmsContext.currentWebPortalUser))
+                            if (renderParameters.fileLinkMode == RenderParameters.FileLinkMode.LinkToFile && !page.SecurityZone.canWrite(CmsContext.currentWebPortalUser))
                             {
                                 urlDetails = FileLibraryDetailsData.getDownloadUrl(CmsContext.getPageById(file.DetailsPageId), identifier, lang, file.FileName, fileUrlFormat);
                             }
@@ -968,7 +968,7 @@ namespace HatCMS.Placeholders
             addCssAndScript(page, renderParameters);
 
             StringBuilder html = new StringBuilder();
-            bool canWrite = page.Zone.canWrite(CmsContext.currentWebPortalUser);
+            bool canWrite = page.SecurityZone.canWrite(CmsContext.currentWebPortalUser);
             if (canWrite)
                 html.Append("<p>" + handleUploadSubmit(page, identifier, langToRenderFor, controlId) + "</p>" + EOL);
 

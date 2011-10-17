@@ -15,7 +15,7 @@ namespace HatCMS
     /// <summary>
     /// Entity object for `ZoneUserRole`
     /// </summary>
-    public class CmsZoneUserRole
+    public class CmsPageSecurityZoneUserRole
     {
         private int zoneId = CmsPageSecurityZone.DEFAULT_ID;
         public int ZoneId
@@ -55,11 +55,11 @@ namespace HatCMS
             get { return Convert.ToInt32(WriteAccess); }
         }
 
-        public CmsZoneUserRole()
+        public CmsPageSecurityZoneUserRole()
         {
         }
 
-        public CmsZoneUserRole(int newZoneId, int newUserRoleId, bool newReadAccess, bool newWriteAccess)
+        public CmsPageSecurityZoneUserRole(int newZoneId, int newUserRoleId, bool newReadAccess, bool newWriteAccess)
         {
             ZoneId = newZoneId;
             UserRoleId = newUserRoleId;

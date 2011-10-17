@@ -55,6 +55,11 @@ namespace HatCMS
             }
         } // SaveToDatabase
 
+        /// <summary>
+        /// if the name wasn't found, returns a new CmsPersistentVariable object, with the .Name set to String.Empty
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static CmsPersistentVariable Fetch(string name)
         {
             return (new PersistentVariableDB()).Fetch(name);
@@ -65,6 +70,10 @@ namespace HatCMS
             return (new PersistentVariableDB()).FetchAll();
         } // FetchAll
 
+        public static CmsPersistentVariable[] FetchAllWithNamePrefix(string namePrefix)
+        {
+            return (new PersistentVariableDB()).FetchAllWithNamePrefix(namePrefix);
+        }
 
         public static bool Delete(CmsPersistentVariable persistentVariableToDelete)
         {
@@ -188,6 +197,11 @@ namespace HatCMS
                 return item;
             } // GetFromRow
 
+            /// <summary>
+            /// if the name wasn't found, returns a new CmsPersistentVariable object, with the .Name set to String.Empty
+            /// </summary>
+            /// <param name="name"></param>
+            /// <returns></returns>
             public CmsPersistentVariable Fetch(string name)
             {
                 if (name.Trim() == "")
@@ -222,6 +236,43 @@ namespace HatCMS
 
             } // Fetch
 
+            public CmsPersistentVariable[] FetchAllWithNamePrefix(string namePrefix)
+            {
+                if (namePrefix.Trim() == "")
+                    return new CmsPersistentVariable[0];
+
+
+                using (MySql.Data.MySqlClient.MySqlConnection conn = new MySql.Data.MySqlClient.MySqlConnection(ConfigUtils.getConfigValue("ConnectionString", "")))
+                {
+                    OpenMySqlConnection(conn);
+
+                    string sql = "SELECT PersistentVariableId, Name, PersistedValue from persistentvariables ";
+                    sql += " WHERE Name like @Name";
+
+                    MySql.Data.MySqlClient.MySqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandText = sql;
+
+                    cmd.Parameters.AddWithValue("@Name", namePrefix + "%");
+
+                    MySql.Data.MySqlClient.MySqlDataAdapter sqlDA = new MySql.Data.MySqlClient.MySqlDataAdapter(cmd);
+                    DataSet ds = new DataSet();
+                    sqlDA.Fill(ds);
+
+                    List<CmsPersistentVariable> arrayList = new List<CmsPersistentVariable>();
+                    if (this.hasRows(ds))
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            arrayList.Add(GetFromRow(dr));
+                        } // foreach row
+
+                    }
+                    return arrayList.ToArray();
+
+
+                }
+
+            } // FetchAllWithNamePrefix
 
             public CmsPersistentVariable[] FetchAll()
             {

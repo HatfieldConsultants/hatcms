@@ -11,11 +11,11 @@ namespace HatCMS
     /// <summary>
     /// DB object for `ZoneUserRole`
     /// </summary>
-    public class CmsZoneUserRoleDb : MySqlDbObject 
+    public class CmsPageSecurityZoneUserRoleDb : MySqlDbObject 
     {
         protected static string TABLE_NAME = "zoneuserrole";
 
-        public CmsZoneUserRoleDb()
+        public CmsPageSecurityZoneUserRoleDb()
             : base(ConfigurationManager.AppSettings["ConnectionString"])
         { }
 
@@ -24,7 +24,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="z"></param>
         /// <returns></returns>
-        public List<CmsZoneUserRole> fetchAllByZone(CmsPageSecurityZone z)
+        public List<CmsPageSecurityZoneUserRole> fetchAllByZone(CmsPageSecurityZone z)
         {
             StringBuilder sql = new StringBuilder("SELECT ZoneId,UserRoleId,ReadAccess,WriteAccess FROM ");
             sql.Append(TABLE_NAME);
@@ -33,7 +33,7 @@ namespace HatCMS
 
             DataSet ds = this.RunSelectQuery(sql.ToString());
 
-            List<CmsZoneUserRole> list = new List<CmsZoneUserRole>();
+            List<CmsPageSecurityZoneUserRole> list = new List<CmsPageSecurityZoneUserRole>();
             if (this.hasRows(ds))
             {
                 foreach (DataRow dr in ds.Tables[0].Rows)
@@ -103,7 +103,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool insert(CmsZoneUserRole entity)
+        public bool insert(CmsPageSecurityZoneUserRole entity)
         {
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.Append(TABLE_NAME);
@@ -125,7 +125,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="entityList"></param>
         /// <returns></returns>
-        public bool insert(List<CmsZoneUserRole> entityList)
+        public bool insert(List<CmsPageSecurityZoneUserRole> entityList)
         {
             if (entityList.Count == 0)
                 return true;
@@ -136,7 +136,7 @@ namespace HatCMS
 
             for (int x = 0; x < entityList.Count; x++)
             {
-                CmsZoneUserRole g = entityList[x];
+                CmsPageSecurityZoneUserRole g = entityList[x];
                 sql.Append("(" + g.ZoneId.ToString() + "," + g.UserRoleId.ToString() + "," + g.ReadAccessAsInt.ToString() + "," + g.WriteAccessAsInt.ToString() + ")");
                 if (x + 1 < entityList.Count)
                     sql.Append(",");
@@ -174,9 +174,9 @@ namespace HatCMS
         /// </summary>
         /// <param name="dr"></param>
         /// <returns></returns>
-        protected CmsZoneUserRole fromDataRow(DataRow dr)
+        protected CmsPageSecurityZoneUserRole fromDataRow(DataRow dr)
         {
-            CmsZoneUserRole entity = new CmsZoneUserRole();
+            CmsPageSecurityZoneUserRole entity = new CmsPageSecurityZoneUserRole();
             entity.ZoneId = Convert.ToInt32(dr["ZoneId"]);
             entity.UserRoleId = Convert.ToInt32(dr["UserRoleId"]);
             entity.ReadAccess = Convert.ToBoolean(dr["ReadAccess"]);

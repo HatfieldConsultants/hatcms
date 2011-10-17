@@ -88,7 +88,7 @@ namespace HatCMS
         /// </summary>
         public static CmsPageSecurityZone currentZone
         {
-            get { return CmsContext.currentPage.Zone; }
+            get { return CmsContext.currentPage.SecurityZone; }
         }
 
         
@@ -362,6 +362,17 @@ namespace HatCMS
                     return false;
             }
         }
+
+        /// <summary>
+        /// gets the current version of HatCMS.Core that is in-use.
+        /// </summary>
+        public static System.Version currentHatCMSCoreVersion
+        {
+            get
+            {
+                return typeof(CmsPage).Assembly.GetName().Version;
+            }
+        }
        
         /// <summary>
         /// The Form name that tracks the <see cref="currentEditMode"/> currentEditMode
@@ -445,7 +456,7 @@ namespace HatCMS
             // -- bust through the cache if user is logged on
             if (CmsContext.currentUserIsLoggedIn)
             {
-                paramList.Add("nocache", DateTime.Now.Ticks.ToString());
+                paramList.Add("hatCmsNocache", DateTime.Now.Ticks.ToString());
             }
 
 
@@ -472,16 +483,6 @@ namespace HatCMS
 
             Thread.CurrentThread.CurrentCulture = targetCulture;
             Thread.CurrentThread.CurrentUICulture = targetCulture;
-        }
-
-        /// <summary>
-        /// External modules (found in external DLL assembies) can provide a class that inherits from CmsModuleInfo to provide information on
-        /// the module. 
-        /// </summary>
-        /// <returns></returns>
-        public static CmsModuleInfo[] getAllModuleInfos()
-        {
-            return CmsModuleUtils.getAllModuleInfos();
         }
 
 		/// <summary>
@@ -532,6 +533,9 @@ namespace HatCMS
         public static void Application_Start(CmsUserInterface UIToRegister )
         {
             _UserInterface = UIToRegister;
+
+            // -- Initialize all active modules (plugins)
+            // CmsModuleUtils.LoadAllActiveModules();
 
             // -- run all OnApplicationStart background tasks
             CmsBackgroundTaskUtils.RunAllApplicationStartBackgroundTasks();
@@ -692,7 +696,7 @@ namespace HatCMS
         {
             string techEmail = CmsConfig.getConfigValue("TechnicalAdministratorEmail", "");
             string smtpServer = CmsConfig.getConfigValue("smtpServer", "");
-            if (techEmail.IndexOf("@") > 0 && smtpServer.Trim() != "")
+            if (techEmail.IndexOf("@") < 1 || smtpServer.Trim() == "")
             {
                 Hatfield.Web.Portal.ApplicationUtils.Application_Error_StandardEmailSender(context, techEmail, new string[] { techEmail }, smtpServer);
             }

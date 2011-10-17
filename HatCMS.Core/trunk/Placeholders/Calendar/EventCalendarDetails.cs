@@ -173,7 +173,7 @@ namespace HatCMS.Placeholders.Calendar
         protected string renderAttachedFile(CmsLanguage lang, FileLibraryDetailsData f, WebPortalUser u, CmsUrlFormat fileUrlFormat)
         {
             CmsPage detailsFilePage = CmsContext.getPageById(f.DetailsPageId);
-            if (detailsFilePage.Zone.canRead(u) || detailsFilePage.Zone.canWrite(u))
+            if (detailsFilePage.SecurityZone.canRead(u) || detailsFilePage.SecurityZone.canWrite(u))
             {
                 
                 string iconTag = IconUtils.getIconTag(CmsContext.ApplicationPath, false, f.fileExtension);

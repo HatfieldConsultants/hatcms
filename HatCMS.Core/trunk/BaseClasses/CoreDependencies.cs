@@ -139,11 +139,15 @@ namespace HatCMS
             ret.Add(new CmsConfigItemDependency("RewriteEngineOn", CmsDependency.ExistsMode.MustNotExist)); // RewriteEngine is always on.
             ret.Add(new CmsConfigItemDependency("ThumbImageCacheDirectory", CmsDependency.ExistsMode.MustNotExist)); // thumbnail cache is always in _system/writable/ThumbnailCache
             ret.Add(new CmsConfigItemDependency("Languages"));
-            ret.Add(new CmsConfigItemDependency("useInternal404NotFoundErrorHandler"));      
+            ret.Add(new CmsConfigItemDependency("useInternal404NotFoundErrorHandler"));
+            ret.Add(new CmsConfigItemDependency("smtpServer"));
+            ret.Add(new CmsConfigItemDependency("TechnicalAdministratorEmail"));                  
       
             // -- writable directories
             ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/js"));
             ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/css"));
+            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/Modules"));
+            
             
             bool useInternal404NotFoundErrorHandler = CmsConfig.getConfigValue("useInternal404NotFoundErrorHandler", false);
             if (useInternal404NotFoundErrorHandler)
@@ -160,6 +164,10 @@ namespace HatCMS
             ret.Add(new CmsPlaceholderContentDependency("HtmlContent", "_system/showthumb.aspx", CmsDependency.ExistsMode.MustNotExist, StringComparison.CurrentCultureIgnoreCase));
 
             ret.Add(new CmsControlDependency("_system/internal/EditCalendarCategoriesPopup", CmsDependency.ExistsMode.MustNotExist)); // deprecated. now "EventCalendarCategoryPopup"
+
+            ret.Add(new CmsPageDependency("/_admin/actions/deleteNews", CmsConfig.Languages, CmsDependency.ExistsMode.MustNotExist)); // deleteNews page is deprecated; news deletion is handled on the page level.
+            ret.Add(new CmsPageDependency("/_admin/actions/deleteJob", CmsConfig.Languages, CmsDependency.ExistsMode.MustNotExist)); // deleteJob page is deprecated; news deletion is handled on the page level.
+            ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("LoginPath", "/_login"), CmsConfig.Languages));
 
             // -- gather all admin tool dependencies
             ret.AddRange(HatCMS.Admin.BaseCmsAdminTool.getAllAdminToolDependencies());

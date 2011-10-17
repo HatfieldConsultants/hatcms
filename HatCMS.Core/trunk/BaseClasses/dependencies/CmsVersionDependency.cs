@@ -37,8 +37,8 @@ namespace HatCMS
         }
         
         public override CmsDependencyMessage[] ValidateDependency()
-        {            
-            System.Version hatCmsVersion = typeof(CmsPage).Assembly.GetName().Version;
+        {
+            System.Version hatCmsVersion = CmsContext.currentHatCMSCoreVersion;
             List<CmsDependencyMessage> ret = new List<CmsDependencyMessage>();
             List<string> reqVersionStrings = new List<string>();
             foreach (System.Version ver in AcceptedVersions)

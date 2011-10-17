@@ -18,7 +18,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>.\bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="BaseClasses\admin\AdminToolInfo.cs" />
     <Compile Include="BaseClasses\admin\BaseAdminTool.cs" />
     <Compile Include="BaseClasses\backgroundTasks\BackgroundTask.cs" />
@@ -83,8 +84,8 @@
     <Compile Include="BaseClasses\filtering\OutputFilterUtils.cs" />
     <Compile Include="BaseClasses\iCal\iCalOutputStream.cs" />
     <Compile Include="BaseClasses\language\Language.cs" />
-    <Compile Include="BaseClasses\modules\ModuleInfo.cs" />
-    <Compile Include="BaseClasses\modules\ModuleUtils.cs" />
+    <Compile Include="BaseClasses\Modules\ModuleInfo.cs" />
+    <Compile Include="BaseClasses\Modules\ModuleUtils.cs" />
     <Compile Include="BaseClasses\page\CreateNewPageOptions.cs" />
     <Compile Include="BaseClasses\page\Page.cs" />
     <Compile Include="BaseClasses\page\PageCache.cs" />
@@ -105,10 +106,10 @@
     <Compile Include="BaseClasses\TemplateEngine\TemplateEngineVersion.cs" />
     <Compile Include="BaseClasses\TemplateEngine\TemplateExecutionException.cs" />
     <Compile Include="BaseClasses\TemplateEngine\v2\TemplateEngineV2.cs" />
-    <Compile Include="BaseClasses\SecurityZones\CmsZone.cs" />
-    <Compile Include="BaseClasses\SecurityZones\CmsZoneDb.cs" />
-    <Compile Include="BaseClasses\SecurityZones\CmsZoneUserRole.cs" />
-    <Compile Include="BaseClasses\SecurityZones\CmsZoneUserRoleDb.cs" />
+    <Compile Include="BaseClasses\SecurityZones\PageSecurityZone.cs" />
+    <Compile Include="BaseClasses\SecurityZones\PageSecurityZoneDb.cs" />
+    <Compile Include="BaseClasses\SecurityZones\PageSecurityZoneUserRole.cs" />
+    <Compile Include="BaseClasses\SecurityZones\PageSecurityZoneUserRoleDb.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="EditMode.cs" />
@@ -189,14 +190,6 @@
       <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
       <Name>hatCommon</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="_svn\prop-base\" />
-    <Folder Include="_svn\props\" />
-    <Folder Include="_svn\text-base\" />
-    <Folder Include="_svn\tmp\prop-base\" />
-    <Folder Include="_svn\tmp\props\" />
-    <Folder Include="_svn\tmp\text-base\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>

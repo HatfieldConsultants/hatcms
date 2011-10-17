@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Specialized;
 using System.Collections.Generic;
@@ -368,6 +369,22 @@ namespace HatCMS
                 }
 
                 return s;
+            }
+        }
+
+        /// <summary>
+        /// The directory that contains Modules (AKA plugins) 
+        /// </summary>
+        public static DirectoryInfo ModuleStorageDirectory
+        {
+            get
+            {
+                string dir = CmsConfig.getConfigValue("ModuleStorageDir", @"~/_system/writable/Modules/");
+
+                dir = VirtualPathUtility.ToAbsolute(dir);
+
+                return new DirectoryInfo( System.Web.Hosting.HostingEnvironment.MapPath(dir));
+
             }
         }
 

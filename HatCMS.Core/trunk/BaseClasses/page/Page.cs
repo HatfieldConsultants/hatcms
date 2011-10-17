@@ -513,14 +513,14 @@ namespace HatCMS
         /// <summary>
         /// Derive the Zone by the page ID (note: the result is cached in-memory)
         /// </summary>
-        public CmsPageSecurityZone Zone
+        public CmsPageSecurityZone SecurityZone
         {
             get 
             {
                 if (zoneCached)
                     return cachedZone;
 
-                cachedZone = new CmsZoneDb().fetchByPage(this);
+                cachedZone = new CmsPageSecurityZoneDb().fetchByPage(this);
                 zoneCached = true;
                 return cachedZone;
             }
@@ -530,11 +530,11 @@ namespace HatCMS
         /// Check if this page is located at the CmsZone boundary
         /// (i.e. an exact record in `zone` table)
         /// </summary>
-        public bool isZoneBoundary
+        public bool isSecurityZoneBoundary
         {
             get
             {
-                CmsPageSecurityZone z = new CmsZoneDb().fetchByPage(this, false);
+                CmsPageSecurityZone z = new CmsPageSecurityZoneDb().fetchByPage(this, false);
                 return (z != null) ? true : false;
             }
         }
@@ -549,7 +549,7 @@ namespace HatCMS
                 if (CmsContext.currentUserIsSuperAdmin)
                     return true;
 
-                return Zone.canWrite(CmsContext.currentWebPortalUser);
+                return SecurityZone.canWrite(CmsContext.currentWebPortalUser);
             }
         }
 
@@ -563,7 +563,7 @@ namespace HatCMS
                 if (CmsContext.currentUserIsSuperAdmin)
                     return true;
 
-                return Zone.canRead(CmsContext.currentWebPortalUser);
+                return SecurityZone.canRead(CmsContext.currentWebPortalUser);
             }
         }
 
@@ -884,12 +884,14 @@ namespace HatCMS
                 }
 
                 // -- checks if the current user can read the current page. If not authorized, redirect to the Login page.
-                bool canRead = OwningPage.Zone.canRead(CmsContext.currentWebPortalUser);
-                if (canRead == false && OwningPage.Path != CmsConfig.getConfigValue("LoginPath", "/_login"))
+                //      but only redirect if the current page isn't the login page.
+                bool canRead = OwningPage.SecurityZone.canRead(CmsContext.currentWebPortalUser);
+                if (canRead == false && String.Compare(OwningPage.Path,CmsConfig.getConfigValue("LoginPath", "/_login"), true) != 0)
                 {
                     NameValueCollection loginParams = new NameValueCollection();
                     loginParams.Add("target", OwningPage.ID.ToString());
                     CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath", "/_login")), loginParams);
+                    return;
                 }
 
                 // -- create all placeholders and controls based on the page's template.
@@ -1369,6 +1371,11 @@ namespace HatCMS
         /// <returns></returns>
         public bool setName(string newName, CmsLanguage forLanguage)
         {
+            if (StringUtils.IndexOf(InvalidPageNameChars, newName, StringComparison.CurrentCulture) >= 0)
+            {
+                throw new ArgumentException("Error: the newName of the page contains invalid characters!");
+            }
+            
             CmsPageDb db = new CmsPageDb();
             return db.updateName(this, newName, forLanguage);
         }

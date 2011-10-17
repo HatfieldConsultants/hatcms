@@ -20,6 +20,7 @@ namespace HatCMS
         public int PageId;
         public string PageTemplate;
         public CmsLanguage[] LanguagesThatMustHavePagePath;
+        public ExistsMode Exists;
 
         public CmsPageDependency(string pagePath, CmsLanguage[] languagesThatMustHavePagePath)
         {
@@ -27,6 +28,16 @@ namespace HatCMS
             PageId = -1;
             PageTemplate = "";
             LanguagesThatMustHavePagePath = languagesThatMustHavePagePath;
+            Exists = ExistsMode.MustExist;
+        }
+
+        public CmsPageDependency(string pagePath, CmsLanguage[] languagesThatMustHavePagePath, ExistsMode existsMode)
+        {
+            PagePath = pagePath;
+            PageId = -1;
+            PageTemplate = "";
+            LanguagesThatMustHavePagePath = languagesThatMustHavePagePath;
+            Exists = existsMode;
         }
 
         public CmsPageDependency(int pageID, CmsLanguage[] languagesThatMustHavePagePath)
@@ -35,6 +46,7 @@ namespace HatCMS
             PageId = pageID;
             PageTemplate = "";
             LanguagesThatMustHavePagePath = languagesThatMustHavePagePath;
+            Exists = ExistsMode.MustExist;
         }
 
         public CmsPageDependency(string pagePath, string pageTemplate, CmsLanguage[] languagesThatMustHavePagePath)
@@ -43,6 +55,7 @@ namespace HatCMS
             PageId = -1;
             PageTemplate = pageTemplate;
             LanguagesThatMustHavePagePath = languagesThatMustHavePagePath;
+            Exists = ExistsMode.MustExist;
         }
 
         public CmsPageDependency(int pageId, string pageTemplate, CmsLanguage[] languagesThatMustHavePagePath)
@@ -51,6 +64,7 @@ namespace HatCMS
             PageId = pageId;
             PageTemplate = pageTemplate;
             LanguagesThatMustHavePagePath = languagesThatMustHavePagePath;
+            Exists = ExistsMode.MustExist;
         }
 
         
@@ -61,7 +75,7 @@ namespace HatCMS
             foreach (CmsLanguage lang in LanguagesThatMustHavePagePath)
                 shortCodes.Add(lang.shortCode);
 
-            return (PagePath.ToLower() + PageId.ToString() + PageTemplate.ToLower()).Trim().ToLower() + string.Join(";", shortCodes.ToArray());
+            return (PagePath.ToLower() + Exists.ToString() + PageId.ToString() + PageTemplate.ToLower()).Trim().ToLower() + string.Join(";", shortCodes.ToArray());
         }
 
         public override CmsDependencyMessage[] ValidateDependency()
@@ -86,16 +100,25 @@ namespace HatCMS
                     try
                     {
                         CmsPage page = CmsContext.getPageById(PageId);
-                        if (page.ID < 0)
-                            ret.Add(CmsDependencyMessage.Error("could not find required pageId '" + PageId + "' in language '" + lang.shortCode + "'"));
-                        else if (PageTemplate != "" && String.Compare(page.TemplateName, PageTemplate, true) != 0)
-                            ret.Add(CmsDependencyMessage.Error("The required page '" + PagePath + "' was found, but does not have the correct template (required: '" + PageTemplate + "'); actual: '" + page.TemplateName + "'"));
-                        else
-                            ret.AddRange(CmsTemplateDependency.testTemplate(page.TemplateName));
+                        if (Exists == ExistsMode.MustExist)
+                        {
+                            if (page.ID < 0)
+                                ret.Add(CmsDependencyMessage.Error("could not find required pageId '" + PageId + "' in language '" + lang.shortCode + "'"));
+                            else if (PageTemplate != "" && String.Compare(page.TemplateName, PageTemplate, true) != 0)
+                                ret.Add(CmsDependencyMessage.Error("The required page '" + PagePath + "' was found, but does not have the correct template (required: '" + PageTemplate + "'); actual: '" + page.TemplateName + "'"));
+                            else
+                                ret.AddRange(CmsTemplateDependency.testTemplate(page.TemplateName));
+                        }
+                        else if (Exists == ExistsMode.MustNotExist)
+                        {
+                            if (page.ID >= 0)
+                                ret.Add(CmsDependencyMessage.Error("PageId '" + PageId + "' in language '" + lang.shortCode + "' should NOT exist."));
+                        }
                     }
                     catch (Exception ex)
                     {
-                        ret.Add(CmsDependencyMessage.Error("Could not find required pageId '" + PageId + "' in language '" + lang.shortCode + "'"));
+                        if (Exists == ExistsMode.MustExist)
+                            ret.Add(CmsDependencyMessage.Error("Could not find required pageId '" + PageId + "' in language '" + lang.shortCode + "'"));
                     }
                 } // foreach Language
             }
@@ -114,16 +137,25 @@ namespace HatCMS
                     try
                     {
                         CmsPage page = CmsContext.getPageByPath(PagePath);
-                        if (page.ID < 0)
-                            ret.Add(CmsDependencyMessage.Error("could not find required page '" + PagePath + "' in language '" + lang.shortCode + "'"));
-                        else if (PageTemplate != "" && String.Compare(page.TemplateName, PageTemplate, true) != 0)
-                            ret.Add(CmsDependencyMessage.Error("The required page '" + PagePath + "' was found, but does not have the correct template (required: '" + PageTemplate + "'); actual: '" + page.TemplateName + "'"));
-                        else
-                            ret.AddRange(CmsTemplateDependency.testTemplate(page.TemplateName));
+                        if (Exists == ExistsMode.MustExist)
+                        {
+                            if (page.ID < 0)
+                                ret.Add(CmsDependencyMessage.Error("could not find required page '" + PagePath + "' in language '" + lang.shortCode + "'"));
+                            else if (PageTemplate != "" && String.Compare(page.TemplateName, PageTemplate, true) != 0)
+                                ret.Add(CmsDependencyMessage.Error("The required page '" + PagePath + "' was found, but does not have the correct template (required: '" + PageTemplate + "'); actual: '" + page.TemplateName + "'"));
+                            else
+                                ret.AddRange(CmsTemplateDependency.testTemplate(page.TemplateName));
+                        }
+                        else if (Exists == ExistsMode.MustNotExist)
+                        {
+                            if (page.ID >= 0)
+                                ret.Add(CmsDependencyMessage.Error("The page '" + PagePath + "' in language '" + lang.shortCode + "' should NOT exist."));
+                        }
                     }
                     catch (Exception ex)
                     {
-                        ret.Add(CmsDependencyMessage.Error("Could not find required page '" + PagePath + "' in language '" + lang.shortCode + "'"));
+                        if (Exists == ExistsMode.MustExist)
+                            ret.Add(CmsDependencyMessage.Error("Could not find required page '" + PagePath + "' in language '" + lang.shortCode + "'"));
                     }
                 } // foreach Language
             }

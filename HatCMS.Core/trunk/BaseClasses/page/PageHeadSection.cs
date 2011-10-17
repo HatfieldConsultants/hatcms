@@ -454,8 +454,9 @@ namespace HatCMS
             string ret = StringUtils.Base36Encode(ticks);            
             return ret;
         }
-       
 
+        /// Combines locally hosted CSS files into a single file.
+        /// Returns the URL of the file that was generated, or string.Empty on error
         private string combineInternalCssFiles(CSSGroup cssGroup, List<string> cssFilePaths, List<EmbeddedCSSFileInfo> embeddedCssFiles)
         {
             if (cssFilePaths.Count == 0 && embeddedCssFiles.Count == 0)
@@ -500,6 +501,8 @@ namespace HatCMS
             string outUrl = VirtualPathUtility.ToAbsolute("~/_system/writable/css/" + outName);
 
             string outFn = System.Web.Hosting.HostingEnvironment.MapPath(outUrl);
+            if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(outFn)))
+                throw new System.IO.FileNotFoundException("Please ensure that the directory exists: ~/system/writable/css/");
             if (!System.IO.File.Exists(outFn))
                 System.IO.File.WriteAllText(outFn, outFileContents.ToString(), System.Text.Encoding.UTF8);
 
@@ -507,6 +510,14 @@ namespace HatCMS
 
         }
 
+        /// <summary>
+        /// Combines locally hosted JS files into a single file.
+        /// Returns the URL of the file that was generated, or string.Empty on error
+        /// </summary>
+        /// <param name="jsGroup"></param>
+        /// <param name="jsFilePathsToAggregate"></param>
+        /// <param name="embeddedJsFiles"></param>
+        /// <returns></returns>
         private string combineInternalJsFiles(JavascriptGroup jsGroup, List<string> jsFilePathsToAggregate, List<EmbeddedJsFileInfo> embeddedJsFiles)
         {
             if (jsFilePathsToAggregate.Count == 0 && embeddedJsFiles.Count == 0)
@@ -550,6 +561,8 @@ namespace HatCMS
             string outUrl = VirtualPathUtility.ToAbsolute("~/_system/writable/js/" + outName);
 
             string outFn = System.Web.Hosting.HostingEnvironment.MapPath(outUrl);
+            if (!System.IO.Directory.Exists(System.IO.Path.GetDirectoryName(outFn)))
+                throw new System.IO.FileNotFoundException("Please ensure that the directory exists: ~/system/writable/js/");
             if (!System.IO.File.Exists(outFn))
                 System.IO.File.WriteAllText(outFn, outFileContents.ToString(), System.Text.Encoding.UTF8);
 

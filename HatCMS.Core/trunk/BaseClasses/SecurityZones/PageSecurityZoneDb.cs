@@ -10,11 +10,11 @@ namespace HatCMS
     /// <summary>
     /// DB object for `Zone`
     /// </summary>
-    public class CmsZoneDb : MySqlDbObject
+    public class CmsPageSecurityZoneDb : MySqlDbObject
     {
         protected static string TABLE_NAME = "zone";
 
-        public CmsZoneDb() : base(ConfigurationManager.AppSettings["ConnectionString"])
+        public CmsPageSecurityZoneDb() : base(ConfigurationManager.AppSettings["ConnectionString"])
         { }
 
         public CmsPageSecurityZone fetch(int zoneId)

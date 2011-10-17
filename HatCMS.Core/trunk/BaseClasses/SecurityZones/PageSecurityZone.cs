@@ -58,7 +58,7 @@ namespace HatCMS
                 roleArray = u.userRoles;
             }
 
-            CmsZoneUserRoleDb db = new CmsZoneUserRoleDb();
+            CmsPageSecurityZoneUserRoleDb db = new CmsPageSecurityZoneUserRoleDb();
             return (db.fetchRoleMatchingCountForRead(this, roleArray) > 0);
         }
 
@@ -79,7 +79,7 @@ namespace HatCMS
                 roleArray = u.userRoles;
             }
 
-            CmsZoneUserRoleDb db = new CmsZoneUserRoleDb();
+            CmsPageSecurityZoneUserRoleDb db = new CmsPageSecurityZoneUserRoleDb();
             return (db.fetchRoleMatchingCountForWrite(this, roleArray) > 0);
         }
 
