@@ -15,60 +15,27 @@ namespace Hatfield.Web.Portal
 {
     public class AssemblyHelpers
     {
-#if UseAssemblyCache
         /// <summary>
-        /// the assemblies are staticly cached so that they are held as long as the assemblies are available.
-        /// </summary>
-        private static Dictionary<Type, Assembly> assemblyCache = new Dictionary<string, Assembly>();
-
-        public static Assembly GetFromCache(Type typeKey)
-        {
-            if (assemblyCache.ContainsKey(typeKey))
-                return assemblyCache[keytypeKey];
-            
-            return returnOnErrorOrInvalid;
-        } // GetFromCache
-
-        public static bool AssemblyCacheContains(Type typeKey)
-        {
-            return assemblyCache.ContainsKey(typeKey);
-        }
-
-        /// <summary>
-        /// if the key already exists, the value will be overwritten
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="objToAdd"></param>
-        /// <returns></returns>
-        public static bool AddToAssemblyCache(Type typeKey, Assembly assemblyToAdd)
-        {
-            assemblyCache[typeKey] = assemblyToAdd;
-        }
-#endif
-
-        /// <summary>
-        /// Goes through all assemblies in the BIN directory and loads them if they haven't already been loaded.
+        /// Goes through all assemblies in the directory and loads them if they haven't already been loaded.
         /// Returns a list of all loaded assemblies.
         /// <para>This function is safe to run multiple times</para>
         /// </summary>
         /// <returns></returns>
-        public static Assembly[] LoadAllBinDirectoryAssemblies()
+        public static Assembly[] LoadAllDirectoryAssemblies(DirectoryInfo dirContainingAssembliesToLoad)
         {
             // based on http://stackoverflow.com/questions/1288288/how-to-load-all-assemblies-from-within-your-bin-directory
             // reference: http://msdn.microsoft.com/en-us/library/ms173100(v=vs.80).aspx
-            // note: should probably take "assemblyBinding/probing" config entry into consideration http://msdn.microsoft.com/en-us/library/823z9h8w.aspx
-            
-            string binPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "bin"); // note: don't use CurrentEntryAssembly or anything like that.
+            // note: should probably take "assemblyBinding/probing" config entry into consideration http://msdn.microsoft.com/en-us/library/823z9h8w.aspx                        
             
             // -- prepopulate the list of assemblies with those that already exist.
             Assembly[] allLoadedAssemblies = GetAllLoadedAssemblies();
             Dictionary<string, Assembly> loadedAssembliesDict = ToFullNameKeyedDictionary(allLoadedAssemblies);
 
-            foreach (string dll in Directory.GetFiles(binPath, "*.dll", SearchOption.AllDirectories))
+            foreach (FileInfo dll in dirContainingAssembliesToLoad.GetFiles("*.dll", SearchOption.AllDirectories))
             {
                 try
-                {                    
-                    AssemblyName asmName = AssemblyName.GetAssemblyName(dll);
+                {
+                    AssemblyName asmName = AssemblyName.GetAssemblyName(dll.FullName);
                     if (asmName != null && !loadedAssembliesDict.ContainsKey(asmName.FullName))
                     {
                         // note: don't use Assembly.Load - it loads the assembly into the wrong appDomain.
@@ -86,6 +53,38 @@ namespace Hatfield.Web.Portal
 
             return new List<Assembly>(loadedAssembliesDict.Values).ToArray();
 
+        }
+
+        /// <summary>
+        /// returns NULL if the assembly couldn't be loaded.
+        /// </summary>
+        /// <param name="assemblyFileToLoad"></param>
+        /// <returns></returns>
+        public static Assembly LoadAssembly(FileInfo assemblyFileToLoad)
+        {
+            // -- prepopulate the list of assemblies with those that already exist.
+            Assembly[] allLoadedAssemblies = GetAllLoadedAssemblies();
+            Dictionary<string, Assembly> loadedAssembliesDict = ToFullNameKeyedDictionary(allLoadedAssemblies);
+
+            try
+            {
+                AssemblyName asmName = AssemblyName.GetAssemblyName(assemblyFileToLoad.FullName);
+                if (asmName!= null && loadedAssembliesDict.ContainsKey(asmName.FullName))
+                    return loadedAssembliesDict[asmName.FullName];
+
+                if (asmName != null && !loadedAssembliesDict.ContainsKey(asmName.FullName))
+                {
+                    // note: don't use Assembly.Load - it loads the assembly into the wrong appDomain.
+                    Assembly loadedAssembly = AppDomain.CurrentDomain.Load(asmName);
+                    return loadedAssembly;
+                }
+            }
+            catch (FileLoadException loadEx)
+            { } // The Assembly has already been loaded.
+            catch (BadImageFormatException imgEx)
+            { } // If a BadImageFormatException exception is thrown, the file is not an assembly.
+
+            return null;
         }
 
         public static Dictionary<string, Assembly> ToFullNameKeyedDictionary(Assembly[] list)
@@ -137,7 +136,12 @@ namespace Hatfield.Web.Portal
 
         public static Type[] LoadAllAssembliesAndGetAllAvailableTypes()
         {
-            Assembly[] assemblies = LoadAllBinDirectoryAssemblies();
+            return LoadAllAssembliesAndGetAllAvailableTypes(getBinDirectory());
+        }
+
+        public static Type[] LoadAllAssembliesAndGetAllAvailableTypes(DirectoryInfo directoryContainingAssembliesToLoad)
+        {
+            Assembly[] assemblies = LoadAllDirectoryAssemblies(directoryContainingAssembliesToLoad);
             List<Type> ret = new List<Type>();
             foreach (Assembly asm in assemblies)
             {
@@ -147,7 +151,7 @@ namespace Hatfield.Web.Portal
             return ret.ToArray();
         }
 
-        private static bool TypeInheritsFrom(Type sourceType, Type testParentType)
+        public static bool TypeInheritsFrom(Type sourceType, Type testParentType)
         {
             if (sourceType.IsClass && sourceType.IsSubclassOf(testParentType) )
             {
@@ -160,6 +164,39 @@ namespace Hatfield.Web.Portal
             
         }
 
+        private static DirectoryInfo getBinDirectory()
+        {
+            // note for bin path: could use HttpRuntime.BinDirectory for web projects.
+            string binPath = System.IO.Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "bin"); // note: don't use CurrentEntryAssembly or anything like that.
+
+            return new DirectoryInfo(binPath);
+        }
+
+        /// <summary>
+        /// This will be made public in a future version (when modules can be dynamically loaded)
+        /// 
+        /// </summary>
+        /// <param name="parentClassType"></param>
+        /// <returns></returns>
+        private static Type[] GetAllSubclassesOfTypeFromAllLoadedAssemblies(Type parentClassType)
+        {
+            Assembly[] loadedAssemblies = GetAllLoadedAssemblies();
+
+            List<Type> ret = new List<Type>();
+            foreach (Assembly asm in loadedAssemblies)
+            {
+                foreach (Type t in asm.GetTypes())
+                {
+                    if (TypeInheritsFrom(t, parentClassType))
+                        ret.Add(t);
+                } // foreach type
+            } // foreach assembly
+
+            return ret.ToArray();
+
+
+        }
+
         /// <summary>
         /// Load All assemblies in the BIN directory, and get all the types that are a subClass of the parentClassType
         /// <para>This function is safe to run multiple times</para>
@@ -168,7 +205,18 @@ namespace Hatfield.Web.Portal
         /// <returns></returns>
         public static Type[] LoadAllAssembliesAndGetAllSubclassesOf(Type parentClassType)
         {
-            Assembly[] assemblies = LoadAllBinDirectoryAssemblies();
+            return LoadAllAssembliesAndGetAllSubclassesOf(parentClassType, getBinDirectory());
+        }
+
+        /// <summary>
+        /// Load All assemblies in the specified directory, and get all the types that are a subClass of the parentClassType
+        /// <para>This function is safe to run multiple times</para>
+        /// </summary>
+        /// <param name="parentClassType"></param>
+        /// <returns></returns>
+        private static Type[] LoadAllAssembliesAndGetAllSubclassesOf(Type parentClassType, DirectoryInfo directoryContainingAssembliesToLoad)
+        {
+            Assembly[] assemblies = LoadAllDirectoryAssemblies(directoryContainingAssembliesToLoad);
             List<Type> ret = new List<Type>();
             foreach (Assembly asm in assemblies)
             {
@@ -182,6 +230,48 @@ namespace Hatfield.Web.Portal
             return ret.ToArray();
         }
 
+        public static Type[] GetAllSubclassesOf(Type parentClassType, Assembly[] assembliesToSearchIn)
+        {            
+            List<Type> ret = new List<Type>();
+            foreach (Assembly asm in assembliesToSearchIn)
+            {
+                foreach (Type t in asm.GetTypes())
+                {
+                    if (TypeInheritsFrom(t, parentClassType))
+                        ret.Add(t);
+                } // foreach type
+            } // foreach assembly
+
+            return ret.ToArray();
+        }
+
+
+        private static Dictionary<string, Assembly> GetAllEmbeddedResourcesWithExtensionsFromLoadedAssemblies(string[] extensions)
+        {
+            Assembly[] assemblies = GetAllLoadedAssemblies();
+            Dictionary<string, Assembly> ret = new Dictionary<string, Assembly>();
+            foreach (Assembly asm in assemblies)
+            {
+                try
+                {
+                    foreach (string resName in asm.GetManifestResourceNames())
+                    {
+                        if (StringUtils.IndexOf(extensions, Path.GetExtension(resName), StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        {
+                            ret[resName] = asm;
+                        }
+                    }
+                }
+                catch (System.NotSupportedException notSupEx)
+                {
+                    Console.Write("Could not read dynamic resources!");
+                }
+            }
+
+            return ret;
+
+        }
+
         /// <summary>
         /// Load All assemblies in the BIN directory, and
         /// returns a dictionary in the format [ResourceName] => AssemblyContainingTheResource
@@ -190,7 +280,18 @@ namespace Hatfield.Web.Portal
         /// <returns></returns>
         public static Dictionary<string, Assembly> LoadAllAssembliesAndGetAllEmbeddedResourcesWithExtensions(string[] extensions)
         {
-            Assembly[] assemblies = LoadAllBinDirectoryAssemblies();
+            return LoadAllAssembliesAndGetAllEmbeddedResourcesWithExtensions(extensions, getBinDirectory());
+        }
+
+        /// <summary>
+        /// Load All assemblies in the BIN directory, and
+        /// returns a dictionary in the format [ResourceName] => AssemblyContainingTheResource
+        /// </summary>
+        /// <param name="extensions"></param>
+        /// <returns></returns>
+        private static Dictionary<string, Assembly> LoadAllAssembliesAndGetAllEmbeddedResourcesWithExtensions(string[] extensions, DirectoryInfo directoryContainingAssembliesToLoad)
+        {
+            Assembly[] assemblies = LoadAllDirectoryAssemblies(directoryContainingAssembliesToLoad);
             Dictionary<string, Assembly> ret = new Dictionary<string,Assembly>();
             foreach (Assembly asm in assemblies)
             {

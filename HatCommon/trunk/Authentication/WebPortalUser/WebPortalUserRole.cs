@@ -28,6 +28,10 @@ namespace Hatfield.Web.Portal
             Description = description;
         }
 
+        /// <summary>
+        /// The dummy Anonymous (Public, un authenticated) user role.
+        /// This role is NOT stored in the database.
+        /// </summary>
         public static WebPortalUserRole dummyPublicUserRole
         {
             get { return new WebPortalUserRole(DUMMY_PUBLIC_ROLE_ID, "Public", "Public"); }

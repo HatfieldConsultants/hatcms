@@ -39,6 +39,19 @@ namespace Hatfield.Web.Portal
         }
 
         /// <summary>
+        /// The dummy Anonymous (Public, un authenticated) user.
+        /// This role is NOT stored in the database.
+        /// </summary>
+        public static WebPortalUser dummyPublicUser
+        {
+            get 
+            { 
+                string nothing = Guid.NewGuid().ToString(); 
+                return new WebPortalUser(-1, nothing, nothing, new WebPortalUserRole[] { WebPortalUserRole.dummyPublicUserRole }); 
+            }
+        }
+
+        /// <summary>
         /// adds a permission to the user's Permissions list. Does NOT save this addition to the database.
         /// </summary>
         /// <param name="role"></param>
