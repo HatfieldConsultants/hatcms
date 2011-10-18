@@ -218,6 +218,11 @@ namespace HatCMS.Modules.Glossary
             return json.ToString() + Environment.NewLine;
         }
 
+        /// <summary>
+        /// returns String.Empty if no specific letter is to be displayed.
+        /// </summary>
+        /// <param name="placeholderData"></param>
+        /// <returns></returns>
         public static string getLetterToDisplay(GlossaryPlaceholderData placeholderData)
         {
             string letterToDisplay = "";
@@ -326,6 +331,8 @@ namespace HatCMS.Modules.Glossary
 
                 GlossaryData[] itemsToDisplay = new GlossaryData[0];
                 if (placeholderData.ViewMode == GlossaryPlaceholderData.GlossaryViewMode.SinglePageWithJumpList || letterToDisplay == "")
+                    itemsToDisplay = GlossaryData.getItemsStartingWithChar(items, currentChar);
+                else if (placeholderData.ViewMode == GlossaryPlaceholderData.GlossaryViewMode.PagePerLetter && letterToDisplay != "")
                     itemsToDisplay = GlossaryData.getItemsStartingWithChar(items, currentChar);
                 else if (placeholderData.ViewMode == GlossaryPlaceholderData.GlossaryViewMode.PagePerLetter)
                     itemsToDisplay = items;
