@@ -12,19 +12,19 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>.\bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>.\bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="JsonFx.Json, Version=1.4.1003.3007, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\HatCMS.Core\include\JsonFx\JsonFx.Json.dll</HintPath>
+      <HintPath>include\HatCMS.Web\include\HatCMS.Core\include\JsonFx\JsonFx.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -41,21 +41,24 @@
     <Compile Include="Placeholder\GlossaryPlaceholderData.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="include\HatCMS.Core\HatCMS.Core.csproj">
+    <EmbeddedResource Include="js\GlossaryEditor.js" />
+    <EmbeddedResource Include="js\json2.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="include\HatCMS.Web\include\HatCMS.Core\HatCMS.Core.csproj">
       <Project>{BCB2C5CD-189B-4B31-BC59-589A76837EBB}</Project>
       <Name>HatCMS.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="include\HatCMS.Core\include\hatCommon\hatCommon.csproj">
+    <ProjectReference Include="include\HatCMS.Web\include\HatCMS.Core\include\hatCommon\hatCommon.csproj">
       <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
       <Name>hatCommon</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="js\GlossaryEditor.js" />
-    <EmbeddedResource Include="js\json2.js" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
     <VisualStudio AllowExistingFolder="true" />
   </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(TargetDir)..\include\HatCMS.Web\bin\$(TargetFileName)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

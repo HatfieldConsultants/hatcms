@@ -20,32 +20,11 @@ namespace HatCMS.Modules.Glossary
         public override CmsDependency[] getDependencies()
         {
             return new CmsDependency[]{
+                // -- javascript files are now embedded in this Assembly.
                 CmsFileDependency.UnderAppPath("js/_system/GlossaryEditor.js", CmsDependency.ExistsMode.MustNotExist),
                 CmsFileDependency.UnderAppPath("js/_system/json2.js", CmsDependency.ExistsMode.MustNotExist),
-                CmsWritableDirectoryDependency.UnderAppPath("_system/writable/Glossary"),
-                new CmsDatabaseTableDependency(@"
-                    CREATE TABLE  `glossary` (
-                      `glossaryid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                      `pageid` int(10) unsigned NOT NULL,
-                      `identifier` int(10) unsigned NOT NULL,
-                      `langShortCode` varchar(255) NOT NULL,
-                      `sortOrder` varchar(255) NOT NULL,
-                      `ViewMode` varchar(255) NOT NULL,
-                      `deleted` datetime DEFAULT NULL,
-                      PRIMARY KEY (`glossaryid`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-                "),
-                new CmsDatabaseTableDependency(@"
-                    CREATE TABLE  `glossarydata` (
-                      `GlossaryDataId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-                      `phGlossaryId` int(10) unsigned NOT NULL,
-                      `isAcronym` int(10) unsigned NOT NULL,
-                      `word` varchar(255) NOT NULL,
-                      `description` text NOT NULL,
-                      `deleted` datetime DEFAULT NULL,
-                      PRIMARY KEY (`GlossaryDataId`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-                ")
+                // -- writable directories
+                CmsWritableDirectoryDependency.UnderAppPath("_system/writable/Glossary")
             };
         }
 
@@ -373,20 +352,7 @@ namespace HatCMS.Modules.Glossary
 
             return html.ToString();
         }
-
-        private GlossaryData[] fetchRssFeedDataForDisplay()
-        {
-            // "http://www.sadcwaterhub.org/glossary/feed?lang_tid[0]=2"
-            string dataCacheKey = GlossaryPlaceholderData.getRssDataPersistentVariableName();
-            CmsPersistentVariable persistedData = CmsPersistentVariable.Fetch(dataCacheKey);
-            if (persistedData.Name != "")
-            {
-                List<GlossaryData> list = (List<GlossaryData>)persistedData.PersistedValue;
-                return list.ToArray();
-            }                
-            else
-                return new GlossaryData[0];
-        }
+        
 
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
@@ -397,13 +363,18 @@ namespace HatCMS.Modules.Glossary
 
             GlossaryData[] items;
             if (GlossaryPlaceholderData.DataSource == GlossaryPlaceholderData.GlossaryDataSource.RssFeed)
-                items = fetchRssFeedDataForDisplay();
+                items = db.FetchRssFeedGlossaryDataFromDatabase();
             else           
                 items = db.getGlossaryData(placeholderData, letterToDisplay);
 
             string[] charactersWithData = db.getAllCharactersWithData(items);
 
             StringBuilder html = new StringBuilder();
+            if (GlossaryPlaceholderData.DataSource == GlossaryPlaceholderData.GlossaryDataSource.RssFeed)            
+                html.Append("<!-- Glossary data pulled from RSS: " + GlossaryPlaceholderData.getRssDataSourceUrl()+ " -->");
+            else
+                html.Append("<!-- Glossary data pulled from HatCMS database -->");
+
             html.Append(GetHtmlDisplay(page, items, placeholderData, charactersWithData, letterToDisplay));
 
             writer.Write(html.ToString());

@@ -11,7 +11,10 @@ namespace HatCMS.Modules.Glossary
         {
             List<CmsDependency> ret = new List<CmsDependency>();
 
+            // -- the RSSGlossary control has been removed. All display is now done through the Glossary placeholder.
             ret.Add(new CmsControlDependency("RSSGlossary", CmsDependency.ExistsMode.MustNotExist));
+
+            ret.Add(new CmsConfigItemDependency("GlossaryHighlightFilter:Enable", CmsDependency.ExistsMode.MustExist));
 
             ret.Add(new CmsDatabaseTableDependency(@"
                     CREATE TABLE  `glossary` (
@@ -34,9 +37,7 @@ namespace HatCMS.Modules.Glossary
                       `description` text NOT NULL,
                       `deleted` datetime DEFAULT NULL,
                       PRIMARY KEY (`GlossaryDataId`)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"));
-
-            ret.Add(new CmsMessageDependency("Validated Glossary module dependencies"));
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"));            
 
             return ret.ToArray();
         }

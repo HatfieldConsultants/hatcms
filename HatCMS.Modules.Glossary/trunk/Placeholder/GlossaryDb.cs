@@ -83,6 +83,20 @@ namespace HatCMS.Modules.Glossary
 
         } // saveUpdatedGlossary
 
+        public GlossaryData[] FetchRssFeedGlossaryDataFromDatabase()
+        {
+            // "http://www.sadcwaterhub.org/glossary/feed?lang_tid[0]=2"
+            string dataCacheKey = GlossaryPlaceholderData.getRssDataPersistentVariableName();
+            CmsPersistentVariable persistedData = CmsPersistentVariable.Fetch(dataCacheKey);
+            if (persistedData.Name != "")
+            {
+                List<GlossaryData> list = (List<GlossaryData>)persistedData.PersistedValue;
+                return list.ToArray();
+            }
+            else
+                return new GlossaryData[0];
+        }
+
         private bool RemoveAllExistingGlossaryDataAndInsertNew(GlossaryPlaceholderData placeholder, GlossaryData[] allNewGlossaryData)
         {
             string delSql = "delete from glossarydata where phGlossaryId = "+placeholder.GlossaryId+"  ; ";

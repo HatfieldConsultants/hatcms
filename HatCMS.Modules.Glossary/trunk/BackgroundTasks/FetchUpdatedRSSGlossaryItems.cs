@@ -44,7 +44,7 @@ namespace HatCMS.Modules.Glossary.BackgroundTasks
                         GlossaryData[] items = GlossaryData.FromRSSItems(glossaryRss.Channels[0].Items);
                         CmsPersistentVariable persistedData = CmsPersistentVariable.Fetch(dataCacheKey);
                         persistedData.Name = dataCacheKey;
-                        persistedData.PersistedValue =  (System.Runtime.Serialization.ISerializable) new List<GlossaryData>(items);
+                        persistedData.PersistedValue =  new List<GlossaryData>(items);
                         bool b = persistedData.SaveToDatabase();
 
                         if (b)

@@ -18,6 +18,7 @@ namespace HatCMS.Modules.Glossary
     /// <summary>
     /// data holding class for a single Glossary term
     /// </summary>    
+    [Serializable()]
     public class GlossaryData: ISerializable
     {
         public int Id = -1;
@@ -43,7 +44,7 @@ namespace HatCMS.Modules.Glossary
             s = s.Replace(Environment.NewLine, " ");
             s = s.Replace("\n", " ");
             s = s.Replace("\r", " ");            
-            return StringUtils.AddSlashes(s);
+            return StringUtils.AddSlashes(s);            
         }
 
         public static string ToJSON(GlossaryData[] items)
@@ -77,8 +78,8 @@ namespace HatCMS.Modules.Glossary
             foreach (Rss.RssItem item in items)
             {
                 GlossaryData g = new GlossaryData();
-                g.word = item.Title;
-                g.description = item.Description;                
+                g.word = item.Title.Trim();
+                g.description = StringUtils.StripHTMLTags(item.Description.Trim()); 
 
                 ret.Add(g);
             } // foreach

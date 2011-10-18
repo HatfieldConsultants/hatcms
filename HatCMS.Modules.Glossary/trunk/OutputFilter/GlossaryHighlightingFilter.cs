@@ -42,7 +42,7 @@ namespace HatCMS.Modules.Glossary
 #endif
 
                 // -- get the glossaryID to get data for (language specific)
-                int glossaryId = 2;
+                int glossaryId = 1;
                 string glossaryIds = CmsConfig.getConfigValue("GlossaryHighlightFilter:GlossaryId", "");
                 try
                 {
@@ -69,7 +69,12 @@ namespace HatCMS.Modules.Glossary
                 else
                 {
                     GlossaryDb db = new GlossaryDb();
-                    gData = db.getGlossaryData(glossaryId);
+
+                    if (GlossaryPlaceholderData.DataSource == GlossaryPlaceholderData.GlossaryDataSource.RssFeed)
+                        gData = db.FetchRssFeedGlossaryDataFromDatabase();
+                    else
+                        gData = db.getGlossaryData(glossaryId);
+                    
                     if (!CmsContext.currentUserIsLoggedIn)
                         System.Web.Hosting.HostingEnvironment.Cache.Insert(cacheKey, gData, null, DateTime.Now.AddHours(1), System.Web.Caching.Cache.NoSlidingExpiration);                    
 
