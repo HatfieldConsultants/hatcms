@@ -32,6 +32,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\UpdateRSSGlossary.cs" />
     <Compile Include="BackgroundTasks\FetchUpdatedRSSGlossaryItems.cs" />
     <Compile Include="GlossaryModuleInfo.cs" />
     <Compile Include="OutputFilter\GlossaryHighlightingFilter.cs" />

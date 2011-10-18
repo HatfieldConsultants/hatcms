@@ -33,33 +33,44 @@ namespace HatCMS.Modules.Glossary.BackgroundTasks
 
                 if (doFetch)
                 {
-                    string rssUrl = GlossaryPlaceholderData.getRssDataSourceUrl();
-                    Rss.RssFeed glossaryRss = Rss.RssFeed.Read(rssUrl);
-                    if (glossaryRss.Channels.Count == 0)
-                    {
-                        // html.Append("<em>Error: could not retrieve Glossary from "+rssUrl+"</em>");
-                    }
-                    else
-                    {
-                        GlossaryData[] items = GlossaryData.FromRSSItems(glossaryRss.Channels[0].Items);
-                        CmsPersistentVariable persistedData = CmsPersistentVariable.Fetch(dataCacheKey);
-                        persistedData.Name = dataCacheKey;
-                        persistedData.PersistedValue =  new List<GlossaryData>(items);
-                        bool b = persistedData.SaveToDatabase();
-
-                        if (b)
-                        {                            
-                            persistedLastRun.PersistedValue = DateTime.Now;
-                            persistedLastRun.Name = lastRunCacheKey;
-                            persistedLastRun.SaveToDatabase();
-                        }
-
-                    }
-
-
+                    FetchAndSaveRemoteRSSGlossaryData();
                 }
 
             }
-        }
+        } // RunBackgroundTask
+
+        public bool FetchAndSaveRemoteRSSGlossaryData()
+        {
+            string dataCacheKey = GlossaryPlaceholderData.getRssDataPersistentVariableName();
+            string lastRunCacheKey = dataCacheKey + "_LastRun";
+            
+            string rssUrl = GlossaryPlaceholderData.getRssDataSourceUrl();
+            Rss.RssFeed glossaryRss = Rss.RssFeed.Read(rssUrl);
+            if (glossaryRss.Channels.Count == 0)
+            {
+                // html.Append("<em>Error: could not retrieve Glossary from "+rssUrl+"</em>");
+            }
+            else
+            {
+                GlossaryData[] items = GlossaryData.FromRSSItems(glossaryRss.Channels[0].Items);
+                CmsPersistentVariable persistedData = CmsPersistentVariable.Fetch(dataCacheKey);
+                persistedData.Name = dataCacheKey;
+                persistedData.PersistedValue = new List<GlossaryData>(items);
+                bool b = persistedData.SaveToDatabase();
+
+                if (b)
+                {
+                    CmsPersistentVariable persistedLastRun = CmsPersistentVariable.Fetch(lastRunCacheKey);
+                    persistedLastRun.PersistedValue = DateTime.Now;
+                    persistedLastRun.Name = lastRunCacheKey;
+                    return persistedLastRun.SaveToDatabase();
+                }
+
+            }
+
+            return false;
+
+        } // FetchAndSaveRemoteRSSGlossaryData 
+
     }
 }
