@@ -1,0 +1,61 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8711FA9B-8FDC-4FA2-8EE6-746C3276E82A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>HatCMS.Modules.Glossary</AssemblyName>
+    <RootNamespace>HatCMS.Modules.Glossary</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>.\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>.\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="JsonFx.Json, Version=1.4.1003.3007, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\HatCMS.Core\include\JsonFx\JsonFx.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BackgroundTasks\FetchUpdatedRSSGlossaryItems.cs" />
+    <Compile Include="GlossaryModuleInfo.cs" />
+    <Compile Include="OutputFilter\GlossaryHighlightingFilter.cs" />
+    <Compile Include="Placeholder\Glossary.cs" />
+    <Compile Include="Placeholder\GlossaryData.cs" />
+    <Compile Include="Placeholder\GlossaryDb.cs" />
+    <Compile Include="Placeholder\GlossaryPlaceholderData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="include\HatCMS.Core\HatCMS.Core.csproj">
+      <Project>{BCB2C5CD-189B-4B31-BC59-589A76837EBB}</Project>
+      <Name>HatCMS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="include\HatCMS.Core\include\hatCommon\hatCommon.csproj">
+      <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
+      <Name>hatCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="js\GlossaryEditor.js" />
+    <EmbeddedResource Include="js\json2.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>

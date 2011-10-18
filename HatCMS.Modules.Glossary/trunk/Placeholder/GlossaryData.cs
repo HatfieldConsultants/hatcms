@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Serialization;
 using System.Collections.Generic;
 using System.Data;
 using System.Configuration;
@@ -10,13 +11,14 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using Hatfield.Web.Portal;
+using HatCMS.Placeholders;
 
-namespace HatCMS.Placeholders
+namespace HatCMS.Modules.Glossary
 {
     /// <summary>
     /// data holding class for a single Glossary term
-    /// </summary>
-    public class GlossaryData
+    /// </summary>    
+    public class GlossaryData: ISerializable
     {
         public int Id = -1;
         
@@ -27,6 +29,14 @@ namespace HatCMS.Placeholders
         public bool isAcronym = false;
         public string description = "";
         public string word = "";
+
+        public GlossaryData()
+        {
+            placeholderGlossaryId = -1;
+            isAcronym = false;
+            description = "";
+            word = "";
+        } // constructor
 
         private static string jsonEncode(string s)
         {
@@ -60,7 +70,20 @@ namespace HatCMS.Placeholders
 
             return json.ToString();
         }
-   
+
+        public static GlossaryData[] FromRSSItems(Rss.RssItemCollection items)
+        {
+            List<GlossaryData> ret = new List<GlossaryData>();
+            foreach (Rss.RssItem item in items)
+            {
+                GlossaryData g = new GlossaryData();
+                g.word = item.Title;
+                g.description = item.Description;                
+
+                ret.Add(g);
+            } // foreach
+            return ret.ToArray();
+        }
 
         public static bool ArrayContainsStartChar(GlossaryData[] items, char c)
         {
@@ -106,5 +129,26 @@ namespace HatCMS.Placeholders
             }
         }
 
+
+        #region ISerializable Members
+
+        public GlossaryData(SerializationInfo info, StreamingContext context)
+        {
+            placeholderGlossaryId = info.GetInt32("placeholderGlossaryId");
+            isAcronym = info.GetBoolean("isAcronym");
+            description = info.GetString("description");
+            word = info.GetString("word");
+        } // Deserialization constructor
+
+        //Serialize
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("placeholderGlossaryId", placeholderGlossaryId);
+            info.AddValue("isAcronym", isAcronym);
+            info.AddValue("description", description);
+            info.AddValue("word", word);
+        }
+
+        #endregion
     }
 }

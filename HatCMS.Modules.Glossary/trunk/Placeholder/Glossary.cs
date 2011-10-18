@@ -11,16 +11,17 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using Hatfield.Web.Portal;
+using HatCMS.Placeholders;
 
-namespace HatCMS.Placeholders
+namespace HatCMS.Modules.Glossary
 {
     public class Glossary : BaseCmsPlaceholder
     {
         public override CmsDependency[] getDependencies()
         {
             return new CmsDependency[]{
-                CmsFileDependency.UnderAppPath("js/_system/GlossaryEditor.js", new DateTime(2010,4,22)),
-                CmsFileDependency.UnderAppPath("js/_system/json2.js"),
+                CmsFileDependency.UnderAppPath("js/_system/GlossaryEditor.js", CmsDependency.ExistsMode.MustNotExist),
+                CmsFileDependency.UnderAppPath("js/_system/json2.js", CmsDependency.ExistsMode.MustNotExist),
                 CmsWritableDirectoryDependency.UnderAppPath("_system/writable/Glossary"),
                 new CmsDatabaseTableDependency(@"
                     CREATE TABLE  `glossary` (
@@ -53,10 +54,12 @@ namespace HatCMS.Placeholders
         {
             return RevertToRevisionResult.NotImplemented; // this placeholder doesn't implement revisions
         }
-                
+                      
+
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
+            
             string ControlId = "Glossary_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
             string renderEditorToDivId = ControlId + "RenderArea";
             string renderJsonToFormId = ControlId + "JsonFormData";
@@ -71,6 +74,7 @@ namespace HatCMS.Placeholders
             {
                 string receivedJSONData = PageUtils.getFromForm(renderJsonToFormId, "");
                 
+                
                 GlossaryData[] newData = fromJSON(receivedJSONData);
 
                 placeholderData.SortOrder = (GlossaryPlaceholderData.GlossarySortOrder)PageUtils.getFromForm(ControlId + "SortOrder", typeof(GlossaryPlaceholderData.GlossarySortOrder), placeholderData.SortOrder);
@@ -78,6 +82,7 @@ namespace HatCMS.Placeholders
                 bool b = db.saveUpdatedGlossary(page, identifier, langToRenderFor, placeholderData, newData);
                 if (b)
                 {
+                    // -- get the glossary data again so that all IDs are updated.
                     GlossaryData[] dataToSave = db.getGlossaryData(placeholderData, "");
                     string jsonToSave = getJSVariableStatement(jsonDataVarName, dataToSave);
                     try
@@ -124,27 +129,36 @@ namespace HatCMS.Placeholders
             // note: the form is linked to GlossaryEditor.js
             GlossaryData[] items = db.getGlossaryData(placeholderData, "");
             html.Append("<p><strong>Glossary Entries:</strong></p>");
-            
 
-            html.Append("<div id=\"" + renderEditorToDivId + "\"></div>");
+            if (GlossaryPlaceholderData.DataSource == GlossaryPlaceholderData.GlossaryDataSource.LocalDatabase)
+            {
+                html.Append("<div id=\"" + renderEditorToDivId + "\"></div>");
 
-            html.Append("<input type=\"button\" onclick=\"AddGlossaryElement('" + renderEditorToDivId + "');\" value=\"add new glossary entry\">" + Environment.NewLine);
-            
-            // -- the JSON data is passed to the server through this hidden form element
-            html.Append(PageUtils.getHiddenInputHtml(renderJsonToFormId, renderJsonToFormId, ""));
-                                    
-
-            page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "js/_system/json2.js");
-            page.HeadSection.AddJavascriptFile(JavascriptGroup.FrontEnd, "js/_system/GlossaryEditor.js");
-
-            page.HeadSection.AddJSStatements(getJSVariableStatement(jsonDataVarName, items));
+                html.Append("<input type=\"button\" onclick=\"AddGlossaryElement('" + renderEditorToDivId + "');\" value=\"add new glossary entry\">" + Environment.NewLine);
 
 
-            page.HeadSection.AddJSOnReady("var " + ControlId + "Instance = new GlossaryEditor('" + renderEditorToDivId + "', '" + renderJsonToFormId + "', JSON.parse(" + jsonDataVarName + ")); ");
-            page.HeadSection.AddJSOnReady("GlossaryEditorInstances[GlossaryEditorInstances.length] = " + ControlId + "Instance; ");
-            page.HeadSection.AddJSOnReady("" + ControlId + "Instance.updateDisplay();");
-            
-            
+                // -- the JSON data is passed to the server through this hidden form element
+                html.Append(PageUtils.getHiddenInputHtml(renderJsonToFormId, renderJsonToFormId, ""));
+
+
+                page.HeadSection.AddEmbeddedJavascriptFile(JavascriptGroup.ControlOrPlaceholder, typeof(Glossary).Assembly, "json2.js");
+                page.HeadSection.AddEmbeddedJavascriptFile(JavascriptGroup.ControlOrPlaceholder, typeof(Glossary).Assembly, "GlossaryEditor.js");
+
+                page.HeadSection.AddJSStatements(getJSVariableStatement(jsonDataVarName, items));
+
+
+                page.HeadSection.AddJSOnReady("var " + ControlId + "Instance = new GlossaryEditor('" + renderEditorToDivId + "', '" + renderJsonToFormId + "', JSON.parse(" + jsonDataVarName + ")); ");
+                page.HeadSection.AddJSOnReady("GlossaryEditorInstances[GlossaryEditorInstances.length] = " + ControlId + "Instance; ");
+                page.HeadSection.AddJSOnReady("" + ControlId + "Instance.updateDisplay();");
+            }
+            else if (GlossaryPlaceholderData.DataSource == GlossaryPlaceholderData.GlossaryDataSource.RssFeed)
+            {
+                html.Append("<div class=\"Glossary RSS Edit\">");
+                html.Append("The Glossary is being driven from the following RSS feed: ");
+                html.Append("<a href=\"" + GlossaryPlaceholderData.getRssDataSourceUrl() + "\">" + GlossaryPlaceholderData.getRssDataSourceUrl() + "</a><br />");
+                html.Append("<em>This URL is configured by the system administrator</em>");
+                html.Append("</div>");
+            }            
             
 
             writer.Write(html.ToString());
@@ -360,6 +374,20 @@ namespace HatCMS.Placeholders
             return html.ToString();
         }
 
+        private GlossaryData[] fetchRssFeedDataForDisplay()
+        {
+            // "http://www.sadcwaterhub.org/glossary/feed?lang_tid[0]=2"
+            string dataCacheKey = GlossaryPlaceholderData.getRssDataPersistentVariableName();
+            CmsPersistentVariable persistedData = CmsPersistentVariable.Fetch(dataCacheKey);
+            if (persistedData.Name != "")
+            {
+                List<GlossaryData> list = (List<GlossaryData>)persistedData.PersistedValue;
+                return list.ToArray();
+            }                
+            else
+                return new GlossaryData[0];
+        }
+
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
             GlossaryDb db = new GlossaryDb();
@@ -367,8 +395,13 @@ namespace HatCMS.Placeholders
 
             string letterToDisplay = getLetterToDisplay(placeholderData);
 
-            GlossaryData[] items = db.getGlossaryData(placeholderData, letterToDisplay);
-            string[] charactersWithData = db.getAllCharactersWithData(placeholderData);
+            GlossaryData[] items;
+            if (GlossaryPlaceholderData.DataSource == GlossaryPlaceholderData.GlossaryDataSource.RssFeed)
+                items = fetchRssFeedDataForDisplay();
+            else           
+                items = db.getGlossaryData(placeholderData, letterToDisplay);
+
+            string[] charactersWithData = db.getAllCharactersWithData(items);
 
             StringBuilder html = new StringBuilder();
             html.Append(GetHtmlDisplay(page, items, placeholderData, charactersWithData, letterToDisplay));

@@ -8,8 +8,9 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using HatCMS.Placeholders;
 
-namespace HatCMS.Placeholders
+namespace HatCMS.Modules.Glossary
 {
     public class GlossaryDb : PlaceholderDb
     {
@@ -208,22 +209,19 @@ namespace HatCMS.Placeholders
 
         } // getGlossaryData
 
-        public string[] getAllCharactersWithData(GlossaryPlaceholderData placeholderData)
+        public string[] getAllCharactersWithData(GlossaryData[] items)
         {
-            string sql = "SELECT distinct UPPER(left(word,1)) as c FROM glossarydata g ";
-            sql += " where phGlossaryId = " + placeholderData.GlossaryId.ToString() + " ";
-            sql += " order by UPPER(left(word,1));";
-            DataSet ds = this.RunSelectQuery(sql);
             List<string> ret = new List<string>();
-            if (this.hasRows(ds))
+            foreach (GlossaryData item in items)
             {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                {
-                    ret.Add(dr["c"].ToString());
-                } // foreach
-            }
+                string c = item.word[0].ToString().ToUpper();
+                if (ret.IndexOf(c) < 0)
+                    ret.Add(c);
+            } // foreach
 
             return ret.ToArray();
-        } // getAllCharactersWithData
+        }
+
+
     } // GlossaryDb
 }

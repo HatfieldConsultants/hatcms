@@ -9,9 +9,10 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using HatCMS;
 using HatCMS.Placeholders;
 
-namespace HatCMS
+namespace HatCMS.Modules.Glossary
 {
     /// <summary>
     /// Filter the page's HTML so that glossary terms have a span tag surrounding them.
