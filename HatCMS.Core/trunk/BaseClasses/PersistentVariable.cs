@@ -34,9 +34,16 @@ namespace HatCMS
         }
 
         
-        public ISerializable PersistedValue;
+        public object PersistedValue;
 
         public CmsPersistentVariable(string name, ISerializable valueToPersist)
+        {
+            persistentvariableid = -1;
+            _name = name;
+            PersistedValue = valueToPersist;
+        } // constructor
+
+        public CmsPersistentVariable(string name, object valueToPersist)
         {
             persistentvariableid = -1;
             _name = name;
@@ -87,7 +94,7 @@ namespace HatCMS
                 : base(ConfigUtils.getConfigValue("ConnectionString", ""))
             { }
 
-            private byte[] Serialize(ISerializable serializable)
+            private byte[] Serialize(object serializable)
             {
                 BinaryFormatter binaryFormatter = new BinaryFormatter();
                 System.IO.MemoryStream memStream = new System.IO.MemoryStream();                
@@ -96,13 +103,13 @@ namespace HatCMS
                 return memStream.ToArray();                    
             }
 
-            private ISerializable DeSerialize(byte[] byteArray)
+            private object DeSerialize(byte[] byteArray)
             {
                 BinaryFormatter binaryFormatter = new BinaryFormatter();
                 System.IO.MemoryStream memStream = new System.IO.MemoryStream();
                 memStream.Write(byteArray,0, byteArray.Length);
                 memStream.Seek(0, System.IO.SeekOrigin.Begin);
-                ISerializable ret = (ISerializable)binaryFormatter.Deserialize(memStream);
+                object ret = binaryFormatter.Deserialize(memStream);
                 return ret;
             }
 
@@ -122,7 +129,8 @@ namespace HatCMS
                     MySql.Data.MySqlClient.MySqlCommand cmd = conn.CreateCommand();
                     cmd.CommandText = "INSERT INTO persistentvariables (Name, PersistedValue) VALUES(@Name, @PersistedValue);";
                     cmd.Parameters.AddWithValue("@Name", item.Name);
-                    cmd.Parameters.AddWithValue("@PersistedValue", Serialize(item.PersistedValue));
+                    byte[] serializedData = Serialize(item.PersistedValue);
+                    cmd.Parameters.AddWithValue("@PersistedValue", serializedData);
 
                     int numInserted = cmd.ExecuteNonQuery();
 

@@ -100,12 +100,13 @@ namespace HatCMS
                 "));
 
             ret.Add(new CmsDatabaseTableDependency(@"
-                    CREATE TABLE `PersistentVariables` (
-                      `PersistentVariableId` INT NOT NULL AUTO_INCREMENT ,
-                      `Name` VARCHAR(255) NOT NULL ,
-                      `PersistedValue` BLOB NULL ,
-                      PRIMARY KEY (`PersistentVariableId`) ,
-                      UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) );
+                    CREATE TABLE `persistentvariables` (
+                      `PersistentVariableId` int(11) NOT NULL AUTO_INCREMENT,
+                      `Name` varchar(255) NOT NULL,
+                      `PersistedValue` longblob,
+                      PRIMARY KEY (`PersistentVariableId`),
+                      UNIQUE KEY `Name_UNIQUE` (`Name`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
                 "));
 
             // -- some project directories should be removed from production sites
