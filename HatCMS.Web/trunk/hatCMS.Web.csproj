@@ -171,13 +171,6 @@
     <Compile Include="controls\_system\RSSDocuments.ascx.designer.cs">
       <DependentUpon>RSSDocuments.ascx</DependentUpon>
     </Compile>
-    <Compile Include="controls\_system\RSSGlossary.ascx.cs">
-      <DependentUpon>RSSGlossary.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="controls\_system\RSSGlossary.ascx.designer.cs">
-      <DependentUpon>RSSGlossary.ascx</DependentUpon>
-    </Compile>
     <Compile Include="controls\_system\Breadcrumb.ascx.cs">
       <DependentUpon>Breadcrumb.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -520,7 +513,6 @@
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.designer.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
@@ -553,7 +545,6 @@
     <Content Include="controls\_system\PrinterAndPDFVersions.ascx" />
     <Content Include="controls\_system\RSSNews.ascx" />
     <Content Include="controls\_system\RSSDocuments.ascx" />
-    <Content Include="controls\_system\RSSGlossary.ascx" />
     <Content Include="controls\_system\Breadcrumb.ascx" />
     <Content Include="controls\_system\BreadcrumbList.ascx" />
     <Content Include="controls\_system\CopyrightStatement.ascx" />
@@ -1069,7 +1060,6 @@
     </None>
     <None Include="templates\ContactUs.template" />
     <Content Include="templates\Glossary.template" />
-    <Content Include="templates\_RSSGlossary.template" />
     <Content Include="templates\_RSSDocuments.template" />
     <Content Include="templates\_RSSNews.template" />
     <None Include="templates\PageFiles.template" />

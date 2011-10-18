@@ -7,5 +7,5 @@
 		    ##PlaceHolder(HtmlContent id="1" width="720px" height="400px")##
 		</div>
 		<hr />
-		##PlaceHolder(UserFeedback id="1")##
+		##PlaceHolder(Glossary id="1")##
 ##EndPlaceholderRegion("MainContent")##

@@ -23,21 +23,6 @@ namespace HatCMS.Controls
             return ret.ToArray();
         }
 
-        private GlossaryData[] ToGlossaryData(Rss.RssItemCollection items)
-        {
-            List<GlossaryData> ret = new List<GlossaryData>();
-            foreach (Rss.RssItem item in items)
-            {
-                GlossaryData g = new GlossaryData();
-                g.word = item.Title;
-                g.description = item.Description;
-
-                ret.Add(g);
-            } // foreach
-            return ret.ToArray();
-        }
-
-
 
         protected override void Render(HtmlTextWriter writer)
         {

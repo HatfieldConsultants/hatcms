@@ -270,12 +270,15 @@ CREATE TABLE  `pages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE  TABLE `persistentvariables` (
-  `PersistentVariableId` INT NOT NULL AUTO_INCREMENT ,
-  `Name` VARCHAR(255) NOT NULL ,
-  `PersistedValue` BLOB NULL ,
-  PRIMARY KEY (`PersistentVariableId`) ,
-  UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) );
+CREATE TABLE `persistentvariables` (
+  `PersistentVariableId` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `PersistedValue` longblob,
+  PRIMARY KEY (`PersistentVariableId`),
+  UNIQUE KEY `Name_UNIQUE` (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 CREATE TABLE  `plaintextcontent` (
   `PlainTextContentId` int(11) NOT NULL AUTO_INCREMENT,
