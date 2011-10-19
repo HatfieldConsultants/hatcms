@@ -123,6 +123,7 @@
     <Compile Include="classes\Administration\ToolsReports\admin\Reports\PageUrlsById.cs" />
     <Compile Include="classes\Administration\ToolsReports\admin\Reports\SingleImageMissingCaptions.cs" />
     <Compile Include="classes\Administration\ToolsReports\admin\Reports\UnusedFiles.cs" />
+    <Compile Include="classes\Administration\ToolsReports\admin\Reports\VersionReport.cs" />
     <Compile Include="classes\Administration\ToolsReports\admin\Tools\BulkCreatePages.cs" />
     <Compile Include="classes\Administration\ToolsReports\admin\Tools\EmptyThumbnailCache.cs" />
     <Compile Include="classes\Administration\ToolsReports\admin\Tools\RecreateUserImageGalleriesFromDisk.cs" />
@@ -513,6 +514,7 @@
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.designer.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
