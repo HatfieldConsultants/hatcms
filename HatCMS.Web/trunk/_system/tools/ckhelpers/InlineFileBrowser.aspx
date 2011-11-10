@@ -51,7 +51,7 @@ Create sub-folder <input type="text" size="20" maxlength="200" runat="server" id
                     return;
                 tree.focusItem(id);
                 var url = tree.getUserData(id,"url"); 
-                var dirurl = tree.getUserData(id,"dirurl");
+                var dirurl = '<%= CmsContext.ApplicationPath %>' + tree.getUserData(id,"dirurl");
                 
                 if (url){                             
                     window.parent.CKEDITOR.dialog.getCurrent().setValueOf('info', 'url', encodeURI(url));
@@ -59,7 +59,7 @@ Create sub-folder <input type="text" size="20" maxlength="200" runat="server" id
                 }
                 if (dirurl) {
                     document.getElementById('uploadPath').value = dirurl;
-                    var dispUrl = dirurl.substring(<%= (CmsContext.ApplicationPath + "UserFiles/").Length %>);
+                    var dispUrl = dirurl.substring(<%= (CmsContext.ApplicationPath + "UserFiles/").Length -1 %>);
                     document.getElementById('uploadInto').innerHTML = ' into '+dispUrl;   
                     document.getElementById('createUnder').innerHTML = ' under '+dispUrl;   
                                                                                     
