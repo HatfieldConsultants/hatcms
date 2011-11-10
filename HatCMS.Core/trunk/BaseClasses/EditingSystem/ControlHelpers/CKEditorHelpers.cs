@@ -34,7 +34,7 @@ namespace HatCMS
                     CmsFileDependency.UnderAppPath("_system/tools/FCKHelpers/InlineImageBrowser2.aspx"),
                     CmsFileDependency.UnderAppPath("_system/tools/ckhelpers/dhtmlxFiles_xml.ashx"),
                     CmsFileDependency.UnderAppPath("_system/tools/ckhelpers/dhtmlxPages_xml.ashx"),
-                    CmsFileDependency.UnderAppPath("_system/tools/ckhelpers/InlineFileBrowser.aspx", new DateTime(2011,3,21)),
+                    CmsFileDependency.UnderAppPath("_system/tools/ckhelpers/InlineFileBrowser.aspx", new DateTime(2011,11,10)),
                     CmsFileDependency.UnderAppPath("_system/tools/ckhelpers/InlinePageBrowser.aspx", new DateTime(2011,3,21)),
 
                     //-- dhtmlxTree dependencies
