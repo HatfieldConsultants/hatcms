@@ -32,13 +32,22 @@ namespace HatCMS
             }
         }
 
-        public static string getConfigValue(string key, string defaultValue)
+        public static string getConfigValue(string key, string returnOnBlankOrError)
         {
             if (Config != null && Config[key] != null && Config[key] != "")
             {
                 return Config[key];
             }
-            return defaultValue;
+            return returnOnBlankOrError;
+        }
+
+        public static bool KeyExists(string key)
+        {
+            if (Config == null || Config[key] == null)
+                return false;
+            else
+                return true;
+            
         }
 
         /// <summary>
@@ -50,28 +59,28 @@ namespace HatCMS
         /// <param name="defaultValue"></param>
         /// <param name="lang"></param>
         /// <returns></returns>
-        public static string getConfigValue(string key, string defaultValue, CmsLanguage lang)
+        public static string getConfigValue(string key, string returnOnBlankOrError, CmsLanguage lang)
         {
-            string[] msgArray = getConfigValue(key, defaultValue.ToString()).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] msgArray = getConfigValue(key, returnOnBlankOrError.ToString()).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             CmsLanguage[] langArray = CmsConfig.Languages;
             int x = CmsLanguage.IndexOf(lang.shortCode, langArray);
 
             if (msgArray.Length < langArray.Length || x < 0)
-                return defaultValue;
+                return returnOnBlankOrError;
 
             return msgArray[x];
         }
 
-        public static bool getConfigValue(string key, bool defaultValue)
+        public static bool getConfigValue(string key, bool returnOnBlankOrError)
         {
-            string s = getConfigValue(key, defaultValue.ToString());
+            string s = getConfigValue(key, returnOnBlankOrError.ToString());
             try
             {
                 return Convert.ToBoolean(s);
             }
             catch
             { }
-            return defaultValue;
+            return returnOnBlankOrError;
         }
 
         /// <summary>
@@ -83,34 +92,34 @@ namespace HatCMS
         /// <param name="defaultValue"></param>
         /// <param name="lang"></param>
         /// <returns></returns>
-        public static bool getConfigValue(string key, bool defaultValue, CmsLanguage lang)
+        public static bool getConfigValue(string key, bool returnOnBlankOrError, CmsLanguage lang)
         {
-            string[] msgArray = getConfigValue(key, defaultValue.ToString()).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] msgArray = getConfigValue(key, returnOnBlankOrError.ToString()).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             CmsLanguage[] langArray = CmsConfig.Languages;
             int x = CmsLanguage.IndexOf(lang.shortCode, langArray);
 
             if (msgArray.Length < langArray.Length || x < 0)
-                return defaultValue;
+                return returnOnBlankOrError;
 
             try
             {
                 return Convert.ToBoolean(msgArray[x]);
             }
             catch { }
-            return defaultValue;
+            return returnOnBlankOrError;
         }
 
 
-        public static int getConfigValue(string key, int defaultValue)
+        public static int getConfigValue(string key, int returnOnBlankOrError)
         {
-            string s = getConfigValue(key, defaultValue.ToString());
+            string s = getConfigValue(key, returnOnBlankOrError.ToString());
             try
             {
                 return Convert.ToInt32(s);
             }
             catch
             { }
-            return defaultValue;
+            return returnOnBlankOrError;
         }
 
         /// <summary>
@@ -122,21 +131,21 @@ namespace HatCMS
         /// <param name="defaultValue"></param>
         /// <param name="lang"></param>
         /// <returns></returns>
-        public static int getConfigValue(string key, int defaultValue, CmsLanguage lang)
+        public static int getConfigValue(string key, int returnOnBlankOrError, CmsLanguage lang)
         {
-            string[] msgArray = getConfigValue(key, defaultValue.ToString()).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] msgArray = getConfigValue(key, returnOnBlankOrError.ToString()).Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
             CmsLanguage[] langArray = CmsConfig.Languages;
             int x = CmsLanguage.IndexOf(lang.shortCode, langArray);
 
             if (msgArray.Length < langArray.Length || x < 0)
-                return defaultValue;
+                return returnOnBlankOrError;
 
             try
             {
                 return Convert.ToInt32(msgArray[x]);
             }
             catch { }
-            return defaultValue;
+            return returnOnBlankOrError;
         }
 
         #endregion 
@@ -375,6 +384,7 @@ namespace HatCMS
         /// <summary>
         /// The directory that contains Modules (AKA plugins) 
         /// </summary>
+        /*
         public static DirectoryInfo ModuleStorageDirectory
         {
             get
@@ -387,6 +397,7 @@ namespace HatCMS
 
             }
         }
+        */
 
     }
 }

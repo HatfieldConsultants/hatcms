@@ -39,18 +39,18 @@ namespace HatCMS
 
         public override CmsDependencyMessage[] ValidateDependency()
         {
-            string nothing = Guid.NewGuid().ToString();
-            List<CmsDependencyMessage> ret =new List<CmsDependencyMessage>();
+            
+            List<CmsDependencyMessage> ret = new List<CmsDependencyMessage>();
             switch (_mode)
             {
                 case ExistsMode.MustExist:
-                    if (CmsConfig.getConfigValue(configKey, nothing) == nothing)
+                    if (CmsConfig.KeyExists(configKey) == false)
                     {
                         ret.Add(CmsDependencyMessage.Error("Required configuration key \"" + configKey + "\" is not set in the web.config file"));
                     }
                     break;
                 case ExistsMode.MustNotExist:
-                    if (CmsConfig.getConfigValue(configKey, nothing) != nothing)
+                    if (CmsConfig.KeyExists(configKey) == true)
                     {
                         ret.Add(CmsDependencyMessage.Error("Configuration key \"" + configKey + "\" should NOT exist in the web.config file"));
                     }
