@@ -18,23 +18,27 @@ namespace HatCms.Admin.BackgroundTasks
 
         public override void RunBackgroundTask()
         {
-            string techEmail = CmsConfig.getConfigValue("TechnicalAdministratorEmail", "");
-            string smtpServer = CmsConfig.getConfigValue("smtpServer", "");
-            if (techEmail.IndexOf("@") < 1 || smtpServer.Trim() == "")
+            bool enabled = CmsConfig.getConfigValue("EmailAdminEveryHourEnabled", false);
+            if (enabled) 
             {
-                return; // don't run anything if there's no email address or smtp server defined.
+                string techEmail = CmsConfig.getConfigValue("TechnicalAdministratorEmail", "");
+                string smtpServer = CmsConfig.getConfigValue("smtpServer", "");
+                if (techEmail.IndexOf("@") < 1 || smtpServer.Trim() == "")
+                {
+                    return; // don't run anything if there's no email address or smtp server defined.
+                }
+
+                string configSiteName = CmsConfig.getConfigValue("SiteName", "");
+                if (configSiteName != "")
+                    configSiteName = " [" + configSiteName + "] ";
+                string msgBody = "Hourly email from " + System.Web.Hosting.HostingEnvironment.SiteName + configSiteName + ":  " + DateTime.Now.ToString("MMM d yyyy HH:mm:ss");
+
+                MailMessage msg = new MailMessage(techEmail, techEmail, msgBody, msgBody);
+                msg.IsBodyHtml = true;
+
+                SmtpClient smtpclient = new SmtpClient(smtpServer);
+                smtpclient.Send(msg);
             }
-
-            string configSiteName = CmsConfig.getConfigValue("SiteName", "");
-            if (configSiteName != "")
-                configSiteName = " [" + configSiteName + "] ";
-            string msgBody = "Hourly email from " + System.Web.Hosting.HostingEnvironment.SiteName + configSiteName +":  " + DateTime.Now.ToString("MMM d yyyy HH:mm:ss");
-
-            MailMessage msg = new MailMessage(techEmail, techEmail, msgBody, msgBody);
-            msg.IsBodyHtml = true;
-
-            SmtpClient smtpclient = new SmtpClient(smtpServer);
-            smtpclient.Send(msg);
 
         }
     }
