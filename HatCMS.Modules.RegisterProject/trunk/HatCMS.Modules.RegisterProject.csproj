@@ -7,14 +7,14 @@
     <ProjectGuid>{BBEB6850-B79C-4B6E-B495-F2678EB8D4E6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HatCMS.RegisterProjectModule</RootNamespace>
-    <AssemblyName>HatCMS.RegisterProjectModule</AssemblyName>
+    <RootNamespace>HatCMS.Modules.RegisterProject</RootNamespace>
+    <AssemblyName>HatCMS.Modules.RegisterProject</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -22,7 +22,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,17 +41,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="include\HatCMS\hatCms.csproj">
-      <Project>{097AE7B7-F627-4A5A-A10D-33D2DE5A0FD1}</Project>
-      <Name>hatCms</Name>
+    <EmbeddedResource Include="js\RegisterProject.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="include\HatCMS.Web\include\HatCMS.Core\HatCMS.Core.csproj">
+      <Project>{BCB2C5CD-189B-4B31-BC59-589A76837EBB}</Project>
+      <Name>HatCMS.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="include\HatCMS\include\hatCommon\hatCommon.csproj">
+    <ProjectReference Include="include\HatCMS.Web\include\HatCMS.Core\include\hatCommon\hatCommon.csproj">
       <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
       <Name>hatCommon</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="js\RegisterProject.js" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -61,4 +61,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetPath) $(TargetDir)..\include\HatCMS.Web\bin\$(TargetFileName)</PostBuildEvent>
+  </PropertyGroup>
 </Project>
