@@ -33,11 +33,11 @@ namespace HatCMS.setup
             List<CmsDependency> ret = new List<CmsDependency>();
 
             ret.Add(CmsFileDependency.UnderAppPath("css/_system/Setup.css"));
-            ret.Add(new CmsTemplateDependency(RedirectTemplateName));
-            ret.Add(new CmsTemplateDependency("_login"));
-            ret.Add(new CmsTemplateDependency("_gotoEditMode"));
-            ret.Add(new CmsTemplateDependency("_gotoViewMode"));
-            ret.Add(new CmsTemplateDependency("_CreateNewPagePopup"));                        
+            ret.Add(new CmsTemplateDependency(RedirectTemplateName, "Setup page RedirectTemplateName"));
+            ret.Add(new CmsTemplateDependency("_login", "Setup page"));
+            ret.Add(new CmsTemplateDependency("_gotoEditMode", "Setup page"));
+            ret.Add(new CmsTemplateDependency("_gotoViewMode", "Setup page"));
+            ret.Add(new CmsTemplateDependency("_CreateNewPagePopup", "Setup page"));                        
 
             return ret.ToArray();
         }

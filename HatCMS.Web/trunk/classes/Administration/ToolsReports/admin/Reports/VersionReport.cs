@@ -32,10 +32,32 @@ namespace HatCMS.Admin
             return null;
         }
 
+        private DateTime getAssemblyFileLastModifiedDate(Assembly assembly)
+        {
+            try
+            {
+                System.IO.FileInfo fi = new System.IO.FileInfo(assembly.Location);
+                return fi.LastWriteTime;
+            }
+            catch
+            {
+                return DateTime.MinValue;
+            }
+        }
+
+        private string getAssemblyLastModifiedMessage(Assembly assembly)
+        {
+            DateTime lastModified = getAssemblyFileLastModifiedDate(assembly);
+            if (lastModified != DateTime.MinValue)
+                return "unknown";
+            else
+                return lastModified.ToString("MMM d yyyy");
+        }
+
         public override string Render()
         {
-            StringBuilder html = new StringBuilder();
-            html.Append(base.formatNormalMsg("You are running HatCMS.Core version " + CmsContext.currentHatCMSCoreVersion.ToString()));
+            StringBuilder html = new StringBuilder();            
+            html.Append(base.formatNormalMsg("You are running HatCMS.Core version " + CmsContext.currentHatCMSCoreVersion.ToString() + "(" + getAssemblyLastModifiedMessage(typeof(CmsContext).Assembly + ")"));
             
             CmsModuleInfo[] moduleInfos = CmsModuleUtils.getAllModuleInfos();
             html.Append("<p>" + moduleInfos.Length + " modules are currently active: ");
@@ -46,7 +68,7 @@ namespace HatCMS.Admin
                 {
                     Assembly asm = mod.GetType().Assembly;
                     html.Append("<li>");
-                    html.Append(asm.GetName().Name + ": " + asm.GetName().Version.ToString());
+                    html.Append(asm.GetName().Name + ": " + asm.GetName().Version.ToString()+ " ("+getAssemblyLastModifiedMessage(asm)+")");
                     html.Append("</li>");
                 }
                 html.Append("</ul>");
