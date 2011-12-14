@@ -54,6 +54,22 @@ namespace HatCMS.Placeholders.RegisterProject
             ret.Add(new CmsConfigItemDependency("RegisterProject.MandatoryText"));
             ret.Add(new CmsConfigItemDependency("RegisterProject.SaveOkText"));
             ret.Add(new CmsConfigItemDependency("RegisterProject.SaveErrorText"));
+/*
+    <!-- Register Project -->
+    <add key="RegisterProject.NameText" value="Project name|Nome do projeto" />
+    <add key="RegisterProject.LocationText" value="Project location|Local do Projeto" />
+    <add key="RegisterProject.DescriptionText" value="Project description|Descrição do projeto" />
+    <add key="RegisterProject.ContactPersonText" value="Contact person|Pessoa de contato" />
+    <add key="RegisterProject.EmailText" value="Email|E-mail" />
+    <add key="RegisterProject.TelephoneText" value="Telephone (Area code - Phone number - Extension)|Telefone (O código de área - número - Extensão)" />
+    <add key="RegisterProject.CellphoneText" value="Cell phone (Area code - Phone number)|Telefone celular (O código de área - número)" />
+    <add key="RegisterProject.WebsiteText" value="Website URL|URL do site" />
+    <add key="RegisterProject.FundingSourceText" value="Funding source|fonte de financiamento" />
+    <add key="RegisterProject.SubmitButtonText" value="Register your project|Cadastre seu projeto" />
+    <add key="RegisterProject.MandatoryText" value="Mandatory input field|Obrigatório campo de entrada" />
+    <add key="RegisterProject.SaveOkText" value="Your project is registered.  Thank you.|Seu projeto é registrado. Obrigado." />
+    <add key="RegisterProject.SaveErrorText" value="Server error, registration failed.|Erro de servidor, registro falhou." />
+ */ 
 
             ret.Add(CmsFileDependency.UnderAppPath("js/_system/RegisterProject/RegisterProject.js", CmsDependency.ExistsMode.MustNotExist)); // now embedded.
 
