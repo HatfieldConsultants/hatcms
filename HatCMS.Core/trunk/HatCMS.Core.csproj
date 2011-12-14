@@ -55,7 +55,7 @@
     <Compile Include="BaseClasses\BaseCmsControl.cs" />
     <Compile Include="BaseClasses\ContentUtils.cs" />
     <Compile Include="BaseClasses\ControlUtils.cs" />
-    <Compile Include="BaseClasses\CoreDependencies.cs" />
+    <Compile Include="BaseClasses\DependencyUtils.cs" />
     <Compile Include="BaseClasses\dependencies\BaseDependency.cs" />
     <Compile Include="BaseClasses\dependencies\CmsVersionDependency.cs" />
     <Compile Include="BaseClasses\dependencies\ConfigItemDependency.cs" />
@@ -78,7 +78,7 @@
     <Compile Include="BaseClasses\EditingSystem\controls\StartEditForm.cs" />
     <Compile Include="BaseClasses\filtering\BaseCmsOutputFilter.cs" />
     <Compile Include="BaseClasses\filtering\FilterScope.cs" />
-    <Compile Include="BaseClasses\filtering\HtmlLinkFilter.cs" />
+    <Compile Include="Placeholders\HtmlContent\HtmlLinkFilter.cs" />
     <Compile Include="BaseClasses\filtering\OutputFilter.cs" />
     <Compile Include="BaseClasses\filtering\OutputFilterUtils.cs" />
     <Compile Include="BaseClasses\iCal\iCalOutputStream.cs" />

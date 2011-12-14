@@ -12,11 +12,24 @@ namespace HatCMS
     {
         public IFlashObjectBrowser FlashObjectBrowser;
         public IShowThumbnailPage ShowThumbnailPage;
+        private CollectUIDependenciesDelegate _collectUIDependenciesDelegate = null;
 
-        public CmsUserInterface(IShowThumbnailPage showThumbnailPage, IFlashObjectBrowser flashObjectBrowser)
+        public delegate CmsDependency[] CollectUIDependenciesDelegate();
+
+
+        public CmsUserInterface(IShowThumbnailPage showThumbnailPage, IFlashObjectBrowser flashObjectBrowser, CollectUIDependenciesDelegate collectUIDependenciesDelegate )
         {
             ShowThumbnailPage = showThumbnailPage;
             FlashObjectBrowser = flashObjectBrowser;
+            _collectUIDependenciesDelegate = collectUIDependenciesDelegate;
+        }
+
+        public CmsDependency[] CollectUIDependencies()
+        {
+            if (_collectUIDependenciesDelegate != null)
+                return _collectUIDependenciesDelegate();
+            
+            return new CmsDependency[0];
         }
 
     }

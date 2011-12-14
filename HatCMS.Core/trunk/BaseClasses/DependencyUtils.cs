@@ -25,6 +25,32 @@ namespace HatCMS
         /// <returns></returns>
         public static CmsDependency[] GatherAllDependencies()
         {
+            List<CmsDependency> ret = new List<CmsDependency>();
+
+            // -- HatCMS.Core dependencies
+            ret.AddRange(CollectCoreDependencies());
+
+            // -- HatCMS.Web dependencies
+            ret.AddRange(CmsContext.UserInterface.CollectUIDependencies());
+
+            // -- gather all admin tool dependencies
+            ret.AddRange(HatCMS.Admin.BaseCmsAdminTool.getAllAdminToolDependencies());
+
+            // -- gather all Module-level dependencies
+            ret.AddRange(CmsModuleUtils.getAllModuleLevelDependencies());
+
+            // -- remove all duplicates based on the content of each dependency.
+            return CmsDependency.RemoveDuplicates(ret.ToArray());
+            
+        }
+
+
+        /// <summary>
+        /// Collect the dependecies embedded in the HatCMS.Core library.
+        /// </summary>
+        /// <returns></returns>
+        private static CmsDependency[] CollectCoreDependencies()
+        {
             
             List<CmsDependency> ret = new List<CmsDependency>();
             // -- tables
@@ -110,12 +136,7 @@ namespace HatCMS
                 "));
 
             // -- some project directories should be removed from production sites
-            #if  ! DEBUG
-            ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("classes"));
-            ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("setup"));
-            ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("placeholders"));
-			ret.Add(CmsDirectoryDoesNotExistDependency.UnderAppPath("_system/_AdminDocs"));
-
+            #if  ! DEBUG            
             if (!Hatfield.Web.Portal.PageUtils.IsRunningOnMono())
             {
                 ret.Add(CmsFileDependency.UnderAppPath("bin/XmpToolkit.dll")); // ensure that the XmpToolkit is being copied over
@@ -123,9 +144,7 @@ namespace HatCMS
 
             #endif
 
-            // -- files
-            ret.Add(CmsFileDependency.UnderAppPath("default.aspx"));
-            
+            // -- files            
             foreach(string filePath in CmsConfig.URLsToNotRemap)
                 ret.Add(CmsFileDependency.UnderAppPath(filePath));
 
@@ -143,12 +162,7 @@ namespace HatCMS
             ret.Add(new CmsConfigItemDependency("useInternal404NotFoundErrorHandler"));
             ret.Add(new CmsConfigItemDependency("smtpServer"));
             ret.Add(new CmsConfigItemDependency("TechnicalAdministratorEmail"));                  
-      
-            // -- writable directories
-            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/js"));
-            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/css"));
-            ret.Add(CmsWritableDirectoryDependency.UnderAppPath("_system/writable/Modules"));
-            
+                  
             
             bool useInternal404NotFoundErrorHandler = CmsConfig.getConfigValue("useInternal404NotFoundErrorHandler", false);
             if (useInternal404NotFoundErrorHandler)
@@ -161,90 +175,15 @@ namespace HatCMS
             ret.Add(new CmsConfigItemDependency("blogPostTemplate", CmsDependency.ExistsMode.MustNotExist)); // blogging is no more.
             ret.Add(new CmsConfigItemDependency("DefaultImageThumbnailSize", CmsDependency.ExistsMode.MustNotExist)); // not used any more
             
-            // -- ensure that the HtmlContent placeholders do not have the old link to the showThumb.aspx page (note: this validation is slow, but very useful.)
-            ret.Add(new CmsPlaceholderContentDependency("HtmlContent", "_system/showthumb.aspx", CmsDependency.ExistsMode.MustNotExist, StringComparison.CurrentCultureIgnoreCase));
 
             ret.Add(new CmsControlDependency("_system/internal/EditCalendarCategoriesPopup", CmsDependency.ExistsMode.MustNotExist)); // deprecated. now "EventCalendarCategoryPopup"
 
             ret.Add(new CmsPageDependency("/_admin/actions/deleteNews", CmsConfig.Languages, CmsDependency.ExistsMode.MustNotExist)); // deleteNews page is deprecated; news deletion is handled on the page level.
             ret.Add(new CmsPageDependency("/_admin/actions/deleteJob", CmsConfig.Languages, CmsDependency.ExistsMode.MustNotExist)); // deleteJob page is deprecated; news deletion is handled on the page level.
-            ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("LoginPath", "/_login"), CmsConfig.Languages));           
-
-            // -- gather all admin tool dependencies
-            ret.AddRange(HatCMS.Admin.BaseCmsAdminTool.getAllAdminToolDependencies());
-
-            // -- gather all Module-level dependencies
-            ret.AddRange(CmsModuleUtils.getAllModuleLevelDependencies());
-            
-            // -- all pages should have valid templates, placeholders and controls
-            Dictionary<int, CmsPage> allPages = CmsContext.HomePage.getLinearizedPages();
-            foreach (int pageId in allPages.Keys)
-            {
-                CmsPage page = allPages[pageId];
-                ret.Add(new CmsTemplateDependency(page.TemplateName, "Page ID #" + pageId.ToString()));
+            ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("LoginPath", "/_login"), CmsConfig.Languages));
 
 
-                string[] placeholderNames = new string[0];
-                try
-                {
-                    placeholderNames = page.getAllPlaceholderNames();
-                }
-                catch(Exception ex)
-                {
-                    ret.Add(new CmsConfigItemDependency("GatherAllDependencies: Could not get page (pageid:" + pageId + ") placeholder names: " + ex.Message));
-                }
-                
-                foreach (string phName in placeholderNames)
-                {
-                    ret.Add(new CmsPlaceholderDependency(phName, page.TemplateName));
-                    if (PlaceholderUtils.PlaceholderExists(phName))
-                        ret.AddRange(PlaceholderUtils.getDependencies(phName));
-                }
-
-                string[] controlPaths = new string[0];
-                try
-                {
-                    controlPaths = page.getAllControlPaths();
-                }
-                catch(Exception ex)
-                {
-                    ret.Add(new CmsConfigItemDependency("GatherAllDependencies: Could not get page control paths (pageid:" + pageId + ") : " + ex.Message));                    
-                }
-                foreach (string controlPath in controlPaths)
-                {
-                    ret.Add(new CmsControlDependency(controlPath));
-                    ret.AddRange(CmsContext.currentPage.TemplateEngine.getControlDependencies(controlPath));
-                }
-            } // foreach page
-
-            // -- all templates should have valid controls and placeholders (regardless of if the template is implemented in a page or not)
-            string[] templates = CmsContext.getTemplateNamesForCurrentUser();
-            CmsPage dummyPage = new CmsPage();
-            foreach (string template in templates)
-            {
-                dummyPage.TemplateName = template;
-
-                string[] placeholderNames = dummyPage.getAllPlaceholderNames();
-                                                
-                foreach (string phName in placeholderNames)
-                {
-                    ret.Add(new CmsPlaceholderDependency(phName, template));
-                    if (PlaceholderUtils.PlaceholderExists(phName))
-                        ret.AddRange(PlaceholderUtils.getDependencies(phName));
-                }
-
-
-                CmsControlDefinition[] controlDefs = dummyPage.TemplateEngine.getAllControlDefinitions();
-                foreach (CmsControlDefinition controlDef in controlDefs)
-                {
-                    ret.Add(new CmsControlDependency(controlDef));
-                    ret.AddRange(dummyPage.TemplateEngine.getControlDependencies(controlDef.ControlNameOrPath));
-                }
-            } // foreach
-
-            // remove all duplicates based on the content of each dependency.
-
-            return CmsDependency.RemoveDuplicates(ret.ToArray());
+            return ret.ToArray();
         }
   
     }
