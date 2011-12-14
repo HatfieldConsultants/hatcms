@@ -16,8 +16,7 @@
             <p>
                 Ensure that configuration items are configured properly. These especially include
                 the following keys:</p>
-            <ul>
-                <li>TemplateEngineVersion</li>
+            <ul>                
                 <li>SiteName</li>
                 <li>languages</li>
                 <li>LinkMacrosIncludeLanguage</li>
@@ -27,7 +26,7 @@
             <p>
             </p>
             <h2>
-                Step 2: Initialize the Database</h2>
+                Step 2: Create the Database</h2>
 				<p>Fill in the following information to create the new database:<br />
 				<strong>Note: the database should *not* be exist before this step is run (the script will create the database)</strong>
 				</p>
@@ -38,7 +37,7 @@
 				    </tr>
 				    <tr>
 				        <td>New Database Name: <span class="required">[required, must not already exist]</span></td>
-				        <td><asp:TextBox id="tb_DbName" runat="server" Columns="40">hatCMSDatabase</asp:TextBox></td>
+				        <td><asp:TextBox id="tb_DbName" runat="server" Columns="40">hatcms_db</asp:TextBox></td>
 				    </tr>
 				    <tr>
 				        <td>Database access username: <span class="required">[required]</span></td>
@@ -55,7 +54,7 @@
                     
 			
 			<p>
-				<asp:Button id="b_db" runat="server" Text="create &amp; setup database" onclick="b_db_Click"></asp:Button></p>
+				<asp:Button id="b_db" runat="server" Text="create the database" onclick="b_db_Click"></asp:Button></p>
 			<h2>Step 3: Update the ConnectionString</h2>
             <p>
                 &nbsp;<asp:Label ID="l_NewConnStr" runat="server"></asp:Label>

@@ -29,14 +29,16 @@ namespace HatCMS
 		
 		protected void Application_Start(Object sender, EventArgs e)
 		{
-            CmsUserInterface WebUIConfiguration = new CmsUserInterface(new showThumbPage(), new HatCMS.WebEditor.Helpers.PopupFlashObjectBrowser());
+            CmsUserInterface WebUIConfiguration = new CmsUserInterface(
+                new showThumbPage(), 
+                new HatCMS.WebEditor.Helpers.PopupFlashObjectBrowser(), 
+                CMSUserInterfaceDependencies.CollectUserInterfaceDependencies);
 
             CmsContext.Application_Start(WebUIConfiguration);                      
 		}
         
 		protected void Session_Start(Object sender, EventArgs e)
-		{
-            Console.WriteLine("Application - Session_Start");
+		{            
             CmsContext.Application_Start_Session();
 		}
 
@@ -47,18 +49,15 @@ namespace HatCMS
         /// <param name="sender"></param>
         /// <param name="e"></param>
         protected void Application_BeginRequest(Object sender, EventArgs e)
-        {
-            Console.WriteLine("Application - Application_BeginRequest");
-
+        {            
             CmsContext.Application_BeginRequest(Context);
-
         }
 
 
         
 		protected void Application_EndRequest(Object sender, EventArgs e)
 		{
-            Console.WriteLine("Application_EndRequest");
+            
 		}
         /*
 		protected void Application_AuthenticateRequest(Object sender, EventArgs e)
@@ -79,8 +78,7 @@ namespace HatCMS
 		
 		protected void Application_End(Object sender, EventArgs e)
 		{
-            CmsContext.Application_End();
-            Console.WriteLine("Application_End");
+            CmsContext.Application_End();            
 		}
 		
 		#region Web Form Designer generated code

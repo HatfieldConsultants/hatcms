@@ -377,6 +377,25 @@ namespace HatCMS.setup
 
         protected void b_CreatePages_Click(object sender, EventArgs e)
         {
+            // ensure that the connection to hatPortal is ok.
+            try
+            {
+                WebPortalUserRole authorRole = WebPortalUserRole.Fetch(CmsConfig.getConfigValue("AuthorAccessUserRole", Guid.NewGuid().ToString()));
+                WebPortalUserRole loginRole = WebPortalUserRole.Fetch(CmsConfig.getConfigValue("LoginUserRole", Guid.NewGuid().ToString()));
+                WebPortalUserRole adminRole = WebPortalUserRole.Fetch(CmsConfig.getConfigValue("AdminUserRole", Guid.NewGuid().ToString()));
+
+                if (adminRole == null || adminRole.RoleID < 0)
+                {
+                    l_msg.Text = "Error: Standard Pages could not all be added. The AdminUserRole could not be found.";
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                l_msg.Text = "Error: Standard Pages could not all be added. The hatWebPortalConnectionString may be set incorrectly.";
+                return;
+            }
+            
             try
             {
                 

@@ -151,6 +151,7 @@
     <Compile Include="classes\Authoring\controls\RenamePagePopup.cs" />
     <Compile Include="classes\Authoring\controls\SortSubPagesPopup.cs" />
     <Compile Include="classes\Authoring\controls\ViewRevisionHistoryPopup.cs" />
+    <Compile Include="classes\UIDependencies.cs" />
     <Compile Include="controls\_system\PrinterAndPDFVersions.ascx.cs">
       <DependentUpon>PrinterAndPDFVersions.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -514,7 +515,6 @@
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.designer.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>

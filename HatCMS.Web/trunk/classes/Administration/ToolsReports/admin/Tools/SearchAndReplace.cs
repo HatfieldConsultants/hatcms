@@ -70,20 +70,29 @@ namespace HatCMS.Admin
                 script.Append(" opener.location.href = url;" + Environment.NewLine);
                 script.Append(" langCode = lcode;" + Environment.NewLine);
                 script.Append(" buttonId = bId;" + Environment.NewLine);
+                
+                // These doesn't work: (doReplace is never called)
+                // script.Append(" $(opener).bind('load', doReplace); " + Environment.NewLine);
+                // script.Append(" $(opener.window).bind('load', doReplace); " + Environment.NewLine);
+                // script.Append(" opener.onload = doReplace; " + Environment.NewLine);
+                // script.Append(" opener.document.onload = doReplace; " + Environment.NewLine);
+                // script.Append(" opener.window.onload = doReplace; " + Environment.NewLine);
 
-                script.Append(" setTimeout(poll, 1000);" + Environment.NewLine);
-
+                
+                // This works; we just need to get the timeout correct (which depends on bandwidth
                 // http://plugins.jquery.com/project/popupready
-                script.Append("function poll() {" + Environment.NewLine);
-                script.Append("if (jQuery(\"body *\", opener.document).length == 0 ) {" + Environment.NewLine);
-                script.Append(" setTimeout(poll, 1000);" + Environment.NewLine);
-                script.Append("}" + Environment.NewLine);
-                script.Append("else {" + Environment.NewLine);
-                script.Append(" $(opener.document).focus(); " + Environment.NewLine);
-                script.Append(" setTimeout(doReplace, 1000); " + Environment.NewLine);
-                script.Append("}" + Environment.NewLine);
-                script.Append("}// poll" + Environment.NewLine);
-
+                script.Append(" setTimeout(poll, 1000);" + Environment.NewLine);                
+                script.Append(" function poll() {" + Environment.NewLine);
+                script.Append("  var openerlen = jQuery(\"body *\", opener.document).length; " + Environment.NewLine);
+                script.Append("  if (openerlen == 0 ) {" + Environment.NewLine);
+                script.Append("   setTimeout(poll, 1000);" + Environment.NewLine);
+                script.Append("  }" + Environment.NewLine);
+                script.Append("  else {" + Environment.NewLine);
+                script.Append("  $(opener.document).focus(); " + Environment.NewLine);
+                script.Append("   setTimeout(doReplace, 2000); " + Environment.NewLine);
+                script.Append("  }" + Environment.NewLine);
+                script.Append(" }// poll" + Environment.NewLine);
+                
 
                 script.Append("} // go" + Environment.NewLine);
 
@@ -148,8 +157,7 @@ namespace HatCMS.Admin
 
                 script.Append("$('#'+buttonId).val(numChanges+' replacements made');" + Environment.NewLine);
                 script.Append(" alert('The text on this page has been updated ('+numChanges+' replacements made).\\nPlease save the page to continue.');" + Environment.NewLine);
-                script.Append("}" + Environment.NewLine);
-                // another $(opener.document).ready way: http://plugins.jquery.com/taxonomy/term/1219
+                script.Append("}" + Environment.NewLine);                
 
                 CmsContext.currentPage.HeadSection.AddJSStatements(script.ToString());
 

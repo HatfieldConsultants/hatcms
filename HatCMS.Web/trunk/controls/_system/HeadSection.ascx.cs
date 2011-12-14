@@ -40,31 +40,31 @@ namespace HatCMS.Controls
             return ret.ToArray();
         }
 
-        private string getDisplayTitle()
+        private string getDisplayTitle(CmsPage page)
         {
-            return CmsContext.currentPage.Title;
+            return page.Title;
         }
 
-        private string getHtml()
+        private string getHtml(CmsPage page)
         {
             string titlePrefix = CmsConfig.getConfigValue("pageTitlePrefix", "");
 
             string titlePostfix = CmsConfig.getConfigValue("pageTitlePostfix", "");
 
             System.Text.StringBuilder html = new System.Text.StringBuilder();
-            html.Append("<title>" + titlePrefix + getDisplayTitle() + titlePostfix + "</title>");
+            html.Append(Environment.NewLine+"<title>" + titlePrefix + getDisplayTitle(page) + titlePostfix + "</title>"+Environment.NewLine);
             string cssUrl = CmsConfig.getConfigValue("cssUrl", "");
             if (cssUrl != null && cssUrl != "")
             {
                 cssUrl = cssUrl.Replace("~", "");
-                CmsContext.currentPage.HeadSection.AddCSSFile(CSSGroup.FrontEnd, cssUrl);                
+                page.HeadSection.AddCSSFile(CSSGroup.FrontEnd, cssUrl);                
             }
 
             string printCss = CmsConfig.getConfigValue("PrinterAndPdfVer.printerCss", "");
             if (CmsContext.currentUserIsRequestingPrintFriendlyVersion && printCss != null && printCss.Trim() != "")
             {
                 printCss = printCss.Replace("~", CmsContext.ApplicationPath);
-                CmsContext.currentPage.HeadSection.AddCSSFile(CSSGroup.FrontEnd, printCss);                
+                page.HeadSection.AddCSSFile(CSSGroup.FrontEnd, printCss);                
             }
 
             // -- output any meta tags
@@ -72,12 +72,25 @@ namespace HatCMS.Controls
             if (description != "")
             {
                 html.Append(Environment.NewLine);
-                html.Append("<meta name=\"description\" content=\"" + Server.HtmlEncode(description) + "\">");
+                html.Append("<meta name=\"description\" content=\"" + Server.HtmlEncode(description) + "\">"+Environment.NewLine);
                 html.Append(Environment.NewLine);
+            }
+
+            if (CmsConfig.Languages.Length > 1)
+            {
+                // -- output mulitlingual links (useful for Google: http://googlewebmastercentral.blogspot.com/2010/09/unifying-content-under-multilingual.htm)
+
+                foreach (CmsLanguage lang in CmsConfig.Languages)
+                {
+                    if (CmsContext.currentLanguage.shortCode != lang.shortCode)
+                    {
+                        html.Append("<link rel=\"alternate\" hreflang=\""+lang.shortCode+"\" href=\"" + page.getUrl(lang) + "\" />"+Environment.NewLine);
+                    }
+                }
             }
                     
             // -- generator meta tag (bug #134)
-            html.Append("<meta name=\"generator\" content=\"HatCMS "+CmsContext.currentHatCMSCoreVersion.ToString()+" - Open Source Content Management\" />");
+            html.Append("<meta name=\"generator\" content=\"HatCMS "+CmsContext.currentHatCMSCoreVersion.ToString()+" - Open Source Content Management\" />"+Environment.NewLine);
 
             return html.ToString();
         }
@@ -85,7 +98,7 @@ namespace HatCMS.Controls
 
         protected override void Render(System.Web.UI.HtmlTextWriter writer)
         {            
-            writer.Write(getHtml());                             
+            writer.Write(getHtml(CmsContext.currentPage));                             
         }
 
 
