@@ -48,7 +48,7 @@ namespace HatCMS.Placeholders
 
             ret.Add(new CmsConfigItemDependency("JobPosting.DetailsTemplateName", CmsDependency.ExistsMode.MustExist));
             ret.Add(new CmsConfigItemDependency("JobPosting.FullJobDescriptionText", CmsDependency.ExistsMode.MustExist));
-            ret.Add(new CmsTemplateDependency(CmsConfig.getConfigValue("JobPosting.DetailsTemplateName", "_JobPosting")));
+            ret.Add(new CmsTemplateDependency(CmsConfig.getConfigValue("JobPosting.DetailsTemplateName", "_JobPosting"), "JobPosting.DetailsTemplateName configuration entry"));
 
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowRight.jpg", new DateTime(2011, 3, 1)));
 

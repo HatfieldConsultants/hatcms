@@ -17,34 +17,33 @@ namespace HatCMS
     public class CmsTemplateDependency: CmsDependency
     {
         private string templateName = "";
-        public CmsTemplateDependency(string TemplateName)
+        private string dependencySource ="";
+
+        public CmsTemplateDependency(string TemplateName, string DependencySource)
         {
             templateName = TemplateName;
+            dependencySource = DependencySource;
         }
 
         public override CmsDependencyMessage[] ValidateDependency()
         {
-            return testTemplate(templateName);
+            return testTemplate(templateName, dependencySource);
         }
 
         public override string GetContentHash()
         {
-            return templateName.Trim().ToLower();
+            return templateName.Trim().ToLower()+dependencySource.Trim().ToLower();
         }
 
-        public static CmsDependencyMessage[] testTemplate(string _templateName)
+        public static CmsDependencyMessage[] testTemplate(string _templateName, string _dependencySource)
         {
             List<CmsDependencyMessage> ret = new List<CmsDependencyMessage>();
-            
+
             try
-            {                
+            {
                 if (!CmsContext.currentPage.TemplateEngine.templateExists(_templateName))
                 {
-                    ret.Add(CmsDependencyMessage.Error("Error: template was NOT found!! (\"" + _templateName + "\") "));
-                }
-                else
-                {
-                    ret.Add(CmsDependencyMessage.Status("Template was found (\"" + _templateName + "\""));
+                    ret.Add(CmsDependencyMessage.Error("Error: the template \"" + _templateName + "\" was NOT found!! (source: " + _dependencySource + ") "));
                 }
             }
             catch (Exception e)

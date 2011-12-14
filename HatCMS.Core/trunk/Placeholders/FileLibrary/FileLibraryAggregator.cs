@@ -170,7 +170,7 @@ namespace HatCMS.Placeholders
             ret.Add(CmsFileDependency.UnderAppPath("images/_system/calendar/arrowRight.jpg", new DateTime(2011, 3, 1)));
 
             string newPageTemplateName = CmsConfig.getConfigValue("FileLibrary.DetailsTemplateName", "_FileLibraryDetails");
-            ret.Add(new CmsTemplateDependency(newPageTemplateName));
+            ret.Add(new CmsTemplateDependency(newPageTemplateName, "FileLibrary.DetailsTemplateName configuration entry"));
 
             return ret.ToArray();
         }

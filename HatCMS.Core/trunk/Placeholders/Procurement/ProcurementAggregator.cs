@@ -50,7 +50,7 @@ namespace HatCMS.Placeholders.Procurement
             ret.Add(new CmsConfigItemDependency("Procurement.NoProcurementForText"));
 
             string newPageTemplate = CmsConfig.getConfigValue("Procurement.DetailsTemplateName", "_ProcurementDetails");
-            ret.Add(new CmsTemplateDependency(newPageTemplate));
+            ret.Add(new CmsTemplateDependency(newPageTemplate, "Procurement.DetailsTemplateName configuration entry"));
 
             return ret.ToArray();
         }

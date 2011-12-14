@@ -168,7 +168,7 @@ namespace HatCMS
 
             ret.Add(new CmsPageDependency("/_admin/actions/deleteNews", CmsConfig.Languages, CmsDependency.ExistsMode.MustNotExist)); // deleteNews page is deprecated; news deletion is handled on the page level.
             ret.Add(new CmsPageDependency("/_admin/actions/deleteJob", CmsConfig.Languages, CmsDependency.ExistsMode.MustNotExist)); // deleteJob page is deprecated; news deletion is handled on the page level.
-            ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("LoginPath", "/_login"), CmsConfig.Languages));
+            ret.Add(new CmsPageDependency(CmsConfig.getConfigValue("LoginPath", "/_login"), CmsConfig.Languages));           
 
             // -- gather all admin tool dependencies
             ret.AddRange(HatCMS.Admin.BaseCmsAdminTool.getAllAdminToolDependencies());
@@ -181,7 +181,7 @@ namespace HatCMS
             foreach (int pageId in allPages.Keys)
             {
                 CmsPage page = allPages[pageId];
-                ret.Add(new CmsTemplateDependency(page.TemplateName));
+                ret.Add(new CmsTemplateDependency(page.TemplateName, "Page ID #" + pageId.ToString()));
 
 
                 string[] placeholderNames = new string[0];
