@@ -57,7 +57,7 @@ namespace HatCMS.Admin
         public override string Render()
         {
             StringBuilder html = new StringBuilder();            
-            html.Append(base.formatNormalMsg("You are running HatCMS.Core version " + CmsContext.currentHatCMSCoreVersion.ToString() + "(" + getAssemblyLastModifiedMessage(typeof(CmsContext).Assembly + ")"));
+            html.Append(base.formatNormalMsg("You are running HatCMS.Core version " + CmsContext.currentHatCMSCoreVersion.ToString() + "(" + getAssemblyLastModifiedMessage(typeof(CmsContext).Assembly) + ")"));
             
             CmsModuleInfo[] moduleInfos = CmsModuleUtils.getAllModuleInfos();
             html.Append("<p>" + moduleInfos.Length + " modules are currently active: ");
