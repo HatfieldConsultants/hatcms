@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HatCMS.Modules.Glossary", "HatCMS.Modules.Glossary.csproj", "{8711FA9B-8FDC-4FA2-8EE6-746C3276E82A}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hatCMS.Web", "include\HatCMS.Web\hatCMS.Web.csproj", "{FF87DC92-A98B-4DFD-BA42-BA89D46884A7}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HatCMS.Core", "include\HatCMS.Web\include\HatCMS.Core\HatCMS.Core.csproj", "{BCB2C5CD-189B-4B31-BC59-589A76837EBB}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hatCommon", "include\HatCMS.Web\include\HatCMS.Core\include\hatCommon\hatCommon.csproj", "{E1A1A3F9-A397-45E3-8934-818155A61D57}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8711FA9B-8FDC-4FA2-8EE6-746C3276E82A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8711FA9B-8FDC-4FA2-8EE6-746C3276E82A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8711FA9B-8FDC-4FA2-8EE6-746C3276E82A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8711FA9B-8FDC-4FA2-8EE6-746C3276E82A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8711FA9B-8FDC-4FA2-8EE6-746C3276E82A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8711FA9B-8FDC-4FA2-8EE6-746C3276E82A}.Release|x86.ActiveCfg = Release|Any CPU
+		{FF87DC92-A98B-4DFD-BA42-BA89D46884A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF87DC92-A98B-4DFD-BA42-BA89D46884A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF87DC92-A98B-4DFD-BA42-BA89D46884A7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FF87DC92-A98B-4DFD-BA42-BA89D46884A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF87DC92-A98B-4DFD-BA42-BA89D46884A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF87DC92-A98B-4DFD-BA42-BA89D46884A7}.Release|x86.ActiveCfg = Release|Any CPU
+		{BCB2C5CD-189B-4B31-BC59-589A76837EBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCB2C5CD-189B-4B31-BC59-589A76837EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCB2C5CD-189B-4B31-BC59-589A76837EBB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BCB2C5CD-189B-4B31-BC59-589A76837EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCB2C5CD-189B-4B31-BC59-589A76837EBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCB2C5CD-189B-4B31-BC59-589A76837EBB}.Release|x86.ActiveCfg = Release|Any CPU
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Debug|x86.ActiveCfg = Debug|x86
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Debug|x86.Build.0 = Debug|x86
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Release|x86.ActiveCfg = Release|x86
+		{E1A1A3F9-A397-45E3-8934-818155A61D57}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
