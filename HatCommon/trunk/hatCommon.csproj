@@ -91,6 +91,7 @@
     <Compile Include="Data\IDBObject.cs" />
     <Compile Include="Data\MySqlDbObject.cs" />
     <Compile Include="Data\OutputDataSetToExcel.cs" />
+    <Compile Include="EnumUtils.cs" />
     <Compile Include="FileUtils.cs" />
     <Compile Include="Html\PageNumberAnchor.cs" />
     <Compile Include="Html\PageNumberAnchorUtils.cs" />
