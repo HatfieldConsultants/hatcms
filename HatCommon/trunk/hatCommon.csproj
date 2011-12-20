@@ -4,7 +4,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E1A1A3F9-A397-45E3-8934-818155A61D57}</ProjectGuid>
+    <ProjectGuid>{8D00113F-0F67-4AD1-BC35-037912EA9BAA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Hat.Common</RootNamespace>
