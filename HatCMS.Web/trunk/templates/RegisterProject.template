@@ -1,6 +1,0 @@
-##TemplateLayout(PageLayout)##
-##StartPlaceholderRegion("MainContent")##
-		##PlaceHolder(PageTitle id="1")##
-		##PlaceHolder(HtmlContent id="1")##
-		##PlaceHolder(RegisterProject id="1")##				
-##EndPlaceholderRegion("MainContent")##

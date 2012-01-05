@@ -30,12 +30,17 @@ namespace HatCMS.Controls
             if (cssUrl != "")            
                 ret.Add(CmsFileDependency.UnderAppPath(cssUrl));
 
-            ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.printerCss"));
+            bool printerVer = CmsConfig.getConfigValue("PrinterAndPdfVer.printerVer", false);
+            ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.printerVer"));
+            if (printerVer)
+            {
+                ret.Add(new CmsConfigItemDependency("PrinterAndPdfVer.printerCss"));
 
-            string printcssUrl = CmsConfig.getConfigValue("PrinterAndPdfVer.printerCss", "").Replace("~", "");
-            if (printcssUrl != "")
-                ret.Add(CmsFileDependency.UnderAppPath(printcssUrl));
-            
+                string printcssUrl = CmsConfig.getConfigValue("PrinterAndPdfVer.printerCss", "").Replace("~", "");
+                if (printcssUrl != "")
+                    ret.Add(CmsFileDependency.UnderAppPath(printcssUrl));
+
+            }                                    
 
             return ret.ToArray();
         }
