@@ -1,4 +1,4 @@
-#summary Usability of Content Management Systems
+#summary Usability of the HatCMS
 #labels Featured
 
 = HatCMS Usability =
@@ -35,8 +35,6 @@ Step Two notes the following items that a CMS should do to be more usable:
   * Site owners should be able to manage their own sites
 
 *Each of these items are at the core of the design of HatCMS.*
-
-
 
 
 
