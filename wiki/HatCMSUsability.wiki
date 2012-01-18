@@ -1,0 +1,45 @@
+#summary Usability of Content Management Systems
+#labels Featured
+
+= HatCMS Usability =
+
+The functionality of a content management system (CMS) is obviously a key deciding factor when deciding which CMS to deploy. Equally important is the usability of the CMS.
+
+If staff, particularly authors, cannot easily make use of the CMS, then the system will never be a success, regardless of how powerful it may be.
+
+The good folks at Step Two Designs (http://www.steptwo.com.au) have listed 11 principles of a usable CMS (http://www.steptwo.com.au/papers/kmc_usabilitycms/index.html). They state that a usable CMS will:
+
+  # minimise the number of options 
+  # be robust and error-proof 
+  # provide task-based interfaces 
+  # hide implementation details 
+  # meet core usability guidelines 
+  # match authors’ mental models 
+  # support both frequent and infrequent users 
+  # provide efficient user interfaces 
+  # provide help and instructions 
+  # minimise training required 
+  # support self-sufficiency 
+
+*All of these usability principles are at the core of the design of HatCMS*
+
+Step Two notes the following items that a CMS should do to be more usable:
+  * Limit the number of options presented to authors
+  * Authors must not lose their content due to bugs or crashes
+  * Authors don’t want to see the behind-the-scenes details
+  * CMS products should not be cluttered with new features
+  * Authors only understand ‘pages’ and ‘websites’
+  * The CMS must be efficient to use for regular authors
+  * Help and instructions should be provided throughout the CMS
+  * Authors should not need extensive training
+  * Site owners should be able to manage their own sites
+
+*Each of these items are at the core of the design of HatCMS.*
+
+
+
+
+
+
+
+
