@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using System.Web;
 using System.Security.Principal;
 using System.Collections.Specialized;
@@ -1181,20 +1182,72 @@ namespace HatCMS
                 return;
             }
             else
-            {
-                // <?php header("HTTP/1.1 404 Not Found"); ?>
-                // <?php header("Status: 404 Not Found"); ?>
-
+            {                
                 System.Web.HttpResponse resp = System.Web.HttpContext.Current.Response;
                 resp.ClearContent();
                 resp.StatusCode = 404;
                 resp.AddHeader("Status", "404 Not Found");
 
-                resp.Write("<html><body><strong>The page that you requested does not exist.</strong><p><em>Visit our <a href=\"" + CmsContext.ApplicationPath + "\">home page here</a></em></p></body></html>");
+                string EOL = Environment.NewLine;
+                StringBuilder html404 = new StringBuilder();
+
+                // the default 404 page is based on the HTML5 Boilerplate
+                // https://raw.github.com/h5bp/html5-boilerplate/master/404.html
+
+                html404.Append("<!doctype html>" + EOL);
+                html404.Append("<html>" + EOL);
+                html404.Append("<head>" + EOL);
+                html404.Append("  <meta charset=\"utf-8\">" + EOL);
+                html404.Append("  <title>Page Not Found</title>" + EOL);
+                html404.Append("  <style>" + EOL);
+                html404.Append("    html { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }" + EOL);
+                html404.Append("    html, input { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }" + EOL);
+                html404.Append("    body { margin: 0 10px; font-size: 20px; line-height: 1.4; background: #f0f0f0; color: #737373; }" + EOL);
+                html404.Append("    ::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }" + EOL);
+                html404.Append("    ::selection { background: #fe57a1; color: #fff; text-shadow: none; }" + EOL);
+                html404.Append("    a { color: rgb(36, 109, 56); text-decoration: underline; }" + EOL);
+                html404.Append("    a:hover, a:focus, a:active { color: rgb(96, 73, 141); text-shadow: 2px 2px 2px rgba(36, 109, 56, 0.5); }" + EOL);
+                html404.Append("    h1 { font-size: 50px; text-align: center; margin: 0 10px; }" + EOL);
+                html404.Append("    h1 span { color: #bbb; }" + EOL);
+                html404.Append("    h3 { margin: 1.5em 0 0.5em; }" + EOL);
+                html404.Append("    p { margin: 1em 0; }" + EOL);
+                html404.Append("    ul { margin: 1em 0; padding: 0 0 0 40px; }" + EOL);
+                html404.Append("    .container { max-width: 500px; _width: 500px; padding: 30px 20px 50px; border: 1px solid #b3b3b3; margin: 40px auto 0; border-radius: 4px; box-shadow: 0 1px 10px #a7a7a7, inset 0 1px 0 #fff; background: #fcfcfc; }" + EOL);
+                html404.Append("    .container div { max-width: 380px; margin: 0 auto; }" + EOL);
+                html404.Append("    /* google search */" + EOL);
+                html404.Append("    #goog-fixurl ul { list-style: none; padding: 0; margin: 0; }" + EOL);
+                html404.Append("    #goog-fixurl form { margin: 0; }" + EOL);
+                html404.Append("    #goog-fixurl input { font-size: 16px; line-height: normal; vertical-align: top; }" + EOL);
+                html404.Append("    #goog-wm-qt { width: 220px; height: 20px; padding: 5px; border: 1px solid #bbb; margin: 5px 10px 0 0; }" + EOL);
+                html404.Append("    #goog-wm-sb { display: inline-block; height: 32px; margin: 5px 0 0; white-space: nowrap; cursor: pointer; padding: 0 10px; border: 1px solid #bbb; border-radius: 2px; color: #444; background-color: #f5f5f5; background-image: -webkit-linear-gradient(#f5f5f5, #f1f1f1); background-image: -moz-linear-gradient(#f5f5f5, #f1f1f1); background-image: -ms-linear-gradient(#f5f5f5, #f1f1f1); background-image: -o-linear-gradient(#f5f5f5, #f1f1f1); *overflow: visible; *display: inline; *zoom: 1; -webkit-appearance: none; -moz-appearance: none; appearance: none; }" + EOL);
+                html404.Append("    #goog-wm-sb:hover, #goog-wm-sb:focus { border-color: #aaa; color: #222; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); background-color: #f8f8f8; background-image: -webkit-linear-gradient(#f8f8f8, #f1f1f1); background-image: -moz-linear-gradient(#f8f8f8, #f1f1f1); background-image: -ms-linear-gradient(#f8f8f8, #f1f1f1); background-image: -o-linear-gradient(#f8f8f8, #f1f1f1); }" + EOL);
+                html404.Append("    #goog-wm-sb:focus { border-color: #105cb6; outline: 0; }" + EOL);
+                html404.Append("  </style>" + EOL);
+                html404.Append("</head>" + EOL);
+                html404.Append("<body>" + EOL);
+                html404.Append("  <div class=\"container\">" + EOL);
+                html404.Append("    <h1>Page Not Found</h1>" + EOL);
+                html404.Append("    <div>" + EOL);
+                html404.Append("      <p>Sorry, but the page you were trying to view does not exist.</p>" + EOL);
+                html404.Append("      <p>It looks like this was the result of either:</p>" + EOL);
+                html404.Append("      <ul>" + EOL);
+                html404.Append("        <li>a mistyped address</li>" + EOL);
+                html404.Append("        <li>an out-of-date link</li>" + EOL);
+                html404.Append("      </ul>" + EOL);
+                html404.Append("    <p><em>Visit our <a href=\"" + CmsContext.ApplicationPath + "\">home page here</a></em></p>" + EOL);
+                html404.Append("    </div>" + EOL);
+                html404.Append("    <script>" + EOL);
+                html404.Append("      var GOOG_FIXURL_LANG = (navigator.language || '').slice(0,2)," + EOL);
+                html404.Append("      GOOG_FIXURL_SITE = location.host;" + EOL);
+                html404.Append("    </script>" + EOL);
+                html404.Append("    <script src=\"http://linkhelp.clients.google.com/tbproxy/lh/wm/fixurl.js\"></script>" + EOL);
+                html404.Append("  </div>" + EOL);
+                html404.Append("</body>" + EOL);
+                html404.Append("</html>" + EOL);
+
+                resp.Write(html404.ToString());
                 resp.End();
-                return;
-                 
-                // throw new System.Web.HttpException(404, "File Not Found"); //http://forums.asp.net/t/762031.aspx
+                return;                                
             }
         }
 
