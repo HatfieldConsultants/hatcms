@@ -1,4 +1,5 @@
-CREATE TABLE  `contactdata` (
+
+CREATE TABLE `contactdata` (
   `ContactId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `firstName` varchar(255) NOT NULL,
   `lastName` varchar(255) NOT NULL,
@@ -18,8 +19,7 @@ CREATE TABLE  `contactdata` (
   PRIMARY KEY (`ContactId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `contactdatacategory` (
+CREATE TABLE `contactdatacategory` (
   `categoryid` int(11) NOT NULL AUTO_INCREMENT,
   `colourHex` varchar(255) NOT NULL,
   `title` varchar(1024) NOT NULL,
@@ -28,16 +28,14 @@ CREATE TABLE  `contactdatacategory` (
   PRIMARY KEY (`categoryid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `contactlinktocategory` (
+CREATE TABLE `contactlinktocategory` (
   `ContactLinkToCategoryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `ContactId` int(10) unsigned NOT NULL,
   `CategoryId` int(10) unsigned NOT NULL,
   PRIMARY KEY (`ContactLinkToCategoryId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `contacts` (
+CREATE TABLE `contacts` (
   `ContactsId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
@@ -50,8 +48,86 @@ CREATE TABLE  `contacts` (
   PRIMARY KEY (`ContactsId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `eventcalendaraggregator` (
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(2) NOT NULL,
+  `ViewMode` varchar(50) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `flashobject` (
+CREATE TABLE `eventcalendarcategory` (
+  `CategoryId` int(11) NOT NULL,
+  `LangCode` varchar(2) NOT NULL,
+  `ColorHex` varchar(7) NOT NULL,
+  `Title` varchar(255) NOT NULL,
+  `Description` text NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`CategoryId`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `eventcalendardetails` (
+  `PageId` int(11) NOT NULL,
+  `Identifier` int(11) NOT NULL,
+  `LangCode` varchar(2) NOT NULL,
+  `Description` text NOT NULL,
+  `CategoryId` int(11) NOT NULL,
+  `StartDateTime` datetime NOT NULL,
+  `EndDateTime` datetime NOT NULL,
+  `CreatedBy` varchar(255) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `filelibraryaggregator` (
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `NumFilesOverview` int(11) NOT NULL,
+  `NumFilesPerPage` int(11) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `filelibraryaggregator2` (
+  `SimpleFileAggregatorId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `LinkedPageId` int(11) NOT NULL,
+  `LinkedIdentifier` int(11) NOT NULL,
+  `LinkedLangCode` varchar(5) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`SimpleFileAggregatorId`),
+  KEY `simplefileaggregatorPageIndex` (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `filelibrarycategory` (
+  `CategoryId` int(11) NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `EventRequired` int(1) NOT NULL DEFAULT '0',
+  `CategoryName` varchar(255) NOT NULL,
+  `SortOrdinal` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`CategoryId`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `filelibrarydetails` (
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `Filename` varchar(255) NOT NULL,
+  `CategoryId` int(11) NOT NULL,
+  `Author` varchar(255) NOT NULL DEFAULT '',
+  `Description` text NOT NULL,
+  `LastModified` datetime NOT NULL,
+  `CreatedBy` varchar(255) NOT NULL,
+  `EventPageId` int(11) NOT NULL DEFAULT '-1',
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `flashobject` (
   `FlashObjectId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
@@ -63,7 +139,7 @@ CREATE TABLE  `flashobject` (
   KEY `flashobject_secondary` (`PageId`,`Identifier`,`Deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `glossary` (
+CREATE TABLE `glossary` (
   `glossaryid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `pageid` int(10) unsigned NOT NULL,
   `identifier` int(10) unsigned NOT NULL,
@@ -74,8 +150,7 @@ CREATE TABLE  `glossary` (
   PRIMARY KEY (`glossaryid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `glossarydata` (
+CREATE TABLE `glossarydata` (
   `GlossaryDataId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `phGlossaryId` int(10) unsigned NOT NULL,
   `isAcronym` int(10) unsigned NOT NULL,
@@ -85,8 +160,7 @@ CREATE TABLE  `glossarydata` (
   PRIMARY KEY (`GlossaryDataId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `googlemap` (
+CREATE TABLE `googlemap` (
   `GoogleMapId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
@@ -101,7 +175,7 @@ CREATE TABLE  `googlemap` (
   KEY `googlemap_secondary` (`PageId`,`Identifier`,`Deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `htmlcontent` (
+CREATE TABLE `htmlcontent` (
   `HtmlContentId` int(11) NOT NULL AUTO_INCREMENT,
   `PageId` int(11) NOT NULL DEFAULT '0',
   `Identifier` int(11) NOT NULL DEFAULT '0',
@@ -110,11 +184,10 @@ CREATE TABLE  `htmlcontent` (
   `html` longtext NOT NULL,
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`HtmlContentId`),
-  KEY `htmlcontent_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`) 
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+  KEY `htmlcontent_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `imagegallery` (
+CREATE TABLE `imagegallery` (
   `ImageGalleryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
@@ -127,8 +200,7 @@ CREATE TABLE  `imagegallery` (
   KEY `imagegallery_secondary` (`PageId`,`Identifier`,`deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `imagegalleryimages` (
+CREATE TABLE `imagegalleryimages` (
   `ImageGalleryImageId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `Caption` varchar(255) NOT NULL,
   `Filename` varchar(255) NOT NULL,
@@ -136,8 +208,7 @@ CREATE TABLE  `imagegalleryimages` (
   PRIMARY KEY (`ImageGalleryImageId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `jobdetails` (
+CREATE TABLE `jobdetails` (
   `JobId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
@@ -149,7 +220,7 @@ CREATE TABLE  `jobdetails` (
   KEY `JobDetailsIndex` (`PageId`,`Identifier`,`langShortCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `joblocations` (
+CREATE TABLE `joblocations` (
   `JobLocationId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `LocationText` text NOT NULL,
   `IsAllLocations` int(10) unsigned NOT NULL DEFAULT '0',
@@ -157,7 +228,7 @@ CREATE TABLE  `joblocations` (
   PRIMARY KEY (`JobLocationId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `jobsummary` (
+CREATE TABLE `jobsummary` (
   `JobSummaryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
@@ -166,10 +237,27 @@ CREATE TABLE  `jobsummary` (
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`JobSummaryId`),
   KEY `jobsummary_secondary` (`PageId`,`Identifier`,`Deleted`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `newsarticleaggregator` (
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(2) NOT NULL,
+  `DefaultYearToDisplay` int(11) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `pagefileitem` (
+CREATE TABLE `newsarticledetails` (
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(2) NOT NULL,
+  `DateOfNews` datetime DEFAULT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `pagefileitem` (
   `PageFileItemId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
@@ -183,10 +271,9 @@ CREATE TABLE  `pagefileitem` (
   `CreatorUsername` varchar(255) NOT NULL,
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`PageFileItemId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `pagefiles` (
+CREATE TABLE `pagefiles` (
   `PageFilesId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
@@ -201,27 +288,26 @@ CREATE TABLE  `pagefiles` (
   PRIMARY KEY (`PageFilesId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `pagelanginfo` (
+CREATE TABLE `pagelanginfo` (
+  `pagelangId` int(11) NOT NULL AUTO_INCREMENT,
   `pageId` int(10) unsigned NOT NULL,
   `langCode` varchar(255) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `title` varchar(255) NOT NULL,
   `menuTitle` varchar(255) NOT NULL,
   `searchEngineDescription` text NOT NULL,
-  PRIMARY KEY (`pageId`,`langCode`)
+  PRIMARY KEY (`pagelangId`),
+  UNIQUE KEY `pageid_langcode_unique_constraint` (`pageId`,`langCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `pagelocks` (
+CREATE TABLE `pagelocks` (
   `pageid` int(11) NOT NULL,
   `LockedByUsername` varchar(255) NOT NULL,
   `LockExpiresAt` datetime NOT NULL,
   PRIMARY KEY (`pageid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `pagenotfoundredirect` (
+CREATE TABLE `pagenotfoundredirect` (
   `PageNotFoundRedirectId` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `requestedUrl` mediumtext NOT NULL,
   `redirectToPageId` int(10) unsigned NOT NULL,
@@ -230,7 +316,7 @@ CREATE TABLE  `pagenotfoundredirect` (
   KEY `pagenotfoundredirect_secondary` (`requestedUrl`(255),`Deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `pageredirect` (
+CREATE TABLE `pageredirect` (
   `PageRedirectId` int(11) NOT NULL AUTO_INCREMENT,
   `PageId` int(11) NOT NULL DEFAULT '0',
   `Identifier` int(11) NOT NULL DEFAULT '0',
@@ -242,17 +328,17 @@ CREATE TABLE  `pageredirect` (
   KEY `pageredirect_secondary` (`PageId`,`Identifier`,`Deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `pagerevisiondata` (
+CREATE TABLE `pagerevisiondata` (
+  `PageRevisionDataId` int(11) NOT NULL AUTO_INCREMENT,
   `PageId` int(11) NOT NULL,
   `RevisionNumber` int(11) NOT NULL,
   `ModificationDate` datetime NOT NULL,
   `ModifiedBy` varchar(255) NOT NULL,
-  PRIMARY KEY (`PageId`,`RevisionNumber`)
+  PRIMARY KEY (`PageRevisionDataId`),
+  UNIQUE KEY `pageid_revisionnumber_unique_constraint` (`PageRevisionDataId`,`PageId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `pages` (
+CREATE TABLE `pages` (
   `pageId` int(11) NOT NULL AUTO_INCREMENT,
   `showInMenu` int(10) unsigned NOT NULL DEFAULT '1',
   `template` varchar(255) NOT NULL,
@@ -269,6 +355,14 @@ CREATE TABLE  `pages` (
   KEY `pages_deleted` (`Deleted`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `permissions` (
+  `PermissionsId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ApplicationName` varchar(255) NOT NULL,
+  `Action` varchar(255) NOT NULL,
+  `Description` text NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PermissionsId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `persistentvariables` (
   `PersistentVariableId` int(11) NOT NULL AUTO_INCREMENT,
@@ -278,9 +372,7 @@ CREATE TABLE `persistentvariables` (
   UNIQUE KEY `Name_UNIQUE` (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-
-CREATE TABLE  `plaintextcontent` (
+CREATE TABLE `plaintextcontent` (
   `PlainTextContentId` int(11) NOT NULL AUTO_INCREMENT,
   `PageId` int(11) NOT NULL DEFAULT '0',
   `Identifier` int(11) NOT NULL DEFAULT '0',
@@ -289,165 +381,25 @@ CREATE TABLE  `plaintextcontent` (
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`PlainTextContentId`),
   KEY `plaintextcontent_secondary` (`PageId`,`Identifier`,`Deleted`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE  `resourceitemmetadata` (
-  `AutoIncId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ResourceId` int(10) unsigned NOT NULL,
-  `ResourceRevisionNumber` int(10) unsigned NOT NULL,
-  `Name` varchar(255) NOT NULL,
-  `Value` longtext NOT NULL,
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`AutoIncId`),
-  KEY `ResourceId` (`ResourceId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `resourceitems` (
-  `AutoIncId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ResourceId` int(11) NOT NULL,
-  `RevisionNumber` int(11) NOT NULL,
-  `Filename` varchar(255) NOT NULL,
-  `FilePath` text NOT NULL,
-  `FileDirectory` text NOT NULL,
-  `FileSize` int(10) unsigned NOT NULL,
-  `FileTimestamp` datetime NOT NULL,
-  `MimeType` varchar(255) NOT NULL,
-  `ModifiedBy` varchar(255) NOT NULL,
-  `ModificationDate` datetime NOT NULL,
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`AutoIncId`),
-  UNIQUE KEY `ResourceItemsUniqueIdRevisionNumber` (`ResourceId`,`RevisionNumber`),
-  KEY `RevisionNumIndex` (`RevisionNumber`,`FileDirectory`(255),`Deleted`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE  `singleimage` (
-  `SingleImageId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE `procurementaggregator` (
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
-  `langShortCode` varchar(255) NOT NULL DEFAULT '',
-  `RevisionNumber` int(11) NOT NULL DEFAULT '1',
-  `ImagePath` varchar(255) NOT NULL,
-  `ThumbnailDisplayBoxWidth` int(11) NOT NULL DEFAULT '-1',
-  `ThumbnailDisplayBoxHeight` int(11) NOT NULL DEFAULT '-1',
-  `FullSizeDisplayBoxWidth` int(11) NOT NULL DEFAULT '-1',
-  `FullSizeDisplayBoxHeight` int(11) NOT NULL DEFAULT '-1',
-  `Caption` varchar(255) NOT NULL,
-  `Credits` varchar(255) NOT NULL,
-  `Tags` varchar(255) NOT NULL DEFAULT '',
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`SingleImageId`),
-  KEY `singleimage_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`) ,
-  KEY `singleimage_tertiary` (`RevisionNumber`,`PageId`,`langShortCode`,`ImagePath`,`Deleted`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-
-# ALTER TABLE `singleimage` ADD INDEX `singleimage_tertiary`(`RevisionNumber`, `PageId`, `langShortCode`, `ImagePath`, `Deleted`);
-
-CREATE TABLE  `singleimagegallery` (
-  `SingleImageGalleryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `PageId` int(10) unsigned NOT NULL,
-  `Identifier` int(10) unsigned NOT NULL,
-  `langShortCode` varchar(255) NOT NULL,
-  `PageIdToGatherImagesFrom` int(10) NOT NULL,
-  `RecursiveGatherImages` int(10) unsigned NOT NULL,
-  `ThumbnailDisplayBoxWidth` int(11) NOT NULL,
-  `ThumbnailDisplayBoxHeight` int(11) NOT NULL,
-  `OverrideFullDisplayBoxSize` int(10) unsigned NOT NULL,
-  `FullSizeDisplayBoxWidth` int(11) NOT NULL,
-  `FullSizeDisplayBoxHeight` int(11) NOT NULL,
-  `NumThumbsPerRow` int(10) unsigned NOT NULL,
-  `NumThumbsPerPage` int(11) NOT NULL,
-  `ShowOnlyTags` varchar(255) NOT NULL DEFAULT '',
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`SingleImageGalleryId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE  `userfeedbackform` (
-  `pageid` int(10) unsigned NOT NULL,
-  `identifier` int(10) unsigned NOT NULL,
   `LangCode` varchar(5) NOT NULL,
-  `EmailAddressesToNotify` text NOT NULL,
-  `ThankyouMessage` text NOT NULL,
-  `FormFieldDisplayWidth` int(10) unsigned NOT NULL,
-  `TextAreaQuestion` varchar(255) NOT NULL,
-  PRIMARY KEY (`pageid`,`identifier`,`LangCode`),
-  KEY `userfeedbackform_1` (`pageid`,`identifier`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-# ALTER TABLE `userfeedbackform` ADD INDEX `userfeedbackform_1`(`pageid`, `identifier`);
-
-
-CREATE TABLE  `userfeedbacksubmitteddata` (
-  `UserFeedbackSubmittedDataId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `dateTimeSubmitted` datetime NOT NULL,
-  `Name` varchar(255) NOT NULL,
-  `EmailAddress` varchar(255) NOT NULL,
-  `Location` varchar(255) NOT NULL,
-  `TextAreaQuestion` varchar(255) NOT NULL,
-  `TextAreaValue` text NOT NULL,
-  `ReferringUrl` text NOT NULL,
-  PRIMARY KEY (`UserFeedbackSubmittedDataId`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `newsarticleaggregator` (
-  `PageId` int(10) unsigned NOT NULL,
-  `Identifier` int(10) unsigned NOT NULL,
-  `LangCode` varchar(2) NOT NULL,
   `DefaultYearToDisplay` int(11) NOT NULL,
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE `newsarticledetails` (
+CREATE TABLE `procurementdetails` (
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
-  `LangCode` varchar(2) NOT NULL,
-  `DateOfNews` datetime DEFAULT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `DateOfProcurement` datetime DEFAULT NULL,
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `eventcalendaraggregator` (
-  `PageId` int(10) unsigned NOT NULL,
-  `Identifier` int(10) unsigned NOT NULL,
-  `LangCode` varchar(2) NOT NULL,
-  `ViewMode` varchar(50) NOT NULL,
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `eventcalendardetails` (
-  `PageId` int(11) NOT NULL,
-  `Identifier` int(11) NOT NULL,
-  `LangCode` varchar(2) NOT NULL,
-  `Description` text NOT NULL,
-  `CategoryId` int(11) NOT NULL,
-  `StartDateTime` datetime NOT NULL,
-  `EndDateTime` datetime NOT NULL,
-  `CreatedBy` varchar(255) NOT NULL,
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE  `eventcalendarcategory` (
-  `CategoryId` int(11) NOT NULL,
-  `LangCode` varchar(2) NOT NULL,
-  `ColorHex` varchar(7) NOT NULL,
-  `Title` varchar(255) NOT NULL,
-  `Description` text NOT NULL,
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`CategoryId`,`LangCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE `registerproject` (
   `ProjectId` int(11) NOT NULL AUTO_INCREMENT,
@@ -465,8 +417,109 @@ CREATE TABLE `registerproject` (
   PRIMARY KEY (`ProjectId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `resourceitemmetadata` (
+  `AutoIncId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ResourceId` int(10) unsigned NOT NULL,
+  `ResourceRevisionNumber` int(10) unsigned NOT NULL,
+  `Name` varchar(255) NOT NULL,
+  `Value` longtext NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`AutoIncId`),
+  KEY `ResourceId` (`ResourceId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `userimagegallery` (
+CREATE TABLE `resourceitems` (
+  `AutoIncId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ResourceId` int(11) NOT NULL,
+  `RevisionNumber` int(11) NOT NULL,
+  `Filename` varchar(255) NOT NULL,
+  `FilePath` text NOT NULL,
+  `FileDirectory` text NOT NULL,
+  `FileSize` int(10) unsigned NOT NULL,
+  `FileTimestamp` datetime NOT NULL,
+  `MimeType` varchar(255) NOT NULL,
+  `ModifiedBy` varchar(255) NOT NULL,
+  `ModificationDate` datetime NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`AutoIncId`),
+  UNIQUE KEY `ResourceItemsUniqueIdRevisionNumber` (`ResourceId`,`RevisionNumber`),
+  KEY `RevisionNumIndex` (`RevisionNumber`,`FileDirectory`(255),`Deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `roles` (
+  `RoleId` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Description` varchar(1024) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`RoleId`),
+  UNIQUE KEY `Name_UniqueIndex` (`Name`),
+  KEY `roles_deleted` (`Deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+
+CREATE TABLE `singleimage` (
+  `SingleImageId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `langShortCode` varchar(255) NOT NULL DEFAULT '',
+  `RevisionNumber` int(11) NOT NULL DEFAULT '1',
+  `ImagePath` varchar(255) NOT NULL,
+  `ThumbnailDisplayBoxWidth` int(11) NOT NULL DEFAULT '-1',
+  `ThumbnailDisplayBoxHeight` int(11) NOT NULL DEFAULT '-1',
+  `FullSizeDisplayBoxWidth` int(11) NOT NULL DEFAULT '-1',
+  `FullSizeDisplayBoxHeight` int(11) NOT NULL DEFAULT '-1',
+  `Caption` varchar(255) NOT NULL,
+  `Credits` varchar(255) NOT NULL,
+  `Tags` varchar(255) NOT NULL DEFAULT '',
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`SingleImageId`),
+  KEY `singleimage_secondary` (`PageId`,`Identifier`,`Deleted`,`langShortCode`),
+  KEY `singleimage_tertiary` (`RevisionNumber`,`PageId`,`langShortCode`,`ImagePath`,`Deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `singleimagegallery` (
+  `SingleImageGalleryId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PageId` int(10) unsigned NOT NULL,
+  `Identifier` int(10) unsigned NOT NULL,
+  `langShortCode` varchar(255) NOT NULL,
+  `PageIdToGatherImagesFrom` int(10) NOT NULL,
+  `RecursiveGatherImages` int(10) unsigned NOT NULL,
+  `ThumbnailDisplayBoxWidth` int(11) NOT NULL,
+  `ThumbnailDisplayBoxHeight` int(11) NOT NULL,
+  `OverrideFullDisplayBoxSize` int(10) unsigned NOT NULL,
+  `FullSizeDisplayBoxWidth` int(11) NOT NULL,
+  `FullSizeDisplayBoxHeight` int(11) NOT NULL,
+  `NumThumbsPerRow` int(10) unsigned NOT NULL,
+  `NumThumbsPerPage` int(11) NOT NULL,
+  `ShowOnlyTags` varchar(255) NOT NULL DEFAULT '',
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`SingleImageGalleryId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `userfeedbackform` (
+  `pageid` int(10) unsigned NOT NULL,
+  `identifier` int(10) unsigned NOT NULL,
+  `LangCode` varchar(5) NOT NULL,
+  `EmailAddressesToNotify` text NOT NULL,
+  `ThankyouMessage` text NOT NULL,
+  `FormFieldDisplayWidth` int(10) unsigned NOT NULL,
+  `TextAreaQuestion` varchar(255) NOT NULL,
+  PRIMARY KEY (`pageid`,`identifier`,`LangCode`),
+  KEY `userfeedbackform_1` (`pageid`,`identifier`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `userfeedbacksubmitteddata` (
+  `UserFeedbackSubmittedDataId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `dateTimeSubmitted` datetime NOT NULL,
+  `Name` varchar(255) NOT NULL,
+  `EmailAddress` varchar(255) NOT NULL,
+  `Location` varchar(255) NOT NULL,
+  `TextAreaQuestion` varchar(255) NOT NULL,
+  `TextAreaValue` text NOT NULL,
+  `ReferringUrl` text NOT NULL,
+  PRIMARY KEY (`UserFeedbackSubmittedDataId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `userimagegallery` (
   `PageId` int(10) unsigned NOT NULL,
   `Identifier` int(10) unsigned NOT NULL,
   `LangCode` varchar(5) NOT NULL,
@@ -479,28 +532,7 @@ CREATE TABLE  `userimagegallery` (
   `FullSizeLinkMode` varchar(255) NOT NULL,
   `CaptionDisplayLocation` varchar(255) NOT NULL,
   PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `procurementaggregator` (
-  `PageId` int(10) unsigned NOT NULL,
-  `Identifier` int(10) unsigned NOT NULL,
-  `LangCode` varchar(5) NOT NULL,
-  `DefaultYearToDisplay` int(11) NOT NULL,
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `procurementdetails` (
-  `PageId` int(10) unsigned NOT NULL,
-  `Identifier` int(10) unsigned NOT NULL,
-  `LangCode` varchar(5) NOT NULL,
-  `DateOfProcurement` datetime DEFAULT NULL,
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE `zone` (
   `ZoneId` int(11) NOT NULL AUTO_INCREMENT,
@@ -509,97 +541,18 @@ CREATE TABLE `zone` (
   `Deleted` datetime DEFAULT NULL,
   PRIMARY KEY (`ZoneId`),
   KEY `StartingPageId` (`StartingPageId`),
-  FOREIGN KEY (`StartingPageId`) REFERENCES `pages` (`pageId`)
+  CONSTRAINT `zone_ibfk_1` FOREIGN KEY (`StartingPageId`) REFERENCES `pages` (`pageId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 CREATE TABLE `zoneuserrole` (
+  `ZoneUserRoleId` int(11) NOT NULL AUTO_INCREMENT,
   `ZoneId` int(11) NOT NULL,
   `UserRoleId` int(11) NOT NULL,
   `ReadAccess` int(1) DEFAULT '0',
   `WriteAccess` int(1) DEFAULT '0',
-  PRIMARY KEY (`ZoneId`,`UserRoleId`),
-  FOREIGN KEY (`ZoneId`) REFERENCES `zone` (`ZoneId`)
+  PRIMARY KEY (`ZoneUserRoleId`),
+  UNIQUE KEY `ZoneId_UNIQUE` (`ZoneId`,`UserRoleId`),
+  KEY `zoneuserrole_zone_fk_1` (`ZoneId`),
+  CONSTRAINT `zoneuserrole_zone_fk_1` FOREIGN KEY (`ZoneId`) REFERENCES `zone` (`ZoneId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE  `filelibrarycategory` (
-  `CategoryId` int(11) NOT NULL,
-  `LangCode` varchar(5) NOT NULL,
-  `EventRequired` int(1) NOT NULL DEFAULT '0',
-  `CategoryName` varchar(255) NOT NULL,
-  `SortOrdinal` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`CategoryId`,`LangCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `filelibraryaggregator` (
-  `PageId` int(10) unsigned NOT NULL,
-  `Identifier` int(10) unsigned NOT NULL,
-  `LangCode` varchar(5) NOT NULL,
-  `NumFilesOverview` int(11) NOT NULL,
-  `NumFilesPerPage` int(11) NOT NULL,
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE  `filelibrarydetails` (
-  `PageId` int(10) unsigned NOT NULL,
-  `Identifier` int(10) unsigned NOT NULL,
-  `LangCode` varchar(5) NOT NULL,
-  `Filename` varchar(255) NOT NULL,
-  `CategoryId` int(11) NOT NULL,
-  `Author` varchar(255) NOT NULL DEFAULT '',
-  `Description` text NOT NULL,
-  `LastModified` datetime NOT NULL,
-  `CreatedBy` varchar(255) NOT NULL,
-  `EventPageId` int(11) NOT NULL DEFAULT '-1',
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`PageId`,`Identifier`,`LangCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE  `filelibraryaggregator2` (
-  `SimpleFileAggregatorId` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `PageId` int(10) unsigned NOT NULL,
-  `Identifier` int(10) unsigned NOT NULL,
-  `LangCode` varchar(5) NOT NULL,
-  `LinkedPageId` int(11) NOT NULL,
-  `LinkedIdentifier` int(11) NOT NULL,
-  `LinkedLangCode` varchar(5) NOT NULL,
-  `Deleted` datetime DEFAULT NULL,
-  PRIMARY KEY (`SimpleFileAggregatorId`),
-  KEY `simplefileaggregatorPageIndex` (`PageId`,`Identifier`,`LangCode`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-ALTER TABLE `hatcms`.`zoneuserrole` DROP FOREIGN KEY `zoneuserrole_ibfk_1` ;
-
-ALTER TABLE `hatcms`.`zoneuserrole` ADD COLUMN `ZoneUserRoleId` INT NOT NULL AUTO_INCREMENT  FIRST 
-, DROP PRIMARY KEY 
-, ADD PRIMARY KEY (`ZoneUserRoleId`) ;
-
-
-ALTER TABLE `hatcms`.`zoneuserrole`
-  ADD CONSTRAINT `zoneuserrole_zone_fk_1`
-  FOREIGN KEY (`ZoneId` )
-  REFERENCES `hatcms`.`zone` (`ZoneId` )
-  ON DELETE CASCADE
-  ON UPDATE CASCADE
-, ADD INDEX `zoneuserrole_zone_fk_1` (`ZoneId` ASC) ;
-
-ALTER TABLE `hatcms`.`zoneuserrole`
-ADD UNIQUE INDEX `ZoneId_UNIQUE` (`ZoneId`, `UserRoleId`) ;
-
-ALTER TABLE `hatcms`.`pagelanginfo` ADD COLUMN `pagelangId` INT NOT NULL AUTO_INCREMENT  FIRST 
-, DROP PRIMARY KEY 
-, ADD PRIMARY KEY (`pagelangId`) 
-, ADD UNIQUE INDEX `pageid_langcode_unique_constraint` (`pageId` ASC, `langCode` ASC) ;
-
-ALTER TABLE `hatcms`.`pagerevisiondata` ADD COLUMN `PageRevisionDataId` INT NOT NULL AUTO_INCREMENT  FIRST 
-, DROP PRIMARY KEY 
-, ADD PRIMARY KEY (`PageRevisionDataId`) 
-, ADD UNIQUE INDEX `pageid_revisionnumber_unique_constraint` (`PageRevisionDataId` ASC, `PageId` ASC) ;
-
-
-
 

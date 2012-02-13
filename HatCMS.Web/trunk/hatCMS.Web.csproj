@@ -105,9 +105,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\CommonServiceLocator\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="mysql.data, Version=6.0.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+    <Reference Include="mysql.data, Version=6.3.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>include\HatCMS.Core\include\MySQL\mysql.data.dll</HintPath>
+      <HintPath>include\MySQL\mysql.data.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate, Version=3.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -991,7 +991,7 @@
     <Content Include="js\_system\TopMultiLevelDropDownMenu.js" />
     <Content Include="js\_system\TopNav.js" />
     <Content Include="setup\default.aspx" />
-    <Content Include="setup\HatCMS_TableCreation.sql" />
+    <Content Include="setup\new_HatCMS_TableCreation.sql" />
     <Content Include="setup\HatPortal_TableCreation.txt" />
     <Content Include="templates\PageLayout.htm" />
     <Content Include="templates\SingleImageDisplay.htm" />
@@ -1097,7 +1097,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Content Include="setup\Copy of HatCMS_TableCreation.sql" />
+    <Content Include="setup\HatCMS_TableCreation.sql" />
     <None Include="templates\ContactUs.template" />
     <Content Include="templates\Glossary.template" />
     <Content Include="templates\_RSSDocuments.template" />
