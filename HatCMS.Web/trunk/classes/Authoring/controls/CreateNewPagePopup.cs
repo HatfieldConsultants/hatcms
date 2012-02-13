@@ -90,11 +90,12 @@ namespace HatCMS.Controls
                     foreach (CmsLanguage lang in CmsConfig.Languages)
                     {
                         CmsPageLanguageInfo langInfo = new CmsPageLanguageInfo();
-                        langInfo.languageShortCode = lang.shortCode;
-                        langInfo.name = name;
-                        langInfo.menuTitle = menuTitle;
-                        langInfo.title = title;
-                        langInfo.searchEngineDescription = "";
+                        langInfo.LanguageShortCode = lang.shortCode;
+                        langInfo.Name = name;
+                        langInfo.MenuTitle = menuTitle;
+                        langInfo.Title = title;
+                        langInfo.SearchEngineDescription = "";
+                        langInfo.Page = newPage;
 
                         langInfos.Add(langInfo);
                     } // foreach languages
@@ -141,7 +142,7 @@ namespace HatCMS.Controls
 
                             // -- Switch to Edit Mode
                             NameValueCollection paramList = new NameValueCollection();
-                            paramList.Add("target", newPage.ID.ToString());
+                            paramList.Add("target", newPage.Id.ToString());
                             string toggleEditUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("GotoEditModePath", "/_admin/action/gotoEdit"), paramList);
 
                             script.Append("<center>");
@@ -200,7 +201,7 @@ namespace HatCMS.Controls
             }
             else
             {
-                html.Append(PageUtils.getHiddenInputHtml("_name", options.NewPageLanguageInfos[0].name));
+                html.Append(PageUtils.getHiddenInputHtml("_name", options.NewPageLanguageInfos[0].Name));
             }
 
             if (options.PromptUserForTitle)
@@ -213,7 +214,7 @@ namespace HatCMS.Controls
             }
             else
             {
-                html.Append(PageUtils.getHiddenInputHtml("_title", options.NewPageLanguageInfos[0].title));
+                html.Append(PageUtils.getHiddenInputHtml("_title", options.NewPageLanguageInfos[0].Title));
             }
 
             if (options.PromptUserForMenuTitle)
@@ -226,7 +227,7 @@ namespace HatCMS.Controls
             }
             else
             {
-                html.Append(PageUtils.getHiddenInputHtml("_menutitle", options.NewPageLanguageInfos[0].menuTitle));
+                html.Append(PageUtils.getHiddenInputHtml("_menutitle", options.NewPageLanguageInfos[0].MenuTitle));
             }
 
             if (options.PromptUserForShowInMenu)
@@ -297,13 +298,13 @@ namespace HatCMS.Controls
 
         private NameValueCollection getParentPageOptions(CmsPage page)
         {
-            if (page == null || page.ID == -1)
+            if (page == null || page.Id == -1)
                 return new NameValueCollection();
 
             NameValueCollection nvc = new NameValueCollection();
             if (page.isVisibleForCurrentUser)
             {
-                nvc.Add(page.ID.ToString(), page.Path);
+                nvc.Add(page.Id.ToString(), page.Path);
                 foreach (CmsPage subPage in page.ChildPages)
                 {
                     NameValueCollection ret = getParentPageOptions(subPage);

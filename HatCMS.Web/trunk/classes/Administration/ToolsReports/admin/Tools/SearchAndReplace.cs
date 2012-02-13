@@ -212,7 +212,7 @@ namespace HatCMS.Admin
                         html.Append("<td>" + p.getTitle(searchResult.Language) + " (" + searchResult.Language.shortCode + ")</td>");
 
                         NameValueCollection paramList = new NameValueCollection();
-                        paramList.Add("target", p.ID.ToString());
+                        paramList.Add("target", p.Id.ToString());
                         string openEditUrl = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("GotoEditModePath", "/_admin/action/gotoEdit"), paramList, searchResult.Language);
 
                         string buttonId = "searchReplaceb_" + i.ToString();

@@ -45,7 +45,7 @@ namespace HatCMS.Controls
                 {
                     int id = Convert.ToInt32(newOrderIds[i]);
                     CmsPage tempPage = CmsContext.getPageById(id);
-                    if (tempPage.ID != -1)
+                    if (tempPage.Id != -1)
                     {
                         tempPage.setSortOrdinal(i);
                     }
@@ -82,7 +82,7 @@ namespace HatCMS.Controls
             // <option value="13" id="a01">0Red 1</option>
             foreach (CmsPage childPage in page.ChildPages)
             {
-                html = html + "<option value=\"" + childPage.ID + "\">" + childPage.Title + "</option>" + Environment.NewLine;
+                html = html + "<option value=\"" + childPage.Id + "\">" + childPage.Title + "</option>" + Environment.NewLine;
             }
 
             html = html + "</select>";

@@ -139,7 +139,7 @@ namespace HatCMS.Controls._system
             int currentLevel = page.Level;
 
             StringBuilder html = new StringBuilder();
-            if (page.ID == -1 || currentLevel > this.MaxLevels || ! page.ShowInMenu)
+            if (page.Id == -1 || currentLevel > this.MaxLevels || ! page.ShowInMenu)
                 return "";
 
             if (!page.isVisibleForCurrentUser)
@@ -151,7 +151,7 @@ namespace HatCMS.Controls._system
                 ulCssClass = "class=\"" + ulCssClass + "\" ";
             bool ulStartedAtPage = false;
 
-            if (!IncludeHomepage && page.ID == CmsContext.HomePage.ID)
+            if (!IncludeHomepage && page.Id == CmsContext.HomePage.Id)
             {
                 Console.Write("not including home page");
             }
@@ -168,7 +168,7 @@ namespace HatCMS.Controls._system
                 if (title == "" || UsePageTitles)
                     title = page.Title;
 
-                if (page.ID == CmsContext.HomePage.ID)
+                if (page.Id == CmsContext.HomePage.Id)
                 {
                     html.Append("<ul " + ulCssClass + ">" + Environment.NewLine);
                     ulStartedAtPage = true;

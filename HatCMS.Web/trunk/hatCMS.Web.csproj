@@ -77,17 +77,49 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\HatCMS.Core\include\iCal\antlr.runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\CastleWindsor\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\CastleWindsor\Castle.Windsor.dll</HintPath>
+    </Reference>
+    <Reference Include="CommonServiceLocator.WindsorAdapter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\CommonServiceLocatorWindsorAdapter\CommonServiceLocator.WindsorAdapter.dll</HintPath>
+    </Reference>
     <Reference Include="DDay.iCal, Version=1.0.1.490, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\HatCMS.Core\include\iCal\DDay.iCal.dll</HintPath>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\NHibernate\Required_Bins\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="JsonFx.Json, Version=1.4.1003.3007, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\HatCMS.Core\include\JsonFx\JsonFx.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\CommonServiceLocator\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="mysql.data, Version=6.0.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>include\HatCMS.Core\include\MySQL\mysql.data.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate, Version=3.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\NHibernate\Required_Bins\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate.ByteCode.Castle, Version=3.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\NHibernate\Required_For_LazyLoading\NHibernate.ByteCode.Castle.dll</HintPath>
+    </Reference>
+    <Reference Include="NHibernate.Validator, Version=1.3.1.4000, Culture=neutral, PublicKeyToken=70154e18752585bd, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>include\NHibernateValidator\NHibernate.Validator.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -411,6 +443,7 @@
     <Compile Include="controls\_system\UserImageGalleryAggregator.ascx.designer.cs">
       <DependentUpon>UserImageGalleryAggregator.ascx</DependentUpon>
     </Compile>
+    <Compile Include="ServiceLocatorInitializer.cs" />
     <Compile Include="xmlSiteMap.ashx.cs">
       <DependentUpon>xmlSiteMap.ashx</DependentUpon>
     </Compile>
@@ -604,6 +637,9 @@
     <Content Include="default.aspx" />
     <Content Include="Global.asax">
       <SubType>Component</SubType>
+    </Content>
+    <Content Include="Hibernate.cfg.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="images\_system\hatCms_logo.png" />
     <Content Include="images\_system\ajax-loader_16x16.gif" />
@@ -1061,6 +1097,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="setup\Copy of HatCMS_TableCreation.sql" />
     <None Include="templates\ContactUs.template" />
     <Content Include="templates\Glossary.template" />
     <Content Include="templates\_RSSDocuments.template" />
@@ -1128,6 +1165,30 @@
     <ProjectReference Include="include\HatCMS.Core\include\hatCommon\hatCommon.csproj">
       <Project>{E1A1A3F9-A397-45E3-8934-818155A61D57}</Project>
       <Name>hatCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="include\SharpArch\src\SharpArch\SharpArch.Core.NHibernateValidator\SharpArch.Core.NHibernateValidator.csproj">
+      <Project>{CA82D666-C585-427A-9E6D-57E65EAA2B98}</Project>
+      <Name>SharpArch.Core.NHibernateValidator</Name>
+    </ProjectReference>
+    <ProjectReference Include="include\SharpArch\src\SharpArch\SharpArch.Core\SharpArch.Core.csproj">
+      <Project>{4153D6A1-EF6D-49EE-BFF1-12C08A7EAA60}</Project>
+      <Name>SharpArch.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="include\SharpArch\src\SharpArch\SharpArch.Data\SharpArch.Data.csproj">
+      <Project>{0B4202A0-494A-48F2-ACA7-AC5194F8D010}</Project>
+      <Name>SharpArch.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="include\SharpArch\src\SharpArch\SharpArch.Web\SharpArch.Web.csproj">
+      <Project>{F8DFDA83-D64C-4456-A929-8BC7CD70660B}</Project>
+      <Name>SharpArch.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="Source\HatCMS.Data\HatCMS.Data.csproj">
+      <Project>{2745E7A6-F682-41F9-B78E-8CF476D340C0}</Project>
+      <Name>HatCMS.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="Source\HatCMS.Domain\HatCMS.Domain.csproj">
+      <Project>{58C1174C-EE37-4F5A-B681-F60D01366CB3}</Project>
+      <Name>HatCMS.Domain</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

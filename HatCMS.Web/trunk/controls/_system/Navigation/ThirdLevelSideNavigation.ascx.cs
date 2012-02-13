@@ -65,7 +65,7 @@ namespace HatCMS.Controls.Navigation
         private string recursiveRender(CmsPage page, int currentLevel, int maxLevel)
         {
             StringBuilder html = new StringBuilder();
-            if (page.ID == -1 || currentLevel > maxLevel || !page.ShowInMenu)
+            if (page.Id == -1 || currentLevel > maxLevel || !page.ShowInMenu)
                 return "";
 
             if (!page.isVisibleForCurrentUser || ! page.ShowInMenu)

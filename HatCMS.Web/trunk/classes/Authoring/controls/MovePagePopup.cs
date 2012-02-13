@@ -56,7 +56,7 @@ namespace HatCMS.Controls
                         {
                             _errorMessage = "No parent page specified";
                         }
-                        else if (parent == pageToMove.ID)
+                        else if (parent == pageToMove.Id)
                         {
                             _errorMessage = "can not move page to the same location!";
                         }
@@ -64,7 +64,7 @@ namespace HatCMS.Controls
                         {
                             CmsPage newParentPage = CmsContext.getPageById(parent);
 
-                            if (pageToMove.ID == CmsContext.HomePage.ID)
+                            if (pageToMove.Id == CmsContext.HomePage.Id)
                             {
                                 html.Append("<span style=\"color: red\">Error: you can not move the home page!</span>");
                                 return (html.ToString());                                
@@ -132,7 +132,7 @@ namespace HatCMS.Controls
                         CmsPage pageToAdd = allPages[pageId];
                         // -- don't allow moving a page to a child of the page, or to the same location as it is now.
                         bool zoneAuthorized = pageToAdd.SecurityZone.canWrite(CmsContext.currentWebPortalUser);
-                        if (zoneAuthorized && !pageToAdd.isChildOf(pageToMove) && pageToAdd.ID != pageToMove.ParentID)
+                        if (zoneAuthorized && !pageToAdd.isChildOf(pageToMove) && pageToAdd.Id != pageToMove.ParentID)
                             targetDropDownVals.Add(pageId.ToString(), pageToAdd.Path);
                     }
                     html.Append("	move page so that it is under : </td><td>" + PageUtils.getDropDownHtml("parent", "fp", targetDropDownVals, parent.ToString()));
@@ -141,7 +141,7 @@ namespace HatCMS.Controls
 
                     html.Append("</table>");
 
-                    html.Append(PageUtils.getHiddenInputHtml("target", pageToMove.ID.ToString()));
+                    html.Append(PageUtils.getHiddenInputHtml("target", pageToMove.Id.ToString()));
                     html.Append(PageUtils.getHiddenInputHtml("MovePageAction", "MovePage"));
                     html.Append("<input type=\"submit\" value=\"move page\"> ");
                     html.Append("<input type=\"button\" value=\"cancel\" onclick=\"window.close()\">");

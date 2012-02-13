@@ -43,7 +43,7 @@ namespace HatCMS
 		private string recursiveRender(CmsPage page, int currentLevel, int maxLevel)
 		{
 			StringBuilder html = new StringBuilder();
-			if(page.ID == -1 || currentLevel > maxLevel)
+			if(page.Id == -1 || currentLevel > maxLevel)
 				return "";
 
             if (! page.isVisibleForCurrentUser)

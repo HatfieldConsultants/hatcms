@@ -38,7 +38,7 @@ namespace HatCMS.Controls._system
             bool first = true;            
 
             // -- handle all parent pages
-            while (page.ID != -1)
+            while (page.Id != 0)
             {
                 string displayTitle = page.MenuTitle;
                 if (displayTitle == "")

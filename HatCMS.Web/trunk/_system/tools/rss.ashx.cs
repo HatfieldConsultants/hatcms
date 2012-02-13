@@ -31,7 +31,7 @@ namespace HatCMS
             }
 
             CmsPage pageToRenderRSSFor = CmsContext.getPageByPath(pagePath, pageLang);
-            if (pageToRenderRSSFor.ID < 0 || !pageToRenderRSSFor.currentUserCanRead)
+            if (pageToRenderRSSFor.Id < 0 || !pageToRenderRSSFor.currentUserCanRead)
             {
                 context.Response.ContentType = "text/plain";
                 context.Response.Write("Error: CMS page not found");

@@ -112,7 +112,7 @@ namespace HatCMS.Controls.Navigation
             StringBuilder html = new StringBuilder();
 
             int currentLevel = page.Level;
-            if (page.ID == -1 || currentLevel > maxLevel)
+            if (page.Id == -1 || currentLevel > maxLevel)
                 return "";
 
             if (!page.isVisibleForCurrentUser || ! page.ShowInMenu)

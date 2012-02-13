@@ -26,7 +26,7 @@ namespace HatCMS.Controls
 			string notFound = Guid.NewGuid().ToString();
             int targetPageId = PageUtils.getFromForm("target",Int32.MinValue);
             if (targetPageId < 0)
-                targetPageId = CmsContext.HomePage.ID;
+                targetPageId = CmsContext.HomePage.Id;
 
             CmsPage targetPage = CmsContext.getPageById(targetPageId);
 

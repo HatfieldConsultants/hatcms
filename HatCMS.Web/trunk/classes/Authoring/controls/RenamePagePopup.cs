@@ -49,7 +49,7 @@ namespace HatCMS.Controls
                         html.Append("<span style=\"color: red\">Access denied. You do not have write-access to this page.</span>");
                         return(html.ToString());                        
                     }
-                    if (pageToRename.ID == CmsContext.HomePage.ID)
+                    if (pageToRename.Id == CmsContext.HomePage.Id)
                     {
                         html.Append("<span style=\"color: red\">Error: you can not rename the home page!</span>");
                         return (html.ToString());                        

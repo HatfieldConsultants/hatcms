@@ -6,6 +6,12 @@ using System.Web.SessionState;
 using System.Web.Security;
 using System.Threading;
 using Hatfield.Web.Portal;
+using SharpArch.Core;
+using SharpArch.Data.NHibernate;
+using SharpArch.Web.NHibernate;
+using NHibernate;
+using System.IO;
+
 
 namespace HatCMS 
 {
@@ -18,7 +24,7 @@ namespace HatCMS
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
-                            
+        private WebSessionStorage webSessionStorage;                    
         /// <summary>
 		/// constructor (never needs to be called)
 		/// </summary>
@@ -29,6 +35,9 @@ namespace HatCMS
 		
 		protected void Application_Start(Object sender, EventArgs e)
 		{
+            ServiceLocatorInitializer.Init();
+            Console.WriteLine("application starts...");
+
             CmsUserInterface WebUIConfiguration = new CmsUserInterface(
                 new showThumbPage(), 
                 new HatCMS.WebEditor.Helpers.PopupFlashObjectBrowser(), 
@@ -42,6 +51,13 @@ namespace HatCMS
             CmsContext.Application_Start_Session();
 		}
 
+        public override void Init()
+        {
+            base.Init();
+            webSessionStorage = new WebSessionStorage(this);
+
+        }
+
         
         /// <summary>
         /// The Application_BeginRequest function 
@@ -51,8 +67,17 @@ namespace HatCMS
         protected void Application_BeginRequest(Object sender, EventArgs e)
         {            
             CmsContext.Application_BeginRequest(Context);
+
+            NHibernateInitializer.Instance().InitializeNHibernateOnce(delegate
+            {
+                InitializeNHibernateSession();
+            });
         }
 
+        private NHibernate.Cfg.Configuration InitializeNHibernateSession()
+        {
+            return NHibernateSession.Init(webSessionStorage, new string[] { "HatCMS.Data" }, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Hibernate.cfg.xml"));
+        }
 
         
 		protected void Application_EndRequest(Object sender, EventArgs e)

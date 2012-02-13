@@ -27,7 +27,7 @@ namespace HatCMS.Controls
                 return("Error: invalid target page!");                
             }
             CmsPage page = CmsContext.getPageById(targetPageId);
-            if (page.ID < 0)
+            if (page.Id < 0)
             {
                 return("Error: invalid target page!");
             }
@@ -104,8 +104,8 @@ namespace HatCMS.Controls
                     {
                         html.Append("<td>Rev # " + rev.RevisionNumber.ToString() + "</td>");
                     }
-                    html.Append("<td>" + rev.RevisionSavedAt.ToString("d MMM yyyy") + " at " + rev.RevisionSavedAt.ToString("%h:mm tt") + "</td>" + Environment.NewLine);
-                    html.Append("<td>" + rev.RevisionSavedByUsername + "</td>" + Environment.NewLine);
+                    html.Append("<td>" + rev.ModificationDate.ToString("d MMM yyyy") + " at " + rev.ModificationDate.ToString("%h:mm tt") + "</td>" + Environment.NewLine);
+                    html.Append("<td>" + rev.ModifiedBy + "</td>" + Environment.NewLine);
                     if (CmsConfig.Languages.Length >= 1)
                     {
                         NameValueCollection urlParams = new NameValueCollection();
@@ -153,7 +153,7 @@ namespace HatCMS.Controls
 
         private string getLastModifiedTitle(CmsPageRevisionData revData)
         {
-            TimeSpan timespan = TimeSpan.FromTicks(DateTime.Now.Ticks - revData.RevisionSavedAt.Ticks);
+            TimeSpan timespan = TimeSpan.FromTicks(DateTime.Now.Ticks - revData.ModificationDate.Ticks);
             if (timespan.TotalDays < 7)
                 return "less than a week ago";
             else if (timespan.TotalDays < 31)

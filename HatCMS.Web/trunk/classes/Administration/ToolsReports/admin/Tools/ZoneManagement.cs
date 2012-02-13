@@ -3,6 +3,8 @@ using System.Text;
 using System.Collections.Generic;
 using Hatfield.Web.Portal;
 using System.Collections.Specialized;
+using SharpArch.Core;
+using HatCMS.Core.DataRepository;
 
 namespace HatCMS.Admin
 {
@@ -33,8 +35,11 @@ namespace HatCMS.Admin
         /// <returns></returns>
         protected CmsPageSecurityZone createAddRecord(string controlId)
         {
-            CmsPageSecurityZone data = new CmsPageSecurityZone();
-            data.StartingPageId = PageUtils.getFromForm(controlId + "addStartingPageId", -999);
+            CmsPageSecurityZone data = new CmsPageSecurityZone();            
+            int pageid = PageUtils.getFromForm(controlId + "addStartingPageId", -999);
+            Check.Assert(pageid != -9999);
+            PageRepository pagerepository = new PageRepository();
+            data.StartingPage = pagerepository.Get(pageid);
             data.ZoneName = PageUtils.getFromForm(controlId + "addName", "");
             return data;
         }
@@ -47,9 +52,12 @@ namespace HatCMS.Admin
         /// <returns></returns>
         protected CmsPageSecurityZone createUpdateRecord(string controlId, int id)
         {
-            CmsPageSecurityZone data = new CmsPageSecurityZone();
-            data.ZoneId = id;
-            data.StartingPageId = PageUtils.getFromForm(controlId + "startingPageId", -999);
+            CmsPageSecurityZone data = new CmsPageSecurityZone(id);
+            int formid = PageUtils.getFromForm(controlId + "startingPageId", -999);
+            Check.Assert(formid != -999);
+            PageRepository repository = new PageRepository();
+            data.StartingPage = repository.Get(id); 
+            
             data.ZoneName = PageUtils.getFromForm(controlId + "name", "");
             return data;
         }
@@ -61,13 +69,13 @@ namespace HatCMS.Admin
         /// <returns></returns>
         private NameValueCollection getParentPageOptions(CmsPage page)
         {
-            if (page == null || page.ID == -1)
+            if (page == null || page.Id == -1)
                 return new NameValueCollection();
 
             NameValueCollection nvc = new NameValueCollection();
             if (page.isVisibleForCurrentUser)
             {
-                nvc.Add(page.ID.ToString(), page.Path);
+                nvc.Add(page.Id.ToString(), page.Path);
                 foreach (CmsPage subPage in page.ChildPages)
                 {
                     NameValueCollection ret = getParentPageOptions(subPage);
@@ -184,18 +192,18 @@ namespace HatCMS.Admin
                 html.Append("<tr>" + EOL);
                 CmsPageSecurityZone data1 = list[x];
                 html.Append("<td>" + EOL);
-                html.Append("<input class=\"" + controlId + "chgButton\" type=\"button\" value=\"Edit\" title=\"" + data1.ZoneId + "\" />" + EOL);
-                html.Append("<input class=\"" + controlId + "delButton\" type=\"button\" value=\"Delete\" title=\"" + data1.ZoneId + "\" />" + EOL);
-                html.Append("<input class=\"" + controlId + "chgSaveButton\" type=\"button\" value=\"Save\" title=\"" + data1.ZoneId + "\" />" + EOL);
-                html.Append("<input class=\"" + controlId + "chgCancelButton\" type=\"button\" value=\"Cancel\" title=\"" + data1.ZoneId + "\" />" + EOL);
+                html.Append("<input class=\"" + controlId + "chgButton\" type=\"button\" value=\"Edit\" title=\"" + data1.Id + "\" />" + EOL);
+                html.Append("<input class=\"" + controlId + "delButton\" type=\"button\" value=\"Delete\" title=\"" + data1.Id + "\" />" + EOL);
+                html.Append("<input class=\"" + controlId + "chgSaveButton\" type=\"button\" value=\"Save\" title=\"" + data1.Id + "\" />" + EOL);
+                html.Append("<input class=\"" + controlId + "chgCancelButton\" type=\"button\" value=\"Cancel\" title=\"" + data1.Id + "\" />" + EOL);
                 html.Append("</td>" + EOL);
 
                 string zName = data1.ZoneName;
-                html.Append("<td><div id=\"" + controlId + "name_" + data1.ZoneId + "\">" + zName + "</div></td>" + EOL);
+                html.Append("<td><div id=\"" + controlId + "name_" + data1.Id + "\">" + zName + "</div></td>" + EOL);
 
                 html.Append("<td>" + EOL);
-                html.Append("<select title=\"" + Convert.ToInt32(data1.StartingPageId).ToString() + "\" class=\"" + controlId + "chg\" disabled=\"disabled\" id=\"" + controlId + "startingPageId_" + data1.ZoneId + "\" name=\"" + controlId + "startingPageId\">" + EOL);
-                html.Append(generatePathOption(Convert.ToInt32(data1.StartingPageId).ToString()));
+                html.Append("<select title=\"" + Convert.ToInt32(data1.StartingPage.Id).ToString() + "\" class=\"" + controlId + "chg\" disabled=\"disabled\" id=\"" + controlId + "startingPageId_" + data1.Id + "\" name=\"" + controlId + "startingPageId\">" + EOL);
+                html.Append(generatePathOption(Convert.ToInt32(data1.StartingPage.Id).ToString()));
                 html.Append("</select>" + EOL);
                 html.Append("</td>" + EOL);
 
@@ -287,10 +295,10 @@ namespace HatCMS.Admin
         protected bool validateDeleteDefaultZone(string controlId, int id)
         {
             CmsPageSecurityZone z = zoneDb.fetch(id);
-            if (z.ZoneId < 0)
+            if (z.Id < 0)
                 return true;
 
-            if (z.StartingPageId == CmsContext.HomePage.ID)
+            if (z.StartingPage.Id == CmsContext.HomePage.Id)
                 return false;
             else
                 return true;
@@ -306,10 +314,10 @@ namespace HatCMS.Admin
         protected bool validateUpdateDefaultZone(string controlId, int id)
         {
             CmsPageSecurityZone z = zoneDb.fetch(id);
-            if (z.ZoneId < 0)
+            if (z.Id < 0)
                 return true;
 
-            if (z.StartingPageId == CmsContext.HomePage.ID && PageUtils.getFromForm(controlId + "startingPageId", -999) != CmsContext.HomePage.ID)
+            if (z.StartingPage.Id == CmsContext.HomePage.Id && PageUtils.getFromForm(controlId + "startingPageId", -999) != CmsContext.HomePage.Id)
                 return false;
             else
                 return true;

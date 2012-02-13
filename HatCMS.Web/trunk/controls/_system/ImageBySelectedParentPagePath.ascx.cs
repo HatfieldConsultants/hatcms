@@ -33,7 +33,7 @@ namespace HatCMS.Controls
         private bool parentOrSelfHasPath(CmsPage page, string path)
         {
             CmsPage p = page;
-            while (p.ID > -1)
+            while (p.Id > -1)
             {
                 if (String.Compare(path, p.Path, true) == 0)
                     return true;

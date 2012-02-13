@@ -23,7 +23,7 @@ namespace HatCMS.Controls
             int target = PageUtils.getFromForm("target", Int32.MinValue);
 
             CmsPage targetPage = CmsContext.getPageById(target);
-            if (targetPage.ID < 0)
+            if (targetPage.Id < 0)
             {
                 return("Invalid target pageId");                
             }

@@ -26,7 +26,7 @@ namespace HatCMS.Controls
         {
             CmsPage currPage = page;
             string notFoundValue = Guid.NewGuid().ToString();            
-            while (currPage.ID != -1)
+            while (currPage.Id != -1)
             {
                 string PagePath = currPage.Path;
                 string keyVal = CmsControlUtils.getControlParameterKeyValue(CmsContext.currentPage, this, PagePath, notFoundValue);

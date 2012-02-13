@@ -87,7 +87,7 @@ namespace HatCMS.Controls
         protected string deleteCmsPage(CmsPage p)
         {
             if (p.DeleteThisPage() == false)
-                return "Error deleting file page (Id " + p.ID.ToString() + ").";
+                return "Error deleting file page (Id " + p.Id.ToString() + ").";
 
             return "";
         }
@@ -101,7 +101,7 @@ namespace HatCMS.Controls
         {
             FileLibraryDb db = new FileLibraryDb(); 
             if (db.deleteAggregatorData(aggregatorPage) == false)
-                return "Error deleting file aggregator details (Id " + aggregatorPage.ID.ToString() + ").";
+                return "Error deleting file aggregator details (Id " + aggregatorPage.Id.ToString() + ").";
 
             return "";
         }
@@ -115,7 +115,7 @@ namespace HatCMS.Controls
         {
             FileLibraryDb db = new FileLibraryDb(); 
             if (db.deleteDetailsData(detailsPage) == false)
-                return "Error deleting file details (Id " + detailsPage.ID.ToString() + ").";
+                return "Error deleting file details (Id " + detailsPage.Id.ToString() + ").";
 
             return "";
         }

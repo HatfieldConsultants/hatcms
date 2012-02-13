@@ -65,7 +65,7 @@ namespace HatCMS.Controls._system
             for (int eventNum = 1; eventNum < int.MaxValue; eventNum++)
             {
                 string pageNameToTest = "Gallery" + eventNum.ToString();
-                if (!CmsContext.childPageWithNameExists(userImageGalleryAggregator.ID, pageNameToTest))
+                if (!CmsContext.childPageWithNameExists(userImageGalleryAggregator.Id, pageNameToTest))
                 {
                     newPageName = pageNameToTest;
                     break;
@@ -78,9 +78,9 @@ namespace HatCMS.Controls._system
             bool newPageShowInMenu = true;
             string newPageTemplate = CmsConfig.getConfigValue("UserImageGallery.DetailsTemplateName", "UserImageGallery");
 
-            newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, userImageGalleryAggregator.ID);
+            newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, userImageGalleryAggregator.Id);
 
-            newAction.CreateNewPageOptions.ParentPageId = userImageGalleryAggregator.ID;
+            newAction.CreateNewPageOptions.ParentPageId = userImageGalleryAggregator.Id;
             newAction.SortOrdinal = createNewSubPage.SortOrdinal + 1;
             newAction.doRenderToString = AddGalleryEditMenuRender;
 

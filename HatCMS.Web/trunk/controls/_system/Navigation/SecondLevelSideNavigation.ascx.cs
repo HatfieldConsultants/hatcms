@@ -28,7 +28,7 @@ namespace HatCMS.Controls._system
 			CmsPage currentPage = CmsContext.currentPage;
 			CmsPage homePage = CmsContext.HomePage;			
 
-			if (currentPage.ID == homePage.ID)
+			if (currentPage.Id == homePage.Id)
 			{				
 				writer.Write("<div id=\"SideNav\"></div>");
 				return;
@@ -60,7 +60,7 @@ namespace HatCMS.Controls._system
 		private string recursiveRender(CmsPage page, int currentLevel, int maxLevel, bool outputAllChildren)
 		{
 			StringBuilder html = new StringBuilder();
-			if(page.ID == -1 || currentLevel > maxLevel)
+			if(page.Id == -1 || currentLevel > maxLevel)
 				return "";
 
             if (! page.isVisibleForCurrentUser || ! page.ShowInMenu )

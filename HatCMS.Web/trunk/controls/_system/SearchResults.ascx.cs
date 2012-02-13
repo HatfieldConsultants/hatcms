@@ -38,7 +38,7 @@ namespace HatCMS.Controls
 
         private static string getPageFilenameForIndex(CmsPage page)
         {
-            return page.ID.ToString();
+            return page.Id.ToString();
         }
 
         private CmsPage getPageFromIndex(IndexableFileInfo fi)
@@ -331,7 +331,7 @@ namespace HatCMS.Controls
         private string getItemBreadcrumbOutput(CmsPage page)
         {
             StringBuilder breadcrumb = new StringBuilder();
-            if (page.ID != CmsContext.HomePage.ID)
+            if (page.Id != CmsContext.HomePage.Id)
             {
                 string[] pathParts = page.Path.Split(new char[] { '/' });
                 string prevPath = "/";
@@ -344,7 +344,7 @@ namespace HatCMS.Controls
                     if (displayTitle == "")
                         displayTitle = p.Title;
 
-                    if (i < pathParts.Length - 1 && p.ParentPage.ID > -1)
+                    if (i < pathParts.Length - 1 && p.ParentPage.Id > -1)
                     {
                         breadcrumb.Append("<a href=\"" + p.Url + "\">" + displayTitle + "</a>");
 

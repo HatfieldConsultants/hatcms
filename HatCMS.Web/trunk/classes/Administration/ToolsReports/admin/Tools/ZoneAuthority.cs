@@ -44,9 +44,8 @@ namespace HatCMS.Admin
         /// <returns></returns>
         protected CmsPageSecurityZoneUserRole createUserRoleEntity(CmsPageSecurityZone z, WebPortalUserRole r, string[] accessMode)
         {
-            CmsPageSecurityZoneUserRole entity = new CmsPageSecurityZoneUserRole();
-            entity.ZoneId = z.ZoneId;
-            entity.UserRoleId = r.RoleID;
+            CmsPageSecurityZoneUserRole entity = new CmsPageSecurityZoneUserRole(z.Id, r.RoleID);
+
             foreach (string s in accessMode)
             {
                 if (s.ToLower() == "r")
@@ -77,7 +76,7 @@ namespace HatCMS.Admin
                 foreach (WebPortalUserRole r in roleList)
                 {
                     // for each zone and role, we expect a pair of html input elements: R, W
-                    string htmlInputName = "z" + z.ZoneId + "r" + r.RoleID;
+                    string htmlInputName = "z" + z.Id + "r" + r.RoleID;
                     string[] accessMode = PageUtils.getFromForm(htmlInputName);
                     if (accessMode.Length == 0)
                         continue;
@@ -152,7 +151,7 @@ namespace HatCMS.Admin
         /// <returns></returns>
         protected string RenderZoneAuthorityRow(CmsPageSecurityZone zone, List<WebPortalUserRole> roleList, string adminRoleName)
         {
-            int zID = zone.ZoneId;
+            int zID = zone.Id;
             List<CmsPageSecurityZoneUserRole> authority = roleDb.fetchAllByZone(zone);
             Set rSet = new Set();
             Set wSet = new Set();

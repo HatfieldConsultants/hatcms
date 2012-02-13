@@ -34,7 +34,7 @@ namespace HatCMS
             }
 
             CmsPage pageToRenderControlFor = CmsContext.getPageByPath(pagePath);
-            if (pageToRenderControlFor.ID < 0)
+            if (pageToRenderControlFor.Id < 0)
             {
                 context.Response.ContentType = "text/plain";
                 context.Response.Write("Error: CMS page not found");

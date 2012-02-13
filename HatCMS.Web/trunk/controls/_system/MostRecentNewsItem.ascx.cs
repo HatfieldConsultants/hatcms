@@ -124,7 +124,7 @@ namespace HatCMS.Controls._system
             foreach (NewsArticleDb.NewsArticleDetailsData article in articleArray)
             {
                 CmsPage newsArticleDetailsPage = CmsContext.getPageById(article.DetailsPageId);
-                if (newsArticleDetailsPage.ID < 0)
+                if (newsArticleDetailsPage.Id < 0)
                     continue;
 
                 string url = newsArticleDetailsPage.getUrl(lang);

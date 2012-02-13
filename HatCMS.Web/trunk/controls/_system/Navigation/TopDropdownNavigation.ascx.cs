@@ -62,7 +62,7 @@ namespace HatCMS.Controls._system
 			if (homeTitle == "")
 				homeTitle = homePage.Title;
 
-            html.Append("<li><a " + HomeCSSClass + " id=\"TopNav_" + homePage.ID.ToString() + "\" href=\"" + homePage.Url + "\">" + homeTitle + "</a></li>" + EOL);
+            html.Append("<li><a " + HomeCSSClass + " id=\"TopNav_" + homePage.Id.ToString() + "\" href=\"" + homePage.Url + "\">" + homeTitle + "</a></li>" + EOL);
 			foreach(CmsPage p in homePage.ChildPages)
 			{
                 if (p.isVisibleForCurrentUser)
@@ -75,7 +75,7 @@ namespace HatCMS.Controls._system
 					if (title == "")
 						title = p.Title;
 
-                    html.Append("<li><a " + CSSClass + " id=\"TopNav_" + p.ID.ToString() + "\" href=\"" + p.Url + "\">" + title + "</a></li>" + EOL);
+                    html.Append("<li><a " + CSSClass + " id=\"TopNav_" + p.Id.ToString() + "\" href=\"" + p.Url + "\">" + title + "</a></li>" + EOL);
 				}
 			}
             html.Append("</ul>" + EOL);
@@ -86,7 +86,7 @@ namespace HatCMS.Controls._system
 			{
 				if (p.ChildPages.Length > 0 && p.isVisibleForCurrentUser)
 				{
-					string id = p.ID.ToString();
+					string id = p.Id.ToString();
                     html.Append("<div class=\"TopNavSub\" style=\"display:none;\" id=\"TopNav_sub" + id + "\">" + EOL);
 					html.Append("<ul>"+EOL);
 					foreach(CmsPage subPage in p.ChildPages)

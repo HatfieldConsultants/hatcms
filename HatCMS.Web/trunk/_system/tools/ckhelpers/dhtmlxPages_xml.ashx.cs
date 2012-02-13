@@ -86,7 +86,7 @@ namespace HatCMS._system.ckhelpers
         private XmlElement ToXmlRecursive(CmsPage p, CmsLanguage pageLanguage, XmlDocument doc, int pageLevelToExpand, string selectedUrl, bool isSuperAdmin)
         {
             XmlElement ret = doc.CreateElement("item");
-            ret.Attributes.Append(getAttribute("id", pageLanguage.shortCode + p.ID.ToString(), doc));
+            ret.Attributes.Append(getAttribute("id", pageLanguage.shortCode + p.Id.ToString(), doc));
             string title = p.getMenuTitle(pageLanguage);
             if (title.Trim() == "")
                 title = p.getTitle(pageLanguage);

@@ -139,7 +139,7 @@ namespace HatCMS.Admin
                 {
                     // string key = pl.Page.ID.ToString() + pl.Language.shortCode;
                     // note: to show duplicates between language versions of the same page, use the language code here!
-                    string key = pl.Page.ID.ToString();
+                    string key = pl.Page.Id.ToString();
                     if (existingPageIdLangCodes.IndexOf(key) < 0)
                     {
                         ret.Add(pl);

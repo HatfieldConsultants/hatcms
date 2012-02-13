@@ -29,7 +29,7 @@ namespace HatCMS.Controls.Navigation
                     homepageMenuTitle = CmsContext.HomePage.Title;
 
                 string homeClassName = "";
-                if (CmsContext.currentPage.ID == CmsContext.HomePage.ID )
+                if (CmsContext.currentPage.Id == CmsContext.HomePage.Id )
                 {
                     homeClassName = " class=\"selected\"";
                 }
@@ -42,7 +42,7 @@ namespace HatCMS.Controls.Navigation
                 if (page.ShowInMenu && page.isVisibleForCurrentUser)
                 {
                     string className = "";
-                    if (page.ID == CmsContext.currentPage.ID || page.isChildSelected())
+                    if (page.Id == CmsContext.currentPage.Id || page.isChildSelected())
                     {
                         className = " class=\"selected\"";
                     }

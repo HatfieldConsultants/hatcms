@@ -202,7 +202,7 @@ namespace HatCMS.Controls
             if (cmsPage.TemplateName[0] == '_')
                 return "";
 
-            string controlId = "MenuVisibilityPopup_" + cmsPage.ID.ToString();
+            string controlId = "MenuVisibilityPopup_" + cmsPage.Id.ToString();
             StringBuilder html = new StringBuilder("<tr>" + EOL);
 
             if (remarks == "")
@@ -227,7 +227,7 @@ namespace HatCMS.Controls
             html.Append("</td>" + EOL);
 
             html.Append("<td align=\"center\"> " + EOL);
-            if (cmsPage.ID != CmsContext.HomePage.ID)
+            if (cmsPage.Id != CmsContext.HomePage.Id)
             {
                 bool boxChecked = cmsPage.ShowInMenu;
                 bool editable = cmsPage.SecurityZone.canWrite(CmsContext.currentWebPortalUser); // if zone is authorized, checkbox is editable by user
@@ -258,10 +258,10 @@ namespace HatCMS.Controls
         /// <returns></returns>
         protected string updateCmsPage(CmsPage cmsPage, string controlId)
         {
-            if (cmsPage.ID == CmsContext.HomePage.ID)  // home page has nothing to do with ShowInMenu indicator
+            if (cmsPage.Id == CmsContext.HomePage.Id)  // home page has nothing to do with ShowInMenu indicator
                 return "";
 
-            string[] checkboxVal = PageUtils.getFromForm(controlId + cmsPage.ID + "_show");
+            string[] checkboxVal = PageUtils.getFromForm(controlId + cmsPage.Id + "_show");
             bool show = false;
             if (checkboxVal.Length == 1 && checkboxVal[0] == "true")
                 show = true;
