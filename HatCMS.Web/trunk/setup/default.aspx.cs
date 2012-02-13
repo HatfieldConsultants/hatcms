@@ -14,6 +14,7 @@ using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Reflection;
 using Hatfield.Web.Portal;
+using HatCMS.Core.DataRepository;
 
 namespace HatCMS.setup
 {
@@ -23,7 +24,7 @@ namespace HatCMS.setup
 	public partial class setupPage : System.Web.UI.Page
 	{
         private string RedirectTemplateName = "_Redirect";
-        
+        private PageRepository pagerepository = new PageRepository();
         /// <summary>
         /// Gets the dependencies for the SetupPage.
         /// </summary>
@@ -162,12 +163,12 @@ namespace HatCMS.setup
             foreach (CmsLanguage lang in CmsConfig.Languages)
             {
                 CmsPageLanguageInfo langInfo = new CmsPageLanguageInfo();
-                langInfo.languageShortCode = lang.shortCode;
-                langInfo.name = filename;
-                langInfo.menuTitle = menuTitle;
-                langInfo.title = title;
-                langInfo.searchEngineDescription = seDesc;
-
+                langInfo.LanguageShortCode = lang.shortCode;
+                langInfo.Name = filename;
+                langInfo.MenuTitle = menuTitle;
+                langInfo.Title = title;
+                langInfo.SearchEngineDescription = seDesc;
+                langInfo.Page = newPage;
                 langInfos.Add(langInfo);
             } // foreach languages
             newPage.LanguageInfo = langInfos.ToArray();
@@ -208,7 +209,7 @@ namespace HatCMS.setup
                     // _errorMessage = "database could not create new page.";
                     return -1;
                 }
-                return newPage.ID;
+                return newPage.Id;
             }
 
         }
@@ -221,12 +222,13 @@ namespace HatCMS.setup
         {
             CmsPageSecurityZone z = new CmsPageSecurityZone();
             z.ZoneName = "Default zone";
-            z.StartingPageId = HomePageId;
+            
+            z.StartingPage = pagerepository.Get(HomePageId);
             if (new CmsPageSecurityZoneDb().insert(z) == false)
                 throw new Exception("Cannot insert Home Page Zone");
 
             // anonymous users can read, but not write pages in this zone
-            CmsPageSecurityZoneUserRole anonZoneRole = new CmsPageSecurityZoneUserRole(z.ZoneId, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, true, false);
+            CmsPageSecurityZoneUserRole anonZoneRole = new CmsPageSecurityZoneUserRole(z.Id, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, true, false);
             if (new CmsPageSecurityZoneUserRoleDb().insert(anonZoneRole) == false)
                 throw new Exception("Cannot insert anonymous ZoneUserRole");
 
@@ -234,7 +236,7 @@ namespace HatCMS.setup
             WebPortalUserRole authorRole = WebPortalUserRole.Fetch(CmsConfig.getConfigValue("AuthorAccessUserRole", "Author"));
             if (authorRole.RoleID >= 0)
             {
-                CmsPageSecurityZoneUserRole authorZoneRole = new CmsPageSecurityZoneUserRole(z.ZoneId, authorRole.RoleID , true, true);
+                CmsPageSecurityZoneUserRole authorZoneRole = new CmsPageSecurityZoneUserRole(z.Id, authorRole.RoleID , true, true);
                 if (new CmsPageSecurityZoneUserRoleDb().insert(authorZoneRole) == false)
                     throw new Exception("Cannot insert author ZoneUserRole");
             }
@@ -247,12 +249,12 @@ namespace HatCMS.setup
             CmsPageSecurityZone z = new CmsPageSecurityZone();
             
             z.ZoneName = "Internal Author Tools Zone";
-            z.StartingPageId = AdminPageId;
+            z.StartingPage = pagerepository.Get(AdminPageId);
             if (new CmsPageSecurityZoneDb().insert(z) == false)
                 throw new Exception("Cannot insert Zone");
 
             // anonymous users cannot read or write in this zone
-            CmsPageSecurityZoneUserRole anonZoneRole = new CmsPageSecurityZoneUserRole(z.ZoneId, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, false, false);
+            CmsPageSecurityZoneUserRole anonZoneRole = new CmsPageSecurityZoneUserRole(z.Id, WebPortalUserRole.DUMMY_PUBLIC_ROLE_ID, false, false);
             if (new CmsPageSecurityZoneUserRoleDb().insert(anonZoneRole) == false)
                 throw new Exception("Cannot insert anonymous ZoneUserRole");
 
@@ -260,7 +262,7 @@ namespace HatCMS.setup
             WebPortalUserRole authorRole = WebPortalUserRole.Fetch(CmsConfig.getConfigValue("AuthorAccessUserRole", "Author"));
             if (authorRole.RoleID >= 0)
             {
-                CmsPageSecurityZoneUserRole authorZoneRole = new CmsPageSecurityZoneUserRole(z.ZoneId, authorRole.RoleID, true, true);
+                CmsPageSecurityZoneUserRole authorZoneRole = new CmsPageSecurityZoneUserRole(z.Id, authorRole.RoleID, true, true);
                 if (new CmsPageSecurityZoneUserRoleDb().insert(authorZoneRole) == false)
                     throw new Exception("Cannot insert author ZoneUserRole");
             }
@@ -400,7 +402,7 @@ namespace HatCMS.setup
             {
                 
                 // home page 
-                int HomePageId = InsertPage("", "Home Page", "Home Page", "", "HomePage", -1, 0, true);
+                int HomePageId = InsertPage("", "Home Page", "Home Page", "", "HomePage", 0, 0, true);
                 // create the home page security zones
                 InsertHomePageZone(HomePageId);
 
