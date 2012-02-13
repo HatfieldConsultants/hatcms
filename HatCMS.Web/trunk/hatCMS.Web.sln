@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HatCMS.Data", "Source\HatCM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HatCMS.Domain.Test", "Test\HatCMS.Domain.Test\HatCMS.Domain.Test.csproj", "{CE231573-AB34-466D-9A9B-5663578E74AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseMigration", "Deploy\migration\DatabaseMigration\DatabaseMigration\DatabaseMigration.csproj", "{6C8CCE19-A416-482D-B239-D26BA1C36037}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,12 @@ Global
 		{CE231573-AB34-466D-9A9B-5663578E74AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE231573-AB34-466D-9A9B-5663578E74AB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE231573-AB34-466D-9A9B-5663578E74AB}.Release|x86.ActiveCfg = Release|Any CPU
+		{6C8CCE19-A416-482D-B239-D26BA1C36037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C8CCE19-A416-482D-B239-D26BA1C36037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C8CCE19-A416-482D-B239-D26BA1C36037}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6C8CCE19-A416-482D-B239-D26BA1C36037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C8CCE19-A416-482D-B239-D26BA1C36037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C8CCE19-A416-482D-B239-D26BA1C36037}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
