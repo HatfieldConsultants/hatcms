@@ -105,7 +105,7 @@ namespace HatCMS.Placeholders
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
 
-            string formName = "editFlashObject_" + page.ID.ToString() + identifier.ToString() + langToRenderFor.shortCode;            
+            string formName = "editFlashObject_" + page.Id.ToString() + identifier.ToString() + langToRenderFor.shortCode;            
 
             FlashObjectDb db = (new FlashObjectDb());
             FlashObjectData flashObject = db.getFlashObject(page, identifier, true);

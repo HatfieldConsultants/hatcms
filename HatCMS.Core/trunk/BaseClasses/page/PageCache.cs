@@ -63,7 +63,7 @@ namespace HatCMS
             {
                 foreach (CmsPage p in allPages)
                 {
-                    Add(p.ID, p);
+                    Add(p.Id, p);
                 } // foreach
                 allPagesHaveBeenCached = true;
             }
@@ -120,7 +120,7 @@ namespace HatCMS
 
         public void Remove(CmsPage pageToRemove)
         {
-            string cacheKey = getKey(pageToRemove.ID);
+            string cacheKey = getKey(pageToRemove.Id);
             lock (cacheLock)
             {
                 if (cache.ContainsKey(cacheKey))
@@ -133,7 +133,7 @@ namespace HatCMS
         public void Update(CmsPage pageToUpdate)
         {
             Remove(pageToUpdate);
-            Add(pageToUpdate.ID, pageToUpdate);
+            Add(pageToUpdate.Id, pageToUpdate);
         }
 
 		/// <summary>
@@ -176,7 +176,7 @@ namespace HatCMS
         public CmsPage Get(int parentPageId, string childName, CmsLanguage childNameLanguage)
 		{
 			CmsPage parentPage = Get(parentPageId);
-			if (parentPage != null && parentPage.ID != -1)
+			if (parentPage != null && parentPage.Id != -1)
 			{
 				foreach(CmsPage child in parentPage.AllChildPages)
 				{					

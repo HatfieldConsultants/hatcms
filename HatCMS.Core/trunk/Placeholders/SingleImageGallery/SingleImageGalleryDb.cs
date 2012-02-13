@@ -14,10 +14,10 @@ namespace HatCMS.Placeholders
     {
         public SingleImageGalleryPlaceholderData getSingleImageGallery(CmsPage page, int identifier, CmsLanguage forLanguage, bool createNewIfDoesNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new SingleImageGalleryPlaceholderData();
 
-            string sql = "select * from singleimagegallery c where c.pageid = " + page.ID.ToString() + " and c.identifier = " + identifier.ToString() + " and langShortCode like '" + dbEncode(forLanguage.shortCode) + "' and deleted is null;";
+            string sql = "select * from singleimagegallery c where c.pageid = " + page.Id.ToString() + " and c.identifier = " + identifier.ToString() + " and langShortCode like '" + dbEncode(forLanguage.shortCode) + "' and deleted is null;";
             DataSet ds = this.RunSelectQuery(sql);
             if (this.hasSingleRow(ds))
             {
@@ -25,7 +25,7 @@ namespace HatCMS.Placeholders
 
                 SingleImageGalleryPlaceholderData ret = new SingleImageGalleryPlaceholderData();
                 
-                ret.PageIdToGatherImagesFrom = getPossiblyNullValue(dr, "PageIdToGatherImagesFrom", CmsContext.HomePage.ID);
+                ret.PageIdToGatherImagesFrom = getPossiblyNullValue(dr, "PageIdToGatherImagesFrom", CmsContext.HomePage.Id);
 
                 ret.RecursiveGatherImages = Convert.ToBoolean(dr["RecursiveGatherImages"]);
 
@@ -65,7 +65,7 @@ namespace HatCMS.Placeholders
         public SingleImageGalleryPlaceholderData createNewSingleImageGallery(CmsPage page, int identifier, CmsLanguage forLanguage, SingleImageGalleryPlaceholderData data)
         {
             string sql = "insert into singleimagegallery (pageid, identifier, langShortCode, PageIdToGatherImagesFrom,RecursiveGatherImages,ThumbnailDisplayBoxWidth,ThumbnailDisplayBoxHeight, OverrideFullDisplayBoxSize,FullSizeDisplayBoxWidth,FullSizeDisplayBoxHeight, NumThumbsPerRow, NumThumbsPerPage, ShowOnlyTags ) values (";
-            sql += page.ID.ToString() + ",";
+            sql += page.Id.ToString() + ",";
             sql += identifier.ToString() + ", ";
             sql += "'" + dbEncode(forLanguage.shortCode) + "', ";
             sql += "" + data.PageIdToGatherImagesFrom + ", ";
@@ -108,7 +108,7 @@ namespace HatCMS.Placeholders
             
             sql += "ShowOnlyTags = '" + dbEncode(String.Join(SingleImageData.TagStorageSeperator, data.TagsImagesMustHave)) + "' ";
 
-            sql += " where pageid= " + page.ID.ToString();
+            sql += " where pageid= " + page.Id.ToString();
             sql += " AND langShortCode like '" + dbEncode(forLanguage.shortCode) + "' ";
             sql += " AND identifier = " + identifier.ToString() + "; ";
 

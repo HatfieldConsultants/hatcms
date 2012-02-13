@@ -8,27 +8,71 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using Hatfield.Web.Portal;
+using SharpArch.Core.DomainModel;
+using NHibernate.Validator.Constraints;
 
 namespace HatCMS
 {
     /// <summary>
     /// The CmsPageLanguageInfo class tracks language dependent parts of a <see cref="CmsPage"/>. <seealso cref="CmsPage.LanguageInfo"/>
     /// </summary>
-    public class CmsPageLanguageInfo
+    /// 
+    
+    public class CmsPageLanguageInfo : Entity
     {
-        public string languageShortCode;
-        public string name;
-        public string title;
-        public string menuTitle;
-        public string searchEngineDescription;
+        #region domain model
+        private CmsPage page;
+        [DomainSignature]
+        public virtual CmsPage Page
+        {
+            get { return page; }
+            set { page = value; }
+        }
 
+        private string languageShortCode;
+        [DomainSignature]
+        public virtual string LanguageShortCode
+        {
+            get { return languageShortCode; }
+            set { languageShortCode = value; }
+        }
+        private string name;
+
+        public virtual string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+        private string title;
+
+        public virtual string Title
+        {
+            get { return title; }
+            set { title = value; }
+        }
+        private string menuTitle;
+
+        public virtual string MenuTitle
+        {
+            get { return menuTitle; }
+            set { menuTitle = value; }
+        }
+        private string searchEngineDescription;
+
+        public virtual string SearchEngineDescription
+        {
+            get { return searchEngineDescription; }
+            set { searchEngineDescription = value; }
+        }
+        #endregion domain model
         /// <summary>
         /// returns a newly created CmsPageLanguageInfo object if <paramref name="langToFind"/>  was not found in <paramref name="haystack"/>
         /// </summary>
         /// <param name="langToFind"></param>
         /// <param name="haystack"></param>
         /// <returns></returns>
-        public static CmsPageLanguageInfo GetFromHaystack(CmsLanguage langToFind, CmsPageLanguageInfo[] haystack)
+        public static CmsPageLanguageInfo GetFromHaystack(CmsLanguage langToFind, IList<CmsPageLanguageInfo> haystack)
         {
             foreach (CmsPageLanguageInfo l in haystack)
             {

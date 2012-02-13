@@ -40,7 +40,7 @@ namespace HatCMS.Placeholders
         {
             string prependToFilename = "";
             if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V1")
-                prependToFilename = page.ID.ToString() + identifier.ToString();
+                prependToFilename = page.Id.ToString() + identifier.ToString();
 
             string baseUrl = GetFileStorageDirectoryUrl(page, identifier, language);
 

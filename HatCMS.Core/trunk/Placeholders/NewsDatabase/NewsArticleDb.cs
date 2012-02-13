@@ -36,7 +36,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.Append(TableNameAggregator);
             sql.Append(" (PageId,Identifier,LangCode,DefaultYearToDisplay) VALUES (");
-            sql.Append(page.ID.ToString() + ",");
+            sql.Append(page.Id.ToString() + ",");
             sql.Append(identifier.ToString() + ",'");
             sql.Append(dbEncode(lang.shortCode) + "',");
             sql.Append(entity.YearToDisplay.ToString() + ");");
@@ -50,12 +50,12 @@ namespace HatCMS.Placeholders.NewsDatabase
 
         public NewsArticleAggregatorData fetchNewsAggregator(CmsPage page, int identifier, CmsLanguage lang, bool createIfNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new NewsArticleAggregatorData();
 
             StringBuilder sql = new StringBuilder("SELECT DefaultYearToDisplay FROM ");
             sql.Append(TableNameAggregator);
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND Deleted is null;");
@@ -85,7 +85,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             StringBuilder sql = new StringBuilder("UPDATE ");
             sql.Append(TableNameAggregator);
             sql.Append(" SET DefaultYearToDisplay = " + entity.YearToDisplay.ToString());
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
 
@@ -131,7 +131,7 @@ namespace HatCMS.Placeholders.NewsDatabase
 
             public NewsArticleDetailsData(CmsPage page, int identifier, CmsLanguage lang)
             {
-                this.pageId = page.ID;
+                this.pageId = page.Id;
                 this.identifier = identifier;
                 this.lang = lang;
             }
@@ -205,12 +205,12 @@ namespace HatCMS.Placeholders.NewsDatabase
 
         public NewsArticleDetailsData fetchNewsDetails(CmsPage page, int identifier, CmsLanguage lang, bool createIfNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new NewsArticleDetailsData(page, identifier, lang);
 
             StringBuilder sql = new StringBuilder("SELECT DateOfNews FROM ");
             sql.Append(TableNameDetails);
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Deleted is null;");
@@ -261,7 +261,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             StringBuilder sql = new StringBuilder("UPDATE ");
             sql.Append(TableNameDetails);
             sql.Append(" SET DateOfNews = " + dbEncode(entity.DateOfNews));
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "';");
 
@@ -277,7 +277,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             List<string> wheres = new List<string>();
             List<int> pageIds = new List<int>();
             foreach (CmsPage p in detailsPages)
-                pageIds.Add(p.ID);
+                pageIds.Add(p.Id);
 
             if (pageIds.Count > 0)
                 wheres.Add(" PageId in (" + Hatfield.Web.Portal.StringUtils.Join(",", pageIds.ToArray()) + ") ");

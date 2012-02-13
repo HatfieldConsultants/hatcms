@@ -5,19 +5,19 @@ using System.Collections.Generic;
 using System.Configuration;
 using Hatfield.Web.Portal;
 using Hatfield.Web.Portal.Data;
+using HatCMS.Core.DataRepository;
 
 namespace HatCMS
 {
     /// <summary>
     /// DB object for `ZoneUserRole`
     /// </summary>
-    public class CmsPageSecurityZoneUserRoleDb : MySqlDbObject 
+    public class CmsPageSecurityZoneUserRoleDb
     {
-        protected static string TABLE_NAME = "zoneuserrole";
-
-        public CmsPageSecurityZoneUserRoleDb()
-            : base(ConfigurationManager.AppSettings["ConnectionString"])
-        { }
+        PageSecurityZoneUserRoleRepository repository;
+        public CmsPageSecurityZoneUserRoleDb(){ 
+            repository = new PageSecurityZoneUserRoleRepository();
+        }
 
         /// <summary>
         /// Select all the aurhority definitions by providing a zone (zone ID)
@@ -26,19 +26,8 @@ namespace HatCMS
         /// <returns></returns>
         public List<CmsPageSecurityZoneUserRole> fetchAllByZone(CmsPageSecurityZone z)
         {
-            StringBuilder sql = new StringBuilder("SELECT ZoneId,UserRoleId,ReadAccess,WriteAccess FROM ");
-            sql.Append(TABLE_NAME);
-            sql.Append(" WHERE ZoneId=" + z.ZoneId.ToString());
-            sql.Append(" ORDER by ZoneId, UserRoleId;");
-
-            DataSet ds = this.RunSelectQuery(sql.ToString());
-
-            List<CmsPageSecurityZoneUserRole> list = new List<CmsPageSecurityZoneUserRole>();
-            if (this.hasRows(ds))
-            {
-                foreach (DataRow dr in ds.Tables[0].Rows)
-                    list.Add(fromDataRow(dr));
-            }
+            //PageSecurityZoneUserRoleRepository repository = new PageSecurityZoneUserRoleRepository();
+            List<CmsPageSecurityZoneUserRole> list = repository.fetchAllByZone(z);            
             return list;
         }
 
@@ -52,22 +41,8 @@ namespace HatCMS
         /// <returns></returns>
         public int fetchRoleMatchingCountForRead(CmsPageSecurityZone z, WebPortalUserRole[] roleArray)
         {
-            StringBuilder sql = new StringBuilder("SELECT Count(ReadAccess) AS MatchingCount FROM ");
-            sql.Append(TABLE_NAME);
-            sql.Append(" WHERE ZoneId=" + z.ZoneId.ToString());
-            sql.Append(" AND ReadAccess=1");
-            sql.Append(" AND UserRoleId in (");
-            foreach (WebPortalUserRole r in roleArray)
-                sql.Append(r.RoleID + ",");
-            sql.Remove(sql.Length - 1, 1);
-            sql.Append(");");
-
-            DataSet ds = this.RunSelectQuery(sql.ToString());
-            if (this.hasSingleRow(ds) == false)
-                return 0;
-
-            DataRow dr = ds.Tables[0].Rows[0];
-            return Convert.ToInt32(dr["MatchingCount"]);
+           // PageSecurityZoneUserRoleRepository repository = new PageSecurityZoneUserRoleRepository();
+            return repository.fetchRoleMatchingCountForRead(z, roleArray);
         }
 
         /// <summary>
@@ -80,22 +55,8 @@ namespace HatCMS
         /// <returns></returns>
         public int fetchRoleMatchingCountForWrite(CmsPageSecurityZone z, WebPortalUserRole[] roleArray)
         {
-            StringBuilder sql = new StringBuilder("SELECT Count(WriteAccess) AS MatchingCount FROM ");
-            sql.Append(TABLE_NAME);
-            sql.Append(" WHERE ZoneId=" + z.ZoneId.ToString());
-            sql.Append(" AND WriteAccess=1");
-            sql.Append(" AND UserRoleId in (");
-            foreach (WebPortalUserRole r in roleArray)
-                sql.Append(r.RoleID + ",");
-            sql.Remove(sql.Length - 1, 1);
-            sql.Append(");");
-
-            DataSet ds = this.RunSelectQuery(sql.ToString());
-            if (this.hasSingleRow(ds) == false)
-                return 0;
-
-            DataRow dr = ds.Tables[0].Rows[0];
-            return Convert.ToInt32(dr["MatchingCount"]);
+            //PageSecurityZoneUserRoleRepository repository = new PageSecurityZoneUserRoleRepository();
+            return repository.fetchRoleMatchingCountForWrite(z, roleArray);
         }
 
         /// <summary>
@@ -105,19 +66,16 @@ namespace HatCMS
         /// <returns></returns>
         public bool insert(CmsPageSecurityZoneUserRole entity)
         {
-            StringBuilder sql = new StringBuilder("INSERT INTO ");
-            sql.Append(TABLE_NAME);
-            sql.Append(" (ZoneId,UserRoleId,ReadAccess,WriteAccess) VALUES (");
-            sql.Append(entity.ZoneId.ToString() + ",");
-            sql.Append(entity.UserRoleId.ToString() + ",");
-            sql.Append(entity.ReadAccessAsInt.ToString() + ",");
-            sql.Append(entity.WriteAccessAsInt.ToString() + ");");
-
-            int affected = this.RunUpdateQuery(sql.ToString());
-            if (affected > 0)
+            
+            try
+            {
+                repository.Save(entity);
                 return true;
-            else
+            }
+            catch (Exception ex)
+            {
                 return false;
+            }
         }
 
         /// <summary>
@@ -127,28 +85,14 @@ namespace HatCMS
         /// <returns></returns>
         public bool insert(List<CmsPageSecurityZoneUserRole> entityList)
         {
-            if (entityList.Count == 0)
-                return true;
-
-            StringBuilder sql = new StringBuilder("INSERT INTO ");
-            sql.Append(TABLE_NAME);
-            sql.Append(" (ZoneId,UserRoleId,ReadAccess,WriteAccess) VALUES ");
-
-            for (int x = 0; x < entityList.Count; x++)
+            foreach(CmsPageSecurityZoneUserRole entity in entityList)
             {
-                CmsPageSecurityZoneUserRole g = entityList[x];
-                sql.Append("(" + g.ZoneId.ToString() + "," + g.UserRoleId.ToString() + "," + g.ReadAccessAsInt.ToString() + "," + g.WriteAccessAsInt.ToString() + ")");
-                if (x + 1 < entityList.Count)
-                    sql.Append(",");
-                else
-                    sql.Append(";");
+                if(this.insert(entity) == false)
+                {
+                    return false;
+                }
             }
-
-            int affected = this.RunUpdateQuery(sql.ToString());
-            if (affected == entityList.Count)
-                return true;
-            else
-                return false;
+            return true;
         }
 
         /// <summary>
@@ -158,30 +102,10 @@ namespace HatCMS
         /// <returns></returns>
         public bool deleteByZone(CmsPageSecurityZone z)
         {
-            StringBuilder sql = new StringBuilder("DELETE FROM ");
-            sql.Append(TABLE_NAME);
-            sql.Append(" WHERE ZoneId=" + z.ZoneId.ToString() + ";");
-
-            int affected = this.RunUpdateQuery(sql.ToString());
-            if (affected > 0)
-                return true;
-            else
-                return false;
+            //PageSecurityZoneUserRoleRepository repository = new PageSecurityZoneUserRoleRepository();
+            return repository.deleteByZone(z);
         }
 
-        /// <summary>
-        /// Put datarow raw values to entity object
-        /// </summary>
-        /// <param name="dr"></param>
-        /// <returns></returns>
-        protected CmsPageSecurityZoneUserRole fromDataRow(DataRow dr)
-        {
-            CmsPageSecurityZoneUserRole entity = new CmsPageSecurityZoneUserRole();
-            entity.ZoneId = Convert.ToInt32(dr["ZoneId"]);
-            entity.UserRoleId = Convert.ToInt32(dr["UserRoleId"]);
-            entity.ReadAccess = Convert.ToBoolean(dr["ReadAccess"]);
-            entity.WriteAccess = Convert.ToBoolean(dr["WriteAccess"]);
-            return entity;
-        }
+
     }
 }

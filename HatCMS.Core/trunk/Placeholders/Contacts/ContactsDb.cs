@@ -14,10 +14,10 @@ namespace HatCMS.Placeholders
     {
         public ContactPlaceholderData getContactPlaceholderData(CmsPage page, int identifier, bool createNewIfDoesNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new ContactPlaceholderData();
 
-            string sql = "select numColumnsToShow, nameDisplayMode, forceFilterToCategoryId, allowFilterByCategory, allowFilterByCompany, accessLevelToEditContacts, accessLevelToAddContacts from contacts c where c.pageid = " + page.ID.ToString() + " and c.identifier = " + identifier.ToString() + " and deleted is null;";
+            string sql = "select numColumnsToShow, nameDisplayMode, forceFilterToCategoryId, allowFilterByCategory, allowFilterByCompany, accessLevelToEditContacts, accessLevelToAddContacts from contacts c where c.pageid = " + page.Id.ToString() + " and c.identifier = " + identifier.ToString() + " and deleted is null;";
             DataSet ds = this.RunSelectQuery(sql);
             if (this.hasSingleRow(ds))
             {
@@ -52,7 +52,7 @@ namespace HatCMS.Placeholders
             ContactPlaceholderData data = new ContactPlaceholderData();
 
             string sql = "insert into contacts (pageid, identifier, numColumnsToShow, nameDisplayMode,forceFilterToCategoryId, allowFilterByCategory, allowFilterByCompany, accessLevelToEditContacts, accessLevelToAddContacts) values (";
-            sql = sql + page.ID.ToString() + "," + identifier.ToString() + ",";
+            sql = sql + page.Id.ToString() + "," + identifier.ToString() + ",";
             sql = sql + "" + data.numColumnsToShow.ToString() + ", ";            
             sql = sql + "'" + Enum.GetName(typeof(ContactPlaceholderData.ContactNameDisplayMode), data.nameDisplayMode) + "', ";
             sql = sql + "" + Convert.ToInt32(data.forceFilterToCategoryId).ToString() + ", ";
@@ -82,7 +82,7 @@ namespace HatCMS.Placeholders
             sql += " allowFilterByCompany = " + Convert.ToInt32(data.allowFilterByCompany).ToString() + ", ";
             sql += " accessLevelToEditContacts = '" + Enum.GetName(typeof(BaseCmsPlaceholder.AccessLevel), data.accessLevelToEditContacts) + "', ";
             sql += " accessLevelToAddContacts = '" + Enum.GetName(typeof(BaseCmsPlaceholder.AccessLevel), data.accessLevelToAddContacts) + "' ";
-            sql += " where pageid = " + page.ID.ToString();
+            sql += " where pageid = " + page.Id.ToString();
             sql += " AND identifier = " + identifier.ToString() + "; ";
 
             int numAffected = this.RunUpdateQuery(sql);

@@ -8,6 +8,19 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using HatCMS.Placeholders;
 using Hatfield.Web.Portal;
+using System.Configuration;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using SharpArch.Core.DomainModel;
+using NHibernate.Validator.Constraints;
+using HatCMS.Core.DataRepository;
+using HatCMS.Core.DataPersitentHelper;
+using SharpArch.Core.PersistenceSupport;
+using NHibernate;
+using SharpArch.Data.NHibernate;
 
 namespace HatCMS
 {
@@ -20,29 +33,162 @@ namespace HatCMS
     /// As such, single-language pages are not allowed when more than one language is used.
     /// </para>
 	/// </summary>
-	public class CmsPage 
-	{
-		/// <summary>
-		/// the unique identifier for this page. 
-		/// Set to -1 if not initialized from the database.
-		/// </summary>
-		public int ID;
-        
+	public class CmsPage : Entity
+    {
+        #region page modle attribute
+
+        /// <summary>
+        /// show this page in a menu?
+        /// </summary>
+        /// 
+        private bool showinmenu;
+        public virtual bool ShowInMenu
+        {
+            
+            get { return showinmenu; }
+            set { showinmenu = value; }
+
+        }
+
+        /// <summary>
+        /// the name of the template that is used to render this page.
+        /// this name must refer directly to a file in the "~/templates/" directory.
+        /// files in the "~/templates/" directory must have the ".htm" extension, while
+        /// this property must NOT contain the filename extension.
+        /// </summary>
+        /// 
+        private string template;
+        public virtual string TemplateName
+        {
+            get
+            {
+                return template;
+            }
+            set
+            {
+                template = value;
+            }
+        }
+
+        private int _parentId;
+        /// <summary>
+        /// the ID for the parent page. Set to -1 if no parent exists, or if not yet initialized.
+        /// </summary>
+        public virtual int ParentID
+        {
+            get
+            {
+                return _parentId;
+            }
+
+            set
+            {
+                if (ParentID != value)
+                {
+                    urlCached = false;
+                    _parentId = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// the timestamp for when this page was created.
+        /// </summary>
+        private DateTime createdatetime;
+        public virtual DateTime CreatedDateTime
+        {
+            get { return createdatetime; }
+            set { createdatetime = value; }
+        }
+
+        /// <summary>
+        /// the timestamp for when this page was last updated.
+        /// update this value using setLastUpdatedDateTimeToNow().
+        /// </summary>
+        /// 
+        private DateTime lastupdateDateTime;
+        public virtual DateTime LastUpdatedDateTime
+        {
+            get { return lastupdateDateTime; }
+            set { lastupdateDateTime = value; }
+        }
+
+
+        /// <summary>
+        /// the username that last modified the page.
+        /// update this value using setLastUpdatedDateTimeToNow().
+        /// </summary>
+        /// 
+        private string lastmodifiedby;
+        public virtual string LastModifiedBy
+        {
+            get { return lastmodifiedby; }
+            set { lastmodifiedby = value; }
+        }
+
+        /// <summary>
+        /// the Date and time to remove anonymous access at.
+        /// set to DateTime.MinValue if Anonymous access should never be removed.
+        /// </summary>
+        // public DateTime removeAnonymousAccessAt;
+
+        /// <summary>
+        /// the sort placement of this page.
+        /// set this value using setSortOrdinal().
+        /// </summary>
+        private int sortordinal;
+        public virtual int SortOrdinal
+        {
+            get { return sortordinal; }
+            set { sortordinal = value; }
+        }
+
+
+
+        /// <summary>
+        /// The revision number for this page
+        /// </summary>
+        /// 
+        private int revisionnumber;
+        public virtual int RevisionNumber
+        {
+            get { return revisionnumber; }
+            set { revisionnumber = value; }
+        }
+
+        private DateTime? deleted;
+        public virtual DateTime? Deleted
+        {
+            get { return deleted; }
+            set { deleted = value; }
+        }
+
+        ///
+        ///
         /// <summary>
         /// The CmsPageLanguageInfo instances track all language specific parameters (such as title, menuTitle, name, etc) for this page.
         /// </summary>
-        public CmsPageLanguageInfo[] LanguageInfo;
+        public virtual IList<CmsPageLanguageInfo> LanguageInfo
+        {
+            get { return languageinfo; }
+            set { languageinfo = value; }
+        }
+        private IList<CmsPageLanguageInfo> languageinfo;
+
+        #endregion page modle attribute
+
+        
         
         /// <summary>
 		/// the user-friendly title of this page.
         /// Note: changes based on CmsContext.currentLanguage.
 		/// Set this value using setTitle().
 		/// </summary>
-        public string Title
+        public virtual string Title
         {
             get
             {
-                return CmsPageLanguageInfo.GetFromHaystack(CmsContext.currentLanguage, LanguageInfo).title;
+                return CmsPageLanguageInfo.GetFromHaystack(CmsContext.currentLanguage, LanguageInfo).Title;
             }
         }
 
@@ -51,22 +197,22 @@ namespace HatCMS
         /// </summary>
         /// <param name="forLanguage"></param>
         /// <returns></returns>
-        public string getTitle(CmsLanguage forLanguage)
+        public virtual string getTitle(CmsLanguage forLanguage)
         {
-            return CmsPageLanguageInfo.GetFromHaystack(forLanguage, LanguageInfo).title;
+            return CmsPageLanguageInfo.GetFromHaystack(forLanguage, LanguageInfo).Title;
         }
 
         /// <summary>
         /// All Titles for the current page. Each language can give the page a different Title.
         /// </summary>
-        public string[] Titles
+        public virtual string[] Titles
         {
             get
             {
                 List<string> ret = new List<string>();
                 foreach (CmsLanguage lang in CmsConfig.Languages)
                 {
-                    ret.Add(CmsPageLanguageInfo.GetFromHaystack(lang, LanguageInfo).title);
+                    ret.Add(CmsPageLanguageInfo.GetFromHaystack(lang, LanguageInfo).Title);
                 } // foreach
                 return ret.ToArray();
             }
@@ -76,30 +222,30 @@ namespace HatCMS
 		/// the user-friendly menu-title of this page.
         /// Note: changes based on CmsContext.currentLanguage.
 		/// </summary>
-        public string MenuTitle
+        public virtual string MenuTitle
         {
             get
             {
-                return CmsPageLanguageInfo.GetFromHaystack(CmsContext.currentLanguage, LanguageInfo).menuTitle;
+                return CmsPageLanguageInfo.GetFromHaystack(CmsContext.currentLanguage, LanguageInfo).MenuTitle;
             }
         }
 
-        public string getMenuTitle(CmsLanguage forLanguage)
+        public virtual string getMenuTitle(CmsLanguage forLanguage)
         {
-            return CmsPageLanguageInfo.GetFromHaystack(forLanguage, LanguageInfo).menuTitle;
+            return CmsPageLanguageInfo.GetFromHaystack(forLanguage, LanguageInfo).MenuTitle;
         }
 
         /// <summary>
         /// All MenuTitles for the current page. Each language can give the page a different MenuTitles.
         /// </summary>
-        public string[] MenuTitles
+        public virtual string[] MenuTitles
         {
             get
             {
                 List<string> ret = new List<string>();
                 foreach (CmsLanguage lang in CmsConfig.Languages)
                 {
-                    ret.Add(CmsPageLanguageInfo.GetFromHaystack(lang, LanguageInfo).menuTitle);
+                    ret.Add(CmsPageLanguageInfo.GetFromHaystack(lang, LanguageInfo).MenuTitle);
                 } // foreach
                 return ret.ToArray();
             }
@@ -109,40 +255,37 @@ namespace HatCMS
         /// the search engine description of this page.
         /// Note: changes based on CmsContext.currentLanguage.
         /// </summary>
-        public string SearchEngineDescription
+        public virtual string SearchEngineDescription
         {
             get
             {
-                return CmsPageLanguageInfo.GetFromHaystack(CmsContext.currentLanguage, LanguageInfo).searchEngineDescription;
+                return CmsPageLanguageInfo.GetFromHaystack(CmsContext.currentLanguage, LanguageInfo).SearchEngineDescription;
             }
         }
 
-        public string getSearchEngineDescription(CmsLanguage forLanguage)
+        public virtual string getSearchEngineDescription(CmsLanguage forLanguage)
         {
-            return CmsPageLanguageInfo.GetFromHaystack(forLanguage, LanguageInfo).searchEngineDescription;
+            return CmsPageLanguageInfo.GetFromHaystack(forLanguage, LanguageInfo).SearchEngineDescription;
         }
 
         /// <summary>
         /// All SearchEngineDescriptions for the current page. Each language can give the page a different SearchEngineDescription.
         /// </summary>
-        public string[] SearchEngineDescriptions
+        public virtual string[] SearchEngineDescriptions
         {
             get
             {
                 List<string> ret = new List<string>();
                 foreach (CmsLanguage lang in CmsConfig.Languages)
                 {
-                    ret.Add(CmsPageLanguageInfo.GetFromHaystack(lang, LanguageInfo).searchEngineDescription);
+                    ret.Add(CmsPageLanguageInfo.GetFromHaystack(lang, LanguageInfo).SearchEngineDescription);
                 } // foreach
                 return ret.ToArray();
             }
         }
 
 
-		/// <summary>
-		/// show this page in a menu?
-		/// </summary>
-		public bool ShowInMenu;
+		
 
 
 
@@ -157,107 +300,41 @@ namespace HatCMS
 		/// The filename of this page. Forms this page's part of the URL. For the home page, the Name is String.Empty
         /// Note: changes based on CmsContext.currentLanguage.
 		/// </summary>
-        public string Name
+        public virtual string Name
         {
             get
             {
-                return CmsPageLanguageInfo.GetFromHaystack(CmsContext.currentLanguage, LanguageInfo).name;
+                return CmsPageLanguageInfo.GetFromHaystack(CmsContext.currentLanguage, LanguageInfo).Name;
             }
         }
 
         /// <summary>
         /// All names (filenames) for the current page. Each language can give the page a different name.
         /// </summary>
-        public string[] Names
+        public virtual string[] Names
         {
             get
             {
                 List<string> ret = new List<string>();
                 foreach (CmsLanguage lang in CmsConfig.Languages)
                 {
-                    ret.Add(CmsPageLanguageInfo.GetFromHaystack(lang, LanguageInfo).name);
+                    ret.Add(CmsPageLanguageInfo.GetFromHaystack(lang, LanguageInfo).Name);
                 } // foreach
                 return ret.ToArray();                
             }
         }
 
-        public string getName(CmsLanguage forLanguage)
+        public virtual string getName(CmsLanguage forLanguage)
         {
-            return CmsPageLanguageInfo.GetFromHaystack(forLanguage, LanguageInfo).name;
-        }
-
-        
-
-        private int _parentId;
-        /// <summary>
-		/// the ID for the parent page. Set to -1 if no parent exists, or if not yet initialized.
-		/// </summary>
-        public int ParentID
-        {
-            get
-            {
-                return _parentId;
-            }
-
-            set
-            {
-                if (ParentID != value)
-                {
-                    urlCached = false;                    
-                    _parentId = value;
-                }
-            }
-        }
-
-		/// <summary>
-		/// the name of the template that is used to render this page.
-		/// this name must refer directly to a file in the "~/templates/" directory.
-		/// files in the "~/templates/" directory must have the ".htm" extension, while
-		/// this property must NOT contain the filename extension.
-		/// </summary>
-		public string TemplateName;
-
-		/// <summary>
-		/// the timestamp for when this page was created.
-		/// </summary>
-		public DateTime CreatedDateTime;
-
-		/// <summary>
-		/// the timestamp for when this page was last updated.
-		/// update this value using setLastUpdatedDateTimeToNow().
-		/// </summary>
-		public DateTime LastUpdatedDateTime;
-
-
-        /// <summary>
-        /// the username that last modified the page.
-        /// update this value using setLastUpdatedDateTimeToNow().
-        /// </summary>
-        public string LastModifiedBy;
-
-        /// <summary>
-        /// the Date and time to remove anonymous access at.
-        /// set to DateTime.MinValue if Anonymous access should never be removed.
-        /// </summary>
-        // public DateTime removeAnonymousAccessAt;
-		
-		/// <summary>
-		/// the sort placement of this page.
-		/// set this value using setSortOrdinal().
-		/// </summary>
-		public int SortOrdinal;
-
-        /// <summary>
-        /// The revision number for this page
-        /// </summary>
-        public int RevisionNumber;
+            return CmsPageLanguageInfo.GetFromHaystack(forLanguage, LanguageInfo).Name;
+        }	
 
         /// <summary>
         /// gets the most recent PageRevisionData .
         /// returns NULL if not found        
         /// </summary>
         /// <returns></returns>
-        public CmsPageRevisionData getCurrentRevisionData()
+        public virtual CmsPageRevisionData getCurrentRevisionData()
         {
             CmsPageRevisionData[] allRevs = getAllRevisionData();
             if (allRevs.Length >= 1)
@@ -271,10 +348,10 @@ namespace HatCMS
         /// </summary>
         /// <param name="revisionNumber"></param>
         /// <returns></returns>
-        public CmsPageRevisionData getRevisionData(int revisionNumber)
+        public virtual CmsPageRevisionData getRevisionData(int revisionNumber)
         {
             CmsPageRevisionData[] allRevs;
-            string cacheKey = "allRevs" + this.ID;
+            string cacheKey = "allRevs" + this.Id;
             
             if (PerRequestCache.CacheContains(cacheKey))
             {
@@ -303,7 +380,7 @@ namespace HatCMS
         /// It is safe to call this function multiple times (ie multiple placeholders can call this function in the same request)
         /// </summary>
         /// <returns>The new revision number to use</returns>
-        public int createNewRevision()
+        public virtual int createNewRevision()
         {
             if (_newRevisionHasBeenCreated)
             {
@@ -319,7 +396,7 @@ namespace HatCMS
             }
         }
 
-        public bool isPageIsLockedForEditing()
+        public virtual bool isPageIsLockedForEditing()
         {
             CmsPageLockData d = getCurrentPageLockData();
             if (d == null)
@@ -332,7 +409,7 @@ namespace HatCMS
         /// returns NULL if there's no lock
         /// </summary>
         /// <returns></returns>
-        public CmsPageLockData getCurrentPageLockData()
+        public virtual CmsPageLockData getCurrentPageLockData()
         {            
             return (new CmsPageDb()).getPageLockData(this);
         }
@@ -343,7 +420,7 @@ namespace HatCMS
         /// Returns NULL if the page could not be locked
         /// </summary>
         /// <returns></returns>
-        public CmsPageLockData lockPageForEditing()
+        public virtual CmsPageLockData lockPageForEditing()
         {            
             return (new CmsPageDb()).lockPageForEditing(this);
         }
@@ -351,7 +428,7 @@ namespace HatCMS
         /// <summary>
         /// Removes the current page's edit lock.
         /// </summary>
-        public void clearCurrentPageLock()
+        public virtual void clearCurrentPageLock()
         {            
             (new CmsPageDb()).clearCurrentPageLock(this);
         }
@@ -361,7 +438,7 @@ namespace HatCMS
 		/// gets the CmsPage object for the parent page.
 		/// If no parent exists, a valid CmsPage is returned, with it's ID set to -1.		
 		/// </summary>
-		public CmsPage ParentPage
+        public virtual CmsPage ParentPage
 		{
 			get
 			{				
@@ -372,14 +449,14 @@ namespace HatCMS
         /// <summary>
         /// All child pages of the current page. Does not take page security or visibility into consideration.
         /// </summary>
-        public CmsPage[] AllChildPages
+        public virtual CmsPage[] AllChildPages
         {
             get
             {
                 lock (_childPagesLock)
                 {
                     CmsPageDb db = new CmsPageDb();
-                    return db.getChildPages(this.ID);
+                    return db.getChildPages(this.Id);
                 }
             }
         }
@@ -388,7 +465,7 @@ namespace HatCMS
 		/// The child pages that the current user can access. This method takes security and visibility into consideration.
         /// If visibility and security should not be considered, use <see cref="AllChildPages">. <seealso cref="AllChildPages"/>
 		/// </summary>
-		public CmsPage[] ChildPages
+        public virtual CmsPage[] ChildPages
 		{
 			get
 			{
@@ -411,7 +488,7 @@ namespace HatCMS
         /// The path returned NEVER includes the currentLanguage's shortCode.
         /// Note: changes based on CmsContext.currentLanguage.
         /// </summary>
-        public string Path
+        public virtual string Path
         {
             get { return getPath(CmsContext.currentLanguage); }
         }
@@ -419,7 +496,7 @@ namespace HatCMS
         /// <summary>
         /// All Paths for the current page. Each language can give the page a different Path.
         /// </summary>
-        public string[] Paths
+        public virtual string[] Paths
         {
             get
             {
@@ -436,10 +513,10 @@ namespace HatCMS
 		/// gets the full file path to this page. 
         /// The path returned NEVER includes the currentLanguage's shortCode.
 		/// </summary>
-        public string getPath(CmsLanguage forLanguage)
+        public virtual string getPath(CmsLanguage forLanguage)
         {
 
-            string cacheKey = "pagePath_" + this.ID + forLanguage.shortCode;
+            string cacheKey = "pagePath_" + this.Id + forLanguage.shortCode;
 
             if (PerRequestCache.CacheContains(cacheKey))
             {
@@ -449,7 +526,8 @@ namespace HatCMS
             string path = "";
             CmsPage page = this;
             bool first = true;
-            while (page.ID != -1)
+            //change page.Id to be 1
+            while (page.Id != 0)
             {
                 if (first)
                 {
@@ -476,7 +554,7 @@ namespace HatCMS
 		/// <summary>
 		/// the level of the page. The home page is 0, under the home page is 1, etc...
 		/// </summary>
-        public int Level
+        public virtual int Level
 		{
 			get
 			{
@@ -491,7 +569,7 @@ namespace HatCMS
         /// <summary>
         /// All Urls for the current page. Each language gives the page a different url.
         /// </summary>
-        public string[] Urls
+        public virtual string[] Urls
         {
             get
             {
@@ -513,7 +591,7 @@ namespace HatCMS
         /// <summary>
         /// Derive the Zone by the page ID (note: the result is cached in-memory)
         /// </summary>
-        public CmsPageSecurityZone SecurityZone
+        public virtual CmsPageSecurityZone SecurityZone
         {
             get 
             {
@@ -530,7 +608,7 @@ namespace HatCMS
         /// Check if this page is located at the CmsZone boundary
         /// (i.e. an exact record in `zone` table)
         /// </summary>
-        public bool isSecurityZoneBoundary
+        public virtual bool isSecurityZoneBoundary
         {
             get
             {
@@ -542,7 +620,7 @@ namespace HatCMS
         /// <summary>
         /// Checks if the current user has write (author) access to this page.
         /// </summary>
-        public bool currentUserCanWrite
+        public virtual bool currentUserCanWrite
         {
             get
             {                
@@ -556,7 +634,7 @@ namespace HatCMS
         /// <summary>
         /// Checks if the current user has read access to this page.
         /// </summary>
-        public bool currentUserCanRead
+        public virtual bool currentUserCanRead
         {
             get
             {                
@@ -575,7 +653,7 @@ namespace HatCMS
         /// <summary>
 		/// gets the navigatable URL of this page. Does not include the hostname or protocol.
 		/// </summary>
-		public string Url
+        public virtual string Url
 		{
 			get
 			{
@@ -603,48 +681,48 @@ namespace HatCMS
 			}
 		}
 
-        public string getUrl(CmsLanguage pageLanguage, CmsUrlFormat urlFormat)
+        public virtual string getUrl(CmsLanguage pageLanguage, CmsUrlFormat urlFormat)
         {
             return CmsContext.getUrlByPagePath(this.getPath(pageLanguage), urlFormat, pageLanguage);
         }
 
-        public string getUrl(CmsLanguage pageLanguage)
+        public virtual string getUrl(CmsLanguage pageLanguage)
         {
             return CmsContext.getUrlByPagePath(this.getPath(pageLanguage), pageLanguage);
         }
 
-        public string getUrl(CmsUrlFormat urlFormat)
+        public virtual string getUrl(CmsUrlFormat urlFormat)
         {
             return CmsContext.getUrlByPagePath(this.Path, urlFormat);
         }
 
-        public string getUrl(CmsUrlFormat urlFormat, CmsLanguage pageLanguage)
+        public virtual string getUrl(CmsUrlFormat urlFormat, CmsLanguage pageLanguage)
         {
             return CmsContext.getUrlByPagePath(this.getPath(pageLanguage), urlFormat, pageLanguage);
         }
 
-        public string getUrl(NameValueCollection pageParams)
+        public virtual string getUrl(NameValueCollection pageParams)
         {
             return CmsContext.getUrlByPagePath(this.Path, pageParams);
         }
 
-        public string getUrl(NameValueCollection pageParams, CmsLanguage pageLanguage)
+        public virtual string getUrl(NameValueCollection pageParams, CmsLanguage pageLanguage)
         {
             return CmsContext.getUrlByPagePath(this.getPath(pageLanguage), pageParams, pageLanguage);
         }
 
-        public string getUrl(NameValueCollection pageParams, CmsUrlFormat urlFormat)
+        public virtual string getUrl(NameValueCollection pageParams, CmsUrlFormat urlFormat)
         {
             return CmsContext.getUrlByPagePath(this.Path, pageParams, urlFormat);
         }
 
 
-        public string getUrl(Dictionary<string, string> pageParams)
+        public virtual string getUrl(Dictionary<string, string> pageParams)
         {
             return getUrl(pageParams, CmsUrlFormat.RelativeToRoot);
         }
 
-        public string getUrl(Dictionary<string, string> pageParams, CmsLanguage pageLanguage)
+        public virtual string getUrl(Dictionary<string, string> pageParams, CmsLanguage pageLanguage)
         {
             NameValueCollection paramList = new NameValueCollection();
             foreach (string key in pageParams.Keys)
@@ -654,7 +732,7 @@ namespace HatCMS
             return CmsContext.getUrlByPagePath(this.getPath(pageLanguage), paramList, pageLanguage);            
         }
 
-        public string getUrl(Dictionary<string, string> pageParams, CmsLanguage pageLanguage, CmsUrlFormat urlFormat)
+        public virtual string getUrl(Dictionary<string, string> pageParams, CmsLanguage pageLanguage, CmsUrlFormat urlFormat)
         {
             NameValueCollection paramList = new NameValueCollection();
             foreach (string key in pageParams.Keys)
@@ -664,7 +742,7 @@ namespace HatCMS
             return CmsContext.getUrlByPagePath(this.getPath(pageLanguage), paramList, urlFormat, pageLanguage);
         }
 
-        public string getUrl(Dictionary<string, string> pageParams, CmsUrlFormat urlFormat)
+        public virtual string getUrl(Dictionary<string, string> pageParams, CmsUrlFormat urlFormat)
         {
             NameValueCollection paramList = new NameValueCollection();
             foreach (string key in pageParams.Keys)
@@ -681,19 +759,32 @@ namespace HatCMS
         /// <summary>
         /// the Head section - ie the section of the HTML page between &gt;head&lt and &gt;/head&lt tags.
         /// </summary>
-        public CmsPageHeadSection HeadSection;
+        /// 
+        private CmsPageHeadSection headsection;
+        public virtual CmsPageHeadSection HeadSection
+        {
+            get { return headsection; }
+            set { headsection = value; }
+        }
 
         /// <summary>
         /// The CMS edit menu that allows pages to be edited, deleted, saved, etc.
         /// </summary>
-        public CmsPageEditMenu EditMenu;
+        /// 
+        private CmsPageEditMenu editmenu;
+        public virtual CmsPageEditMenu EditMenu
+        {
+            get { return editmenu; }
+            set { editmenu = value; }
+        }
+        
 
         /// <summary>
         /// Checks to see if this page is visible for the current user.
         /// This checks for both visibility AND access restrictions (based on Zone security rules).
         /// As such, if isVisibleForCurrentUser is false, the user will not be able to successfully navigate to the page.
         /// </summary>
-        public bool isVisibleForCurrentUser
+        public virtual bool isVisibleForCurrentUser
         {
             get
             {
@@ -718,14 +809,13 @@ namespace HatCMS
 		/// </summary>
         public CmsPage()
 		{
-			this.ID = -1;
             LanguageInfo = new CmsPageLanguageInfo[0];
 			
 			CreatedDateTime = DateTime.MinValue;
 			LastUpdatedDateTime = DateTime.MinValue;
             LastModifiedBy = "";
             
-			_parentId = -1;
+			_parentId = 0;
 			SortOrdinal = -1;
             RevisionNumber = -1;
 						
@@ -734,15 +824,34 @@ namespace HatCMS
             EditMenu = new CmsPageEditMenu(this);
 						
 		} // constructor
+
+        //public CmsPage(int pageid)
+        //{
+        //    this.ID = pageid;
+        //    LanguageInfo = new CmsPageLanguageInfo[0];
+
+        //    CreatedDateTime = DateTime.MinValue;
+        //    LastUpdatedDateTime = DateTime.MinValue;
+        //    LastModifiedBy = "";
+
+        //    _parentId = -1;
+        //    SortOrdinal = -1;
+        //    RevisionNumber = -1;
+
+        //    _childPagesLock = new object();
+        //    HeadSection = new CmsPageHeadSection(this);
+        //    EditMenu = new CmsPageEditMenu(this);
+
+        //} // constructor
         
 
         /// <summary>
         /// a function that sees if this page is the currentPage.
         /// </summary>
         /// <returns></returns>
-        public bool isSelfSelected()
+        public virtual bool isSelfSelected()
         {
-            if (this.ID == CmsContext.currentPage.ID)
+            if (this.Id == CmsContext.currentPage.Id)
             {
                 return true;
             }
@@ -754,7 +863,7 @@ namespace HatCMS
         /// a recursive function that sees if this page, or a child page of this page is the currentPage.
         /// </summary>
         /// <returns></returns>
-        public bool isChildOrSelfSelected()
+        public virtual bool isChildOrSelfSelected()
         {
             if (this.isSelfSelected())
             {
@@ -767,12 +876,12 @@ namespace HatCMS
         /// a recursive function that sees if a child page is the currentPage.
         /// </summary>
         /// <returns></returns>
-        public bool isChildSelected()
+        public virtual bool isChildSelected()
         {
 
             foreach (CmsPage childPage in this.ChildPages)
             {
-                if (childPage.ID == CmsContext.currentPage.ID)
+                if (childPage.Id == CmsContext.currentPage.Id)
                 {
                     return true;
                 }
@@ -788,19 +897,19 @@ namespace HatCMS
         /// a tree-climbing function that sees if this page is a child page of the possibleParentPage.
         /// </summary>
         /// <returns></returns>
-        public bool isChildOf(CmsPage possibleParentPage)
+        public virtual bool isChildOf(CmsPage possibleParentPage)
         {
             CmsPage currPage = this;
-            while (currPage.ParentPage.ID != -1)
+            while (currPage.ParentPage.Id != -1)
             {
-                if (currPage.ID == possibleParentPage.ID)
+                if (currPage.Id == possibleParentPage.Id)
                     return true;
                 currPage = currPage.ParentPage;
             }
             return false;
         }
 
-        public bool isParentOrSelfSelected()
+        public virtual bool isParentOrSelfSelected()
         {
             if (this.isSelfSelected())
             {
@@ -813,21 +922,21 @@ namespace HatCMS
         /// sees if a parent page is the currentPage.
         /// </summary>
         /// <returns></returns>
-        public bool isParentSelected()
+        public virtual bool isParentSelected()
         {
             CmsPage currPage = this;
-            while (currPage.ParentPage.ID != -1)
+            while (currPage.ParentPage.Id != -1)
             {
-                if (currPage.ID == CmsContext.currentPage.ID)
+                if (currPage.Id == CmsContext.currentPage.Id)
                     return true;
                 currPage = currPage.ParentPage;
             }
             return false;
         } // childIsSelected
 
-        public bool isSiblingSelected()
+        public virtual bool isSiblingSelected()
         {
-            if (ParentPage.ID >= 0)
+            if (ParentPage.Id >= 0)
             {
                 foreach (CmsPage sibling in ParentPage.ChildPages)
                 {
@@ -838,9 +947,9 @@ namespace HatCMS
             return false;
         }
 
-        public bool isSiblingOrSiblingChildSelected()
+        public virtual bool isSiblingOrSiblingChildSelected()
         {
-            if (ParentPage.ID >= 0)
+            if (ParentPage.Id >= 0)
             {
                 foreach (CmsPage sibling in ParentPage.ChildPages)
                 {
@@ -851,7 +960,7 @@ namespace HatCMS
             return false;
         }
 
-        public System.Web.UI.UserControl ToWebControl()
+        public virtual System.Web.UI.UserControl ToWebControl()
         {
             return new CmsPageWebControl(this);
         }
@@ -871,7 +980,7 @@ namespace HatCMS
             /// </summary>
             protected override void CreateChildControls()
             {                
-                if (OwningPage.ID < 0)
+                if (OwningPage.Id < 0)
                 {
                     if (new CmsPageCache().GetHomePageId() < 0)
                     {
@@ -889,13 +998,25 @@ namespace HatCMS
                 if (canRead == false && String.Compare(OwningPage.Path,CmsConfig.getConfigValue("LoginPath", "/_login"), true) != 0)
                 {
                     NameValueCollection loginParams = new NameValueCollection();
-                    loginParams.Add("target", OwningPage.ID.ToString());
+                    loginParams.Add("target", OwningPage.Id.ToString());
                     CmsContext.setEditModeAndRedirect(CmsEditMode.View, CmsContext.getPageByPath(CmsConfig.getConfigValue("LoginPath", "/_login")), loginParams);
                     return;
                 }
 
-                // -- create all placeholders and controls based on the page's template.
-                OwningPage.TemplateEngine.CreateChildControls(this);
+                DataPersister persister = new DataPersister();
+                IDbContext dbcontext = persister.getDBContext();
+                dbcontext.BeginTransaction();
+                try
+                {
+                    // -- create all placeholders and controls based on the page's template.
+                    OwningPage.TemplateEngine.CreateChildControls(this);
+                    dbcontext.CommitTransaction();
+                }
+                catch
+                {
+                    dbcontext.RollbackTransaction();
+                    throw;
+                }
 
                 // -- Run the page output filters
                 this.Response.Filter = new CmsOutputFilterUtils.PageResponseOutputFilter(Response.Filter, OwningPage);
@@ -915,7 +1036,7 @@ namespace HatCMS
 		/// </summary>
 		/// <param name="onSubmit">the javascript code to run for the onSubmit event</param>
 		/// <returns>the html to start the form</returns>
-        public string getFormStartHtml(string formId, string onSubmit, string style, string actionUrl, string method)
+        public virtual string getFormStartHtml(string formId, string onSubmit, string style, string actionUrl, string method)
         {
             if (_startedFormId != "")
                 return "";
@@ -961,7 +1082,7 @@ namespace HatCMS
         /// <param name="formId"></param>
         /// <param name="onSubmit"></param>
         /// <returns></returns>
-        public string getFormStartHtml(string formId, string onSubmit)
+        public virtual string getFormStartHtml(string formId, string onSubmit)
         {
             return getFormStartHtml(formId, onSubmit, "", "", "post");
         }
@@ -972,7 +1093,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="formId"></param>
         /// <returns></returns>
-        public string getFormStartHtml(string formId)
+        public virtual string getFormStartHtml(string formId)
         {
             return getFormStartHtml(formId, "", "", "", "post");            
         }
@@ -983,7 +1104,7 @@ namespace HatCMS
         /// Note: IE has an issue that you can not have nested form tags (&ltform&gt &ltform&gt &lt/form&gt  &lt/form&gt is invalid and won't work!!!)
 		/// </summary>
 		/// <returns></returns>
-		public string getFormCloseHtml(string formId)
+        public virtual string getFormCloseHtml(string formId)
 		{
             if (String.Compare(formId, _startedFormId) != 0)
                 return "";
@@ -1019,7 +1140,7 @@ namespace HatCMS
 		/// <param name="placeholderType">the placeholder type to get values for</param>
 		/// <param name="identifier">the placeholder identifier to get the value for. Use <see cref="getPlaceholderIdentifiers">getPlaceholderIdentifiers()</see> to get the valid identifiers.</param>
 		/// <returns>the value found for the given placeholderType and identifier. Returns an empty string (string.empty) if the identifier was not found in the system.</returns>
-        public string renderPlaceholderToString(CmsPlaceholderDefinition phDef, CmsLanguage language, RenderPlaceholderFilterAction filterAction)
+        public virtual string renderPlaceholderToString(CmsPlaceholderDefinition phDef, CmsLanguage language, RenderPlaceholderFilterAction filterAction)
 		{			
             string ret = PlaceholderUtils.renderPlaceholderToString(this, language, phDef);
             switch (filterAction)
@@ -1040,7 +1161,7 @@ namespace HatCMS
 						
 		}
 
-        public string renderAllPlaceholdersToString(CmsLanguage forLanguage, RenderPlaceholderFilterAction filterAction)
+        public virtual string renderAllPlaceholdersToString(CmsLanguage forLanguage, RenderPlaceholderFilterAction filterAction)
         {
             CmsPlaceholderDefinition[] phDefs = getAllPlaceholderDefinitions();
             StringBuilder ret = new StringBuilder();
@@ -1053,7 +1174,7 @@ namespace HatCMS
             return ret.ToString();
         }
 
-        public string renderPlaceholdersToString(string placeholderTypeToRender, CmsLanguage forLanguage, RenderPlaceholderFilterAction filterAction)
+        public virtual string renderPlaceholdersToString(string placeholderTypeToRender, CmsLanguage forLanguage, RenderPlaceholderFilterAction filterAction)
         {
             CmsPlaceholderDefinition[] phDefs = getPlaceholderDefinitions(placeholderTypeToRender);
             StringBuilder ret = new StringBuilder();
@@ -1073,7 +1194,7 @@ namespace HatCMS
         /// <br />WARNING!!! if the template file for this page doesn't exist, this function will throw an Exception!!!
         /// </summary>
         /// <returns></returns>
-        public CmsPlaceholderDefinition[] getAllPlaceholderDefinitions()
+        public virtual CmsPlaceholderDefinition[] getAllPlaceholderDefinitions()
         {
             // -- this function is used all over the place, so let's cache it's results (note: base the cache on the template name, not the page).
             string cacheKey = "getAllPlaceholderDefinitions" + TemplateName;
@@ -1090,7 +1211,7 @@ namespace HatCMS
         /// <br />WARNING!!! if the template file for this page doesn't exist, this function will throw an Exception!!!
         /// </summary>
         /// <returns></returns>
-        public CmsPlaceholderDefinition[] getPlaceholderDefinitions(string placeholderType)
+        public virtual CmsPlaceholderDefinition[] getPlaceholderDefinitions(string placeholderType)
         {
             CmsPlaceholderDefinition[] all = TemplateEngine.getAllPlaceholderDefinitions(); // use "All.." because it is cached.
             return CmsPlaceholderDefinition.GetByPlaceholderType(all, placeholderType);
@@ -1102,7 +1223,7 @@ namespace HatCMS
         /// If there is a problem with the template, returns an empty array
         /// </summary>
         /// <returns></returns>
-        public string[] getAllPlaceholderNames()
+        public virtual string[] getAllPlaceholderNames()
         {
             try
             {
@@ -1121,7 +1242,7 @@ namespace HatCMS
             return new string[0];
         }
 
-        public bool hasPlaceholder(string placeholderType)
+        public virtual bool hasPlaceholder(string placeholderType)
         {
             string[] allPhNames = getAllPlaceholderNames(); // use "All.." because it is cached.
             return (StringUtils.IndexOf(allPhNames, placeholderType, StringComparison.CurrentCultureIgnoreCase) > -1);
@@ -1134,7 +1255,7 @@ namespace HatCMS
         /// <br />WARNING!!! if the template file for this page doesn't exist, this function will throw an Exception!!!
         /// </summary>
         /// <returns></returns>
-        public string[] getAllControlPaths()
+        public virtual string[] getAllControlPaths()
         {
             List<string> ret = new List<string>();
             CmsControlDefinition[] controlDefs = getAllControlDefinitions(); // use getAllControlDefinitions because it's cached.
@@ -1152,7 +1273,7 @@ namespace HatCMS
         /// <br />WARNING!!! if the template file for this page doesn't exist, this function will throw an Exception!!!
         /// </summary>
         /// <returns></returns>
-        public CmsControlDefinition[] getAllControlDefinitions()
+        public virtual CmsControlDefinition[] getAllControlDefinitions()
         {
             // -- this function is used all over the place, so let's cache it's results (note: base the cache on the template name, not the page).
             string cacheKey = "getAllControlDefinitions" + TemplateName;
@@ -1170,7 +1291,7 @@ namespace HatCMS
         /// get a list of all valid revision numbers for this page, sorted so that the oldest Rev# is first ([0])
         /// </summary>
         /// <returns></returns>
-        public int[] getAllRevisionNumbers()
+        public virtual int[] getAllRevisionNumbers()
         {
             CmsPageRevisionData[] revs = getAllRevisionData();
             List<int> revNums = new List<int>();
@@ -1186,14 +1307,14 @@ namespace HatCMS
         /// gets the pages revision history, sorted in oldest to latest
         /// </summary>
         /// <returns></returns>
-        public CmsPageRevisionData[] getAllRevisionData()
+        public virtual CmsPageRevisionData[] getAllRevisionData()
         {
             //@@TODO: getAllRevisionData() should be cached in memory
             CmsPageDb db = new CmsPageDb();
             return db.getAllRevisionData(this);
         }
 
-        public bool revertToRevision(int oldRevisionNumberToMakeLive)
+        public virtual bool revertToRevision(int oldRevisionNumberToMakeLive)
         {
             try
             {
@@ -1207,7 +1328,7 @@ namespace HatCMS
                     return false;
                 
                 CmsPage oldPage = CmsContext.getPageByPath(this.Path, oldRevisionNumberToMakeLive);
-                if (oldPage.ID < 0)
+                if (oldPage.Id < 0)
                     return false;
 
                 bool ret = true;
@@ -1236,12 +1357,12 @@ namespace HatCMS
         /// <summary>
         /// The current page's template engine. This parameter is cached in-memory so that it can be called multiple times.
         /// </summary>
-        public CmsTemplateEngine TemplateEngine
+        public virtual CmsTemplateEngine TemplateEngine
         {
             get
             {
                 CmsTemplateEngineVersion templateVersion = CmsConfig.TemplateEngineVersion;
-                string cacheKey = "templateEngine_" + templateVersion.ToString() + this.TemplateName + this.ID.ToString(); // Template engine uses the name and page as constructors, so use those for the cache as well.
+                string cacheKey = "templateEngine_" + templateVersion.ToString() + this.TemplateName + this.Id.ToString(); // Template engine uses the name and page as constructors, so use those for the cache as well.
 
                 if (PerRequestCache.CacheContains(cacheKey))
                     return (CmsTemplateEngine)PerRequestCache.GetFromCache(cacheKey, null);
@@ -1264,14 +1385,14 @@ namespace HatCMS
         /// in the format obj[pageId] => CmsPage. Only returns pages that the current user can access (based on Zonal security restrictions).
         /// </summary>
         /// <returns></returns>
-        public Dictionary<int, CmsPage> getLinearizedPages()
+        public virtual Dictionary<int, CmsPage> getLinearizedPages()
         {
             Dictionary<int, CmsPage> ret = new Dictionary<int, CmsPage>();
 
             if (!this.isVisibleForCurrentUser)
                 return ret;
 
-            ret.Add(this.ID, this);            
+            ret.Add(this.Id, this);            
 
             foreach (CmsPage subPage in this.ChildPages)
             {
@@ -1283,11 +1404,11 @@ namespace HatCMS
             return ret;
         }
 
-		
+
 
         private void _RecursiveLinearizePage(CmsPage parentPage, Dictionary<int, CmsPage> ret)
 		{
-			ret.Add(parentPage.ID, parentPage);
+			ret.Add(parentPage.Id, parentPage);
             
             foreach (CmsPage subPage in parentPage.ChildPages)
 			{
@@ -1302,7 +1423,7 @@ namespace HatCMS
         /// sets the page.LastUpdatedDateTime in the database
         /// </summary>
         /// <returns></returns>
-        public bool setLastUpdatedDateTimeToNow()
+        public virtual bool setLastUpdatedDateTimeToNow()
         {
             CmsPageDb db = new CmsPageDb();
             return db.setLastUpdatedTime(this, DateTime.Now);
@@ -1314,7 +1435,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="newOrdinalValue"></param>
         /// <returns></returns>
-        public bool setSortOrdinal(int newOrdinalValue)
+        public virtual bool setSortOrdinal(int newOrdinalValue)
         {
             CmsPageDb db = new CmsPageDb();
             return db.updateSortOrdinal(this, newOrdinalValue);
@@ -1325,7 +1446,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="newTitle"></param>
         /// <returns></returns>
-        public bool setTitle(string newTitle, CmsLanguage forLanguage)
+        public virtual bool setTitle(string newTitle, CmsLanguage forLanguage)
         {
             CmsPageDb db = new CmsPageDb();
             return db.updateTitle(this, newTitle, forLanguage);
@@ -1336,7 +1457,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="newTitle"></param>
         /// <returns></returns>
-        public bool setMenuTitle(string newMenuTitle, CmsLanguage forLanguage)
+        public virtual bool setMenuTitle(string newMenuTitle, CmsLanguage forLanguage)
         {
             CmsPageDb db = new CmsPageDb();
             return db.updateMenuTitle(this, newMenuTitle, forLanguage);
@@ -1347,7 +1468,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="newTitle"></param>
         /// <returns></returns>
-        public bool setSearchEngineDescription(string newSearchEngineDescription, CmsLanguage forLanguage)
+        public virtual bool setSearchEngineDescription(string newSearchEngineDescription, CmsLanguage forLanguage)
         {
             CmsPageDb db = new CmsPageDb();
             return db.updateSearchEngineDescription(this, newSearchEngineDescription, forLanguage);
@@ -1358,7 +1479,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="newTitle"></param>
         /// <returns></returns>
-        public bool setParentPage(CmsPage newParentPage)
+        public virtual bool setParentPage(CmsPage newParentPage)
         {
             CmsPageDb db = new CmsPageDb();
             return db.updateParentPage(this, newParentPage);
@@ -1369,7 +1490,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="newName"></param>
         /// <returns></returns>
-        public bool setName(string newName, CmsLanguage forLanguage)
+        public virtual bool setName(string newName, CmsLanguage forLanguage)
         {
             if (StringUtils.IndexOf(InvalidPageNameChars, newName, StringComparison.CurrentCulture) >= 0)
             {
@@ -1385,7 +1506,7 @@ namespace HatCMS
         /// </summary>
         /// <param name="newTemplateName"></param>
         /// <returns></returns>
-        public bool setTemplateName(string newTemplateName)
+        public virtual bool setTemplateName(string newTemplateName)
         {
             CmsPageDb db = new CmsPageDb();
             return db.updateTemplateName(this, newTemplateName);
@@ -1396,7 +1517,7 @@ namespace HatCMS
         /// If this page is a master page for any placeholders, the master pages are updated accordingly.
         /// </summary>
         /// <returns></returns>
-        public bool DeleteThisPage()
+        public virtual bool DeleteThisPage()
         {
             CmsPageDb db = new CmsPageDb();
             return db.deletePage(this);
@@ -1407,9 +1528,22 @@ namespace HatCMS
         /// </summary>
         /// <param name="newIndicator"></param>
         /// <returns></returns>
-        public bool UpdateShowInMenuFlag(bool newIndicator)
-        {            
-            return new CmsPageDb().updateShowInMenuIndicator(this, newIndicator);
+        public virtual bool UpdateShowInMenuFlag(bool newIndicator)
+        {
+            DataPersister persister = new DataPersister();
+            IDbContext dbcontext = persister.getDBContext();
+            dbcontext.BeginTransaction();
+            try
+            {
+                bool updateresult = new CmsPageDb().updateShowInMenuIndicator(this, newIndicator);
+                dbcontext.CommitTransaction();
+                return updateresult;
+            }
+            catch
+            {
+                dbcontext.RollbackTransaction();
+                throw;
+            }
         }
 
 		private class LastUpdatedDateComparer: System.Collections.IComparer
@@ -1482,14 +1616,14 @@ namespace HatCMS
 
         public static bool ArrayContainsPage(CmsPage[] haystack, CmsPage needle)
         {
-            return ArrayContainsPageId(haystack, needle.ID);
+            return ArrayContainsPageId(haystack, needle.Id);
         }
 
         public static bool ArrayContainsPageId(CmsPage[] haystack, int needlePageId)
         {
             foreach (CmsPage p in haystack)
             {
-                if (p.ID == needlePageId)
+                if (p.Id == needlePageId)
                     return true;
             } // foreach
             return false;
@@ -1587,13 +1721,13 @@ namespace HatCMS
         private class CmsPageDb : Hatfield.Web.Portal.Data.MySqlDbObject
         {
             private CmsPageCache pageCache; // private, not static cache of pages in memory
-
+            private PageRepository repository;
             /// <summary>
             /// provides database functions for the CmsPage object
             /// </summary>
-            public CmsPageDb()
-                : base(System.Configuration.ConfigurationManager.AppSettings["ConnectionString"])
+            public CmsPageDb()                
             {
+                repository = new PageRepository();
                 pageCache = CmsContext.getPageCache();
                 if (!this.pageCache.AllPagesHaveBeenCached)
                     loadAllPagesIntoCache();
@@ -1603,13 +1737,10 @@ namespace HatCMS
             {
                 try
                 {
-                    string sql = "select p.pageId, l.langCode, l.name, l.title, l.menuTitle, l.searchEngineDescription, p.showInMenu, p.template, p.parentPageId, p.SortOrdinal, p.CreatedDateTime, p.LastUpdatedDateTime, p.LastModifiedBy, p.RevisionNumber ";
-                    sql += " from pages p left join pagelanginfo l on (p.pageid = l.pageid) where p.Deleted Is Null order by p.sortordinal, p.LastUpdatedDateTime ";
-                    DataSet ds = this.RunSelectQuery(sql);
-
-                    if (hasRows(ds))
+                    IList<CmsPage> pagelist = repository.fetallpage();
+                    if (pagelist.Count > 0)
                     {
-                        CmsPage[] pages = pagesFromRows(ds.Tables[0].Rows);
+                        CmsPage[] pages = (pagelist as List<CmsPage>).ToArray();
                         if (pages.Length == 0)
                             throw new CmsNoPagesFoundException("No pages could be loaded from the database - there could be a database connection issue!");
 
@@ -1618,7 +1749,7 @@ namespace HatCMS
                         foreach (CmsPage p in pages)
                         {
                             if (p.Name == "" && p.ParentID <= 0)
-                                pageCache.SetHomePageId(p.ID);
+                                pageCache.SetHomePageId(p.Id);
                         }
 
                         if (pageCache.GetHomePageId() < 0)
@@ -1629,7 +1760,8 @@ namespace HatCMS
                 }
                 catch (Exception ex)
                 {
-                    throw new CmsNoPagesFoundException("No pages could be loaded from the database - there could be a database connection issue!");
+                    throw ex;
+                    //throw new CmsNoPagesFoundException("No pages could be loaded from the database - there could be a database connection issue!");
                 }
 
 
@@ -1651,7 +1783,7 @@ namespace HatCMS
                     else
                     {
                         pageToModify = new CmsPage();
-                        pageToModify.ID = id;
+                        pageToModify.Id = id;
                         // p.showInMenu, p.template, p.parentPageId, p.SortOrdinal, p.CreatedDateTime, p.LastUpdatedDateTime, p.LastModifiedBy, p.RevisionNumber
                         pageToModify.ShowInMenu = Convert.ToBoolean(dr["showInMenu"]);
                         pageToModify.TemplateName = dr["template"].ToString();
@@ -1665,11 +1797,11 @@ namespace HatCMS
 
                     // l.langCode, l.name, l.title, l.menuTitle, l.searchEngineDescription
                     CmsPageLanguageInfo langInfo = new CmsPageLanguageInfo();
-                    langInfo.languageShortCode = dr["langCode"].ToString();
-                    langInfo.name = getPossiblyNullValue(dr, "name", "");
-                    langInfo.title = dr["title"].ToString();
-                    langInfo.menuTitle = dr["menuTitle"].ToString();
-                    langInfo.searchEngineDescription = dr["searchEngineDescription"].ToString();
+                    langInfo.LanguageShortCode = dr["langCode"].ToString();
+                    langInfo.Name = getPossiblyNullValue(dr, "name", "");
+                    langInfo.Title = dr["title"].ToString();
+                    langInfo.MenuTitle = dr["menuTitle"].ToString();
+                    langInfo.SearchEngineDescription = dr["searchEngineDescription"].ToString();
 
                     List<CmsPageLanguageInfo> infos = new List<CmsPageLanguageInfo>(pageToModify.LanguageInfo);
                     infos.Add(langInfo);
@@ -1683,6 +1815,9 @@ namespace HatCMS
                 return ensurePageLanguageInfoConsistency(ret.ToArray());
             }
 
+            //This function check if all the page has page language info
+            //does not involve any database operation
+            //Not change in the refactor
             private CmsPage[] ensurePageLanguageInfoConsistency(CmsPage[] pages)
             {
                 List<CmsPage> ret = new List<CmsPage>(pages);
@@ -1691,14 +1826,14 @@ namespace HatCMS
                     foreach (CmsLanguage l in CmsConfig.Languages)
                     {
                         CmsPageLanguageInfo lang = CmsPageLanguageInfo.GetFromHaystack(l, page.LanguageInfo);
-                        if (lang.languageShortCode == "")
+                        if (lang.LanguageShortCode == "")
                         {
                             // -- useful debugging information
-                            string sql = "INSERT INTO pagelanginfo (pageId, langCode, name, title, menuTitle, searchEngineDescription) select pageId, '" + lang.languageShortCode.ToLower() + "', name,title, menuTitle, searchEngineDescription from pages;";
+                            string sql = "INSERT INTO pagelanginfo (pageId, langCode, name, title, menuTitle, searchEngineDescription) select pageId, '" + lang.LanguageShortCode.ToLower() + "', name,title, menuTitle, searchEngineDescription from pages;";
 #if !DEBUG 
                         sql = "";
 #endif
-                            throw new Exception("Page " + page.ID + " needs to have language " + lang.languageShortCode + " information added: " + sql); ;
+                            throw new Exception("Page " + page.Id + " needs to have language " + lang.LanguageShortCode + " information added: " + sql); ;
                         }
                     } // foreach system language
                 } // foreach page
@@ -1881,17 +2016,17 @@ namespace HatCMS
                 for (int i = 0; i < path_parts.Length; i++)
                 {
                     currentPage = FetchPage(parentId, path_parts[i], pageLanguage);
-                    if (currentPage.ID < 0)
+                    if (currentPage.Id < 0)
                     {
                         throw new CmsPageNotFoundException();
                     }
                     else
                     {
-                        parentId = currentPage.ID;
+                        parentId = currentPage.Id;
                     }
                 } // for
 
-                if (currentPage.ID < 0)
+                if (currentPage.Id < 0)
                 {
                     throw new CmsPageNotFoundException();
                 }
@@ -1918,21 +2053,13 @@ namespace HatCMS
             /// <returns></returns>
             public CmsPage[] FetchPagesByTemplateName(string templateName)
             {
-                StringBuilder sql = new StringBuilder("select p.pageId, l.langCode, l.name, l.title, l.menuTitle, l.searchEngineDescription, p.showInMenu, p.template, p.parentPageId, p.SortOrdinal, p.CreatedDateTime, p.LastUpdatedDateTime, p.LastModifiedBy, p.RevisionNumber");
-                sql.Append(" from pages p left join pagelanginfo l on (p.pageid = l.pageid)");
-                sql.Append(" where p.Deleted Is Null");
-                sql.Append(" and p.template like '" + dbEncode(templateName) + "'");
-                sql.Append(" order by p.pageId;");
-                DataSet ds = this.RunSelectQuery(sql.ToString());
+                IList<CmsPage> pagelist = repository.FetchPagesByTemplateName(templateName);
 
-                if (hasRows(ds) == false)
+                if(pagelist.Count > 0)
+                    return (pagelist as List<CmsPage>).ToArray();
+                else
                     return new CmsPage[0];
-
-                CmsPage[] pages = pagesFromRows(ds.Tables[0].Rows);
-                if (pages.Length == 0)
-                    return new CmsPage[0];
-
-                return pages;
+                
             }
 
             /// <summary>
@@ -1942,60 +2069,27 @@ namespace HatCMS
             /// <returns>true if inserted successfully, false if not.</returns>
             public bool createNewPage(CmsPage newPage)
             {
-                if (newPage.LanguageInfo.Length != CmsConfig.Languages.Length)
+                if (newPage.LanguageInfo.Count != CmsConfig.Languages.Length)
                     throw new Exception("Error: when creating a new page, the page must have at least one LanguageInfo specified!");
 
-                string parentId = newPage.ParentID.ToString();
                 if (newPage.ParentID < 0)
-                    parentId = "-1";
-
-                StringBuilder sql = new StringBuilder();
-                sql.Append("INSERT into pages ( showInMenu, template, parentPageId, sortOrdinal, LastUpdatedDateTime, CreatedDateTime, LastModifiedBy, RevisionNumber) VALUES ");
-                sql.Append("(");
-                sql.Append(Convert.ToInt32(newPage.ShowInMenu) + ", ");
-                sql.Append("'" + this.dbEncode(newPage.TemplateName) + "', ");
-                sql.Append(parentId + ", ");
-                sql.Append(newPage.SortOrdinal.ToString() + ", ");
-                sql.Append("NOW(), NOW(), ");
-                sql.Append("'" + dbEncode(newPage.LastModifiedBy) + "', ");
-                sql.Append(newPage.RevisionNumber + " ");
-                sql.Append( "); ");
-
-                int newId = this.RunInsertQuery(sql.ToString());
-                if (newId > -1)
+                    newPage.ParentID = 0;
+                newPage.createdatetime = DateTime.Now;
+                newPage.lastupdateDateTime = DateTime.Now;
+                try
                 {
-                    newPage.ID = newId;
-
-                    StringBuilder langSql = new StringBuilder();
-
-                    langSql.Append("INSERT INTO pagelanginfo ");
-                    langSql.Append("(pageId, langCode, name, title, menuTitle, searchEngineDescription)");
-                    langSql.Append(" VALUES ");
-                    foreach (CmsPageLanguageInfo item in newPage.LanguageInfo)
-                    {
-                        langSql.Append(" ( ");
-                        langSql.Append(" " + newId + ", ");
-                        langSql.Append(" '" + dbEncode(item.languageShortCode) + "', ");
-                        if (item.name == "")
-                            langSql.Append("NULL, ");
-                        else
-                            langSql.Append("'" + dbEncode(item.name) + "'" + ", ");
-
-                        langSql.Append("'" + dbEncode(item.title) + "'" + ", ");
-                        langSql.Append("'" + dbEncode(item.menuTitle) + "'" + ", ");
-                        langSql.Append("'" + dbEncode(item.searchEngineDescription) + "'" + " ");
-                        langSql.Append(" ),");
-                    } // foreach
-
-                    // remove trailing comma
-                    string s = langSql.ToString().Substring(0, langSql.ToString().Length - 1);
-                    int numInserted = this.RunUpdateQuery(s); // do not use RunInsertQuery                
-                    if (numInserted != newPage.LanguageInfo.Length)
-                        return false;
-
-                    newPage.LastUpdatedDateTime = DateTime.Now;
-                    newPage.CreatedDateTime = DateTime.Now;
-                    pageCache.Add(newPage.ID, newPage);
+                    newPage.lastmodifiedby = CmsContext.currentWebPortalUser.UserName;
+                }
+                catch
+                {
+                    newPage.lastmodifiedby = "";
+                }
+                
+                CmsPage createdPage = repository.SaveOrUpdate(newPage);
+               
+                if (createdPage.Id > 0)
+                {
+                    pageCache.Add(createdPage.Id, createdPage);
                     return true;
                 }
                 return false;
@@ -2010,19 +2104,16 @@ namespace HatCMS
             /// <returns>true if updated successfully, false if not.</returns>
             public bool deletePage(CmsPage pageToDelete)
             {
-                if (pageToDelete.ID < 0)
+                if (pageToDelete.Id < 0)
                     return false; // nothing to delete            
 
                 // Mark this page as being deleted.
-                string sql = "UPDATE pages set DELETED = now() WHERE pageid = " + pageToDelete.ID.ToString() + " ; ";
-
-                int numAffected = this.RunUpdateQuery(sql);
-                if (numAffected > 0)
-                {
-                    pageCache.Remove(pageToDelete);
+                pageToDelete.deleted = DateTime.Now;
+                CmsPage deletedpage = repository.Update(pageToDelete);
+                if (deletedpage.Id > 0)
                     return true;
-                }
-                return false;
+                else
+                    return false;
 
             } // deletePage
 
@@ -2033,7 +2124,7 @@ namespace HatCMS
             /// <returns>the new revision number for the page, or -1 on failure</returns>
             public int createNewPageRevision(CmsPage page)
             {
-                if (page.ID < 0)
+                if (page.Id < 0)
                     return -1;
 
                 int[] allRevNums = page.getAllRevisionNumbers();
@@ -2047,50 +2138,23 @@ namespace HatCMS
                 if (CmsContext.currentUserIsLoggedIn)
                     lastModifiedBy = CmsContext.currentWebPortalUser.UserName;
 
-
-                // insert into PageRevisionData
-                string revSql = "INSERT into pagerevisiondata (PageId, RevisionNumber, ModificationDate, ModifiedBy) VALUES ( ";
-                revSql += page.ID.ToString() + ", ";
-                revSql += newRevisionNumber.ToString() + ", ";
-                revSql += " NOW(), ";
-                revSql += "'" + dbEncode(lastModifiedBy) + "'";
-                revSql += "); ";
-
-                // use RunUpdateQuery because there's no AutoInc column for PageRevisionData
-                int numAffected = RunUpdateQuery(revSql);
-                if (numAffected <= 0)
+                CmsPageRevisionData newrevision = new CmsPageRevisionData(page.Id, newRevisionNumber, DateTime.Now, lastModifiedBy );
+                if (repository.CreateNewRepository(ref page, newrevision) < 0)
                     return -1;
-
-                // -- update the pages table to have the most up-to-date data
-                string pageUpdateSql = "update pages set RevisionNumber = " + newRevisionNumber.ToString() + " where pageid = " + page.ID.ToString() + " ;";
-                numAffected = this.RunUpdateQuery(pageUpdateSql);
-                if (numAffected > 0)
+                else
                 {
                     // important: do not update page.RevisionNumber!!
                     pageCache.Update(page);
                     return newRevisionNumber;
-                }
-                return -1;
+                }                
+
             }
 
             public CmsPageRevisionData[] getAllRevisionData(CmsPage page)
             {
-                string sql = "select * from pagerevisiondata where PageId = " + page.ID.ToString() + " ORDER BY ModificationDate ASC; ";
-                DataSet ds = this.RunSelectQuery(sql);
-                List<CmsPageRevisionData> ret = new List<CmsPageRevisionData>();
-                if (this.hasRows(ds))
-                {
-                    foreach (DataRow dr in ds.Tables[0].Rows)
-                    {
-                        CmsPageRevisionData rev = new CmsPageRevisionData();
-                        rev.PageId = page.ID;
-                        rev.RevisionNumber = Convert.ToInt32(dr["RevisionNumber"]);
-                        rev.RevisionSavedAt = Convert.ToDateTime(dr["ModificationDate"]);
-                        rev.RevisionSavedByUsername = dr["ModifiedBy"].ToString();
-                        ret.Add(rev);
-                    } // foreach
-                }
-                return ret.ToArray();
+                PageRevisionDataRepository revisiondatarepository = new PageRevisionDataRepository();
+                IList<CmsPageRevisionData> revisiondatalist = revisiondatarepository.FetchAllRevisionDataofPage(page);
+                return (revisiondatalist as List<CmsPageRevisionData>).ToArray();
             }
 
             /// <summary>
@@ -2101,26 +2165,18 @@ namespace HatCMS
             /// <returns>true if updated successfully, false if not.</returns>
             public bool setLastUpdatedTime(CmsPage page, DateTime dt)
             {
-                if (page.ID < 0)
+                if (page.Id < 0)
                     return false; // nothing to delete
 
                 string lastModifiedBy = "";
                 if (CmsContext.currentUserIsLoggedIn)
                     lastModifiedBy = CmsContext.currentWebPortalUser.UserName;
-
-                string sql = "UPDATE pages set LastUpdatedDateTime = " + dbEncode(dt) + " ";
-                sql += ", LastModifiedBy = '" + dbEncode(lastModifiedBy) + "' ";
-                sql += " WHERE pageid = " + page.ID.ToString() + " ; ";
-
-                int numAffected = this.RunUpdateQuery(sql);
-                if (numAffected > 0)
-                {
-                    page.LastUpdatedDateTime = dt;
-                    page.LastModifiedBy = lastModifiedBy;
-                    pageCache.Update(page);
+                page.lastupdateDateTime = dt;
+                page.lastmodifiedby = lastModifiedBy;
+                if (repository.SaveOrUpdate(page).Id < 0)
+                    return false;
+                else
                     return true;
-                }
-                return false;
             }
 
             /// <summary>
@@ -2131,15 +2187,10 @@ namespace HatCMS
             /// <returns>true if updated successfully, false if not.</returns>
             public bool updateSortOrdinal(CmsPage page, int newOrdinalValue)
             {
-                if (page.ID == -1)
+                if (page.Id == -1)
                     return false; // nothing to delete
-
-                string sql = "UPDATE pages set SortOrdinal = " + newOrdinalValue.ToString() + " WHERE pageid = " + page.ID.ToString() + " ; ";
-
-                // sql = sql + " SELECT LAST_INSERT_ID() as newId;";
-
-                int numAffected = this.RunUpdateQuery(sql);
-                if (numAffected > 0 && page.setLastUpdatedDateTimeToNow())
+                page.sortordinal = newOrdinalValue;
+                if (repository.SaveOrUpdate(page).Id > 0 && page.setLastUpdatedDateTimeToNow())
                 {
                     // int newId = Convert.ToInt32(ds.Tables[0].Rows[0]["newId"]);
                     page.SortOrdinal = newOrdinalValue;
@@ -2157,18 +2208,12 @@ namespace HatCMS
             /// <returns>true if updated successfully, false if not.</returns>
             public bool updateTitle(CmsPage page, string newTitle, CmsLanguage pageLanguage)
             {
-                if (page.ID == -1)
+                if (page.Id == -1)
                     return false; // nothing to delete
-
-                string sql = "UPDATE pagelanginfo set Title = '" + this.dbEncode(newTitle) + "' WHERE pageid = " + page.ID.ToString() + " AND langCode like '" + pageLanguage.shortCode + "' ; ";
-
-                // sql = sql + " SELECT LAST_INSERT_ID() as newId;";
-
-                int numAffected = this.RunUpdateQuery(sql);
-                if (numAffected > 0 && page.setLastUpdatedDateTimeToNow())
+                if (repository.UpdatePageLanguageTitle(page, newTitle, pageLanguage).Id > 0 && page.setLastUpdatedDateTimeToNow())
                 {
                     // -- update the tracking object
-                    CmsPageLanguageInfo.GetFromHaystack(pageLanguage, page.LanguageInfo).title = newTitle;
+                    CmsPageLanguageInfo.GetFromHaystack(pageLanguage, page.LanguageInfo).Title = newTitle;
 
                     pageCache.Update(page);
                     return true;
@@ -2178,13 +2223,12 @@ namespace HatCMS
 
             public bool updateShowInMenuIndicator(CmsPage page, bool newIndicator)
             {
-                if (page.ID == -1)
+                if (page.Id == -1)
                     return false; // nothing to update
 
-                string sql = "UPDATE pages SET showInMenu=" + newIndicator.ToString() + " WHERE pageid=" + page.ID.ToString() + ";";
+                page.showinmenu = newIndicator;
 
-                int numAffected = this.RunUpdateQuery(sql);
-                if (numAffected > 0 && page.setLastUpdatedDateTimeToNow())
+                if (repository.SaveOrUpdate(page).Id > 0 && page.setLastUpdatedDateTimeToNow())
                 {
                     pageCache.Update(page);
                     return true;
@@ -2200,18 +2244,13 @@ namespace HatCMS
             /// <returns>true if updated successfully, false if not.</returns>
             public bool updateMenuTitle(CmsPage page, string newMenuTitle, CmsLanguage pageLanguage)
             {
-                if (page.ID == -1)
+                if (page.Id == -1)
                     return false; // nothing to update
 
-                string sql = "UPDATE pagelanginfo set menuTitle = '" + this.dbEncode(newMenuTitle) + "' WHERE pageid = " + page.ID.ToString() + " AND langCode like '" + pageLanguage.shortCode + "' ; ";
-
-                // sql = sql + " SELECT LAST_INSERT_ID() as newId;";
-
-                int numAffected = this.RunUpdateQuery(sql);
-                if (numAffected > 0 && page.setLastUpdatedDateTimeToNow())
+                if (repository.UpdatePageLanguageMenuTitle(page, newMenuTitle, pageLanguage).Id > 0 && page.setLastUpdatedDateTimeToNow())
                 {
                     // page.MenuTitle = newMenuTitle;
-                    CmsPageLanguageInfo.GetFromHaystack(pageLanguage, page.LanguageInfo).menuTitle = newMenuTitle;
+                    CmsPageLanguageInfo.GetFromHaystack(pageLanguage, page.LanguageInfo).MenuTitle = newMenuTitle;
                     pageCache.Update(page);
                     return true;
                 }
@@ -2227,16 +2266,13 @@ namespace HatCMS
             /// <returns>true if updated successfully, false if not.</returns>
             public bool updateSearchEngineDescription(CmsPage page, string newSearchEngineDescription, CmsLanguage pageLanguage)
             {
-                if (page.ID == -1)
+                if (page.Id == -1)
                     return false; // nothing to update
 
-                string sql = "UPDATE pagelanginfo set SearchEngineDescription = '" + this.dbEncode(newSearchEngineDescription) + "' WHERE pageid = " + page.ID.ToString() + " AND langCode like '" + pageLanguage.shortCode + "' ; ";
-
-                int numAffected = this.RunUpdateQuery(sql);
-                if (numAffected > 0 && page.setLastUpdatedDateTimeToNow())
+                if (repository.UpdatePageLanguageSearchEngineDescription(page, newSearchEngineDescription, pageLanguage).Id > 0 && page.setLastUpdatedDateTimeToNow())
                 {
                     // page.SearchEngineDescription = newSearchEngineDescription;
-                    CmsPageLanguageInfo.GetFromHaystack(pageLanguage, page.LanguageInfo).searchEngineDescription = newSearchEngineDescription;
+                    CmsPageLanguageInfo.GetFromHaystack(pageLanguage, page.LanguageInfo).SearchEngineDescription = newSearchEngineDescription;
                     pageCache.Update(page);
                     return true;
                 }
@@ -2245,20 +2281,14 @@ namespace HatCMS
 
             public bool updateParentPage(CmsPage page, CmsPage newParentPage)
             {
-                if (page.ID == -1)
+                if (page.Id == -1)
                     return false; // nothing to update
+                page.ParentID = newParentPage.Id;
 
-                string sql = "UPDATE pages set parentPageId = " + newParentPage.ID + " WHERE pageid = " + page.ID.ToString() + " ; ";
-
-
-                int numAffected = this.RunUpdateQuery(sql);
-                if (numAffected > 0 && page.setLastUpdatedDateTimeToNow())
+                if (repository.SaveOrUpdate(page).Id > 0 && page.setLastUpdatedDateTimeToNow())
                 {
-                    page.ParentID = newParentPage.ID;
                     // -- clear the memory cached pages and sub-pages
                     pageCache.Clear();
-
-
                     pageCache.Update(page);
                     return true;
                 }
@@ -2267,17 +2297,12 @@ namespace HatCMS
 
             public bool updateName(CmsPage page, string newName, CmsLanguage pageLanguage)
             {
-                if (page.ID == -1)
+                if (page.Id == -1)
                     return false; // nothing to update
-
-                string sql = "UPDATE pagelanginfo set name = '" + dbEncode(newName.ToLower()) + "' WHERE pageid = " + page.ID.ToString() + " AND  langCode like '" + pageLanguage.shortCode + "'  ; ";
-
-
-                int numAffected = this.RunUpdateQuery(sql);
-                if (numAffected > 0 && page.setLastUpdatedDateTimeToNow())
+                if (repository.UpdatePageLanguageName(page, newName, pageLanguage).Id > 0 && page.setLastUpdatedDateTimeToNow())
                 {
                     // page.Name = newName.ToLower();
-                    CmsPageLanguageInfo.GetFromHaystack(pageLanguage, page.LanguageInfo).name = newName.ToLower();
+                    CmsPageLanguageInfo.GetFromHaystack(pageLanguage, page.LanguageInfo).Name = newName.ToLower();
 
                     // -- clear the memory cached pages and sub-pages
                     pageCache.Clear();
@@ -2291,18 +2316,14 @@ namespace HatCMS
 
             public bool updateTemplateName(CmsPage page, string newTemplateName)
             {
-                if (page.ID == -1)
+                if (page.Id == -1)
                     return false; // nothing to update
+                page.TemplateName = newTemplateName;
 
-                string sql = "UPDATE pages set template = '" + dbEncode(newTemplateName) + "' WHERE pageid = " + page.ID.ToString() + " ; ";
-
-                int numAffected = this.RunUpdateQuery(sql);
-                if (numAffected > 0 && page.setLastUpdatedDateTimeToNow())
+                if (repository.SaveOrUpdate(page).Id > 0 && page.setLastUpdatedDateTimeToNow())
                 {
-                    page.TemplateName = newTemplateName;
                     // -- clear the memory cached pages and sub-pages
                     pageCache.Clear();
-
                     pageCache.Update(page);
                     return true;
                 }
@@ -2311,35 +2332,18 @@ namespace HatCMS
 
             private void clearAllExpiredPageLocks()
             {
-                string sql = "DELETE from pagelocks where LockExpiresAt < NOW();";
-                int numDeleted = this.RunUpdateQuery(sql);
-                Console.Write(numDeleted.ToString());
+                repository.clearAllExpiredPageLocks();
             }
 
             public CmsPageLockData getPageLockData(CmsPage targetPage)
             {
-                clearAllExpiredPageLocks();
-
-                string sql = "select * from pagelocks where pageid = " + targetPage.ID.ToString() + " ;";
-                DataSet ds = this.RunSelectQuery(sql);
-                if (this.hasSingleRow(ds))
-                {
-                    CmsPageLockData ret = new CmsPageLockData();
-                    DataRow dr = ds.Tables[0].Rows[0];
-                    ret.PageId = Convert.ToInt32(dr["pageid"]);
-                    ret.LockedByUsername = dr["LockedByUsername"].ToString();
-                    ret.LockExpiresAt = Convert.ToDateTime(dr["LockExpiresAt"]);
-                    return ret;
-                }
-                return null;
+                return repository.getPageLockData(targetPage);
             }
 
             public void clearCurrentPageLock(CmsPage pageToUnlock)
             {
                 // delete both expired locks and the lock for the current page
-                string sql = "DELETE from pagelocks where LockExpiresAt < NOW() OR PageId = " + pageToUnlock.ID.ToString() + ";";
-                int numDeleted = this.RunUpdateQuery(sql);
-                Console.Write(numDeleted.ToString());
+                repository.clearCurrentPageLock(pageToUnlock);
             }
 
             private static object PageEditingLock = new object();
@@ -2364,22 +2368,11 @@ namespace HatCMS
                         lastModifiedBy = CmsContext.currentWebPortalUser.UserName;
 
                     CmsPageLockData ret = new CmsPageLockData();
-                    ret.PageId = pageToLock.ID;
+                    ret.PageId = pageToLock.Id;
                     ret.LockedByUsername = lastModifiedBy;
                     ret.LockExpiresAt = new DateTime(DateTime.Now.Ticks + TimeSpan.FromMinutes(minutesToLockFor).Ticks);
 
-                    string sql = "";
-                    sql += "INSERT into pagelocks (pageid, LockedByUsername, LockExpiresAt) VALUES (";
-                    sql += ret.PageId.ToString() + ", ";
-                    sql += "'" + dbEncode(ret.LockedByUsername) + "', ";
-                    sql += " " + dbEncode(ret.LockExpiresAt) + " ";
-                    sql += ");" + Environment.NewLine;
-
-                    int numUpdated = this.RunUpdateQuery(sql);
-                    if (numUpdated != 1)
-                        return null;
-                    else
-                        return ret;
+                    return repository.lockPageForEditing(ret);
                 } // lock
 
             } // lockPageForEditing                

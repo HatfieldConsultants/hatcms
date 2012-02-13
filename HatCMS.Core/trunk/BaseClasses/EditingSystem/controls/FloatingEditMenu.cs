@@ -50,13 +50,13 @@ namespace HatCMS.Controls.EditingSystem
             page.HeadSection.AddEmbeddedJavascriptFile(JavascriptGroup.ControlOrPlaceholder, typeof(FloatingEditMenu).Assembly, "FloatingEditMenu.js");
 
 
-            string divId = "editConsole_" + page.ID.ToString();
+            string divId = "editConsole_" + page.Id.ToString();
             string persistKey = "editConsole_" + page.TemplateName + CmsContext.currentEditMode.ToString();
             persistKey = persistKey.Replace("/", "_");
             persistKey = persistKey.Replace("\\", "_");
             persistKey = persistKey.Replace(" ", "_");
 
-            string consoleDivId = "editConsoleOptions_" + page.ID.ToString();
+            string consoleDivId = "editConsoleOptions_" + page.Id.ToString();
 
             string leftPos = "580px";
             string topPos = "30px";

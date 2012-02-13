@@ -490,7 +490,7 @@ namespace HatCMS.Placeholders
 
             int pageIdToAssociate = PageUtils.getFromForm(controlId + "AssociatePageId", -1);
             CmsPage pageToAssociate = CmsContext.getPageById(pageIdToAssociate);
-            if (pageToAssociate.ID >= 0)
+            if (pageToAssociate.Id >= 0)
             {
                 CmsPlaceholderDefinition[] phDefs = pageToAssociate.getPlaceholderDefinitions("FileLibraryDetails");
                 foreach (CmsPlaceholderDefinition phDef in phDefs)
@@ -573,7 +573,7 @@ namespace HatCMS.Placeholders
         {
             base.categoryList = db.fetchCategoryList(langToRenderFor);
             
-            string controlId = "simplefileaggregator_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
+            string controlId = "simplefileaggregator_" + page.Id.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
             RenderParameters renderParams = RenderParameters.FromPlaceholderParamList(paramList);
 
             CmsUrlFormat pageLinkFormat = CmsUrlFormat.RelativeToRoot;
@@ -652,7 +652,7 @@ namespace HatCMS.Placeholders
                 List<int> ret = new List<int>();
 
                 string sql = "select distinct LinkedPageId from filelibraryaggregator2 ";
-                sql += " where PageId = " + aggregatorPage.ID + " ";
+                sql += " where PageId = " + aggregatorPage.Id + " ";
                 sql += " AND Identifier = " + aggIdentifier.ToString() + " ";
                 sql += " AND LangCode = '" + dbEncode(aggLang.shortCode) + "'; ";
 
@@ -674,10 +674,10 @@ namespace HatCMS.Placeholders
                 string sql = "INSERT INTO filelibraryaggregator2 ";
                 sql += "(PageId, Identifier, LangCode, LinkedPageId, LinkedIdentifier, LinkedLangCode)";
                 sql += " VALUES ( ";
-                sql += aggregatorPage.ID + ", ";
+                sql += aggregatorPage.Id + ", ";
                 sql += aggIdentifier + ", ";
                 sql += "'" + dbEncode(aggLang.shortCode) + "'" + ", ";
-                sql += targetPage.ID.ToString() + ", ";
+                sql += targetPage.Id.ToString() + ", ";
                 sql += targetIdentifier.ToString() + ", ";
                 sql += "'" + dbEncode(targetLang.shortCode) + "'" + " ";
                 sql += " ); ";

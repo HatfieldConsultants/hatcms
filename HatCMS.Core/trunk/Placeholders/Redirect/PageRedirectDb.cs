@@ -23,10 +23,10 @@ namespace HatCMS.Placeholders
 		/// <returns></returns>
 		public string getPageRedirectUrl(CmsPage page, int identifier, string langShortCode, bool createNewIfDoesNotExist)
 		{
-			if (page.ID < 0 || identifier < 0)
+			if (page.Id < 0 || identifier < 0)
 				return "";
 
-            string sql = "select url from pageredirect c where c.pageid = " + page.ID.ToString() + " and c.identifier = " + identifier.ToString() + " and langShortCode = '"+dbEncode(langShortCode)+"' and deleted is null;";
+            string sql = "select url from pageredirect c where c.pageid = " + page.Id.ToString() + " and c.identifier = " + identifier.ToString() + " and langShortCode = '"+dbEncode(langShortCode)+"' and deleted is null;";
 			DataSet ds = this.RunSelectQuery(sql);
 			if (ds.Tables[0] != null && ds.Tables[0].Rows.Count == 1)
 			{
@@ -67,7 +67,7 @@ namespace HatCMS.Placeholders
 		{
 			url = this.dbEncode(url);
 			string sql = "insert into pageredirect (pageid, identifier, langShortCode, url) values (";
-			sql = sql +page.ID.ToString()+","+identifier.ToString()+",'"+dbEncode(langShortCode)+"', '"+dbEncode(url)+"'); ";			
+			sql = sql +page.Id.ToString()+","+identifier.ToString()+",'"+dbEncode(langShortCode)+"', '"+dbEncode(url)+"'); ";			
 
 			int newId = this.RunInsertQuery(sql);
 			if (newId > -1)
@@ -87,7 +87,7 @@ namespace HatCMS.Placeholders
 		public bool saveUpdatedPageRedirect(CmsPage page, int identifier, string langShortCode, string url)
 		{
 			url = this.dbEncode(url);
-			string sql = "update pageredirect set url= '"+dbEncode(url)+"' where pageid= "+page.ID.ToString();
+			string sql = "update pageredirect set url= '"+dbEncode(url)+"' where pageid= "+page.Id.ToString();
 			sql = sql +  " AND identifier = "+identifier.ToString()+" ";
             sql = sql + " AND langShortCode = '" + dbEncode(langShortCode) + "'; ";
 

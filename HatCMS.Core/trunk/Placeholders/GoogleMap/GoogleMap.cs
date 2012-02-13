@@ -75,7 +75,7 @@ namespace HatCMS.Placeholders
             }
 
             GoogleMapInfo mapInfo = (new GoogleMapDb()).getGoogleMap(page, identifier, true);
-            string mapId = "GoogleMap_" + page.ID.ToString() + "_" + identifier.ToString();
+            string mapId = "GoogleMap_" + page.Id.ToString() + "_" + identifier.ToString();
 
             string action = PageUtils.getFromForm(mapId + "Action", "");
             if (action.Trim().ToLower() == "update")
@@ -164,7 +164,7 @@ namespace HatCMS.Placeholders
             {
                 page.HeadSection.AddJavascriptFile(JavascriptGroup.Library, "http://maps.google.com/maps?file=api&amp;v=2&amp;key=" + info.APIKey);
 
-                string mapId = "GoogleMap_" + page.ID.ToString() + "_" + identifier.ToString();
+                string mapId = "GoogleMap_" + page.Id.ToString() + "_" + identifier.ToString();
                 string loadFunctionName = "LoadMap" + mapId;
                 // string onLoadJS = CmsPage.getOnloadJavascript(loadFunctionName);
 

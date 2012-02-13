@@ -16,10 +16,10 @@ namespace HatCMS.Placeholders
         // ALTER TABLE googlemap ADD COLUMN `KMLOverlayUrl` TEXT NOT NULL AFTER `MapType`;
         public GoogleMapInfo getGoogleMap(CmsPage page, int identifier, bool createNewIfDoesNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new GoogleMapInfo();
 
-            string sql = "select APIKey, PopupHtml, KMLOverlayUrl, Latitude, Longitude,intitialZoomLevel, MapType from googlemap c where c.pageid = " + page.ID.ToString() + " and c.identifier = " + identifier.ToString() + " and deleted is null;";
+            string sql = "select APIKey, PopupHtml, KMLOverlayUrl, Latitude, Longitude,intitialZoomLevel, MapType from googlemap c where c.pageid = " + page.Id.ToString() + " and c.identifier = " + identifier.ToString() + " and deleted is null;";
             DataSet ds = this.RunSelectQuery(sql);
             if (this.hasSingleRow(ds))
             {
@@ -79,7 +79,7 @@ namespace HatCMS.Placeholders
             GoogleMapInfo info = new GoogleMapInfo();
 
             string sql = "insert into googlemap (pageid, identifier, APIKey, PopupHtml, KMLOverlayUrl, Latitude, Longitude, MapType) values (";
-            sql = sql + page.ID.ToString() + "," + identifier.ToString() + ",";
+            sql = sql + page.Id.ToString() + "," + identifier.ToString() + ",";
             sql += "'"+dbEncode(info.APIKey)+"', '"+dbEncode(info.PopupHtml)+"', '"+dbEncode(info.KMLOverlayUrl)+"', "+info.Latitude+", "+info.Longitude+",  ";
             sql += "'" + dbEncode(Enum.GetName(typeof(GoogleMapInfo.MapDisplay), info.displayType)) + "' ";
             sql += "); ";
@@ -110,7 +110,7 @@ namespace HatCMS.Placeholders
             sql += " Latitude = "+mapInfo.Latitude+", ";
             sql += " Longitude = " + mapInfo.Longitude + ", ";
             sql += " MapType = '" + dbEncode(Enum.GetName(typeof(GoogleMapInfo.MapDisplay),mapInfo.displayType)) + "' ";
-            sql += " where pageid= " + page.ID.ToString();
+            sql += " where pageid= " + page.Id.ToString();
             sql += " AND identifier = " + identifier.ToString() + "; ";
             //sql = sql + " SELECT LAST_INSERT_ID() as newId;";
 

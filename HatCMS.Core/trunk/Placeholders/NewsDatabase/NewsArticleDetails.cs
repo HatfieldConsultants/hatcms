@@ -64,7 +64,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             NewsArticleDb db = new NewsArticleDb();
             NewsArticleDb.NewsArticleDetailsData entity = new NewsArticleDb.NewsArticleDetailsData(page, identifier, langToRenderFor);
             string dateString = "";
-            string editId = "newsDetails_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
+            string editId = "newsDetails_" + page.Id.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
 
             // ------- CHECK THE FORM FOR ACTIONS
             string action = PageUtils.getFromForm(editId + "_Action", "");

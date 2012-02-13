@@ -66,7 +66,7 @@ namespace HatCMS.Placeholders.Procurement
             ProcurementDb db = new ProcurementDb();
             ProcurementDb.ProcurementDetailsData entity = new ProcurementDb.ProcurementDetailsData(page, identifier, langToRenderFor);
             string dateString = "";
-            string editId = "ProcurementDetails_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
+            string editId = "ProcurementDetails_" + page.Id.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
 
             // ------- CHECK THE FORM FOR ACTIONS
             string action = PageUtils.getFromForm(editId + "_Action", "");

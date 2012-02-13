@@ -12,12 +12,12 @@ namespace HatCMS.Placeholders
     {
         public JobPostingDetailsData getJobPostingDetailsData(CmsPage page, int identifier, CmsLanguage language, bool createNewIfDoesNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new JobPostingDetailsData();
 
             string sql = "";
             sql = "select * from jobdetails s ";
-            sql += " where s.pageid = " + page.ID.ToString() + " and s.identifier = " + identifier.ToString() + " and langShortCode = '" + dbEncode(language.shortCode) + "' and s.deleted is null;";
+            sql += " where s.pageid = " + page.Id.ToString() + " and s.identifier = " + identifier.ToString() + " and langShortCode = '" + dbEncode(language.shortCode) + "' and s.deleted is null;";
 
             DataSet ds = this.RunSelectQuery(sql);
             if (this.hasSingleRow(ds))
@@ -60,7 +60,7 @@ namespace HatCMS.Placeholders
         public bool createNewJobPostingDetailsData(CmsPage page, int identifier, CmsLanguage language, JobPostingDetailsData data)
         {
             string sql = "insert into jobdetails (pageid, identifier, langShortCode, JobLocationId, RemoveAnonAccessAt) values (";
-            sql += page.ID.ToString() + "," + identifier.ToString() + ",";
+            sql += page.Id.ToString() + "," + identifier.ToString() + ",";
             sql += "'" + dbEncode(language.shortCode) + "', ";
             sql += "" + (data.LocationId.ToString()) + ", ";
             sql += "" + dbEncode(data.RemoveAnonAccessAt) + " ";
@@ -95,12 +95,12 @@ namespace HatCMS.Placeholders
 
         public JobPostingAggregatorData getJobPostingAggregatorData(CmsPage page, int identifier, CmsLanguage language, bool createNewIfDoesNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new JobPostingAggregatorData();
 
             string sql = "";
             sql = "select * from jobsummary s ";
-            sql += " where s.pageid = " + page.ID.ToString() + " and s.identifier = " + identifier.ToString() + " and langShortCode = '" + dbEncode(language.shortCode) + "' and s.deleted is null;";
+            sql += " where s.pageid = " + page.Id.ToString() + " and s.identifier = " + identifier.ToString() + " and langShortCode = '" + dbEncode(language.shortCode) + "' and s.deleted is null;";
 
             DataSet ds = this.RunSelectQuery(sql);
             if (this.hasSingleRow(ds))
@@ -140,7 +140,7 @@ namespace HatCMS.Placeholders
         public bool createNewJobPostingAggregatorData(CmsPage page, int identifier, CmsLanguage language, JobPostingAggregatorData data)
         {
             string sql = "insert into jobsummary (pageid, identifier, langShortCode, locationId) values (";
-            sql += page.ID.ToString() + "," + identifier.ToString() + ",";
+            sql += page.Id.ToString() + "," + identifier.ToString() + ",";
             sql += "'" + dbEncode(language.shortCode) + "', ";
             sql += "" + (data.LocationId.ToString()) + " ";            
             sql += "); ";

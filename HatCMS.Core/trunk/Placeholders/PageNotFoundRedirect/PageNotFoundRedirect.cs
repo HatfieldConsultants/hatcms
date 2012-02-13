@@ -97,7 +97,7 @@ namespace HatCMS.Placeholders
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
 		{						
 			
-			string formName = "editPageNotFoundSuggestion_"+page.ID.ToString()+identifier.ToString();
+			string formName = "editPageNotFoundSuggestion_"+page.Id.ToString()+identifier.ToString();
             PageNotFoundRedirectDb db = (new PageNotFoundRedirectDb());
             PageNotFoundRedirectInfo[] infos = db.getAllRedirectInfos();
 

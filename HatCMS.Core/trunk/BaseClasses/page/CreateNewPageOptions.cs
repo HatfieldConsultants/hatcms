@@ -84,10 +84,10 @@ namespace HatCMS
             ret.Add("pParentPage", PromptUserForParentPage.ToString());
             foreach (CmsPageLanguageInfo l in NewPageLanguageInfos)
             {
-                ret.Add("MenuTitle_" + l.languageShortCode, l.menuTitle);
-                ret.Add("Title_" + l.languageShortCode, l.title);
-                ret.Add("SEDesc_" + l.languageShortCode, l.searchEngineDescription);
-                ret.Add("Name_" + l.languageShortCode, l.name);
+                ret.Add("MenuTitle_" + l.LanguageShortCode, l.MenuTitle);
+                ret.Add("Title_" + l.LanguageShortCode, l.Title);
+                ret.Add("SEDesc_" + l.LanguageShortCode, l.SearchEngineDescription);
+                ret.Add("Name_" + l.LanguageShortCode, l.Name);
             } // foreach
             ret.Add("ShowInMenu", ShowInMenu.ToString());
             ret.Add("Template", Template);
@@ -108,7 +108,7 @@ namespace HatCMS
 
             // -- set sortOrdinal
             CmsPage parentPage = CmsContext.getPageById(ParentPageId);
-            if (parentPage.ID >= 0)
+            if (parentPage.Id >= 0)
             {
                 int highestSiblingSortOrdinal = -1;
                 foreach (CmsPage sibling in parentPage.ChildPages)
@@ -128,15 +128,15 @@ namespace HatCMS
 
         public static CmsCreateNewPageOptions ReadFromQueryString()
         {
-            int parentId = PageUtils.getFromForm("ParentPageId", -1);
+            int parentId = PageUtils.getFromForm("ParentPageId", 0);
             CmsCreateNewPageOptions ret = new CmsCreateNewPageOptions();
             // -- modify smart defaults if the query string isn't formatted correctly. 
             if (parentId >= 0)
             {
                 CmsPage parentPage = CmsContext.getPageById(parentId);
-                if (parentPage.ID >= 0)
+                if (parentPage.Id >= 0)
                 {
-                    parentId = parentPage.ID;
+                    parentId = parentPage.Id;
                     ret = CreateInstanceWithDefaultsForCurrentUser(parentPage);
                 }
             }
@@ -152,11 +152,11 @@ namespace HatCMS
             foreach (CmsLanguage lang in CmsConfig.Languages)
             {
                 CmsPageLanguageInfo langInfo = CmsPageLanguageInfo.GetFromHaystack(lang, ret.NewPageLanguageInfos); // returns a new CmsPageLangInfo if not found
-                langInfo.languageShortCode = lang.shortCode;
-                langInfo.menuTitle = PageUtils.getFromForm("MenuTitle_" + lang.shortCode, langInfo.menuTitle);
-                langInfo.title = PageUtils.getFromForm("Title_" + lang.shortCode, langInfo.title);
-                langInfo.searchEngineDescription = PageUtils.getFromForm("SEDesc_" + lang.shortCode, langInfo.searchEngineDescription);
-                langInfo.name = PageUtils.getFromForm("Name_" + lang.shortCode, langInfo.name);
+                langInfo.LanguageShortCode = lang.shortCode;
+                langInfo.MenuTitle = PageUtils.getFromForm("MenuTitle_" + lang.shortCode, langInfo.MenuTitle);
+                langInfo.Title = PageUtils.getFromForm("Title_" + lang.shortCode, langInfo.Title);
+                langInfo.SearchEngineDescription = PageUtils.getFromForm("SEDesc_" + lang.shortCode, langInfo.SearchEngineDescription);
+                langInfo.Name = PageUtils.getFromForm("Name_" + lang.shortCode, langInfo.Name);
 
                 langInfos.Add(langInfo);
             } // foreach lang
@@ -177,11 +177,11 @@ namespace HatCMS
             foreach (CmsLanguage lang in CmsConfig.Languages)
             {
                 CmsPageLanguageInfo langInfo = new CmsPageLanguageInfo();
-                langInfo.languageShortCode = lang.shortCode;
-                langInfo.name = newPageName;
-                langInfo.title = newPageTitle;
-                langInfo.menuTitle = newPageMenuTitle;
-                langInfo.searchEngineDescription = newPageSearchEngineDescription;
+                langInfo.LanguageShortCode = lang.shortCode;
+                langInfo.Name = newPageName;
+                langInfo.Title = newPageTitle;
+                langInfo.MenuTitle = newPageMenuTitle;
+                langInfo.SearchEngineDescription = newPageSearchEngineDescription;
 
                 newPageLangInfos.Add(langInfo);
             }
@@ -228,11 +228,11 @@ namespace HatCMS
                 foreach (CmsLanguage lang in CmsConfig.Languages)
                 {
                     CmsPageLanguageInfo l = new CmsPageLanguageInfo();
-                    l.languageShortCode = lang.shortCode;
-                    l.name = "";
-                    l.title = "";
-                    l.menuTitle = "";
-                    l.searchEngineDescription = "";
+                    l.LanguageShortCode = lang.shortCode;
+                    l.Name = "";
+                    l.Title = "";
+                    l.MenuTitle = "";
+                    l.SearchEngineDescription = "";
 
                     langInfos.Add(l);
                 }
@@ -241,7 +241,7 @@ namespace HatCMS
 
                 ret.ShowInMenu = true;
                 ret.Template = defaultTemplate;
-                ret.ParentPageId = editMenuPage.ID;
+                ret.ParentPageId = editMenuPage.Id;
             }
             else if (editMenuPage.currentUserCanWrite)
             {
@@ -256,11 +256,11 @@ namespace HatCMS
                 foreach (CmsLanguage lang in CmsConfig.Languages)
                 {
                     CmsPageLanguageInfo l = new CmsPageLanguageInfo();
-                    l.languageShortCode = lang.shortCode;
-                    l.name = "";
-                    l.title = "";
-                    l.menuTitle = "";
-                    l.searchEngineDescription = "";
+                    l.LanguageShortCode = lang.shortCode;
+                    l.Name = "";
+                    l.Title = "";
+                    l.MenuTitle = "";
+                    l.SearchEngineDescription = "";
 
                     langInfos.Add(l);
                 }
@@ -269,7 +269,7 @@ namespace HatCMS
 
                 ret.ShowInMenu = true;
                 ret.Template = defaultTemplate;
-                ret.ParentPageId = editMenuPage.ID;
+                ret.ParentPageId = editMenuPage.Id;
             }
             else
             {
@@ -284,11 +284,11 @@ namespace HatCMS
                 foreach (CmsLanguage lang in CmsConfig.Languages)
                 {
                     CmsPageLanguageInfo l = new CmsPageLanguageInfo();
-                    l.languageShortCode = lang.shortCode;
-                    l.name = "";
-                    l.title = "";
-                    l.menuTitle = "";
-                    l.searchEngineDescription = "";
+                    l.LanguageShortCode = lang.shortCode;
+                    l.Name = "";
+                    l.Title = "";
+                    l.MenuTitle = "";
+                    l.SearchEngineDescription = "";
 
                     langInfos.Add(l);
                 }
@@ -297,7 +297,7 @@ namespace HatCMS
 
                 ret.ShowInMenu = true;
                 ret.Template = defaultTemplate;
-                ret.ParentPageId = editMenuPage.ID;
+                ret.ParentPageId = editMenuPage.Id;
             }
 
             return ret;

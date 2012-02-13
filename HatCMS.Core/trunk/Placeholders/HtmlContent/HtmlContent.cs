@@ -112,7 +112,7 @@ namespace HatCMS.Placeholders
 
             string htmlContent = "";
 
-            string editorId = "htmlcontent_" + page.ID.ToString() + "_" + identifier.ToString() +"_"+ langToRenderFor.shortCode;
+            string editorId = "htmlcontent_" + page.Id.ToString() + "_" + identifier.ToString() +"_"+ langToRenderFor.shortCode;
 
             // ------- CHECK THE FORM FOR ACTIONS
             string action = PageUtils.getFromForm(editorId + "_Action", "");

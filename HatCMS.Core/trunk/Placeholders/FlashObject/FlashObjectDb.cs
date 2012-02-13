@@ -15,10 +15,10 @@ namespace HatCMS.Placeholders
     {
         public FlashObjectData getFlashObject(CmsPage page, int identifier, bool createNewIfDoesNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new FlashObjectData();
 
-            string sql = "select SWFPath, DisplayWidth, DisplayHeight from flashobject c where c.pageid = " + page.ID.ToString() + " and c.identifier = " + identifier.ToString() + " and deleted is null;";
+            string sql = "select SWFPath, DisplayWidth, DisplayHeight from flashobject c where c.pageid = " + page.Id.ToString() + " and c.identifier = " + identifier.ToString() + " and deleted is null;";
             DataSet ds = this.RunSelectQuery(sql);
             if (this.hasSingleRow(ds))
             {
@@ -46,7 +46,7 @@ namespace HatCMS.Placeholders
         public FlashObjectData createNewFlashObject(CmsPage page, int identifier)
         {
             string sql = "insert into flashobject (pageid, identifier, SWFPath, DisplayWidth, DisplayHeight) values (";
-            sql = sql + page.ID.ToString() + "," + identifier.ToString() + ",";
+            sql = sql + page.Id.ToString() + "," + identifier.ToString() + ",";
             sql += "'', " + FlashObject.DefaultDisplayWidth.ToString() + ", " + FlashObject.DefaultDisplayHeight.ToString() + " ";
             sql += "); ";
 
@@ -68,7 +68,7 @@ namespace HatCMS.Placeholders
             sql += " SWFPath = '" + dbEncode(flashObject.SWFPath) + "', ";
             sql += " DisplayWidth = " + flashObject.DisplayWidth + ", ";
             sql += " DisplayHeight = " + flashObject.DisplayHeight + " ";
-            sql += " where pageid= " + page.ID.ToString();
+            sql += " where pageid= " + page.Id.ToString();
             sql += " AND identifier = " + identifier.ToString() + "; ";            
 
             int numAffected = this.RunUpdateQuery(sql);

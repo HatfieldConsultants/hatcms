@@ -90,7 +90,7 @@ namespace HatCMS.Placeholders
                 return null;
             foreach (CmsPage p in pagesToGatherImagesFrom)
             {
-                if (this.PageId == p.ID)
+                if (this.PageId == p.Id)
                     return p;
             }
 

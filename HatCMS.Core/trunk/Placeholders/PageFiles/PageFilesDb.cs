@@ -17,12 +17,12 @@ namespace HatCMS.Placeholders
 
         public PageFilesPlaceholderData getPageFilesData(CmsPage page, int identifier,CmsLanguage langToRenderFor, bool createNewIfDoesNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new PageFilesPlaceholderData();
 
             string sql = "select tabularDisplayLinkMode, sortDirection, sortColumn, numFilesToShowPerPage, accessLevelToAddFiles, accessLevelToEditFiles ";
             sql += " from pagefiles c ";
-            sql += " where c.pageid = " + page.ID.ToString() + " and c.identifier = " + identifier.ToString() + " and langShortCode like '" + dbEncode(langToRenderFor.shortCode) + "' and deleted is null;";
+            sql += " where c.pageid = " + page.Id.ToString() + " and c.identifier = " + identifier.ToString() + " and langShortCode like '" + dbEncode(langToRenderFor.shortCode) + "' and deleted is null;";
             DataSet ds = this.RunSelectQuery(sql);
             if (this.hasSingleRow(ds))
             {
@@ -55,7 +55,7 @@ namespace HatCMS.Placeholders
             PageFilesPlaceholderData data = new PageFilesPlaceholderData();
 
             string sql = "insert into pagefiles (pageid, identifier, langShortCode, tabularDisplayLinkMode, sortDirection, sortColumn, numFilesToShowPerPage, accessLevelToAddFiles, accessLevelToEditFiles) values (";
-            sql = sql + page.ID.ToString() + "," + identifier.ToString() + ", '" + dbEncode(lang.shortCode) + "', ";
+            sql = sql + page.Id.ToString() + "," + identifier.ToString() + ", '" + dbEncode(lang.shortCode) + "', ";
             sql = sql + "'" + Enum.GetName(typeof(PageFilesPlaceholderData.TabularDisplayLinkMode), data.tabularDisplayLinkMode) + "', ";
             sql = sql + "'" + Enum.GetName(typeof(PageFilesPlaceholderData.SortDirection), data.sortDirection) + "', ";
             sql = sql + "'" + Enum.GetName(typeof(PageFilesPlaceholderData.SortColumn), data.sortColumn) + "', ";
@@ -83,7 +83,7 @@ namespace HatCMS.Placeholders
             sql += " numFilesToShowPerPage = " + data.numFilesToShowPerPage.ToString() + ", ";
             sql += " accessLevelToAddFiles = '" + Enum.GetName(typeof(BaseCmsPlaceholder.AccessLevel), data.accessLevelToAddFiles) + "', ";
             sql += " accessLevelToEditFiles = '" + Enum.GetName(typeof(BaseCmsPlaceholder.AccessLevel), data.accessLevelToEditFiles) + "' ";
-            sql += " where pageid = " + page.ID.ToString();
+            sql += " where pageid = " + page.Id.ToString();
             sql += " AND langShortCode like '" + dbEncode(lang.shortCode) + "' ";
             sql += " AND identifier = " + identifier.ToString() + "; ";
 
@@ -194,7 +194,7 @@ namespace HatCMS.Placeholders
             List<string> pageIds = new List<string>();
             foreach (CmsPage p in pages)
             {
-                pageIds.Add(p.ID.ToString());
+                pageIds.Add(p.Id.ToString());
             }
 
             string sql = "select PageFileItemId, PageId, Identifier, langShortCode, Filename, Title, Abstract, Author, FileSize, LastModified, CreatorUsername from pagefileitem ";
@@ -219,7 +219,7 @@ namespace HatCMS.Placeholders
         public PageFilesItemData[] getPageFilesItemDatas(CmsPage page, int identifier, CmsLanguage pageLanguage, PageFilesPlaceholderData data)
         {
             string sql = "select PageFileItemId, PageId, Identifier, langShortCode, Filename, Title, Abstract, Author, FileSize, LastModified, CreatorUsername from pagefileitem ";
-            sql += " where PageId = " + page.ID.ToString() + " and Identifier=" + identifier.ToString() + " and langShortCode like '"+pageLanguage.shortCode+"' and deleted is null ";
+            sql += " where PageId = " + page.Id.ToString() + " and Identifier=" + identifier.ToString() + " and langShortCode like '"+pageLanguage.shortCode+"' and deleted is null ";
 
             if (data.sortColumn != PageFilesPlaceholderData.SortColumn.NoSorting)
             {
@@ -273,7 +273,7 @@ namespace HatCMS.Placeholders
         public bool saveNewPageFilesItemData(PageFilesItemData newItem, CmsPage page, int indentifier, CmsLanguage pageLanguage)
         {
             string sql = "insert into pagefileitem (PageId, Identifier, langShortCode, Filename, Title, Author, Abstract, FileSize, LastModified, CreatorUsername) VALUES (";
-            sql += "" + page.ID.ToString() + ", ";
+            sql += "" + page.Id.ToString() + ", ";
             sql += "" + indentifier.ToString() + ", ";
             sql += "'" + dbEncode(pageLanguage.shortCode) + "', ";
             sql += "'" + dbEncode(newItem.Filename) + "', ";

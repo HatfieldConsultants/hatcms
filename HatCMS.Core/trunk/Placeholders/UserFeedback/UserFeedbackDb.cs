@@ -16,11 +16,11 @@ namespace HatCMS.Placeholders
     {
         public UserFeedbackFormInfo getUserFeedbackFormInfo(CmsPage page, int identifier, CmsLanguage lang, bool createNewIfDoesNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new UserFeedbackFormInfo();
 
             string sql = "select EmailAddressesToNotify, ThankyouMessage, FormFieldDisplayWidth, TextAreaQuestion from userfeedbackform c ";
-            sql +=" where c.pageid = " + page.ID.ToString() + " and c.identifier = " + identifier.ToString() + " and c.LangCode = '" + dbEncode(lang.shortCode) + "';";
+            sql +=" where c.pageid = " + page.Id.ToString() + " and c.identifier = " + identifier.ToString() + " and c.LangCode = '" + dbEncode(lang.shortCode) + "';";
             DataSet ds = this.RunSelectQuery(sql);
             if (this.hasSingleRow(ds))
             {
@@ -51,7 +51,7 @@ namespace HatCMS.Placeholders
         {
             UserFeedbackFormInfo d = new UserFeedbackFormInfo();
             string sql = "insert into userfeedbackform (pageid, identifier, LangCode, EmailAddressesToNotify, ThankyouMessage, FormFieldDisplayWidth, TextAreaQuestion) values (";
-            sql = sql + page.ID.ToString() + "," + identifier.ToString() + ",'" + dbEncode(lang.shortCode) + "',";
+            sql = sql + page.Id.ToString() + "," + identifier.ToString() + ",'" + dbEncode(lang.shortCode) + "',";
             sql += "'"+dbEncode(d.EmailAddressesToNotify)+"', ";
             sql += "'" + dbEncode(d.ThankyouMessage) + "', ";
             sql += "" + d.FormFieldDisplayWidth.ToString() + ", ";
@@ -78,7 +78,7 @@ namespace HatCMS.Placeholders
             sql += " FormFieldDisplayWidth = " + formInfo.FormFieldDisplayWidth + ", ";
             sql += " TextAreaQuestion = '" + dbEncode(formInfo.TextAreaQuestion) + "' ";
             
-            sql += " where pageid= " + page.ID.ToString();
+            sql += " where pageid= " + page.Id.ToString();
             sql += " AND identifier = " + identifier.ToString();
             sql += " AND LangCode = '" + dbEncode(lang.shortCode) + "';";
 

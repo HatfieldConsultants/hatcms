@@ -13,12 +13,12 @@ namespace HatCMS.Placeholders
 
 		public ImageGalleryData getImageGallery(CmsPage page, int identifier, bool createNewIfDoesNotExist)
 		{
-			if (page.ID < 0 || identifier < 0)
+			if (page.Id < 0 || identifier < 0)
 				return new ImageGalleryData();
 			
 			string sql = "";
 			sql = "select g.ImageGalleryId, g.subDir, g.thumbSize, g.largeSize, g.numThumbsPerRow, i.ImageGalleryImageId, i.Caption, I.Filename from imagegallery g left join imagegalleryimages i on i.ImageGalleryId = g.ImageGalleryId";			
-			sql += " where g.pageid = "+page.ID.ToString()+" and g.identifier = "+identifier.ToString()+" and g.deleted is null;";
+			sql += " where g.pageid = "+page.Id.ToString()+" and g.identifier = "+identifier.ToString()+" and g.deleted is null;";
 			
 			DataSet ds = this.RunSelectQuery(sql);
 			if (this.hasRows(ds))
@@ -112,7 +112,7 @@ namespace HatCMS.Placeholders
 		public bool createNewImageGallery(CmsPage page, int identifier, ImageGalleryData data)
 		{			
 			string sql = "insert into imagegallery (pageid, identifier, subDir, thumbSize, largeSize, numThumbsPerRow ) values (";
-			sql = sql +page.ID.ToString()+","+identifier.ToString()+",";
+			sql = sql +page.Id.ToString()+","+identifier.ToString()+",";
 			sql += "\""+dbEncode(data.subDir)+"\", ";
 			sql += data.thumbSize.ToString()+", ";
 			sql += data.largeSize.ToString()+", ";
@@ -142,7 +142,7 @@ namespace HatCMS.Placeholders
 			sql += "thumbSize = "+data.thumbSize.ToString()+", ";
 			sql += "largeSize = "+data.largeSize.ToString()+", ";
 			sql += "numThumbsPerRow = "+data.numThumbsPerRow.ToString()+" ";
-			sql += " where pageid= "+page.ID.ToString();
+			sql += " where pageid= "+page.Id.ToString();
 			sql += " AND identifier = "+identifier.ToString()+"; ";
 			//sql = sql + " SELECT LAST_INSERT_ID() as newId;";
 

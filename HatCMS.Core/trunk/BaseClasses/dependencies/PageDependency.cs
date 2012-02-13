@@ -102,7 +102,7 @@ namespace HatCMS
                         CmsPage page = CmsContext.getPageById(PageId);
                         if (Exists == ExistsMode.MustExist)
                         {
-                            if (page.ID < 0)
+                            if (page.Id < 0)
                                 ret.Add(CmsDependencyMessage.Error("Could not find required pageId '" + PageId + "' in language '" + lang.shortCode + "'"));
                             else if (PageTemplate != "" && String.Compare(page.TemplateName, PageTemplate, true) != 0)
                                 ret.Add(CmsDependencyMessage.Error("The required page '" + PagePath + "' was found, but does not have the correct template (required: '" + PageTemplate + "'); actual: '" + page.TemplateName + "'"));
@@ -111,7 +111,7 @@ namespace HatCMS
                         }
                         else if (Exists == ExistsMode.MustNotExist)
                         {
-                            if (page.ID >= 0)
+                            if (page.Id >= 0)
                                 ret.Add(CmsDependencyMessage.Error("PageId '" + PageId + "' in language '" + lang.shortCode + "' should NOT exist."));
                         }
                     }
@@ -139,7 +139,7 @@ namespace HatCMS
                         CmsPage page = CmsContext.getPageByPath(PagePath);
                         if (Exists == ExistsMode.MustExist)
                         {
-                            if (page.ID < 0)
+                            if (page.Id < 0)
                                 ret.Add(CmsDependencyMessage.Error("could not find required page '" + PagePath + "' in language '" + lang.shortCode + "'"));
                             else if (PageTemplate != "" && String.Compare(page.TemplateName, PageTemplate, true) != 0)
                                 ret.Add(CmsDependencyMessage.Error("The required page '" + PagePath + "' was found, but does not have the correct template (required: '" + PageTemplate + "'); actual: '" + page.TemplateName + "'"));
@@ -148,7 +148,7 @@ namespace HatCMS
                         }
                         else if (Exists == ExistsMode.MustNotExist)
                         {
-                            if (page.ID >= 0)
+                            if (page.Id >= 0)
                                 ret.Add(CmsDependencyMessage.Error("The page '" + PagePath + "' in language '" + lang.shortCode + "' should NOT exist."));
                         }
                     }

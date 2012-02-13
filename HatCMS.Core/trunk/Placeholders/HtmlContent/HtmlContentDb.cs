@@ -13,10 +13,10 @@ namespace HatCMS.Placeholders
 
 		public string getHtmlContent(CmsPage page, int identifier, CmsLanguage language, bool createNewIfDoesNotExist)
 		{
-			if (page.ID < 0 || identifier < 0)
+			if (page.Id < 0 || identifier < 0)
 				return "";
 
-            string sql = "select html from htmlcontent c where c.pageid = " + page.ID.ToString() + " and c.RevisionNumber = " + page.RevisionNumber + " and c.identifier = " + identifier.ToString() + " and langShortCode like '" + language.shortCode.ToLower() + "'  and deleted is null;";
+            string sql = "select html from htmlcontent c where c.pageid = " + page.Id.ToString() + " and c.RevisionNumber = " + page.RevisionNumber + " and c.identifier = " + identifier.ToString() + " and langShortCode like '" + language.shortCode.ToLower() + "'  and deleted is null;";
 			DataSet ds = this.RunSelectQuery(sql);
 			if (ds.Tables[0] != null && ds.Tables[0].Rows.Count == 1)
 			{				
@@ -48,7 +48,7 @@ namespace HatCMS.Placeholders
         public bool createNewHtmlContent(CmsPage page, int identifier, CmsLanguage language, string html)
 		{
             string sql = "insert into htmlcontent (pageid, identifier, langShortCode, RevisionNumber, html) values (";
-            sql = sql + page.ID.ToString() + "," + identifier.ToString() + ", '"+dbEncode(language.shortCode.ToLower())+"', " + page.RevisionNumber + ", '" + dbEncode(html) + "'); ";
+            sql = sql + page.Id.ToString() + "," + identifier.ToString() + ", '"+dbEncode(language.shortCode.ToLower())+"', " + page.RevisionNumber + ", '" + dbEncode(html) + "'); ";
 
 			int newId = this.RunInsertQuery(sql);
 			if (newId > -1)
@@ -68,7 +68,7 @@ namespace HatCMS.Placeholders
 
 
             string sql = "insert into htmlcontent (pageid, identifier,langShortCode, RevisionNumber, html) values (";
-            sql = sql + page.ID.ToString() + "," + identifier.ToString() + ", '"+dbEncode(language.shortCode.ToLower())+"', " + newRevisionNumber + ", '" + dbEncode(html) + "'); ";
+            sql = sql + page.Id.ToString() + "," + identifier.ToString() + ", '"+dbEncode(language.shortCode.ToLower())+"', " + newRevisionNumber + ", '" + dbEncode(html) + "'); ";
 
             int newId = this.RunInsertQuery(sql);
             if (newId > -1)

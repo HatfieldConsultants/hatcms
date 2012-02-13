@@ -183,7 +183,7 @@ namespace HatCMS.Placeholders
             if (action.ActionPayload is CmsPage)
                 targetPage = action.ActionPayload as CmsPage;
 
-            paramList.Add("target", targetPage.ID.ToString());
+            paramList.Add("target", targetPage.Id.ToString());
 
             string confirmText = "Do you really want to delete this page?";
 
@@ -239,7 +239,7 @@ namespace HatCMS.Placeholders
         protected CmsPage createChildPage(CmsPage parentPage, CmsLanguage lang, string fileName)
         {
             CmsPage childPage = new CmsPage();
-            childPage.ParentID = parentPage.ID;
+            childPage.ParentID = parentPage.Id;
             childPage.ShowInMenu = false;
             childPage.TemplateName = CmsConfig.getConfigValue("FileLibrary.DetailsTemplateName", "_FileLibraryDetails");
             if (CmsContext.currentWebPortalUser != null)
@@ -249,11 +249,11 @@ namespace HatCMS.Placeholders
             foreach (CmsLanguage l in CmsConfig.Languages)
             {
                 CmsPageLanguageInfo langInfo = new CmsPageLanguageInfo();
-                langInfo.languageShortCode = l.shortCode;
-                langInfo.name = fileName;
-                langInfo.menuTitle = fileName;
-                langInfo.title = fileName;
-                langInfo.searchEngineDescription = "";
+                langInfo.LanguageShortCode = l.shortCode;
+                langInfo.Name = fileName;
+                langInfo.MenuTitle = fileName;
+                langInfo.Title = fileName;
+                langInfo.SearchEngineDescription = "";
 
                 langInfoList.Add(langInfo);
             }
@@ -959,7 +959,7 @@ namespace HatCMS.Placeholders
         /// <param name="paramList"></param>
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            string controlId = "fileLibrary_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode + "_";
+            string controlId = "fileLibrary_" + page.Id.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode + "_";
             UpdateFileLibraryCommandsInEditMenu(page);
 
             RenderParameters renderParameters = RenderParameters.fromParamList(paramList);
@@ -1013,7 +1013,7 @@ namespace HatCMS.Placeholders
                 return;
             }
             
-            string controlId = "fileLibrary_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode + "_";
+            string controlId = "fileLibrary_" + page.Id.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode + "_";
 
             FileLibraryAggregatorData aggregatorData = new FileLibraryAggregatorData();
             aggregatorData = db.fetchAggregatorData(page, identifier, langToRenderFor, true);

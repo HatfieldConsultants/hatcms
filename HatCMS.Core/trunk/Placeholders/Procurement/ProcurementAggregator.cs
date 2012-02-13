@@ -97,7 +97,7 @@ namespace HatCMS.Placeholders.Procurement
             for (int ProcurementNum = 1; ProcurementNum < int.MaxValue; ProcurementNum++)
             {
                 string pageNameToTest = "Procurement opportunity " + ProcurementNum.ToString();
-                if (!CmsContext.childPageWithNameExists(ProcurementAggregatorPage.ID, pageNameToTest))
+                if (!CmsContext.childPageWithNameExists(ProcurementAggregatorPage.Id, pageNameToTest))
                 {
                     newPageName = pageNameToTest;
                     break;
@@ -110,9 +110,9 @@ namespace HatCMS.Placeholders.Procurement
             bool newPageShowInMenu = false;
             string newPageTemplate = CmsConfig.getConfigValue("Procurement.DetailsTemplateName", "_ProcurementDetails");
 
-            newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, ProcurementAggregatorPage.ID);
+            newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, ProcurementAggregatorPage.Id);
 
-            newAction.CreateNewPageOptions.ParentPageId = ProcurementAggregatorPage.ID;
+            newAction.CreateNewPageOptions.ParentPageId = ProcurementAggregatorPage.Id;
             newAction.SortOrdinal = createNewSubPage.SortOrdinal + 1;
             newAction.doRenderToString = AddProcurementEditMenuRender;
 
@@ -130,7 +130,7 @@ namespace HatCMS.Placeholders.Procurement
             ProcurementDb db = new ProcurementDb();
             ProcurementDb.ProcurementAggregatorData entity = db.fetchProcurementAggregator(page, identifier, langToRenderFor, true);
 
-            string ProjectSummaryId = "ProjectSummary_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
+            string ProjectSummaryId = "ProjectSummary_" + page.Id.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
 
             // ------- CHECK THE FORM FOR ACTIONS
             string action = PageUtils.getFromForm(ProjectSummaryId + "_Action", "");
@@ -162,7 +162,7 @@ namespace HatCMS.Placeholders.Procurement
             html.Append("</table>");
 
             html.Append("<input type=\"hidden\" name=\"" + ProjectSummaryId + "_Action\" value=\"update\">");
-            html.Append("<input type=\"hidden\" name=\"" + ProjectSummaryId + "_ProjectSummaryId\" value=\"" + page.ID.ToString() + "\">");
+            html.Append("<input type=\"hidden\" name=\"" + ProjectSummaryId + "_ProjectSummaryId\" value=\"" + page.Id.ToString() + "\">");
 
             writer.WriteLine(html.ToString());
         }

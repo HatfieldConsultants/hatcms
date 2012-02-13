@@ -147,7 +147,7 @@ namespace HatCMS.Placeholders.Calendar
             for (int eventNum = 1; eventNum < int.MaxValue; eventNum++)
             {
                 string pageNameToTest = "Event " + eventNum.ToString();
-                if (!CmsContext.childPageWithNameExists(eventCalendarAggregator.ID, pageNameToTest))
+                if (!CmsContext.childPageWithNameExists(eventCalendarAggregator.Id, pageNameToTest))
                 {
                     newPageName = pageNameToTest;
                     break;
@@ -160,9 +160,9 @@ namespace HatCMS.Placeholders.Calendar
             bool newPageShowInMenu = false;
             string newPageTemplate = CmsConfig.getConfigValue("EventCalendar.DetailsTemplateName", "_EventCalendarDetails");
 
-            newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, eventCalendarAggregator.ID);
+            newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, eventCalendarAggregator.Id);
 
-            newAction.CreateNewPageOptions.ParentPageId = eventCalendarAggregator.ID;
+            newAction.CreateNewPageOptions.ParentPageId = eventCalendarAggregator.Id;
             newAction.SortOrdinal = createNewSubPage.SortOrdinal + 1;
             newAction.doRenderToString = AddEventEditMenuRender;
 
@@ -316,7 +316,7 @@ namespace HatCMS.Placeholders.Calendar
         /// <returns></returns>
         protected string getCalendarHtmlDomId(CmsPage page, int identifier)
         {
-            return "cal_" + page.ID.ToString() + "_" + identifier.ToString();
+            return "cal_" + page.Id.ToString() + "_" + identifier.ToString();
         }
 
         /// <summary>
@@ -354,7 +354,7 @@ namespace HatCMS.Placeholders.Calendar
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            string ControlId = "Calender_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode.ToLower();
+            string ControlId = "Calender_" + page.Id.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode.ToLower();
             EventCalendarDb db = new EventCalendarDb();
             EventCalendarDb.EventCalendarAggregatorData entity = db.fetchAggregatorData(page, identifier, langToRenderFor, true);
 

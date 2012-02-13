@@ -160,7 +160,7 @@ namespace HatCMS.Placeholders
 
             UserFeedbackDb db = new UserFeedbackDb();
             UserFeedbackFormInfo formInfo = db.getUserFeedbackFormInfo(page, identifier, langToRenderFor, true);
-            string ControlId = "UserFeedbackInfo_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
+            string ControlId = "UserFeedbackInfo_" + page.Id.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
 
             string action = PageUtils.getFromForm(ControlId + "Action", "");
             if (action.Trim().ToLower() == "update")
@@ -249,7 +249,7 @@ namespace HatCMS.Placeholders
         {
             UserFeedbackDb db = new UserFeedbackDb();
             UserFeedbackFormInfo formInfo = db.getUserFeedbackFormInfo(page, identifier, langToRenderFor, true);
-            string ControlId = "UserFeedbackInfo_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
+            string ControlId = "UserFeedbackInfo_" + page.Id.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
 
             string _errorMessage = "";
             string action = PageUtils.getFromForm(ControlId + "Action", "");

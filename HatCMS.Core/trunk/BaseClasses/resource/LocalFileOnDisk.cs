@@ -154,7 +154,7 @@ namespace HatCMS
 
             string subDir = "";
             if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V2")
-                subDir = fileDetailsPage.ID.ToString() + identifier.ToString() + language.shortCode.ToLower() + "/";
+                subDir = fileDetailsPage.Id.ToString() + identifier.ToString() + language.shortCode.ToLower() + "/";
 
             return DMSFileStorageFolderUrl + subDir;
         }
@@ -163,7 +163,7 @@ namespace HatCMS
         {
             string prependToFilename = "";
             if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V1")
-                prependToFilename = pageLinkedToFile.ID.ToString() + identifier.ToString();
+                prependToFilename = pageLinkedToFile.Id.ToString() + identifier.ToString();
 
             string baseUrl = getDMSStorageFolderUrl(pageLinkedToFile, identifier, language);
 

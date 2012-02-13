@@ -64,11 +64,11 @@ namespace HatCMS.Placeholders
         
         public SingleImageData getSingleImage(CmsPage page, int identifier, CmsLanguage forLanguage, bool createNewIfDoesNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new SingleImageData();
 
             string sql = "select PageId,Identifier, SingleImageId, ImagePath, Caption, Credits, Tags from singleimage c ";
-            sql += " where c.pageid = " + page.ID.ToString() + " and c.identifier = " + identifier.ToString() + " and RevisionNumber = " + page.RevisionNumber.ToString() + " and langShortCode like '" + dbEncode(forLanguage.shortCode) + "' and deleted is null;";
+            sql += " where c.pageid = " + page.Id.ToString() + " and c.identifier = " + identifier.ToString() + " and RevisionNumber = " + page.RevisionNumber.ToString() + " and langShortCode like '" + dbEncode(forLanguage.shortCode) + "' and deleted is null;";
             DataSet ds = this.RunSelectQuery(sql);
             if (this.hasRows(ds))
             {
@@ -95,7 +95,7 @@ namespace HatCMS.Placeholders
         public SingleImageData createNewSingleImage(CmsPage page, int identifier, CmsLanguage forLanguage, SingleImageData imgData)
         {
             string sql = "insert into singleimage (pageid, identifier,RevisionNumber, ImagePath, ThumbnailDisplayBoxWidth, ThumbnailDisplayBoxHeight, FullSizeDisplayBoxWidth, FullSizeDisplayBoxHeight, Caption, Credits, Tags, langShortCode) values (";
-            sql = sql + page.ID.ToString() + "," + identifier.ToString() + "," + page.RevisionNumber.ToString() + ",";
+            sql = sql + page.Id.ToString() + "," + identifier.ToString() + "," + page.RevisionNumber.ToString() + ",";
             sql += "'" + imgData.ImagePath + "', -1, ";
             sql += "-1, ";
             sql += "-1, ";
@@ -111,7 +111,7 @@ namespace HatCMS.Placeholders
             {
                 page.setLastUpdatedDateTimeToNow();
                 SingleImageData info = new SingleImageData();
-                info.PageId = page.ID;
+                info.PageId = page.Id;
                 info.SingleImageId = newId;
                 return info;
             }
@@ -131,7 +131,7 @@ namespace HatCMS.Placeholders
             // insert values for un-used columns because default values may not be present.
 
             string sql = "insert into singleimage (pageid, identifier,RevisionNumber, ImagePath, ThumbnailDisplayBoxWidth, ThumbnailDisplayBoxHeight, FullSizeDisplayBoxWidth, FullSizeDisplayBoxHeight, Caption, Credits, Tags, langShortCode) values (";
-            sql = sql + page.ID.ToString() + "," + identifier.ToString() + "," + newRevisionNumber.ToString() + ",";
+            sql = sql + page.Id.ToString() + "," + identifier.ToString() + "," + newRevisionNumber.ToString() + ",";
             sql += "'" + dbEncode(image.ImagePath) + "', ";
             sql += "-1, ";
             sql += "-1, ";
@@ -148,7 +148,7 @@ namespace HatCMS.Placeholders
             {
                 page.setLastUpdatedDateTimeToNow();
                 SingleImageData info = new SingleImageData();
-                info.PageId = page.ID;
+                info.PageId = page.Id;
                 info.SingleImageId = newId;
                 return true;
             }
@@ -165,7 +165,7 @@ namespace HatCMS.Placeholders
             List<string> whereOrStatements = new List<string>();
             foreach (CmsPage p in pages)
             {
-                whereOrStatements.Add("( c.pageid = " + p.ID + " and c.RevisionNumber = "+p.RevisionNumber+"   )");                
+                whereOrStatements.Add("( c.pageid = " + p.Id + " and c.RevisionNumber = "+p.RevisionNumber+"   )");                
             } // foreach
 
             string sql = "select PageId, Identifier, SingleImageId, ImagePath, Caption, Credits, Tags from singleimage c ";

@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using HatCMS.Core.DataPersitentHelper;
+using SharpArch.Core.PersistenceSupport;
+using NHibernate;
+using SharpArch.Data.NHibernate;
 
 namespace HatCMS.Controls
 {
@@ -34,7 +38,20 @@ namespace HatCMS.Controls
             /// <param name="output"></param>
             protected override void Render(System.Web.UI.HtmlTextWriter output)
             {
-                output.Write(ParentControl.RenderToString(ControlDefnToRender, LangToRenderFor));
+                DataPersister persister = new DataPersister();
+                IDbContext dbcontext = persister.getDBContext();
+                dbcontext.BeginTransaction();
+                try
+                {
+                    output.Write(ParentControl.RenderToString(ControlDefnToRender, LangToRenderFor));
+                    dbcontext.CommitTransaction();
+                }
+                catch
+                {
+                    dbcontext.RollbackTransaction();
+                    throw;
+                }
+                
             }
         }
 

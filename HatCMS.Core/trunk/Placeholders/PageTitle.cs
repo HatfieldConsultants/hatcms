@@ -70,7 +70,7 @@ namespace HatCMS.Placeholders
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
 		{
-            string formName = "editTitle_" + page.ID.ToString() + identifier.ToString() + langToRenderFor.shortCode.ToLower();
+            string formName = "editTitle_" + page.Id.ToString() + identifier.ToString() + langToRenderFor.shortCode.ToLower();
 			
             // -- get the placeholder width and height parameters
             string width = "100%";
@@ -106,7 +106,7 @@ namespace HatCMS.Placeholders
 				{                    
                     Message = "Page Title Updated";
                     // -- save the name based on the page title
-                    if (renamePageBasedOnTitle && page.ID != CmsContext.HomePage.ID)
+                    if (renamePageBasedOnTitle && page.Id != CmsContext.HomePage.Id)
                     {
                         string newPageName = getPageNameFromTitle(pageTitle, page);
                         // -- rename the page to its new name

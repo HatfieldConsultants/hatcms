@@ -148,8 +148,8 @@ namespace HatCMS.Placeholders
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            string placeholderId = "JobPostingDetails_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
-            string placeholderIdWithoutLang = "location_JobPostingDetails_" + page.ID.ToString() + "_" + identifier.ToString();
+            string placeholderId = "JobPostingDetails_" + page.Id.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
+            string placeholderIdWithoutLang = "location_JobPostingDetails_" + page.Id.ToString() + "_" + identifier.ToString();
             JobPostingDb db = new JobPostingDb();
             JobPostingDetailsData postingDetails = db.getJobPostingDetailsData(page, identifier, langToRenderFor, true);
 

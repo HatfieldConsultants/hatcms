@@ -56,7 +56,7 @@ namespace HatCMS.Placeholders
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            string controlId = "SingleImageGallery_" + page.ID.ToString() + identifier.ToString() + langToRenderFor.shortCode;
+            string controlId = "SingleImageGallery_" + page.Id.ToString() + identifier.ToString() + langToRenderFor.shortCode;
             SingleImageGalleryDb db = new SingleImageGalleryDb();
             SingleImageGalleryPlaceholderData placeholderData = db.getSingleImageGallery(page, identifier, langToRenderFor, true);
 
@@ -171,7 +171,7 @@ namespace HatCMS.Placeholders
 
         public override void RenderInViewMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            string controlId = "SingleImageGallery_" + page.ID.ToString() + identifier.ToString() + langToRenderFor.shortCode;
+            string controlId = "SingleImageGallery_" + page.Id.ToString() + identifier.ToString() + langToRenderFor.shortCode;
             SingleImageGalleryDb db = new SingleImageGalleryDb();
             SingleImageGalleryPlaceholderData placeholderData = db.getSingleImageGallery(page, identifier, langToRenderFor, true);
             SingleImageData[] imageDatas = new SingleImageData[0];
@@ -485,7 +485,7 @@ namespace HatCMS.Placeholders
             List<SingleImageData> ret = new List<SingleImageData>();
             foreach (SingleImageData img in allImages)
             {
-                if (img.PageId == page.ID)
+                if (img.PageId == page.Id)
                     ret.Add(img);
             } // foreach
             return ret.ToArray();

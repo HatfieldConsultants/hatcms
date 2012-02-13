@@ -311,7 +311,7 @@ namespace HatCMS.Placeholders
             if (phData.tabularDisplayLinkMode == PageFilesPlaceholderData.TabularDisplayLinkMode.LinkToFile && ! page.currentUserCanWrite)
                 throw new CmsPlaceholderNeedsRedirectionException(fileData.getDownloadUrl());
 
-            string ControlId = "PageFiles_"+page.ID.ToString()+"_"+identifier.ToString();
+            string ControlId = "PageFiles_"+page.Id.ToString()+"_"+identifier.ToString();
             bool userCanEditFile = page.currentUserCanWrite;
 
             string _userMessage = "";
@@ -735,7 +735,7 @@ namespace HatCMS.Placeholders
 
         public void RenderViewSummary(HtmlTextWriter writer, CmsPage page, int identifier,CmsLanguage langToRenderFor, string[] paramList)
         {            
-            string ControlId = "PageFiles_"+page.ID.ToString()+"_"+identifier.ToString()+langToRenderFor.shortCode;
+            string ControlId = "PageFiles_"+page.Id.ToString()+"_"+identifier.ToString()+langToRenderFor.shortCode;
 
             PageFilesDb db = new PageFilesDb();
             PageFilesPlaceholderData data = db.getPageFilesData(page, identifier, langToRenderFor, true);
@@ -863,12 +863,12 @@ namespace HatCMS.Placeholders
             if (fileItems.Length < 1 && displayEmptyMsg == true)
             {
                 html.Append("<em>" + getNoFilesText(langToRenderFor) + "</em>");
-                html.Append("<!-- pageId:" + page.ID + " Identifier:" + identifier + "; lang: " + langToRenderFor.shortCode + " -->");
+                html.Append("<!-- pageId:" + page.Id + " Identifier:" + identifier + "; lang: " + langToRenderFor.shortCode + " -->");
             }
             else if (fileItems.Length < 1)
             {
                 // nothing to output if displayEmptyMsg == false
-                html.Append("<!-- pageId:" + page.ID + " Identifier:" + identifier + "; lang: " + langToRenderFor.shortCode + " -->");
+                html.Append("<!-- pageId:" + page.Id + " Identifier:" + identifier + "; lang: " + langToRenderFor.shortCode + " -->");
             }
             else
             {
@@ -1046,7 +1046,7 @@ namespace HatCMS.Placeholders
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            string ControlId = "PageFiles_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
+            string ControlId = "PageFiles_" + page.Id.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
 
             PageFilesDb db = new PageFilesDb();
             PageFilesPlaceholderData data = new PageFilesPlaceholderData();

@@ -131,7 +131,7 @@ namespace HatCMS.Placeholders
         public static string DeleteThisFileDetailsPageAction(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
         {
             NameValueCollection paramList = new NameValueCollection();
-            paramList.Add("target", pageToRenderFor.ID.ToString());
+            paramList.Add("target", pageToRenderFor.Id.ToString());
 
             string confirmText = "Do you really want to delete this file?";
             int numPagesToDelete = pageToRenderFor.getLinearizedPages().Keys.Count;
@@ -697,7 +697,7 @@ namespace HatCMS.Placeholders
         /// <param name="paramList"></param>
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            string controlId = "fileLibrary_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
+            string controlId = "fileLibrary_" + page.Id.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
 
             addCssAndScript(page);
             StringBuilder html = new StringBuilder();
@@ -723,7 +723,7 @@ namespace HatCMS.Placeholders
             FileLibraryDetailsData fileData = db.fetchDetailsData(page, placeholderDefinition.Identifier, langToRenderFor, true);
             rssItem.Description = fileData.Description;
             rssItem.Author = fileData.Author;
-            string controlId = "fileLibrary_" + page.ID.ToString() + "_" + placeholderDefinition.Identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
+            string controlId = "fileLibrary_" + page.Id.ToString() + "_" + placeholderDefinition.Identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
             rssItem.Guid = new Rss.RssGuid(controlId);
 
             return new Rss.RssItem[] { rssItem };

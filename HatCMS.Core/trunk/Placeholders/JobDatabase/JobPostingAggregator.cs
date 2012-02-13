@@ -105,7 +105,7 @@ namespace HatCMS.Placeholders
             for (int jobNum = 1; jobNum < int.MaxValue; jobNum++)
             {
                 string pageNameToTest = "Job " + jobNum.ToString();
-                if (!CmsContext.childPageWithNameExists(jobAggregatorPage.ID, pageNameToTest))
+                if (!CmsContext.childPageWithNameExists(jobAggregatorPage.Id, pageNameToTest))
                 {
                     newPageName = pageNameToTest;
                     break;
@@ -119,9 +119,9 @@ namespace HatCMS.Placeholders
             bool newPageShowInMenu = false;
             string newPageTemplate = CmsConfig.getConfigValue("JobPosting.DetailsTemplateName", "_JobPosting");
 
-            CreateNewJobMenuAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, jobAggregatorPage.ID);            
+            CreateNewJobMenuAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, jobAggregatorPage.Id);            
 
-            CreateNewJobMenuAction.CreateNewPageOptions.ParentPageId = jobAggregatorPage.ID;
+            CreateNewJobMenuAction.CreateNewPageOptions.ParentPageId = jobAggregatorPage.Id;
             CreateNewJobMenuAction.SortOrdinal = createNewSubPage.SortOrdinal + 1;
             CreateNewJobMenuAction.doRenderToString = AddJobPostingEditMenuRender;                
 
@@ -232,7 +232,7 @@ namespace HatCMS.Placeholders
         /// <param name="paramList"></param>
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            string placeholderId = "JobAggregatorDetails_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
+            string placeholderId = "JobAggregatorDetails_" + page.Id.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
             JobPostingDb db = new JobPostingDb();
 
             JobPostingAggregatorData aggregatorData = db.getJobPostingAggregatorData(page, identifier, langToRenderFor, true);

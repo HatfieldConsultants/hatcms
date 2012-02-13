@@ -46,7 +46,7 @@ namespace HatCMS.Placeholders
                 foreach (UserImageGalleryPlaceholderData ph in phs)
                 {
                     CmsPage p = CmsContext.getPageById(ph.PageId);
-                    if (p.ID >= 0)
+                    if (p.Id >= 0)
                     {
                         string dir = ph.getImageStorageDirectory(p);
                         if (dir != String.Empty)
@@ -102,7 +102,7 @@ namespace HatCMS.Placeholders
             foreach (UserImageGalleryPlaceholderData ph in phs)
             {                
                 CmsPage p = CmsContext.getPageById(ph.PageId);
-                if (p.ID >= 0)
+                if (p.Id >= 0)
                 {
                     string dir = ph.getImageStorageDirectory(p);
                     if (dir != String.Empty)
@@ -319,7 +319,7 @@ namespace HatCMS.Placeholders
             UserImageGalleryDb db = (new UserImageGalleryDb());
             StringBuilder html = new StringBuilder();
 
-            string phId = "UserGallery_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
+            string phId = "UserGallery_" + page.Id.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode + "_";
 
             UserImageGalleryPlaceholderData placeholderData = db.getUserImageGalleryPlaceholderData(page, identifier, langToRenderFor, true);
 
@@ -404,9 +404,9 @@ namespace HatCMS.Placeholders
         {
             StringBuilder html = new StringBuilder();
 
-            string uploadUrl = CmsContext.ApplicationPath + "_system/tools/swfUpload/SwfUploadTarget.aspx?dir=ImageGalleries/" + page.ID.ToString();
+            string uploadUrl = CmsContext.ApplicationPath + "_system/tools/swfUpload/SwfUploadTarget.aspx?dir=ImageGalleries/" + page.Id.ToString();
 
-            string ControlId = "swfUpload" + page.ID.ToString() + page.ID.ToString();
+            string ControlId = "swfUpload" + page.Id.ToString() + page.Id.ToString();
 
             // -- SWF Upload
             SWFUploadHelpers.AddPageJavascriptStatements(page, ControlId, uploadUrl, "*.jpg", "JPG Image Files (*.jpg)");                        

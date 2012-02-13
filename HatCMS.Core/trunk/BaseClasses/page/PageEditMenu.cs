@@ -115,7 +115,7 @@ namespace HatCMS
             public static string RenderLink(string actionConfigPagePathKey, string actionDefaultPagePath, NameValueCollection actionPageParams, CmsPage linkTargetPage, CmsLanguage langToRenderFor, string linkText)
             {
                 string actionPagePath = CmsConfig.getConfigValue(actionConfigPagePathKey, actionDefaultPagePath);
-                actionPageParams.Add("target", linkTargetPage.ID.ToString());
+                actionPageParams.Add("target", linkTargetPage.Id.ToString());
                 string toggleEditUrl = CmsContext.getUrlByPagePath(actionPagePath, actionPageParams, langToRenderFor);
                 return "<a href=\"" + toggleEditUrl + "\">"+linkText+"</a>";
             }
@@ -128,7 +128,7 @@ namespace HatCMS
             public static string RenderPopupLink(string actionConfigPagePathKey, string actionDefaultPagePath, NameValueCollection actionPageParams, CmsPage linkTargetPage, CmsLanguage langToRenderFor, string linkText, int popupWidth, int popupHeight)
             {
                 string actionPagePath = CmsConfig.getConfigValue(actionConfigPagePathKey, actionDefaultPagePath);
-                actionPageParams.Add("target", linkTargetPage.ID.ToString());
+                actionPageParams.Add("target", linkTargetPage.Id.ToString());
                 string toggleEditUrl = CmsContext.getUrlByPagePath(actionPagePath, actionPageParams, langToRenderFor);
                 return "<a href=\"" + toggleEditUrl + "\" onclick=\"EditMenuShowModal(this.href," + popupWidth + "," + popupHeight + "); return false;\">" + linkText + "</a>";
             }
@@ -171,7 +171,7 @@ namespace HatCMS
             public static string DeleteThisPage(CmsPageEditMenuAction action, CmsPage pageToRenderFor, CmsLanguage langToRenderFor)
             {
                 NameValueCollection paramList = new NameValueCollection();
-                paramList.Add("target", pageToRenderFor.ID.ToString());
+                paramList.Add("target", pageToRenderFor.Id.ToString());
 
                 string confirmText = "Do you really want to delete this page?";
                 int numPagesToDelete = pageToRenderFor.getLinearizedPages().Keys.Count;
@@ -225,7 +225,7 @@ namespace HatCMS
                 // return RenderLink("GotoEditModePath", "/_admin/action/gotoView", pageToRenderFor, langToRenderFor, "<strong>Exit from editing</strong>");
                 
                 NameValueCollection paramList = new NameValueCollection();
-                paramList.Add("target", pageToRenderFor.ID.ToString());
+                paramList.Add("target", pageToRenderFor.Id.ToString());
                 string url = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("GotoViewModePath", "/_admin/action/gotoView"), paramList, langToRenderFor);
 
                 return "<input type=\"button\" onclick=\"window.location = '" + url + "';\" value=\"Exit from editing\">";
@@ -284,7 +284,7 @@ namespace HatCMS
                 if (lockData.LockedByUsername == CmsContext.currentWebPortalUser.UserName || CmsContext.currentUserIsSuperAdmin)
                 {
                     paramList.Clear();
-                    paramList.Add("target", pageToRenderFor.ID.ToString());
+                    paramList.Add("target", pageToRenderFor.Id.ToString());
                     paramList.Add("action", "logoff");
                     string killLockLink = CmsContext.getUrlByPagePath(CmsConfig.getConfigValue("KillLockPath", "/_admin/actions/killLock"), paramList);
                     html.Append("<a href=\"#\" onclick=\"EditMenuConfirmModal('Do you really want to remove the edit lock?','" + killLockLink + "',300, 300);\"><strong>Remove</strong> edit lock</a><br />");
@@ -333,8 +333,8 @@ namespace HatCMS
                 else
                     html.Append("Viewing page version #" + revData.RevisionNumber.ToString());
                 html.Append("<br />");
-                html.Append("Saved by " + revData.RevisionSavedByUsername + "<br />");
-                html.Append("on " + revData.RevisionSavedAt.ToString("d MMM yyyy") + " at " + revData.RevisionSavedAt.ToString("%h:mm tt") + "<br />");
+                html.Append("Saved by " + revData.ModifiedBy + "<br />");
+                html.Append("on " + revData.ModificationDate.ToString("d MMM yyyy") + " at " + revData.ModificationDate.ToString("%h:mm tt") + "<br />");
 
                 // revert to this revision
                 if (isLiveVersion)
@@ -444,7 +444,7 @@ namespace HatCMS
                 removeActionItem(ret, CmsEditMenuActionItem.SwitchEditLanguage);
                 
             // -- don't allow the home page to be deleted nor renamed
-            if (_page.ID == CmsContext.HomePage.ID)
+            if (_page.Id == CmsContext.HomePage.Id)
             {
                 removeActionItem(ret, CmsEditMenuActionItem.DeleteThisPage);
                 removeActionItem(ret, CmsEditMenuActionItem.RenameThisPage);

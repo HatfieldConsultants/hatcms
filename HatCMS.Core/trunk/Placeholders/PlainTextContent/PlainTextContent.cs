@@ -64,7 +64,7 @@ namespace HatCMS.Placeholders
 
 
 
-            string editorId = "plaintextcontent_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
+            string editorId = "plaintextcontent_" + page.Id.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
 
 			// ------- CHECK THE FORM FOR ACTIONS
 			string action = Hatfield.Web.Portal.PageUtils.getFromForm(editorId+"_Action","");

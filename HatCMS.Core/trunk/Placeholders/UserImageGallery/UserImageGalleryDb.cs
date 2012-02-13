@@ -15,12 +15,12 @@ namespace HatCMS.Placeholders
     {
         public UserImageGalleryPlaceholderData getUserImageGalleryPlaceholderData(CmsPage page, int identifier, CmsLanguage lang, bool createNewIfDoesNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new UserImageGalleryPlaceholderData();
 
             string sql = "select PageId, Identifier, LangCode, NumThumbsPerPage, NumThumbsPerRow, ThumbnailDisplayBoxWidth, ThumbnailDisplayBoxHeight, FullSizeDisplayBoxWidth, FullSizeDisplayBoxHeight, FullSizeLinkMode, CaptionDisplayLocation ";
             sql += " FROM userimagegallery ";
-            sql += " WHERE PageId = " + page.ID.ToString() + " AND Identifier = " + identifier.ToString() + " AND LangCode='" + dbEncode(lang.shortCode) + "';";
+            sql += " WHERE PageId = " + page.Id.ToString() + " AND Identifier = " + identifier.ToString() + " AND LangCode='" + dbEncode(lang.shortCode) + "';";
 
             DataSet ds = this.RunSelectQuery(sql);
             if (this.hasSingleRow(ds))
@@ -79,7 +79,7 @@ namespace HatCMS.Placeholders
             string sql = "INSERT INTO userimagegallery ";
             sql += "(PageId, Identifier, LangCode, NumThumbsPerPage, NumThumbsPerRow, ThumbnailDisplayBoxWidth, ThumbnailDisplayBoxHeight, FullSizeDisplayBoxWidth, FullSizeDisplayBoxHeight, FullSizeLinkMode, CaptionDisplayLocation)";
             sql += " VALUES ( ";
-            sql += page.ID.ToString() + ", ";
+            sql += page.Id.ToString() + ", ";
             sql += identifier.ToString() + ", '";
             sql += dbEncode(lang.shortCode) + "', ";
             sql += item.NumThumbsPerPage.ToString() + ", ";
@@ -116,7 +116,7 @@ namespace HatCMS.Placeholders
             sql += "FullSizeLinkMode = " + "'" + dbEncode(Enum.GetName(typeof(UserImageGalleryPlaceholderData.FullSizeImageDisplayMode), item.FullSizeLinkMode)) + "'" + ", ";
             sql += "CaptionDisplayLocation = " + "'" + dbEncode(Enum.GetName(typeof(UserImageGalleryPlaceholderData.CaptionDisplayLocation), item.CaptionLocation)) + "'" + " ";
             sql += " WHERE ";
-            sql += "PageId = " + page.ID.ToString() + " AND ";
+            sql += "PageId = " + page.Id.ToString() + " AND ";
             sql += "Identifier = " + identifier.ToString() + " AND ";
             sql += "LangCode = '" + dbEncode(lang.shortCode) + "' ";
             sql += " ; ";

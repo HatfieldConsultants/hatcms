@@ -98,7 +98,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             for (int newsArticleNum = 1; newsArticleNum < int.MaxValue; newsArticleNum++)
             {
                 string pageNameToTest = "News Article " + newsArticleNum.ToString();
-                if (!CmsContext.childPageWithNameExists(newsArticleAggregatorPage.ID, pageNameToTest))
+                if (!CmsContext.childPageWithNameExists(newsArticleAggregatorPage.Id, pageNameToTest))
                 {
                     newPageName = pageNameToTest;
                     break;
@@ -111,9 +111,9 @@ namespace HatCMS.Placeholders.NewsDatabase
             bool newPageShowInMenu = false;
             string newPageTemplate = CmsConfig.getConfigValue("NewsArticle.DetailsTemplateName", "_NewsArticleDetails");
 
-            newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, newsArticleAggregatorPage.ID);
+            newAction.CreateNewPageOptions = CmsCreateNewPageOptions.GetInstanceWithNoUserPrompts(newPageName, newPageTitle, newPageMenuTitle, newPageSearchEngineDescription, newPageShowInMenu, newPageTemplate, newsArticleAggregatorPage.Id);
 
-            newAction.CreateNewPageOptions.ParentPageId = newsArticleAggregatorPage.ID;
+            newAction.CreateNewPageOptions.ParentPageId = newsArticleAggregatorPage.Id;
             newAction.SortOrdinal = createNewSubPage.SortOrdinal + 1;
             newAction.doRenderToString = AddNewsArticleEditMenuRender;
 
@@ -130,7 +130,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             NewsArticleDb db = new NewsArticleDb();
             NewsArticleDb.NewsArticleAggregatorData entity = db.fetchNewsAggregator(page, identifier, langToRenderFor, true);
 
-            string ProjectSummaryId = "ProjectSummary_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
+            string ProjectSummaryId = "ProjectSummary_" + page.Id.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
 
             // ------- CHECK THE FORM FOR ACTIONS
             string action = PageUtils.getFromForm(ProjectSummaryId + "_Action", "");
@@ -162,7 +162,7 @@ namespace HatCMS.Placeholders.NewsDatabase
             html.Append("</table>");
 
             html.Append("<input type=\"hidden\" name=\"" + ProjectSummaryId + "_Action\" value=\"update\">");
-            html.Append("<input type=\"hidden\" name=\"" + ProjectSummaryId + "_ProjectSummaryId\" value=\"" + page.ID.ToString() + "\">");
+            html.Append("<input type=\"hidden\" name=\"" + ProjectSummaryId + "_ProjectSummaryId\" value=\"" + page.Id.ToString() + "\">");
 
             writer.WriteLine(html.ToString());
         }

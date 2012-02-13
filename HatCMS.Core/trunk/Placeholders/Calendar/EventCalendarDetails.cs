@@ -277,7 +277,7 @@ namespace HatCMS.Placeholders.Calendar
             EventCalendarDb db = new EventCalendarDb();
             EventCalendarDb.EventCalendarDetailsData entity = db.fetchDetailsData(page, identifier, langToRenderFor, true);
 
-            string controlId = "eventDetails_" + page.ID.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
+            string controlId = "eventDetails_" + page.Id.ToString() + "_" + identifier.ToString() + "_" + langToRenderFor.shortCode;
             addCssAndScriptForDateTimePicker(page);
             addScriptForDateTimePickerRender(page, controlId);
 

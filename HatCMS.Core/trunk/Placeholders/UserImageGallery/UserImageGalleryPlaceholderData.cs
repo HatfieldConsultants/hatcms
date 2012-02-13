@@ -83,9 +83,9 @@ namespace HatCMS.Placeholders
         {
             try
             {
-                if (page.ID >= 0)
+                if (page.Id >= 0)
                 {
-                    string dir = System.Web.Hosting.HostingEnvironment.MapPath(CmsContext.ApplicationPath + "UserFiles" + Path.DirectorySeparatorChar + "ImageGalleries" + Path.DirectorySeparatorChar + page.ID.ToString() + Path.DirectorySeparatorChar);
+                    string dir = System.Web.Hosting.HostingEnvironment.MapPath(CmsContext.ApplicationPath + "UserFiles" + Path.DirectorySeparatorChar + "ImageGalleries" + Path.DirectorySeparatorChar + page.Id.ToString() + Path.DirectorySeparatorChar);
                     if (!dir.EndsWith(Path.DirectorySeparatorChar.ToString()))
                         dir = dir + Path.DirectorySeparatorChar;                    
 

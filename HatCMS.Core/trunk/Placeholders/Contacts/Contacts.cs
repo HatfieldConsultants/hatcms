@@ -138,7 +138,7 @@ namespace HatCMS.Placeholders
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)
         {
-            string ControlId = "Contacts_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
+            string ControlId = "Contacts_" + page.Id.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
 
             ContactsDb db = new ContactsDb();
             ContactPlaceholderData data = new ContactPlaceholderData();
@@ -232,7 +232,7 @@ namespace HatCMS.Placeholders
 
         public void RenderViewSummary(HtmlTextWriter writer, CmsPage page, int identifier,CmsLanguage langToRenderFor, string[] paramList)
         {
-            string ControlId = "Contacts_" + page.ID.ToString() + "_" + identifier.ToString()+langToRenderFor.shortCode;
+            string ControlId = "Contacts_" + page.Id.ToString() + "_" + identifier.ToString()+langToRenderFor.shortCode;
 
             ContactsDb db = new ContactsDb();
             ContactPlaceholderData data = db.getContactPlaceholderData(page, identifier, true);
@@ -321,7 +321,7 @@ namespace HatCMS.Placeholders
             if (!data.allowFilterByCategory && !data.allowFilterByCompany)
                 return "";
 
-            string ControlId = "Contacts_" + page.ID.ToString() + "_" + identifier.ToString();
+            string ControlId = "Contacts_" + page.Id.ToString() + "_" + identifier.ToString();
 
             string[] allOrganizations = ContactData.getAllOrganizationNames(contacts);
             ContactDataCategory[] allCategories = ContactDataCategory.getAllContactCategories();
@@ -627,7 +627,7 @@ namespace HatCMS.Placeholders
 
         private string getAddEditContactForm(ContactPlaceholderData data, ContactData contactToEdit, CmsPage page, int identifier, CmsLanguage langToRenderFor)
         {
-            string ControlId = "Contacts_" + page.ID.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
+            string ControlId = "Contacts_" + page.Id.ToString() + "_" + identifier.ToString() + langToRenderFor.shortCode;
             bool editing = (contactToEdit.contactId > -1);
 
             // -- process form actions

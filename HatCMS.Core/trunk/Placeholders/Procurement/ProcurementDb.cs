@@ -42,7 +42,7 @@ namespace HatCMS.Placeholders.Procurement
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.Append(TableNameAggregator);
             sql.Append(" (PageId,Identifier,LangCode,DefaultYearToDisplay) VALUES (");
-            sql.Append(page.ID.ToString() + ",");
+            sql.Append(page.Id.ToString() + ",");
             sql.Append(identifier.ToString() + ",'");
             sql.Append(dbEncode(lang.shortCode) + "',");
             sql.Append(entity.YearToDisplay.ToString() + ");");
@@ -56,12 +56,12 @@ namespace HatCMS.Placeholders.Procurement
 
         public ProcurementAggregatorData fetchProcurementAggregator(CmsPage page, int identifier, CmsLanguage lang, bool createIfNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new ProcurementAggregatorData();
 
             StringBuilder sql = new StringBuilder("SELECT DefaultYearToDisplay FROM ");
             sql.Append(TableNameAggregator);
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND Deleted is null;");
@@ -91,7 +91,7 @@ namespace HatCMS.Placeholders.Procurement
             StringBuilder sql = new StringBuilder("UPDATE ");
             sql.Append(TableNameAggregator);
             sql.Append(" SET DefaultYearToDisplay = " + entity.YearToDisplay.ToString());
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
 
@@ -137,7 +137,7 @@ namespace HatCMS.Placeholders.Procurement
 
             public ProcurementDetailsData(CmsPage page, int identifier, CmsLanguage lang)
             {
-                this.pageId = page.ID;
+                this.pageId = page.Id;
                 this.identifier = identifier;
                 this.lang = lang;
             }
@@ -211,12 +211,12 @@ namespace HatCMS.Placeholders.Procurement
 
         public ProcurementDetailsData fetchProcurementDetails(CmsPage page, int identifier, CmsLanguage lang, bool createIfNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new ProcurementDetailsData(page, identifier, lang);
 
             StringBuilder sql = new StringBuilder("SELECT DateOfProcurement FROM ");
             sql.Append(TableNameDetails);
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Deleted is null;");
@@ -274,7 +274,7 @@ namespace HatCMS.Placeholders.Procurement
             StringBuilder sql = new StringBuilder("UPDATE ");
             sql.Append(TableNameDetails);
             sql.Append(" SET DateOfProcurement = " + dbEncode(entity.DateOfProcurement));
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "';");
 

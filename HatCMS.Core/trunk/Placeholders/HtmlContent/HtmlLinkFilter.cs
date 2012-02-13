@@ -38,9 +38,9 @@ namespace HatCMS
             //        start with a / so that ckeditor thinks this is a real link.
             //        should be all lower-case
             if (includePageLanguageInMacro())
-                return getLinkMacroPrefix() + page.ID + "_" + language.shortCode.ToLower() + getLinkMacroSuffix();
+                return getLinkMacroPrefix() + page.Id + "_" + language.shortCode.ToLower() + getLinkMacroSuffix();
             else
-                return getLinkMacroPrefix() + page.ID + "_" + getLinkMacroSuffix();
+                return getLinkMacroPrefix() + page.Id + "_" + getLinkMacroSuffix();
         }
 
         public static string getLinkMacroPrefix()
@@ -72,13 +72,13 @@ namespace HatCMS
                 if (!lang.isInvalidLanguage)
                 {
                     CmsPage p = CmsContext.getPageById(pageId);
-                    if (p.ID >= 0)
+                    if (p.Id >= 0)
                         return p.getUrl(lang);
 
                 }
             }
 
-            string pageNotFoundUrl = CmsContext.ApplicationPath + "PageNotFound" + macro.Replace("/", "") + "source_" + sourcePage.ID.ToString() + ".aspx";
+            string pageNotFoundUrl = CmsContext.ApplicationPath + "PageNotFound" + macro.Replace("/", "") + "source_" + sourcePage.Id.ToString() + ".aspx";
             return pageNotFoundUrl;
         }
 

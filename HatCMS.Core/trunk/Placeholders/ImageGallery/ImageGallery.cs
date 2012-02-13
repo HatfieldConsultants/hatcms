@@ -190,7 +190,7 @@ namespace HatCMS.Placeholders
 			
 			data = db.getImageGallery(page, identifier, true);
 
-			string ImageGalleryId = "ImageGallery_"+page.ID.ToString()+"_"+identifier.ToString();
+			string ImageGalleryId = "ImageGallery_"+page.Id.ToString()+"_"+identifier.ToString();
 
 			// ------- CHECK THE FORM FOR ACTIONS
 			string action = Hatfield.Web.Portal.PageUtils.getFromForm(ImageGalleryId+"_Action","");
@@ -343,7 +343,7 @@ namespace HatCMS.Placeholders
 			{ // -- render the directory
                 writer.Write("<div class=\"ImageGallery thumbnails\">");
 
-                string ImageGalleryId = "ImageGallery_" + page.ID.ToString() + "_" + identifier.ToString();
+                string ImageGalleryId = "ImageGallery_" + page.Id.ToString() + "_" + identifier.ToString();
 				string thumbViewHtml = getHtmlForThumbView(page, data,ImageGalleryId, false);
 				writer.WriteLine(thumbViewHtml);
 				

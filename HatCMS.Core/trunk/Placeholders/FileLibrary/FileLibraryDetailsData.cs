@@ -138,7 +138,7 @@ namespace HatCMS.Placeholders
 
             if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V1")
             {
-                sb.Append(fileDetailsPage.ID);
+                sb.Append(fileDetailsPage.Id);
                 sb.Append(identifier);
             }
 
@@ -161,7 +161,7 @@ namespace HatCMS.Placeholders
 
             string subDir = "";
             if (CmsConfig.getConfigValue("DMSFileStorageLocationVersion", "V1") == "V2")
-                subDir = fileDetailsPage.ID.ToString() + identifier.ToString() + language.shortCode.ToLower() + "/";
+                subDir = fileDetailsPage.Id.ToString() + identifier.ToString() + language.shortCode.ToLower() + "/";
 
             return DMSFileStorageFolderUrl + subDir;
         }

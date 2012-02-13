@@ -456,7 +456,7 @@ namespace HatCMS.Placeholders
 
         private string getEditFormName(CmsPage page, int identifier, CmsLanguage langToRenderFor)
         {
-            return "editSingleImage_" + page.ID.ToString() + identifier.ToString() + langToRenderFor.shortCode;           
+            return "editSingleImage_" + page.Id.ToString() + identifier.ToString() + langToRenderFor.shortCode;           
         }
 
         public override void RenderInEditMode(HtmlTextWriter writer, CmsPage page, int identifier, CmsLanguage langToRenderFor, string[] paramList)

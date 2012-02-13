@@ -16,7 +16,7 @@ namespace HatCMS.Placeholders
             StringBuilder sql = new StringBuilder("UPDATE ");
             sql.Append(AGGREGATOR_TABLE);
             sql.Append(" SET Deleted=NOW()");
-            sql.Append(" WHERE PageId=" + page.ID.ToString() + ";");
+            sql.Append(" WHERE PageId=" + page.Id.ToString() + ";");
 
             int affected = this.RunUpdateQuery(sql.ToString());
             return (affected > 0);
@@ -35,7 +35,7 @@ namespace HatCMS.Placeholders
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.Append(AGGREGATOR_TABLE);
             sql.Append(" (PageId,Identifier,LangCode,NumFilesOverview,NumFilesPerPage) VALUES (");
-            sql.Append(page.ID.ToString() + ",");
+            sql.Append(page.Id.ToString() + ",");
             sql.Append(identifier.ToString() + ",'");
             sql.Append(dbEncode(lang.shortCode) + "',");
             sql.Append(entity.NumFilesForOverview.ToString() + ",");
@@ -58,12 +58,12 @@ namespace HatCMS.Placeholders
         /// <returns></returns>
         public FileLibraryAggregatorData fetchAggregatorData(CmsPage page, int identifier, CmsLanguage lang, bool createIfNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new FileLibraryAggregatorData();
 
             StringBuilder sql = new StringBuilder("SELECT NumFilesOverview,NumFilesPerPage FROM ");
             sql.Append(AGGREGATOR_TABLE);
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND Deleted is null;");
@@ -102,7 +102,7 @@ namespace HatCMS.Placeholders
             sql.Append(AGGREGATOR_TABLE);
             sql.Append(" SET NumFilesOverview=" + entity.NumFilesForOverview.ToString() + ",");
             sql.Append(" NumFilesPerPage=" + entity.NumFilesPerPage.ToString());
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
 
@@ -135,7 +135,7 @@ namespace HatCMS.Placeholders
             StringBuilder sql = new StringBuilder("UPDATE ");
             sql.Append(DETAILS_TABLE);
             sql.Append(" SET Deleted=NOW()");
-            sql.Append(" WHERE PageId=" + page.ID.ToString() + ";");
+            sql.Append(" WHERE PageId=" + page.Id.ToString() + ";");
 
             int affected = this.RunUpdateQuery(sql.ToString());
             return (affected > 0);
@@ -154,7 +154,7 @@ namespace HatCMS.Placeholders
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.Append(DETAILS_TABLE);
             sql.Append(" (PageId,Identifier,LangCode,FileName,CategoryId,Author,Description,LastModified,CreatedBy,EventPageId) VALUES (");
-            sql.Append(detailsPage.ID.ToString() + ",");
+            sql.Append(detailsPage.Id.ToString() + ",");
             sql.Append(identifier.ToString() + ",'");
             sql.Append(dbEncode(lang.shortCode) + "','");
             sql.Append(dbEncode(entity.FileName) + "',");
@@ -167,7 +167,7 @@ namespace HatCMS.Placeholders
 
             int affected = this.RunUpdateQuery(sql.ToString());
             if (affected > 0) {
-                entity.DetailsPageId = detailsPage.ID;
+                entity.DetailsPageId = detailsPage.Id;
                 entity.Identifier = identifier;
                 entity.Lang = lang;
                 return detailsPage.setLastUpdatedDateTimeToNow();
@@ -193,7 +193,7 @@ namespace HatCMS.Placeholders
             sql.Append(" Description='" + dbEncode(entity.Description) + "',");
             sql.Append(" LastModified=" + dbEncode(DateTime.Now) + ",");
             sql.Append(" EventPageId=" + entity.EventPageId.ToString());
-            sql.Append(" WHERE PageId=" + detailsPage.ID.ToString());
+            sql.Append(" WHERE PageId=" + detailsPage.Id.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
 
@@ -237,7 +237,7 @@ namespace HatCMS.Placeholders
 
             StringBuilder pageId = new StringBuilder();
             foreach (CmsPage p in pageArray)
-                pageId.Append(p.ID.ToString() + ",");
+                pageId.Append(p.Id.ToString() + ",");
             pageId.Remove(pageId.Length - 1, 1);
 
             StringBuilder sql = new StringBuilder("SELECT Count(PageId) AS RecordCount FROM ");
@@ -259,12 +259,12 @@ namespace HatCMS.Placeholders
 
         public FileLibraryDetailsData fetchDetailsData(CmsPage page, int identifier, CmsLanguage lang, bool createIfNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new FileLibraryDetailsData();
 
             StringBuilder sql = new StringBuilder("SELECT PageId,Identifier,LangCode,FileName,CategoryId,Author,Description,LastModified,CreatedBy,EventPageId FROM ");
             sql.Append(DETAILS_TABLE);
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND Deleted is null;");
@@ -293,7 +293,7 @@ namespace HatCMS.Placeholders
         {
             StringBuilder sql = new StringBuilder("SELECT PageId,Identifier,LangCode,FileName,CategoryId,Author,Description,LastModified,CreatedBy,EventPageId FROM ");
             sql.Append(DETAILS_TABLE);
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND Deleted IS NULL");
             sql.Append(" ORDER BY FileName, LangCode;");
 
@@ -329,7 +329,7 @@ namespace HatCMS.Placeholders
 
             List<string> pageIds = new List<string>();
             foreach (CmsPage p in pageArray)
-                pageIds.Add(p.ID.ToString());            
+                pageIds.Add(p.Id.ToString());            
 
             StringBuilder sql = new StringBuilder("SELECT PageId,Identifier,LangCode,FileName,CategoryId,Author,Description,LastModified,CreatedBy,EventPageId FROM ");
             sql.Append(DETAILS_TABLE);
@@ -372,7 +372,7 @@ namespace HatCMS.Placeholders
         {
             StringBuilder sql = new StringBuilder("SELECT PageId,Identifier,LangCode,FileName,CategoryId,Author,Description,LastModified,CreatedBy,EventPageId FROM ");
             sql.Append(DETAILS_TABLE);
-            sql.Append(" WHERE EventPageId=" + eventPage.ID.ToString());
+            sql.Append(" WHERE EventPageId=" + eventPage.Id.ToString());
             sql.Append(" AND LangCode='" + dbEncode(lang.shortCode) + "'");
             sql.Append(" AND Deleted IS NULL");
             sql.Append(" ORDER BY PageId;");
@@ -400,7 +400,7 @@ namespace HatCMS.Placeholders
 
             StringBuilder pageId = new StringBuilder();
             foreach (CmsPage p in pageArray)
-                pageId.Append(p.ID.ToString() + ",");
+                pageId.Append(p.Id.ToString() + ",");
             pageId.Remove(pageId.Length - 1, 1);
 
             StringBuilder sql = new StringBuilder("SELECT PageId,Identifier,LangCode,FileName,CategoryId,Author,Description,LastModified,CreatedBy,EventPageId FROM ");

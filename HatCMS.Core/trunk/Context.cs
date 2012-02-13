@@ -60,7 +60,7 @@ namespace HatCMS
                 
                 // -- default view by path (ignore the revision param)
                 CmsPage ret = getPageByPath(path);
-                if (ret.ID >= 0 && ret.currentUserCanWrite) // note: don't check against the current ViewMode because a stack overflow (circular references) will occur.
+                if (ret.Id >= 0 && ret.currentUserCanWrite) // note: don't check against the current ViewMode because a stack overflow (circular references) will occur.
                 {
                     // -- get page by revision
                     int revisionNumberToDisplay = PageUtils.getFromForm("revNum", -1);
@@ -781,7 +781,7 @@ namespace HatCMS
         public static bool pageExists(int pageId)
         {            
             CmsPage p = CmsPage.FetchPageById(pageId);
-            if (p.ID >= 0)
+            if (p.Id >= 0)
                 return true;
             return false;
         }
@@ -797,7 +797,7 @@ namespace HatCMS
             try
             {
                 CmsPage p = getPageByPath(pagePath);
-                if (p.ID < 0)
+                if (p.Id < 0)
                     return false;
                 return true;
             }
@@ -815,7 +815,7 @@ namespace HatCMS
 		public static bool childPageWithNameExists(int parentPageId, string childName)
 		{			
 			CmsPage parentPage = CmsPage.FetchPageById(parentPageId);
-			if (parentPage.ID < 0)
+			if (parentPage.Id <= 0)
 				return false;
 
             foreach (CmsPage p in parentPage.ChildPages)
@@ -832,19 +832,19 @@ namespace HatCMS
         /// <param name="parentPageId"></param>
         /// <param name="pageLangInfos"></param>
         /// <returns></returns>
-        public static bool childPageWithNameExists(int parentPageId, CmsPageLanguageInfo[] pageLangInfos)
+        public static bool childPageWithNameExists(int parentPageId, IList<CmsPageLanguageInfo> pageLangInfos)
         {
             
             CmsPage parentPage = CmsPage.FetchPageById(parentPageId);
-            if (parentPage.ID < 0)
+            if (parentPage.Id < 0)
                 return false;
             
             foreach (CmsPage p in parentPage.ChildPages)
             {
                 foreach (CmsPageLanguageInfo langInfo in pageLangInfos)
                 {
-                    string nameToFind = langInfo.name;
-                    CmsLanguage pageLanguage = CmsLanguage.GetFromHaystack(langInfo.languageShortCode, CmsConfig.Languages);
+                    string nameToFind = langInfo.Name;
+                    CmsLanguage pageLanguage = CmsLanguage.GetFromHaystack(langInfo.LanguageShortCode, CmsConfig.Languages);
                     if (String.Compare(p.getName(pageLanguage), nameToFind, true) == 0)
                         return true;
                 }

@@ -13,10 +13,10 @@ namespace HatCMS.Placeholders
 
 		public string getPlainTextContent(CmsPage page, int identifier, CmsLanguage language, bool createNewIfDoesNotExist)
 		{
-			if (page.ID < 0 || identifier < 0)
+			if (page.Id < 0 || identifier < 0)
 				return "";
 			
-			string sql = "select PlainText from plaintextcontent c where c.pageid = "+page.ID.ToString()+" and c.identifier = "+identifier.ToString()+" and langShortCode like '"+dbEncode(language.shortCode)+"' and deleted is null;";
+			string sql = "select PlainText from plaintextcontent c where c.pageid = "+page.Id.ToString()+" and c.identifier = "+identifier.ToString()+" and langShortCode like '"+dbEncode(language.shortCode)+"' and deleted is null;";
 			DataSet ds = this.RunSelectQuery(sql);
 			if (ds.Tables[0] != null && ds.Tables[0].Rows.Count == 1)
 			{
@@ -49,7 +49,7 @@ namespace HatCMS.Placeholders
 		{
             PlainText = this.dbEncode(PlainText);
             string sql = "insert into plaintextcontent (pageid, identifier, langShortCode, PlainText) values (";
-            sql = sql + page.ID.ToString() + "," + identifier.ToString() + ",'" + language.shortCode + "','" + PlainText + "'); ";
+            sql = sql + page.Id.ToString() + "," + identifier.ToString() + ",'" + language.shortCode + "','" + PlainText + "'); ";
 
 			int newId = this.RunInsertQuery(sql);
 			if (newId > -1)
@@ -62,7 +62,7 @@ namespace HatCMS.Placeholders
 		public bool saveUpdatedPlainTextContent(CmsPage page, int identifier, CmsLanguage language, string PlainText)
 		{
             PlainText = this.dbEncode(PlainText);
-            string sql = "update plaintextcontent set PlainText= '" + PlainText + "' where pageid= " + page.ID.ToString();
+            string sql = "update plaintextcontent set PlainText= '" + PlainText + "' where pageid= " + page.Id.ToString();
             sql += " and langShortCode like '" + dbEncode(language.shortCode) + "' ";
             sql = sql + " AND identifier = " + identifier.ToString() + "; ";			
 

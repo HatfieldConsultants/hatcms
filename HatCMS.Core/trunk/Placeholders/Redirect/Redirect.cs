@@ -61,7 +61,7 @@ namespace HatCMS.Placeholders
 		{						
 			PageRedirectDb db = new PageRedirectDb();
 
-            string formName = "PageRedirect_" + page.ID.ToString() + identifier.ToString() + langToRenderFor.shortCode;
+            string formName = "PageRedirect_" + page.Id.ToString() + identifier.ToString() + langToRenderFor.shortCode;
             string width = "100%";
             string height = "1.5em";
             if (CmsConfig.TemplateEngineVersion == CmsTemplateEngineVersion.v2)

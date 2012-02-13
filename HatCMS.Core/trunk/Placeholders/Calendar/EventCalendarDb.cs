@@ -63,7 +63,7 @@ namespace HatCMS.Placeholders.Calendar
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.Append(TableNameAggregator);
             sql.Append(" (PageId,Identifier,LangCode,ViewMode) VALUES (");
-            sql.Append(page.ID.ToString() + ",");
+            sql.Append(page.Id.ToString() + ",");
             sql.Append(identifier.ToString() + ",'");
             sql.Append(dbEncode(lang.shortCode) + "','");
             sql.Append(entity.ViewMode.ToString() + "');");
@@ -77,12 +77,12 @@ namespace HatCMS.Placeholders.Calendar
 
         public EventCalendarAggregatorData fetchAggregatorData(CmsPage page, int identifier, CmsLanguage lang, bool createIfNotExist)
         {
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return new EventCalendarAggregatorData();
 
             StringBuilder sql = new StringBuilder("SELECT ViewMode FROM ");
             sql.Append(TableNameAggregator);
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND Deleted IS NULL;");
@@ -113,7 +113,7 @@ namespace HatCMS.Placeholders.Calendar
             sql.Append(TableNameAggregator);
             sql.Append(" SET ViewMode = '" + entity.ViewMode.ToString() + "'");
 
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + lang.shortCode + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
 
@@ -228,7 +228,7 @@ namespace HatCMS.Placeholders.Calendar
             public EventCalendarDetailsData(CmsPage page, int identifier, CmsLanguage lang)
                 : this()
             {
-                this.PageId = page.ID;
+                this.PageId = page.Id;
                 this.identifier = identifier;
                 this.lang = lang;
             }
@@ -247,7 +247,7 @@ namespace HatCMS.Placeholders.Calendar
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.Append(TableNameDetails);
             sql.Append(" (PageId,Identifier,LangCode,Description,CategoryId,StartDateTime,EndDateTime,CreatedBy) VALUES (");
-            sql.Append(page.ID.ToString() + ",");
+            sql.Append(page.Id.ToString() + ",");
             sql.Append(identifier.ToString() + ",'");
             sql.Append(dbEncode(lang.shortCode) + "','");
             sql.Append(dbEncode(entity.Description) + "',");
@@ -320,12 +320,12 @@ namespace HatCMS.Placeholders.Calendar
         public EventCalendarDetailsData fetchDetailsData(CmsPage page, int identifier, CmsLanguage lang, bool createIfNotExist)
         {
             EventCalendarDetailsData entity = new EventCalendarDetailsData(page, identifier, lang);
-            if (page.ID < 0 || identifier < 0)
+            if (page.Id < 0 || identifier < 0)
                 return entity;
 
             StringBuilder sql = new StringBuilder("SELECT PageId,Identifier,LangCode,Description,CategoryId,StartDateTime,EndDateTime,CreatedBy FROM ");
             sql.Append(TableNameDetails);
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + dbEncode(lang.shortCode) + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
             sql.Append(" AND Deleted IS NULL;");
@@ -449,7 +449,7 @@ namespace HatCMS.Placeholders.Calendar
             sql.Append(" StartDateTime = " + dbEncode(entity.StartDateTime) + ",");
             sql.Append(" EndDateTime = " + dbEncode(entity.EndDateTime) + ",");
             sql.Append(" CreatedBy = '" + dbEncode(entity.CreatedBy) + "'");
-            sql.Append(" WHERE PageId=" + page.ID.ToString());
+            sql.Append(" WHERE PageId=" + page.Id.ToString());
             sql.Append(" AND LangCode='" + dbEncode(lang.shortCode) + "'");
             sql.Append(" AND Identifier=" + identifier.ToString());
 
