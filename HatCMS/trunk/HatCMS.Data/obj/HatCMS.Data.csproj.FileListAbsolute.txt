@@ -1,0 +1,7 @@
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Data\bin\Debug\HatCMS.Data.dll
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Data\bin\Debug\HatCMS.Data.pdb
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Data\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Data\obj\Debug\HatCMS.Data.Mappings.PersistentVariable.Mappings.hbm.xml
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Data\obj\Debug\HatCMS.Data.Mappings.SecurityZones.Mappings.hbm.xml
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Data\obj\Debug\HatCMS.Data.dll
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Data\obj\Debug\HatCMS.Data.pdb
