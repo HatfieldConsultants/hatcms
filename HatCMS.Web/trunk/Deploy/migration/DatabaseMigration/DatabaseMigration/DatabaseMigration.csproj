@@ -30,7 +30,7 @@
   <ItemGroup>
     <Reference Include="Migrator.Framework, Version=0.9.0.26940, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\Migrator.Framework.dll</HintPath>
+      <HintPath>lib\MigratorDotNet\Migrator.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
