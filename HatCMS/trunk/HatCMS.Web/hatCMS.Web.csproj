@@ -1185,10 +1185,6 @@
       <Project>{2745E7A6-F682-41F9-B78E-8CF476D340C0}</Project>
       <Name>HatCMS.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="Source\HatCMS.Domain\HatCMS.Domain.csproj">
-      <Project>{58C1174C-EE37-4F5A-B681-F60D01366CB3}</Project>
-      <Name>HatCMS.Domain</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="controls\site\" />

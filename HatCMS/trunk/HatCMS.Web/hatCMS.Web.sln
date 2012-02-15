@@ -19,8 +19,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpArch.Tests", "include\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpArch.Web", "include\SharpArch\src\SharpArch\SharpArch.Web\SharpArch.Web.csproj", "{F8DFDA83-D64C-4456-A929-8BC7CD70660B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HatCMS.Domain", "Source\HatCMS.Domain\HatCMS.Domain.csproj", "{58C1174C-EE37-4F5A-B681-F60D01366CB3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HatCMS.Domain.Test", "Test\HatCMS.Domain.Test\HatCMS.Domain.Test.csproj", "{CE231573-AB34-466D-9A9B-5663578E74AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hatCommon", "include\hatCommon\hatCommon.csproj", "{8D00113F-0F67-4AD1-BC35-037912EA9BAA}"
@@ -85,12 +83,6 @@ Global
 		{F8DFDA83-D64C-4456-A929-8BC7CD70660B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8DFDA83-D64C-4456-A929-8BC7CD70660B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F8DFDA83-D64C-4456-A929-8BC7CD70660B}.Release|x86.ActiveCfg = Release|Any CPU
-		{58C1174C-EE37-4F5A-B681-F60D01366CB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58C1174C-EE37-4F5A-B681-F60D01366CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58C1174C-EE37-4F5A-B681-F60D01366CB3}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{58C1174C-EE37-4F5A-B681-F60D01366CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58C1174C-EE37-4F5A-B681-F60D01366CB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{58C1174C-EE37-4F5A-B681-F60D01366CB3}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE231573-AB34-466D-9A9B-5663578E74AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CE231573-AB34-466D-9A9B-5663578E74AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE231573-AB34-466D-9A9B-5663578E74AB}.Debug|x86.ActiveCfg = Debug|Any CPU
