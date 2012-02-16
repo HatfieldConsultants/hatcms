@@ -38,3 +38,10 @@ C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Sou
 C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Source\HatCMS.Data\bin\Debug\Iesi.Collections.xml
 C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Source\HatCMS.Data\bin\Debug\NHibernate.pdb
 C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Source\HatCMS.Data\bin\Debug\NHibernate.xml
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Source\HatCMS.Data\bin\Debug\CommonServiceLocator.WindsorAdapter.dll
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Source\HatCMS.Data\bin\Debug\Castle.Windsor.dll
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Source\HatCMS.Data\bin\Debug\Castle.Core.dll
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Source\HatCMS.Data\bin\Debug\Castle.Windsor.pdb
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Source\HatCMS.Data\bin\Debug\Castle.Windsor.xml
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Source\HatCMS.Data\bin\Debug\Castle.Core.pdb
+C:\Users\zlu\Documents\Visual Studio 2005\Projects\HatCMS_updated\HatCMS.Web\Source\HatCMS.Data\bin\Debug\Castle.Core.xml
