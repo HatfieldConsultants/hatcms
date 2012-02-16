@@ -19,7 +19,6 @@ namespace Hatfield.Web.Portal.Data
     public abstract class MySqlDbObject : IDBObject
     {
         protected MySqlConnection Connection;
-        private static readonly int MySqlCommandTimeout = 60 * 5; //setting timeout to five minutes to handle large queries
         private static readonly ILog log = LogManager.GetLogger(typeof(MySqlDbObject));
         
         /// <summary>
@@ -339,7 +338,6 @@ namespace Hatfield.Web.Portal.Data
 
                 MySqlDataAdapter sqlDA = new MySqlDataAdapter();
                 sqlDA.SelectCommand = new MySqlCommand(sql, Connection);
-                sqlDA.SelectCommand.CommandTimeout = MySqlCommandTimeout;
 
                 sqlDA.Fill(dataSet);
 
@@ -375,7 +373,6 @@ namespace Hatfield.Web.Portal.Data
 
                 // -- run the insert command
                 MySqlCommand cmd = Connection.CreateCommand();
-                cmd.CommandTimeout = MySqlCommandTimeout;
 
                 cmd.CommandText = sql;
                 int numInserted = cmd.ExecuteNonQuery();
@@ -423,7 +420,6 @@ namespace Hatfield.Web.Portal.Data
 
                 cmd = Connection.CreateCommand();
                 cmd.CommandText = sql;
-                cmd.CommandTimeout = MySqlCommandTimeout;
                                 
                 int result = cmd.ExecuteNonQuery();
 
