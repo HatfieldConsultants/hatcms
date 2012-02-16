@@ -11,6 +11,7 @@ using SharpArch.Data.NHibernate;
 using SharpArch.Web.NHibernate;
 using NHibernate;
 using System.IO;
+using HatCMS.Core;
 
 
 namespace HatCMS 
@@ -35,7 +36,7 @@ namespace HatCMS
 		
 		protected void Application_Start(Object sender, EventArgs e)
 		{
-            ServiceLocatorInitializer.Init();
+            DatabaseServiceLocatorInitializer.Init();
             Console.WriteLine("application starts...");
 
             CmsUserInterface WebUIConfiguration = new CmsUserInterface(

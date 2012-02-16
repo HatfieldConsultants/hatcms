@@ -73,27 +73,35 @@
     <Compile Include="ServiceLocatorInitializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\include\SharpArch\src\SharpArch\SharpArch.Core.NHibernateValidator\SharpArch.Core.NHibernateValidator.csproj">
+    <ProjectReference Include="..\..\HatCMS.Web\include\HatCMS.Core\HatCMS.Core.csproj">
+      <Project>{BCB2C5CD-189B-4B31-BC59-589A76837EBB}</Project>
+      <Name>HatCMS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HatCMS.Web\include\hatCommon\hatCommon.csproj">
+      <Project>{8D00113F-0F67-4AD1-BC35-037912EA9BAA}</Project>
+      <Name>hatCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\HatCMS.Web\include\SharpArch\src\SharpArch\SharpArch.Core.NHibernateValidator\SharpArch.Core.NHibernateValidator.csproj">
       <Project>{CA82D666-C585-427A-9E6D-57E65EAA2B98}</Project>
       <Name>SharpArch.Core.NHibernateValidator</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\include\SharpArch\src\SharpArch\SharpArch.Core\SharpArch.Core.csproj">
+    <ProjectReference Include="..\..\HatCMS.Web\include\SharpArch\src\SharpArch\SharpArch.Core\SharpArch.Core.csproj">
       <Project>{4153D6A1-EF6D-49EE-BFF1-12C08A7EAA60}</Project>
       <Name>SharpArch.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\include\SharpArch\src\SharpArch\SharpArch.Data\SharpArch.Data.csproj">
+    <ProjectReference Include="..\..\HatCMS.Web\include\SharpArch\src\SharpArch\SharpArch.Data\SharpArch.Data.csproj">
       <Project>{0B4202A0-494A-48F2-ACA7-AC5194F8D010}</Project>
       <Name>SharpArch.Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\include\SharpArch\src\SharpArch\SharpArch.Testing.NUnit\SharpArch.Testing.NUnit.csproj">
+    <ProjectReference Include="..\..\HatCMS.Web\include\SharpArch\src\SharpArch\SharpArch.Testing.NUnit\SharpArch.Testing.NUnit.csproj">
       <Project>{A464DBBA-E841-4C88-BE0F-EA8D22B0D56E}</Project>
       <Name>SharpArch.Testing.NUnit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\include\SharpArch\src\SharpArch\SharpArch.Testing\SharpArch.Testing.csproj">
+    <ProjectReference Include="..\..\HatCMS.Web\include\SharpArch\src\SharpArch\SharpArch.Testing\SharpArch.Testing.csproj">
       <Project>{FACB345B-ED80-4BD4-BA16-8F25FB0B673A}</Project>
       <Name>SharpArch.Testing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\include\SharpArch\src\SharpArch\SharpArch.Tests\SharpArch.Tests.csproj">
+    <ProjectReference Include="..\..\HatCMS.Web\include\SharpArch\src\SharpArch\SharpArch.Tests\SharpArch.Tests.csproj">
       <Project>{C2F64872-EF73-4D5F-BFED-1708DCA7D8CC}</Project>
       <Name>SharpArch.Tests</Name>
     </ProjectReference>

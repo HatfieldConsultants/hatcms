@@ -443,7 +443,6 @@
     <Compile Include="controls\_system\UserImageGalleryAggregator.ascx.designer.cs">
       <DependentUpon>UserImageGalleryAggregator.ascx</DependentUpon>
     </Compile>
-    <Compile Include="ServiceLocatorInitializer.cs" />
     <Compile Include="xmlSiteMap.ashx.cs">
       <DependentUpon>xmlSiteMap.ashx</DependentUpon>
     </Compile>
