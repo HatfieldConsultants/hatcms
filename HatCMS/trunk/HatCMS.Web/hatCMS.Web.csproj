@@ -548,6 +548,7 @@
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="_system\tools\showThumb.aspx.designer.cs">
       <DependentUpon>showThumb.aspx</DependentUpon>
