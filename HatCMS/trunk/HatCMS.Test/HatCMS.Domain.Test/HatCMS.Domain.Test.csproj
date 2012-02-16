@@ -30,35 +30,35 @@
   <ItemGroup>
     <Reference Include="Castle.Core, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\include\SharpArch\Include\CastleWindsor\Castle.Core.dll</HintPath>
+      <HintPath>..\..\HatCMS.Web\include\SharpArch\Include\CastleWindsor\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.Windsor, Version=2.5.1.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\include\SharpArch\Include\CastleWindsor\Castle.Windsor.dll</HintPath>
+      <HintPath>..\..\HatCMS.Web\include\SharpArch\Include\CastleWindsor\Castle.Windsor.dll</HintPath>
     </Reference>
     <Reference Include="CommonServiceLocator.WindsorAdapter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\include\SharpArch\Include\CommonServiceLocatorWindsorAdapter\CommonServiceLocator.WindsorAdapter.dll</HintPath>
+      <HintPath>..\..\HatCMS.Web\include\SharpArch\Include\CommonServiceLocatorWindsorAdapter\CommonServiceLocator.WindsorAdapter.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\include\SharpArch\Include\NHibernate\Required_Bins\Iesi.Collections.dll</HintPath>
+      <HintPath>..\..\HatCMS.Web\include\SharpArch\Include\NHibernate\Required_Bins\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\include\SharpArch\Include\CommonServiceLocator\Microsoft.Practices.ServiceLocation.dll</HintPath>
+      <HintPath>..\..\HatCMS.Web\include\SharpArch\Include\CommonServiceLocator\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="mysql.data, Version=6.3.7.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\include\MySql\mysql.data.dll</HintPath>
+      <HintPath>..\..\HatCMS.Web\include\MySql\mysql.data.dll</HintPath>
     </Reference>
     <Reference Include="NHibernate.ByteCode.Castle, Version=3.1.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\include\SharpArch\Include\NHibernate\Required_For_LazyLoading\NHibernate.ByteCode.Castle.dll</HintPath>
+      <HintPath>..\..\HatCMS.Web\include\SharpArch\Include\NHibernate\Required_For_LazyLoading\NHibernate.ByteCode.Castle.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\include\SharpArch\Include\NUnit\nunit.framework.dll</HintPath>
+      <HintPath>..\..\HatCMS.Web\include\SharpArch\Include\NUnit\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
