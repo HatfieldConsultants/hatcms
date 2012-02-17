@@ -113,11 +113,6 @@
     <Compile Include="DataRepository\PersistentVariableRepository.cs" />
     <Compile Include="DataUserType\BoolIntExchangeType.cs" />
     <Compile Include="DataUserType\PersistentVariableType.cs" />
-    <Compile Include="Migration\migrations\001_CleanupData.cs" />
-    <Compile Include="Migration\migrations\002_RemoveZoneUserRoleConstraints.cs" />
-    <Compile Include="Migration\migrations\003_AddIdToZoneUserRoleTable.cs" />
-    <Compile Include="Migration\migrations\004_AddIdToPageLanguageInfoTable.cs" />
-    <Compile Include="Migration\migrations\005_AddIdToPageRevisionDataTable.cs" />
     <Compile Include="Placeholders\HtmlContent\HtmlLinkFilter.cs" />
     <Compile Include="BaseClasses\filtering\OutputFilter.cs" />
     <Compile Include="BaseClasses\filtering\OutputFilterUtils.cs" />
@@ -239,39 +234,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Migration\example-msbuild.proj" />
-    <None Include="Migration\example-nant.build" />
-    <None Include="Migration\lib\MigratorDotNet\Migrator.Targets" />
-    <None Include="Migration\lib\MigratorDotNet\Migrator.Tests.dll.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Migration\lib\MigratorDotNet\log4net.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.Console.exe" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.Console.pdb" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.Framework.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.Framework.pdb" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.MSBuild.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.MSBuild.pdb" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.NAnt.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.NAnt.pdb" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.pdb" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.Providers.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.Providers.pdb" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.Tests.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\Migrator.Tests.pdb" />
-    <Content Include="Migration\lib\MigratorDotNet\Mono.Security.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\MyMigrations.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\MyMigrations.pdb" />
-    <Content Include="Migration\lib\MigratorDotNet\MySql.Data.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\NAnt.Core.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\Npgsql.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\nunit.framework.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\nunit.mocks.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\Oracle.DataAccess.dll" />
-    <Content Include="Migration\lib\MigratorDotNet\System.Data.SQLite.DLL" />
-    <Content Include="Migration\lib\MigratorDotNet\System.Data.SqlServerCe.dll" />
-    <Content Include="Migration\migrations\migrations.dll" />
+    <Folder Include="Migration\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <ProjectExtensions>
