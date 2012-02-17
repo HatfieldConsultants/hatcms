@@ -10,6 +10,8 @@ using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using HatCMS.setup;
+using HatCMS.Core.Migration;
+using System.Collections.Generic;
 
 namespace HatCMS._system.tools
 {
@@ -69,18 +71,22 @@ namespace HatCMS._system.tools
 
         protected void b_UpdateDatabase_Click(object sender, EventArgs e)
         {
-            StringBuilder html = new StringBuilder();
-            if (!connectionStringMatches())
-            {
-                html.Append("<p style=\"color: red;\">You entered an incorrect Connection String.</p>");
-            }
-            else
-            {
-                html.Append("<p style=\"color: red;\">Sorry, the database upgrade functionality has not been implemented yet.</p>");
-            }
+            string assemblypath = System.Web.Hosting.HostingEnvironment.MapPath("~/include/HatCMS.Core/Migration/lib/MigratorDotNet/MyMigrations.dll");
+            Console.WriteLine(assemblypath);
+            HatCMSMigrator databasemigrator = new HatCMSMigrator("MySql", "Data Source=localhost;Database=hatcms_test;User Id=hatcms;Password=hatcms", assemblypath);
+            IList<long> migrationlist = databasemigrator.GetAvailableVersions();
+            //StringBuilder html = new StringBuilder();
+            //if (!connectionStringMatches())
+            //{
+            //    html.Append("<p style=\"color: red;\">You entered an incorrect Connection String.</p>");
+            //}
+            //else
+            //{
+            //    html.Append("<p style=\"color: red;\">Sorry, the database upgrade functionality has not been implemented yet.</p>");
+            //}
 
-            ph_UpdateDatabaseMessage.Controls.Clear();
-            ph_UpdateDatabaseMessage.Controls.Add(new LiteralControl(html.ToString()));
+            //ph_UpdateDatabaseMessage.Controls.Clear();
+            //ph_UpdateDatabaseMessage.Controls.Add(new LiteralControl(html.ToString()));
         }
     }
 }
