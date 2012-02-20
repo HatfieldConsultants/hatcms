@@ -3,6 +3,7 @@ using System.Text;
 using System.Data;
 using System.Configuration;
 using System.Collections;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -12,6 +13,7 @@ using System.Web.UI.HtmlControls;
 using HatCMS.setup;
 using HatCMS.Core.Migration;
 using System.Collections.Generic;
+
 
 namespace HatCMS._system.tools
 {
@@ -83,10 +85,11 @@ namespace HatCMS._system.tools
             //else
             //{
             //    html.Append("<p style=\"color: red;\">Sorry, the database upgrade functionality has not been implemented yet.</p>");
+            //    Console.WriteLine(System.Web.Hosting.HostingEnvironment.MapPath("~/setup/HatCMS_TableCreation.sql"));
+            //    //HatCMSMigrator databasemigrator = new HatCMSMigrator("MySql", "Data Source=localhost;Database=hatcms_test;User Id=hatcms;Password=hatcms", "");
+                
             //}
 
-            //ph_UpdateDatabaseMessage.Controls.Clear();
-            //ph_UpdateDatabaseMessage.Controls.Add(new LiteralControl(html.ToString()));
         }
     }
 }
