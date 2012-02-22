@@ -131,6 +131,7 @@
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
+    <Reference Include="System.Net, Version=3.5.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Web">
       <Name>System.Web</Name>
     </Reference>
@@ -989,6 +990,7 @@
     <Content Include="js\_system\swfUpload\XPButtonUploadText_61x22.png" />
     <Content Include="js\_system\TopMultiLevelDropDownMenu.js" />
     <Content Include="js\_system\TopNav.js" />
+    <Content Include="js\_system\UpdateTool\UpdateTool.js" />
     <Content Include="setup\default.aspx" />
     <Content Include="setup\new_HatCMS_TableCreation.sql" />
     <Content Include="setup\HatPortal_TableCreation.txt" />

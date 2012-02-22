@@ -7,11 +7,14 @@
 	<head>
 		<title>Setup HatCMS</title>
 		<link rel="stylesheet" type="text/css" href="../../css/_system/Setup.css" />
+		<script language="javascript" type="text/javascript" src="../../js/_system/jquery/jquery-1.4.1.min.js"></script>
+		<script language="javascript" type="text/javascript" src="../../js/_system/UpdateTool/UpdateTool.js"></script>
 	</head>
 	<body>
 		<div id="navigation"><div class="wrapper"><img align="absmiddle" src="../../images/_system/hatCms_logo.png" style="float: left; margin-top: 8px; margin-right: 10px;" /> 
 		<h1>HatCMS Upgrade</h1></div></div>
-	    <div class="wrapper">
+		<div id="updatecontent" runat="server"></div>
+	    <div class="wrapper" style="left: 0px; top: 0px">
 		<form id="Form1" method="post" runat="server">
         <br />
         <strong>
@@ -25,7 +28,7 @@
         <asp:PlaceHolder ID="ph_ValidationErrors" runat="server"></asp:PlaceHolder>
         
         <p>&nbsp;</p>
-        <asp:Button runat="server" ID="b_UpdateDatabase" Text="Upgrade Database" OnClick="b_UpdateDatabase_Click"  />
+        <asp:Button runat="server" ID="b_UpdateDatabase" Text="Update Database" OnClick="b_UpdateDatabase_Click"  />
         <br />
         <asp:PlaceHolder ID="ph_UpdateDatabaseMessage" runat="server"></asp:PlaceHolder>
         </form>

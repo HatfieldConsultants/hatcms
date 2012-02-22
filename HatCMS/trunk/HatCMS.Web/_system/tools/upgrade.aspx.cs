@@ -12,16 +12,30 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using HatCMS.setup;
 using HatCMS.Core.Migration;
-using System.Collections.Generic;
 
 
 namespace HatCMS._system.tools
 {
     public partial class UpgradePage : System.Web.UI.Page
     {
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            RequestState requeststate = new RequestState();
+            HatCMSMigrator databasemigrator = new HatCMSMigrator();
 
+            //this.updatecontent.InnerText = requeststate.Fetch("http://hatcms.googlecode.com/svn/HatCMS_DatabaseMigrationGenerator/version/version.txt");
+            StringBuilder html = new StringBuilder();
+            html.Append("<p style=\"color: red;\">The latest HatCMS database version is Version: ");
+            html.Append(requeststate.Fetch("http://hatcms.googlecode.com/svn/HatCMS_DatabaseMigrationGenerator/version/version.txt"));
+            html.Append("</p>");
+
+            html.Append("<p style=\"color: red;\">The Current Database Version of the System is Version: ");
+            html.Append(databasemigrator.currentVersion());
+            html.Append("</p>");
+
+            ph_ValidationErrors.Controls.Clear();
+            ph_ValidationErrors.Controls.Add(new LiteralControl(html.ToString()));
         }
 
         private bool connectionStringMatches()
@@ -73,22 +87,21 @@ namespace HatCMS._system.tools
 
         protected void b_UpdateDatabase_Click(object sender, EventArgs e)
         {
-            string assemblypath = System.Web.Hosting.HostingEnvironment.MapPath("~/include/HatCMS.Core/Migration/lib/MigratorDotNet/MyMigrations.dll");
-            Console.WriteLine(assemblypath);
-            HatCMSMigrator databasemigrator = new HatCMSMigrator("MySql", "Data Source=localhost;Database=hatcms_test;User Id=hatcms;Password=hatcms", assemblypath);
-            IList<long> migrationlist = databasemigrator.GetAvailableVersions();
-            //StringBuilder html = new StringBuilder();
-            //if (!connectionStringMatches())
-            //{
-            //    html.Append("<p style=\"color: red;\">You entered an incorrect Connection String.</p>");
-            //}
-            //else
-            //{
-            //    html.Append("<p style=\"color: red;\">Sorry, the database upgrade functionality has not been implemented yet.</p>");
-            //    Console.WriteLine(System.Web.Hosting.HostingEnvironment.MapPath("~/setup/HatCMS_TableCreation.sql"));
-            //    //HatCMSMigrator databasemigrator = new HatCMSMigrator("MySql", "Data Source=localhost;Database=hatcms_test;User Id=hatcms;Password=hatcms", "");
-                
-            //}
+            HatCMSMigrator databasemigrator = new HatCMSMigrator();
+            StringBuilder html = new StringBuilder();
+            if (databasemigrator.IsOutDated())
+            {
+                html.Append("<p style=\"color: red;\">Your database needs update.</p>");
+
+            }
+            else
+            {
+                html.Append("<p style=\"color: red;\">Your have the latest database.</p>");
+            }
+
+            ph_ValidationErrors.Controls.Clear();
+            ph_ValidationErrors.Controls.Add(new LiteralControl(html.ToString()));
+
 
         }
     }
