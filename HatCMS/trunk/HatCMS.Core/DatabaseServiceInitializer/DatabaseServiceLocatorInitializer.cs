@@ -42,10 +42,6 @@ namespace HatCMS.Core
                     .ImplementedBy(typeof(PageRepository))
                     .Named("pageRepository"));
 
-
-
-
-
             ServiceLocator.SetLocatorProvider(delegate
             {
                 return new WindsorServiceLocator(container);

@@ -5,6 +5,7 @@ using System.Reflection;
 using Migrator.Framework;
 using Migrator;
 
+
 namespace HatCMS.Core.Migration
 {
     public class HatCMSMigrator : IMigrator
@@ -19,14 +20,29 @@ namespace HatCMS.Core.Migration
         
         }
 
+        public HatCMSMigrator()
+        {
+            string assemblypath = System.Web.Hosting.HostingEnvironment.MapPath("~/Deploy/MyMigrations.dll");
+            Assembly migrationAssembly = Assembly.LoadFrom(assemblypath);
+            string provider = "MySql";
+            string connectionString = "Data Source=localhost;Database=hatcms_test;User Id=hatcms;Password=hatcms";
+            migrator = new Migrator.Migrator(provider, connectionString, migrationAssembly);
+        }
+
+        public int currentVersion()
+        {
+            return migrator.AppliedMigrations.Count;
+        }
+
+        public bool IsOutDated()
+        {
+            return migrator.MigrationsTypes.Count > migrator.AppliedMigrations.Count;
+
+        }
+
         public void Migrate()
         {
             migrator.MigrateToLastVersion();
-        }
-
-        public IList<long> GetAvailableVersions()
-        {
-            return migrator.AppliedMigrations;
         }
 
         #endregion

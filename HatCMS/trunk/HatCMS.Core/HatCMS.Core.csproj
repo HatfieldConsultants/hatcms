@@ -122,6 +122,7 @@
     <Compile Include="DataUserType\PersistentVariableType.cs" />
     <Compile Include="Migration\HatCMSMigrator.cs" />
     <Compile Include="Migration\IMigrator.cs" />
+    <Compile Include="Migration\RequestState.cs" />
     <Compile Include="Placeholders\HtmlContent\HtmlLinkFilter.cs" />
     <Compile Include="BaseClasses\filtering\OutputFilter.cs" />
     <Compile Include="BaseClasses\filtering\OutputFilterUtils.cs" />

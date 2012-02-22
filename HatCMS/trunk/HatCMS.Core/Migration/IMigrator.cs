@@ -6,8 +6,9 @@ namespace HatCMS.Core.Migration
 {
     interface IMigrator
     {
+        //Migrate the database to the latest version
         void Migrate();
-        IList<long> GetAvailableVersions();
-
+        //Decide if the database if up to date
+        bool IsOutDated();
     }
 }
