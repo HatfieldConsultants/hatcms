@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Hatfield.Common
+namespace Hatfield.Web.Portal
 {
     public class ReflectionUtils
     {
