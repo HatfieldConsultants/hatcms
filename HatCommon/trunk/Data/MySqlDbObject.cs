@@ -398,6 +398,34 @@ namespace Hatfield.Web.Portal.Data
 
         } // RunInsertQuery
 
+
+
+        public int RunNonQueryCommand(MySqlCommand command)
+        {
+            try
+            {
+                EnsureOpenConnection();
+                command.Connection = Connection;
+                return command.ExecuteNonQuery();
+            }
+
+            finally
+            {
+                if (Connection.State != ConnectionState.Closed)
+                    Connection.Close();
+            }
+        }
+
+        private void EnsureOpenConnection()
+        {
+            if (Connection.State == ConnectionState.Closed ||
+                Connection.State == ConnectionState.Broken)
+            {
+                Connection.Open();
+            }
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -411,12 +439,7 @@ namespace Hatfield.Web.Portal.Data
             try
             {
 
-                if (Connection.State == ConnectionState.Closed ||
-                    Connection.State == ConnectionState.Broken)
-                {
-                    Connection.Open();
-                }
-
+                EnsureOpenConnection();
 
                 cmd = Connection.CreateCommand();
                 cmd.CommandText = sql;
