@@ -1,0 +1,10 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")##
+
+						<h1>##RenderControl(_system/PageTitle)##</h1>
+						
+						##PlaceHolder(PageTitle id="1" width="100%" height="1.3em")## 
+						##PlaceHolder(HtmlContent id="1" width="100%" height="200px")## 
+						##PlaceHolder(ImageGallery id="1")## 
+						
+##EndPlaceholderRegion("MainContent")##

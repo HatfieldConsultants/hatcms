@@ -1,0 +1,10 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")## 						
+						<h1>##RenderControl(_system/PageTitle)##</h1>
+						##PlaceHolder(PageTitle id="1")## 
+						
+						##Placeholder(HtmlContent id="1")##
+						
+						##RenderControl(_system/RssNews rssurl="http://www.sadcwaterhub.org/articles/feed?source_tid_op=not&source_tid[0]=96&keywords=orange%20OR%20ORASECOM%20OR%20%22Orange-Senqu%22%20OR%20%22Namibia%22%20OR%20%22South%20Africa%22%20OR%20%22Lesotho%22%20OR%20%22Botswana%22" template="<div class='RSSNewsItem'><strong>{3}: <a href='{0}'>{2}</a></strong><br>{1}</div><br>")## 
+						
+##EndPlaceholderRegion("MainContent")##

@@ -1,0 +1,4 @@
+##TemplateLayout(InternalPopup)##
+##StartPlaceholderRegion("MainContent")##
+	##RenderControl(DeleteFileLibraryPopup)##
+##EndPlaceholderRegion("MainContent")##

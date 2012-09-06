@@ -1,0 +1,6 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")##
+						##PlaceHolder(PageTitle,1,100%,1.3em)## 
+						##PlaceHolder(PageNotFoundRedirect,1,100%,500px)## 
+						##PlaceHolder(HtmlContent,1,100%,500px)## 
+##EndPlaceholderRegion("MainContent")##

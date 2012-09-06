@@ -1,0 +1,55 @@
+@page {
+	size: 7in 9.25in;
+	margin: 27mm 16mm 27mm 16mm;
+}
+
+@page :left {
+	@bottom-left {
+		content: counter(page);
+	}
+}
+
+*
+{
+    background-image: none;
+    font-family: helvetica, arial, sans-serif;
+}
+
+.headerImg, .headerImg *,
+#headerImg, #headerImg * {
+	display: none;
+}
+
+.LanguageSwitcher, .LanguageSwitcher *,
+#LanguageSwitcher, #LanguageSwitcher *
+{
+	display: none;
+}
+
+.TopMultiLevelDropDownMenu, .TopMultiLevelDropDownMenu *, #TopMultiLevelDropDownMenu, #TopMultiLevelDropDownMenu *,
+.TopDropdownNavigation, .TopDropdownNavigation *, #TopDropdownNavigation, #TopDropdownNavigation *
+{
+	display: none;
+}
+
+.SideNav_td, .SideNav_td *, #SideNav_td, #SideNav_td *,
+.sideBar, .sideBar *, #sideBar, #sideBar *
+{
+	display: none;
+}
+
+.copyrightStatement, .copyrightStatement *,
+#copyrightStatement, #copyrightStatement *
+{
+	display: none;
+}
+
+#LoginStatus
+{
+	display: none;
+}
+
+.wbcedit, .wbcedit *
+{
+	display: none;
+}
