@@ -1,0 +1,7 @@
+##TemplateLayout(PageLayout)##
+##StartPlaceholderRegion("MainContent")##
+						##PlaceHolder(PageTitle,1,100%,1.3em)## 
+						##PlaceHolder(HtmlContent,1,100%,300px)## 
+						##PlaceHolder(GoogleMap,1,500px,400px)##
+						##PlaceHolder(HtmlContent,2,100%,300px)## 
+##EndPlaceholderRegion("MainContent")##

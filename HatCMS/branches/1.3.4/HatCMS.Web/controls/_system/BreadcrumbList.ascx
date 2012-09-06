@@ -1,0 +1,1 @@
+<%@ Control Language="c#" AutoEventWireup="True" Codebehind="BreadcrumbList.ascx.cs" Inherits="HatCMS.Controls._system.BreadcrumbList" TargetSchema="http://schemas.microsoft.com/intellisense/ie3-2nav3-0" %>

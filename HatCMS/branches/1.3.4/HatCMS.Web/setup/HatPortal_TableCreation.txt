@@ -1,0 +1,66 @@
+
+CREATE TABLE  `appuser` (
+  `AppUserId` int(11) NOT NULL AUTO_INCREMENT,
+  `UserName` varchar(255) NOT NULL,
+  `Password` varchar(255) NOT NULL,
+  `FullName` varchar(255) NOT NULL DEFAULT '',
+  `EmailAddress` varchar(255) NOT NULL DEFAULT '',
+  `LastLoginDateTime` datetime DEFAULT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`AppUserId`),
+  KEY `appuser_deleted` (`Deleted`,`UserName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+
+
+CREATE TABLE  `appuserextendedinfo` (
+  `ExtendedInfoId` int(11) NOT NULL AUTO_INCREMENT,
+  `UserId` int(11) NOT NULL DEFAULT '0',
+  `key` varchar(255) NOT NULL,
+  `Value` varchar(1024) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`ExtendedInfoId`),
+  KEY `KeyIndex` (`key`,`UserId`),
+  KEY `ExtendedInfoUserForeignKey` (`UserId`),
+  CONSTRAINT `ExtendedInfoUserForeignKey` FOREIGN KEY (`UserId`) REFERENCES `appuser` (`AppUserId`) ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+
+
+CREATE TABLE  `appuserpermissions` (
+  `AppUserId` int(10) unsigned NOT NULL,
+  `PermissionsId` int(10) unsigned NOT NULL,
+  KEY `UserIndex` (`AppUserId`),
+  KEY `PermissionIndex` (`PermissionsId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE  `permissions` (
+  `PermissionsId` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ApplicationName` varchar(255) NOT NULL,
+  `Action` varchar(255) NOT NULL,
+  `Description` text NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`PermissionsId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE  `roles` (
+  `RoleId` int(11) NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Description` varchar(1024) NOT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`RoleId`),
+  UNIQUE KEY `Name_UniqueIndex` (`Name`),
+  KEY `roles_deleted` (`Deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+
+CREATE TABLE  `appuserroles` (
+  `AppUserRolesId` int(11) NOT NULL AUTO_INCREMENT,
+  `AppUserId` int(11) DEFAULT NULL,
+  `RoleId` int(11) DEFAULT NULL,
+  `Deleted` datetime DEFAULT NULL,
+  PRIMARY KEY (`AppUserRolesId`),
+  KEY `UserIdForeignKey` (`AppUserId`),
+  KEY `RoleIDForeignKey` (`RoleId`),
+  CONSTRAINT `RoleIDForeignKey` FOREIGN KEY (`RoleId`) REFERENCES `roles` (`RoleId`),
+  CONSTRAINT `UserIdForeignKey` FOREIGN KEY (`AppUserId`) REFERENCES `appuser` (`AppUserId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
