@@ -63,16 +63,31 @@ namespace Hatfield.Web.Portal
                 string webConfigFN = System.Web.Hosting.HostingEnvironment.MapPath("~/web.config");
                 System.Xml.XmlDocument xmlDoc = new System.Xml.XmlDocument();
                 xmlDoc.Load(webConfigFN);
-                System.Xml.XmlNodeList nodes = xmlDoc.GetElementsByTagName("httpRuntime");
-                if (nodes.Count == 1)
-                {
-                    System.Xml.XmlNode runtimeNode = nodes[0];
-                    long maxLength = Convert.ToInt64(runtimeNode.Attributes["maxRequestLength"].InnerText);
-                    // maxLength is in KB
-                    maxLength = maxLength * 1024; // now in bytes
+                // in IIS 7, we need to read the system.webServer/security/requestFiltering/requestLimits maxAllowedContentLength attribute
+                // see http://www.cyprich.com/2008/06/19/fixing-file-upload-size-limit-in-iis-7/
 
-                    return maxLength;
+                long maxAllowedContentLength = 30000000; // default is 28.6MB - source: http://www.iis.net/configreference/system.webserver/security/requestfiltering/requestlimits
+                System.Xml.XmlNodeList requestLimitNodes = xmlDoc.GetElementsByTagName("requestLimits");
+                if (requestLimitNodes.Count == 1)
+                {
+                    System.Xml.XmlNode requestLimitsNode = requestLimitNodes[0];
+                    maxAllowedContentLength = Convert.ToInt64(requestLimitsNode.Attributes["maxAllowedContentLength"].InnerText);                    
                 }
+
+                // in ASP.Net read the httpRuntime maxRequestLength attribute
+                long maxRequestLength = 4 * 1048576; // 4MB default
+                System.Xml.XmlNodeList httpRuntimeNodes = xmlDoc.GetElementsByTagName("httpRuntime");
+                if (httpRuntimeNodes.Count == 1)
+                {
+                    System.Xml.XmlNode runtimeNode = httpRuntimeNodes[0];
+                    maxRequestLength = Convert.ToInt64(runtimeNode.Attributes["maxRequestLength"].InnerText);
+                    // maxLength is in KB
+                    maxRequestLength = maxRequestLength * 1024; // now in bytes                    
+                }
+
+                // the lowest configured amount wins. source: http://stackoverflow.com/questions/6327452/which-gets-priority-maxrequestlength-or-maxallowedcontentlength
+                return Math.Min(maxAllowedContentLength, maxRequestLength);
+
             }
             catch
             { }
