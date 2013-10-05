@@ -10,6 +10,7 @@ using System.Web.Security;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 
 namespace Hatfield.Web.Portal.Authentication
 {
@@ -26,12 +27,15 @@ namespace Hatfield.Web.Portal.Authentication
         {
             _un = un;
             _pw = pw;
+            this.Roles = new List<string>();
         }
 
         public bool CheckAuthentication(HttpContext context, PortalApplication portalApp)
         {
             return WebPortalUser.CheckLogin(_un, _pw, portalApp);
         }
+
+        public IList<string> Roles { get; set; }
 
         /// <summary>
         /// if the user is in any one of the validRoleNames, authentication will proceed.
@@ -40,7 +44,8 @@ namespace Hatfield.Web.Portal.Authentication
         /// <param name="validRoleNames"></param>
         /// <returns></returns>
         public bool CheckAuthentication(HttpContext context, string[] validRoleNames, PortalApplication portalApp)
-        {            
+        {
+            var IsValid = false;
             if (WebPortalUser.CheckLogin(_un, _pw, portalApp))
             {
                 WebPortalUser u = WebPortalUser.FetchUser(_un, portalApp);
@@ -50,11 +55,19 @@ namespace Hatfield.Web.Portal.Authentication
                     bool b = u.inRole(requiredRoleName);
                     if (b)
                     {
-                        u.SetLastLoginInDatabaseToNow();
-                        return true;
+                        Roles.Add(requiredRoleName);
+                        IsValid = true;
+                        
                     }
                 }
+
+                if (IsValid)
+                {
+                    u.SetLastLoginInDatabaseToNow();
+                    return true;
+                }
             }
+            
             return false;
         }
 
